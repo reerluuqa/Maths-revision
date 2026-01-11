@@ -1,0 +1,1217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Guided Practice Problem Solver</title>
+  <style>
+    :root{
+      --bg1:#2b0a7a;
+      --bg2:#5a1dd8;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --ink:#111827;
+      --border:#e5e7eb;
+      --purple:#6d28d9;
+      --purple2:#7c3aed;
+      --green:#22c55e;
+      --green2:#16a34a;
+      --red:#f97316;
+      --red2:#ef4444;
+      --shadow: 0 18px 50px rgba(17,24,39,.18);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(255,255,255,.12), transparent 60%),
+                  radial-gradient(900px 600px at 85% 20%, rgba(255,255,255,.10), transparent 55%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+    }
+
+    .app{
+      width:min(980px, 100%);
+      border-radius:28px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar{
+      padding:26px 26px 18px 26px;
+      background: linear-gradient(90deg, rgba(124,58,237,.85), rgba(168,85,247,.75));
+      border-bottom: 1px solid rgba(255,255,255,.20);
+      position:relative;
+    }
+
+    .brand{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      color:#fff;
+    }
+
+    .icon{
+      width:42px;height:42px;border-radius:12px;
+      background: rgba(255,255,255,.18);
+      display:grid;place-items:center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      flex:0 0 auto;
+    }
+
+    .brand h1{
+      font-size:28px;
+      line-height:1.05;
+      margin:0;
+      letter-spacing:.2px;
+    }
+
+    .brand p{
+      margin:6px 0 0 0;
+      opacity:.90;
+      font-size:13.5px;
+    }
+
+    .card{
+      margin:18px;
+      background: var(--card);
+      border-radius: 22px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.18);
+      border:1px solid rgba(17,24,39,.06);
+      overflow:hidden;
+    }
+
+    .card-top{
+      padding:18px 18px 8px 18px;
+      background: linear-gradient(180deg, rgba(124,58,237,.08), transparent 70%);
+    }
+
+    .meta-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+      font-size:13px;
+      color: var(--muted);
+    }
+
+    .progress-wrap{
+      width:100%;
+      height:10px;
+      background:#eef2ff;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(109,40,217,.10);
+    }
+    .progress{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, #22c55e, #86efac);
+      border-radius:999px;
+      transition: width .45s ease;
+    }
+
+    .content{
+      padding:18px 22px 10px 22px;
+    }
+
+    .qtitle{
+      margin:0;
+      font-size:18px;
+      color: #4c1d95;
+      letter-spacing:.2px;
+    }
+
+    .prompt{
+      margin:14px 0 14px 0;
+      padding:14px 14px;
+      border-left:4px solid rgba(109,40,217,.55);
+      background: rgba(109,40,217,.06);
+      border-radius:12px;
+      font-size:18px;
+      line-height:1.35;
+    }
+
+    .input-row{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    label{
+      font-size:13px;
+      color: var(--muted);
+    }
+
+    .answer{
+      width:100%;
+      padding:14px 14px;
+      border-radius:14px;
+      border:2px solid rgba(109,40,217,.35);
+      outline:none;
+      font-size:16px;
+      transition: .15s ease;
+      background:#fff;
+    }
+    .answer:focus{
+      border-color: rgba(109,40,217,.80);
+      box-shadow: 0 0 0 5px rgba(109,40,217,.14);
+    }
+
+    .btn-row{
+      display:flex;
+      gap:12px;
+      margin:14px 0 10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:700;
+      font-size:14px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.12);
+      transition: transform .08s ease, filter .12s ease, opacity .12s ease;
+      user-select:none;
+    }
+    .btn:active{ transform: translateY(1px) }
+    .btn[disabled]{ opacity:.55; cursor:not-allowed; box-shadow:none }
+
+    .btn-submit{
+      flex:1 1 260px;
+      color:#fff;
+      background: linear-gradient(90deg, var(--green), var(--green2));
+    }
+
+    .btn-hint{
+      flex:0 0 auto;
+      color:#fff;
+      background: linear-gradient(90deg, #fb923c, #ef4444);
+    }
+
+    .btn-next{
+      flex:1 1 220px;
+      color:#fff;
+      background: linear-gradient(90deg, var(--purple2), #a855f7);
+    }
+
+    .feedback{
+      margin:10px 0 8px;
+      padding:14px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#fafafa;
+      display:none;
+    }
+    .feedback.show{ display:block }
+    .fb-head{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+    .pill{
+      font-size:12px;
+      font-weight:800;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid rgba(17,24,39,.12);
+      background:#fff;
+    }
+    .ok{ color:#166534 }
+    .bad{ color:#991b1b }
+    .hint{
+      margin-top:10px;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(109,40,217,.35);
+      background: rgba(109,40,217,.05);
+      display:none;
+    }
+    .hint.show{ display:block }
+
+    .explain{
+      color:#111827;
+      line-height:1.42;
+      margin:0;
+      font-size:14px;
+    }
+    .answerline{
+      margin:8px 0 0 0;
+      font-size:14px;
+      color:#111827;
+    }
+    .answerline b{ color:#4c1d95 }
+
+    .footer{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      padding:12px 22px 16px;
+      border-top:1px solid rgba(17,24,39,.06);
+      background: linear-gradient(180deg, transparent, rgba(17,24,39,.02));
+      color: var(--muted);
+      font-size:13px;
+    }
+    .stat{
+      flex:1 1 0;
+      text-align:center;
+      padding:8px 10px;
+      border-radius:14px;
+      background: rgba(109,40,217,.04);
+      border:1px solid rgba(109,40,217,.08);
+    }
+    .stat .n{
+      font-size:24px;
+      color:#4c1d95;
+      font-weight:900;
+      line-height:1;
+      margin-bottom:4px;
+    }
+    .stat .t{
+      font-size:12px;
+      letter-spacing:.2px;
+    }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      padding:2px 8px;
+      border-radius: 8px;
+      background:#fff;
+      border:1px solid rgba(17,24,39,.12);
+      color:#374151;
+    }
+
+    @media (max-width: 560px){
+      .brand h1{ font-size:22px }
+      .prompt{ font-size:16px }
+      .btn-row{ flex-direction:column }
+      .btn-submit, .btn-next{ flex: 1 1 auto }
+      .footer{ flex-direction:column }
+      .stat{ text-align:left }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app" role="application" aria-label="Guided practice app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="icon" aria-hidden="true">
+          <!-- calculator-ish icon -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M7 2h10a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3Z" stroke="white" stroke-width="2" opacity=".95"/>
+            <path d="M7 7h10" stroke="white" stroke-width="2" opacity=".95"/>
+            <path d="M8 11h2M14 11h2M8 15h2M14 15h2M8 19h2M14 19h2" stroke="white" stroke-width="2" stroke-linecap="round" opacity=".95"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Guided Measurement & Money Solver</h1>
+          <p>Master unit conversions, money arithmetic, and LCM through guided practice with instant feedback.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="meta-row">
+          <div><span id="qCounter">Question 1 of 16</span></div>
+          <div><span id="pct">0%</span></div>
+        </div>
+        <div class="progress-wrap" aria-label="Progress">
+          <div id="progress" class="progress"></div>
+        </div>
+      </div>
+
+      <div class="content">
+        <h2 id="qTitle" class="qtitle">Question 1</h2>
+        <div id="prompt" class="prompt"></div>
+
+        <div class="input-row">
+          <label for="answer">Your Answer:</label>
+          <input id="answer" class="answer" placeholder="Enter your answer here" autocomplete="off" />
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <span class="kbd">Tip: you can type units like “m”, “kg”, “km”, “g”, “F”, “c”, “DM”, “pf”</span>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button id="submitBtn" class="btn btn-submit" title="Submit answer">
+            <!-- paper plane -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M3 11.5 21 3l-8.5 18-2.7-6.2L3 11.5Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M21 3 9.8 14.8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Submit Answer
+          </button>
+
+          <button id="hintBtn" class="btn btn-hint" title="Show hint">
+            <!-- lightbulb -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 18h6M10 22h4" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 2a7 7 0 0 0-4 12c.7.6 1 1.3 1 2h6c0-.7.3-1.4 1-2A7 7 0 0 0 12 2Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            Show Hint
+          </button>
+
+          <button id="nextBtn" class="btn btn-next" disabled>
+            Next Question
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 18 15 12 9 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div id="feedback" class="feedback" aria-live="polite">
+          <div class="fb-head">
+            <span id="fbIcon" class="pill">…</span>
+            <span id="fbText">—</span>
+          </div>
+          <div id="answerLine" class="answerline"></div>
+          <p id="explain" class="explain"></p>
+          <div id="hintBox" class="hint"></div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="stat">
+          <div id="correctN" class="n">0</div>
+          <div class="t">Correct Answers</div>
+        </div>
+        <div class="stat">
+          <div id="incorrectN" class="n">0</div>
+          <div class="t">Incorrect Answers</div>
+        </div>
+        <div class="stat">
+          <div id="hintsN" class="n">0</div>
+          <div class="t">Hints Used</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* =========================
+   Helpers: parsing & compare
+   ========================= */
+
+function norm(s){
+  return (s ?? "").toString().trim();
+}
+
+function approxEqual(a,b,tol=1e-9){
+  return Math.abs(a-b) <= tol;
+}
+
+// Extract first float-like number (accept comma decimal)
+function parseFirstFloat(input){
+  const s = norm(input).replace(/,/g,'.');
+  const m = s.match(/-?\d+(?:\.\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+function parseLengthToMeters(input){
+  // Accept forms like:
+  // "3.65 m", "365 cm", "83mm", "2.6574 km", "85 km 930 m", "13.47 hm"
+  const s0 = norm(input).toLowerCase().replace(/,/g,'.');
+  if(!s0) return NaN;
+
+  // If user gives "km m" full form
+  // e.g. "85 km 930 m" or "85km 930m"
+  const kmMatch = s0.match(/(-?\d+(?:\.\d+)?)\s*km\b/);
+  const mMatch  = s0.match(/(-?\d+(?:\.\d+)?)\s*m\b/);
+  const hmMatch = s0.match(/(-?\d+(?:\.\d+)?)\s*hm\b/);
+  const cmMatch = s0.match(/(-?\d+(?:\.\d+)?)\s*cm\b/);
+  const mmMatch = s0.match(/(-?\d+(?:\.\d+)?)\s*mm\b/);
+
+  // If multiple units present, add them
+  let total = 0;
+  let found = false;
+
+  if(kmMatch){ total += parseFloat(kmMatch[1]) * 1000; found = true; }
+  // careful: "hm" must be checked before "m" in a pure token scan; we already extracted hm separately
+  if(hmMatch){ total += parseFloat(hmMatch[1]) * 100; found = true; }
+  if(cmMatch){ total += parseFloat(cmMatch[1]) * 0.01; found = true; }
+  if(mmMatch){ total += parseFloat(mmMatch[1]) * 0.001; found = true; }
+
+  // If "m" present, ensure it isn't part of "mm" or "cm" (regex uses word boundary, ok)
+  if(mMatch){
+    total += parseFloat(mMatch[1]);
+    found = true;
+  }
+
+  // If no unit found, assume meters
+  if(!found){
+    const v = parseFirstFloat(s0);
+    return Number.isFinite(v) ? v : NaN;
+  }
+  return total;
+}
+
+function parseMassToKg(input){
+  // Accept: "1.487 kg", "1487 g", "0.574kg", "574g"
+  const s = norm(input).toLowerCase().replace(/,/g,'.');
+  if(!s) return NaN;
+
+  const kg = s.match(/(-?\d+(?:\.\d+)?)\s*kg\b/);
+  const g  = s.match(/(-?\d+(?:\.\d+)?)\s*g\b/);
+
+  if(kg) return parseFloat(kg[1]);
+  if(g)  return parseFloat(g[1]) / 1000;
+
+  // No unit: assume kg (because questions request kg often)
+  const v = parseFirstFloat(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+
+function parseMassToG(input){
+  // Accept "72", "72 g", "0.072 kg"
+  const s = norm(input).toLowerCase().replace(/,/g,'.');
+  if(!s) return NaN;
+
+  const kg = s.match(/(-?\d+(?:\.\d+)?)\s*kg\b/);
+  const g  = s.match(/(-?\d+(?:\.\d+)?)\s*g\b/);
+
+  if(g) return parseFloat(g[1]);
+  if(kg) return parseFloat(kg[1]) * 1000;
+
+  const v = parseFirstFloat(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+
+function parseMoneyToMinor(input, majorLabel){
+  // Converts money to minor units:
+  // - Francs: 1 F = 100 c
+  // - Dollars: 1 $ = 100 c
+  // - DM: 1 DM = 100 pf
+  //
+  // Accepts:
+  // "95 F 30 c" / "95F30c" / "95.30" / "95,30" / "95" (=> 95 major, 0 minor)
+  const s0 = norm(input);
+  if(!s0) return NaN;
+  const s = s0.replace(/,/g,'.').toLowerCase();
+
+  // If decimal major like 95.30, interpret as major.decimal
+  // But avoid cases where user types "1.9224 km" etc (this function only used when expected)
+  const decMatch = s.match(/-?\d+(?:\.\d+)?/);
+  if(decMatch && (s.includes('.') || (!/[a-z]/i.test(s) && /^\s*-?\d+(\.\d+)?\s*$/.test(s)))){
+    // decimal major assumed
+    const v = parseFloat(decMatch[0]);
+    if(!Number.isFinite(v)) return NaN;
+    return Math.round(v * 100);
+  }
+
+  // Major component
+  // Accept variants like "95 f", "$100", "19 dm"
+  let major = 0, minor = 0;
+  let foundAny = false;
+
+  // Major number near major label
+  // We don't require the label if user enters "95 30" (ambiguous) so we won't accept that.
+  const majorRe = new RegExp(String.raw`(-?\d+)\s*${majorLabel.toLowerCase()}\b`);
+  const maj = s.match(majorRe);
+  if(maj){
+    major = parseInt(maj[1], 10);
+    foundAny = true;
+  }
+
+  // Minor label
+  const minorLabel = (majorLabel.toLowerCase() === 'dm') ? 'pf' : 'c';
+  const minorRe = new RegExp(String.raw`(-?\d+)\s*${minorLabel}\b`);
+  const min = s.match(minorRe);
+  if(min){
+    minor = parseInt(min[1], 10);
+    foundAny = true;
+  }
+
+  // Also accept compact "95f30c" / "19dm75pf"
+  if(!foundAny){
+    const compact = s.match(/(-?\d+)\s*(f|\$|dm)\s*(-?\d+)\s*(c|pf)\b/);
+    if(compact){
+      major = parseInt(compact[1], 10);
+      minor = parseInt(compact[3], 10);
+      foundAny = true;
+    }
+  }
+
+  // If only a plain integer with no letters, accept as major
+  if(!foundAny){
+    if(/^\s*-?\d+\s*$/.test(s)){
+      major = parseInt(s, 10);
+      minor = 0;
+      foundAny = true;
+    }
+  }
+
+  if(!foundAny) return NaN;
+
+  // Normalize minor overflow/underflow
+  let total = major * 100 + minor;
+  return total;
+}
+
+function formatMoneyFromMinor(totalMinor, majorLabel){
+  const sign = totalMinor < 0 ? "-" : "";
+  const abs = Math.abs(totalMinor);
+  const major = Math.floor(abs / 100);
+  const minor = abs % 100;
+  const minorLabel = (majorLabel === "DM") ? "pf" : "c";
+  return `${sign}${major} ${majorLabel} ${String(minor).padStart(2,'0')} ${minorLabel}`;
+}
+
+function formatKmFullFromMeters(meters){
+  const sign = meters < 0 ? "-" : "";
+  const abs = Math.abs(Math.round(meters)); // should be integral for these problems
+  const km = Math.floor(abs/1000);
+  const m = abs % 1000;
+  return `${sign}${km} km ${m} m`;
+}
+
+/* =========================
+   Question bank
+   ========================= */
+
+const questions = [
+  {
+    id: "lcm_mass",
+    title: "Question 1",
+    prompt: "Find the smallest mass that can be measured out in equal amounts of 6 g, or 8 g, or 9 g.",
+    placeholder: "Example: 72 g",
+    type: "mass_g",
+    answerValue: 72, // grams
+    answerDisplay: "72 g",
+    hint: "This is a least common multiple problem: the mass must be divisible by 6, 8, and 9.",
+    explain:
+`We want the smallest mass that is a multiple of 6 g, 8 g, and 9 g simultaneously (i.e., the LCM).
+Prime factors: 6 = 2×3, 8 = 2³, 9 = 3².
+LCM uses the highest powers: 2³ × 3² = 8 × 9 = 72.
+So 72 g can be partitioned into equal 6 g portions (12 portions), 8 g portions (9 portions), or 9 g portions (8 portions).
+
+Pitfalls:
+• Using the GCD instead of the LCM.
+• Forgetting to take the highest power of each prime (e.g., using 2×3 instead of 2³×3²).`
+  },
+
+  // Exercise 2b: Add together
+  {
+    id:"ex1",
+    title:"Question 2",
+    prompt:"Add together: 93.7 cm; 83 mm; 2.63 m (answer in m).",
+    placeholder:"Example: 3.65 m",
+    type:"length_m",
+    answerValue: 3.65, // meters
+    answerDisplay:"3.65 m",
+    hint:"Convert everything to meters first: cm → m by ÷100, mm → m by ÷1000.",
+    explain:
+`Convert to meters:
+• 93.7 cm = 93.7 ÷ 100 = 0.937 m
+• 83 mm = 83 ÷ 1000 = 0.083 m
+Then add: 0.937 + 0.083 + 2.63 = 3.65 m.
+
+Pitfalls:
+• Treating 83 mm as 0.83 m (off by ×10).
+• Forgetting that 1 cm = 0.01 m and 1 mm = 0.001 m.`
+  },
+  {
+    id:"ex2",
+    title:"Question 3",
+    prompt:"Add together: 785 g; 97 g; 605 g (answer in kg).",
+    placeholder:"Example: 1.487 kg",
+    type:"mass_kg",
+    answerValue: 1.487,
+    answerDisplay:"1.487 kg",
+    hint:"Add grams first, then convert g → kg by ÷1000.",
+    explain:
+`Add grams: 785 + 97 + 605 = 1487 g.
+Convert to kilograms: 1487 ÷ 1000 = 1.487 kg.
+
+Pitfalls:
+• Moving the decimal the wrong direction (multiplying by 1000 instead of dividing).
+• Rounding too early (keep full precision until the final step).`
+  },
+  {
+    id:"ex3",
+    title:"Question 4",
+    prompt:"Add together: 28 F 7 c; 17 F 28 c; 40 F 89 c; 9 F 6 c.",
+    placeholder:"Example: 95 F 30 c",
+    type:"money_F",
+    answerValue: 9530, // centimes
+    answerDisplay:"95 F 30 c",
+    hint:"Convert each amount to centimes (×100 + c), add, then convert back.",
+    explain:
+`Work in centimes:
+• 28 F 07 c = 2807 c
+• 17 F 28 c = 1728 c
+• 40 F 89 c = 4089 c
+•  9 F 06 c =  906 c
+Sum = 2807 + 1728 + 4089 + 906 = 9530 c = 95 F 30 c.
+
+Pitfalls:
+• Not carrying when centimes exceed 99 (e.g., 35 c + 89 c = 124 c = 1 F 24 c).
+• Omitting leading zeros (07 c is still 7 centimes, but keep it clear).`
+  },
+  {
+    id:"ex4",
+    title:"Question 5",
+    prompt:"Add together: $53 5 c; $6 35 c; $27 85 c; $13 25 c.",
+    placeholder:"Example: 100.50 or $100 50 c",
+    type:"money_$",
+    answerValue: 10050, // cents
+    answerDisplay:"100 $ 50 c",
+    hint:"Add as cents to avoid decimal errors (53.05 = 5305 cents).",
+    explain:
+`Convert to cents:
+• $53.05 = 5305 c
+•  $6.35 =  635 c
+• $27.85 = 2785 c
+• $13.25 = 1325 c
+Sum = 5305 + 635 + 2785 + 1325 = 10050 c = $100.50.
+
+Pitfalls:
+• Writing $53 5 c as $53.50 (it is $53.05).
+• Misalignment of decimals when adding.`
+  },
+  {
+    id:"ex5",
+    title:"Question 6",
+    prompt:"Add together: 118 DM 35 pf; 22 DM 5 pf; 3 DM 90 pf; 83 DM 40 pf.",
+    placeholder:"Example: 227 DM 70 pf",
+    type:"money_DM",
+    answerValue: 22770, // pfennigs
+    answerDisplay:"227 DM 70 pf",
+    hint:"Use pfennigs: DM→pf by ×100, then add and convert back.",
+    explain:
+`Convert to pfennigs:
+• 118 DM 35 pf = 11835 pf
+•  22 DM 05 pf =  2205 pf
+•   3 DM 90 pf =   390 pf
+•  83 DM 40 pf =  8340 pf
+Sum = 11835 + 2205 + 390 + 8340 = 22770 pf = 227 DM 70 pf.
+
+Pitfalls:
+• Treating “22 DM 5 pf” as 22.50 DM (it is 22.05 DM).
+• Forgetting 100 pf = 1 DM.`
+  },
+
+  // Find the value of the following:
+  {
+    id:"ex6",
+    title:"Question 7",
+    prompt:"Find the value: 574 g + 8.706 kg − 625 g (answer in kg).",
+    placeholder:"Example: 8.655 kg",
+    type:"mass_kg",
+    answerValue: 8.655,
+    answerDisplay:"8.655 kg",
+    hint:"Convert grams to kg: 574 g = 0.574 kg; 625 g = 0.625 kg.",
+    explain:
+`Convert to kilograms:
+574 g = 0.574 kg
+625 g = 0.625 kg
+Compute: 0.574 + 8.706 − 0.625 = 9.280 − 0.625 = 8.655 kg.
+
+Pitfalls:
+• Subtracting 625 g as 0.0625 kg (decimal place error).
+• Mixing units mid-calculation.`
+  },
+  {
+    id:"ex7",
+    title:"Question 8",
+    prompt:"Find the value: 85 F 35 c + 192 F 50 c − 93 F 25 c − 89 F 70 c.",
+    placeholder:"Example: 94 F 90 c",
+    type:"money_F",
+    answerValue: 9490,
+    answerDisplay:"94 F 90 c",
+    hint:"Convert everything to centimes, then add/subtract. Borrow 1 F (=100 c) when needed.",
+    explain:
+`Convert to centimes:
+85 F 35 c =  8535 c
+192 F 50 c = 19250 c
+93 F 25 c =  9325 c
+89 F 70 c =  8970 c
+
+Compute: (8535 + 19250) − 9325 − 8970
+= 27785 − 9325 − 8970
+= 18460 − 8970
+= 9490 c
+= 94 F 90 c.
+
+Pitfalls:
+• Subtracting centimes without borrowing when the top centimes are smaller (e.g., 60 c − 70 c).
+• Losing sign/ordering in multi-step subtraction.`
+  },
+  {
+    id:"ex8",
+    title:"Question 9",
+    prompt:"Find the value: 24.37 km + 187.5 km − 125.94 km (answer in full).",
+    placeholder:"Example: 85 km 930 m",
+    type:"length_full_km_m",
+    answerValue: 85930, // meters
+    answerDisplay:"85 km 930 m (i.e., 85.93 km)",
+    hint:"Do the decimal km arithmetic, then convert the decimal part to meters (0.93 km = 930 m).",
+    explain:
+`Compute in km:
+24.37 + 187.50 = 211.87 km
+211.87 − 125.94 = 85.93 km
+
+“In full” means write as km and m:
+0.93 km = 0.93 × 1000 = 930 m
+So the result is 85 km 930 m.
+
+Pitfalls:
+• Converting 0.93 km to 93 m (must multiply by 1000).
+• Forgetting to align decimals (187.5 = 187.50).`
+  },
+  {
+    id:"ex9",
+    title:"Question 10",
+    prompt:"Find the value: 1 758 m − 2.895 km + 13.47 hm (answer in full).",
+    placeholder:"Example: 210 m",
+    type:"length_full_m",
+    answerValue: 210, // meters
+    answerDisplay:"210 m (i.e., 0 km 210 m or 0.210 km)",
+    hint:"Convert everything to meters: 2.895 km = 2895 m; 13.47 hm = 1347 m.",
+    explain:
+`Convert to meters:
+• 1 758 m = 1758 m
+• 2.895 km = 2.895 × 1000 = 2895 m
+• 13.47 hm = 13.47 × 100 = 1347 m
+
+Compute: 1758 − 2895 + 1347
+= (1758 − 2895) + 1347
+= −1137 + 1347
+= 210 m.
+
+Pitfalls:
+• Using 1 hm = 1000 m (incorrect; 1 hm = 100 m).
+• Dropping the negative sign after 1758 − 2895.`
+  },
+  {
+    id:"ex10",
+    title:"Question 11",
+    prompt:"Find the value: 327 F + 87 F 50 c + 135 F 75 c − 208 F 25 c − 32 F − 274 F 50 c.",
+    placeholder:"Example: 35 F 50 c",
+    type:"money_F",
+    answerValue: 3550, // centimes
+    answerDisplay:"35 F 50 c",
+    hint:"Treat “327 F” as 327 F 00 c. Convert all to centimes, then compute.",
+    explain:
+`Write missing centimes as 00:
+327 F = 327 F 00 c
+32 F  =  32 F 00 c
+
+Convert to centimes:
+32700 + 8750 + 13575 − 20825 − 3200 − 27450
+= (32700 + 8750 + 13575) = 55025
+55025 − 20825 = 34200
+34200 − 3200  = 31000
+31000 − 27450 = 3550 c
+= 35 F 50 c.
+
+Pitfalls:
+• Forgetting that plain “F” amounts still have centimes (00 c).
+• Not borrowing correctly when subtracting 50 c from 00 c.`
+  },
+  {
+    id:"ex11",
+    title:"Question 12",
+    prompt:"Find the value: 213.6 m × 9 (answer in km).",
+    placeholder:"Example: 1.9224 km",
+    type:"length_km",
+    answerValue: 1.9224, // km
+    answerDisplay:"1.9224 km",
+    hint:"Multiply in meters first, then convert m → km by ÷1000.",
+    explain:
+`213.6 m × 9 = 1922.4 m.
+Convert to km: 1922.4 ÷ 1000 = 1.9224 km.
+
+Pitfalls:
+• Multiplying after converting to km and rounding early.
+• Dividing by 100 instead of 1000.`
+  },
+  {
+    id:"ex12",
+    title:"Question 13",
+    prompt:"Find the value: $42 75 c × 7.",
+    placeholder:"Example: 299.25 or $299 25 c",
+    type:"money_$",
+    answerValue: 29925, // cents
+    answerDisplay:"299 $ 25 c (i.e., $299.25)",
+    hint:"Convert to cents: $42.75 = 4275 cents. Multiply, then convert back.",
+    explain:
+`$42.75 = 4275 cents.
+4275 × 7 = 29925 cents.
+Convert back: 29925 cents = $299.25.
+
+Pitfalls:
+• Treating 75 c as 0.75 of a cent (it’s 0.75 of a dollar).
+• Losing the decimal position after multiplication.`
+  },
+  {
+    id:"ex13",
+    title:"Question 14",
+    prompt:"Find the value: 177 DM 75 pf ÷ 9.",
+    placeholder:"Example: 19 DM 75 pf",
+    type:"money_DM",
+    answerValue: 1975, // pfennigs
+    answerDisplay:"19 DM 75 pf",
+    hint:"Convert to pfennigs first: 177 DM 75 pf = 17775 pf. Then divide.",
+    explain:
+`Convert to pfennigs:
+177 DM 75 pf = 177×100 + 75 = 17775 pf.
+Divide: 17775 ÷ 9 = 1975 pf.
+Convert back: 1975 pf = 19 DM 75 pf.
+
+Pitfalls:
+• Trying to divide “177 DM and 75 pf” separately (can break the carry).
+• Forgetting 100 pf = 1 DM.`
+  },
+  {
+    id:"ex14",
+    title:"Question 15",
+    prompt:"Find the value: 7.43 g × 38 (answer in kg).",
+    placeholder:"Example: 0.28234 kg",
+    type:"mass_kg",
+    answerValue: 0.28234, // kg
+    answerDisplay:"0.28234 kg",
+    hint:"Multiply in grams, then convert g → kg by ÷1000.",
+    explain:
+`7.43 g × 38 = 282.34 g.
+Convert to kg: 282.34 ÷ 1000 = 0.28234 kg.
+
+Pitfalls:
+• Placing the decimal wrongly after multiplication.
+• Converting to kg first and rounding before multiplying.`
+  },
+  {
+    id:"ex15",
+    title:"Question 16",
+    prompt:"Find the value: 25.8 m × 103 (answer in km).",
+    placeholder:"Example: 2.6574 km",
+    type:"length_km_from_m",
+    answerValue: 2.6574, // km
+    answerDisplay:"2.6574 km",
+    hint:"Multiply in meters: 25.8 × 103 = 2657.4 m, then ÷1000 to get km.",
+    explain:
+`25.8 m × 103 = 25.8×100 + 25.8×3 = 2580 + 77.4 = 2657.4 m.
+Convert to km: 2657.4 ÷ 1000 = 2.6574 km.
+
+Pitfalls:
+• Confusing ×103 with ×1000.
+• Forgetting that converting m → km requires dividing by 1000.`
+  }
+];
+
+/* =========================
+   Checkers per type
+   ========================= */
+
+function checkAnswer(q, userInput){
+  const raw = norm(userInput);
+  if(!raw) return { ok:false, parsed:NaN, reason:"Please enter an answer." };
+
+  switch(q.type){
+    case "mass_g": {
+      const g = parseMassToG(raw);
+      if(!Number.isFinite(g)) return { ok:false, parsed:g, reason:"Could not parse mass. Try like “72 g”." };
+      return { ok: approxEqual(g, q.answerValue, 1e-6), parsed:g };
+    }
+    case "mass_kg": {
+      const kg = parseMassToKg(raw);
+      if(!Number.isFinite(kg)) return { ok:false, parsed:kg, reason:"Could not parse mass. Try like “1.487 kg”." };
+      return { ok: approxEqual(kg, q.answerValue, 1e-9), parsed:kg };
+    }
+    case "length_m": {
+      const m = parseLengthToMeters(raw);
+      if(!Number.isFinite(m)) return { ok:false, parsed:m, reason:"Could not parse length. Try like “3.65 m”." };
+      return { ok: approxEqual(m, q.answerValue, 1e-9), parsed:m };
+    }
+    case "length_km": {
+      // Accept km or m; compare in km
+      const s = raw.toLowerCase();
+      let km;
+      if(s.includes("m") && !s.includes("km") && !s.includes("cm") && !s.includes("mm") && !s.includes("hm")){
+        const m = parseLengthToMeters(raw);
+        km = m/1000;
+      } else {
+        const meters = parseLengthToMeters(raw);
+        // if user types "1.9224" with no unit, assume km here
+        if(!/[a-z]/i.test(raw)){
+          km = parseFirstFloat(raw);
+        } else {
+          // If they provided meters via parseLengthToMeters, convert to km if unit wasn't km
+          // parseLengthToMeters will already handle km; meters then /1000 yields km
+          km = meters/1000;
+        }
+      }
+      if(!Number.isFinite(km)) return { ok:false, parsed:km, reason:"Could not parse length. Try like “1.9224 km”." };
+      return { ok: approxEqual(km, q.answerValue, 1e-9), parsed:km };
+    }
+    case "length_km_from_m": {
+      // Answer in km; accept m or km or unitless (assume km)
+      let km;
+      if(/[a-z]/i.test(raw)){
+        const meters = parseLengthToMeters(raw);
+        km = meters/1000;
+      } else {
+        km = parseFirstFloat(raw);
+      }
+      if(!Number.isFinite(km)) return { ok:false, parsed:km, reason:"Could not parse length. Try like “2.6574 km”." };
+      return { ok: approxEqual(km, q.answerValue, 1e-9), parsed:km };
+    }
+    case "length_full_km_m": {
+      // Compare in meters, but accept decimal km or full form
+      let meters = NaN;
+      if(/[a-z]/i.test(raw)){
+        meters = parseLengthToMeters(raw);
+      } else {
+        // unitless: assume km
+        const km = parseFirstFloat(raw);
+        meters = km * 1000;
+      }
+      if(!Number.isFinite(meters)) return { ok:false, parsed:meters, reason:"Could not parse. Try “85 km 930 m” or “85.93 km”." };
+      return { ok: approxEqual(meters, q.answerValue, 1e-6), parsed:meters };
+    }
+    case "length_full_m": {
+      // Expect meters; accept km/hm/m etc, compare to meters value
+      const meters = parseLengthToMeters(raw);
+      if(!Number.isFinite(meters)) return { ok:false, parsed:meters, reason:"Could not parse. Try “210 m”." };
+      return { ok: approxEqual(meters, q.answerValue, 1e-6), parsed:meters };
+    }
+    case "money_F": {
+      const cents = parseMoneyToMinor(raw, "F");
+      if(!Number.isFinite(cents)) return { ok:false, parsed:cents, reason:"Could not parse money. Try “94 F 90 c” or “94.90”." };
+      return { ok: cents === q.answerValue, parsed:cents };
+    }
+    case "money_$": {
+      // Accept "$" as major label OR just decimals like 299.25
+      let cents = parseMoneyToMinor(raw.replace(/\$/g,"$"), "$");
+      // If label parsing failed, try generic decimal -> cents
+      if(!Number.isFinite(cents)){
+        const v = parseFirstFloat(raw);
+        if(Number.isFinite(v)) cents = Math.round(v*100);
+      }
+      if(!Number.isFinite(cents)) return { ok:false, parsed:cents, reason:"Could not parse money. Try “299.25” or “$299 25 c”." };
+      return { ok: cents === q.answerValue, parsed:cents };
+    }
+    case "money_DM": {
+      const pf = parseMoneyToMinor(raw, "DM");
+      if(!Number.isFinite(pf)) return { ok:false, parsed:pf, reason:"Could not parse money. Try “19 DM 75 pf” or “19.75”." };
+      return { ok: pf === q.answerValue, parsed:pf };
+    }
+    default:
+      return { ok:false, parsed:NaN, reason:"Unknown question type." };
+  }
+}
+
+/* =========================
+   UI state
+   ========================= */
+
+let idx = 0;
+let correct = 0;
+let incorrect = 0;
+let hintsUsed = 0;
+let answered = false;
+let hintShown = false;
+
+const qCounter = document.getElementById("qCounter");
+const pct = document.getElementById("pct");
+const progress = document.getElementById("progress");
+const qTitle = document.getElementById("qTitle");
+const promptEl = document.getElementById("prompt");
+const answerEl = document.getElementById("answer");
+
+const submitBtn = document.getElementById("submitBtn");
+const hintBtn = document.getElementById("hintBtn");
+const nextBtn = document.getElementById("nextBtn");
+
+const feedback = document.getElementById("feedback");
+const fbIcon = document.getElementById("fbIcon");
+const fbText = document.getElementById("fbText");
+const answerLine = document.getElementById("answerLine");
+const explainEl = document.getElementById("explain");
+const hintBox = document.getElementById("hintBox");
+
+const correctN = document.getElementById("correctN");
+const incorrectN = document.getElementById("incorrectN");
+const hintsN = document.getElementById("hintsN");
+
+function updateStats(){
+  correctN.textContent = correct;
+  incorrectN.textContent = incorrect;
+  hintsN.textContent = hintsUsed;
+
+  const answeredCount = correct + incorrect;
+  const percent = (answeredCount === 0) ? 0 : Math.round((correct / answeredCount) * 100);
+  pct.textContent = `${percent}%`;
+}
+
+function setProgress(){
+  const p = Math.round(((idx) / questions.length) * 100);
+  progress.style.width = `${p}%`;
+  qCounter.textContent = `Question ${idx+1} of ${questions.length}`;
+}
+
+function loadQuestion(){
+  const q = questions[idx];
+  answered = false;
+  hintShown = false;
+
+  setProgress();
+  updateStats();
+
+  qTitle.textContent = q.title;
+  promptEl.textContent = q.prompt;
+
+  answerEl.value = "";
+  answerEl.placeholder = q.placeholder ?? "Enter your answer here";
+  answerEl.disabled = false;
+
+  feedback.classList.remove("show");
+  hintBox.classList.remove("show");
+  hintBox.innerHTML = "";
+  answerLine.innerHTML = "";
+  explainEl.textContent = "";
+
+  submitBtn.disabled = false;
+  hintBtn.disabled = false;
+  nextBtn.disabled = true;
+
+  // focus
+  setTimeout(()=>answerEl.focus(), 50);
+}
+
+function showFeedback(ok, q){
+  feedback.classList.add("show");
+
+  if(ok){
+    fbIcon.textContent = "Correct";
+    fbIcon.style.background = "rgba(34,197,94,.12)";
+    fbIcon.style.borderColor = "rgba(22,163,74,.30)";
+    fbIcon.classList.remove("bad");
+    fbIcon.classList.add("ok");
+    fbText.textContent = "Nice. Your answer matches.";
+    fbText.className = "ok";
+  } else {
+    fbIcon.textContent = "Incorrect";
+    fbIcon.style.background = "rgba(239,68,68,.10)";
+    fbIcon.style.borderColor = "rgba(153,27,27,.25)";
+    fbIcon.classList.remove("ok");
+    fbIcon.classList.add("bad");
+    fbText.textContent = "Not quite. Here’s the correct answer and why.";
+    fbText.className = "bad";
+  }
+
+  answerLine.innerHTML = `<b>Correct answer:</b> ${q.answerDisplay}`;
+  explainEl.textContent = q.explain;
+}
+
+function revealHint(){
+  const q = questions[idx];
+  feedback.classList.add("show");
+  hintBox.classList.add("show");
+  hintBox.innerHTML = `<b>Hint:</b> ${q.hint}`;
+}
+
+submitBtn.addEventListener("click", ()=>{
+  if(answered) return;
+  const q = questions[idx];
+
+  const res = checkAnswer(q, answerEl.value);
+
+  if(res.reason){
+    // gentle inline message without counting as incorrect attempt
+    feedback.classList.add("show");
+    fbIcon.textContent = "Input";
+    fbIcon.style.background = "rgba(109,40,217,.08)";
+    fbIcon.style.borderColor = "rgba(109,40,217,.22)";
+    fbText.textContent = res.reason;
+    fbText.className = "";
+    answerLine.innerHTML = "";
+    explainEl.textContent = "";
+    return;
+  }
+
+  answered = true;
+  answerEl.disabled = true;
+  submitBtn.disabled = true;
+  hintBtn.disabled = true;
+  nextBtn.disabled = false;
+
+  if(res.ok) correct++;
+  else incorrect++;
+
+  updateStats();
+  showFeedback(res.ok, q);
+});
+
+hintBtn.addEventListener("click", ()=>{
+  if(answered) return;
+  if(!hintShown){
+    hintsUsed++;
+    hintShown = true;
+    updateStats();
+  }
+  revealHint();
+});
+
+nextBtn.addEventListener("click", ()=>{
+  idx++;
+  if(idx >= questions.length){
+    // finished
+    progress.style.width = "100%";
+    qCounter.textContent = `Completed ${questions.length} of ${questions.length}`;
+    qTitle.textContent = "All done";
+    promptEl.textContent = "You’ve completed the full set. Review your explanations above, or refresh to practise again.";
+    answerEl.value = "";
+    answerEl.disabled = true;
+    submitBtn.disabled = true;
+    hintBtn.disabled = true;
+    nextBtn.disabled = true;
+
+    feedback.classList.add("show");
+    fbIcon.textContent = "Summary";
+    fbIcon.style.background = "rgba(34,197,94,.10)";
+    fbIcon.style.borderColor = "rgba(34,197,94,.25)";
+    fbText.textContent = `Score: ${correct} correct, ${incorrect} incorrect.`;
+    fbText.className = "ok";
+    answerLine.innerHTML = "";
+    explainEl.textContent = "If you want, try again and aim to solve each one without hints—focus on unit consistency and minor-unit arithmetic for money.";
+    hintBox.classList.remove("show");
+    return;
+  }
+  loadQuestion();
+});
+
+// Enter key submits
+answerEl.addEventListener("keydown", (e)=>{
+  if(e.key === "Enter"){
+    e.preventDefault();
+    if(!submitBtn.disabled) submitBtn.click();
+  }
+});
+
+// Initial load
+loadQuestion();
+</script>
+</body>
+</html>

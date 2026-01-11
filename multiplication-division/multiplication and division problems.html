@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Division & Multiplication Problem Solver</title>
+  <style>
+    :root{
+      --bg1:#1b1f6a;
+      --bg2:#6b21a8;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --text:#111827;
+      --line:#e5e7eb;
+      --good:#22c55e;
+      --bad:#ef4444;
+      --hint:#f43f5e;
+      --btn:#16a34a;
+      --btn2:#ef4444;
+      --shadow: 0 18px 50px rgba(0,0,0,.18);
+      --radius: 18px;
+      --radius2: 14px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      min-height:100vh;
+      background: radial-gradient(1200px 700px at 20% 15%, rgba(255,255,255,.14), transparent 55%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .app{
+      width:min(980px, 96vw);
+    }
+
+    /* Header (replicates example UI) */
+    .hero{
+      background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(147,51,234,.95));
+      border-radius: 22px;
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.18);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:-80px -160px auto auto;
+      width:360px;height:360px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.16), transparent 60%);
+      transform: rotate(12deg);
+      pointer-events:none;
+    }
+    .heroRow{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+    .icon{
+      width:38px;height:38px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.25);
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+    }
+    .icon svg{opacity:.95}
+    .heroTitle{
+      margin:0;
+      color:#fff;
+      font-weight: 800;
+      letter-spacing:.2px;
+      font-size: 28px;
+      line-height:1.15;
+    }
+    .heroSub{
+      margin:6px 0 0;
+      color: rgba(255,255,255,.85);
+      font-size: 14px;
+    }
+
+    /* Main card */
+    .card{
+      margin-top:16px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .cardTop{
+      padding: 16px 18px 10px;
+      border-bottom: 1px solid rgba(17,24,39,.06);
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.85));
+    }
+    .metaRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .progressWrap{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .progressBar{
+      width: 210px;
+      height: 10px;
+      background: rgba(17,24,39,.08);
+      border-radius: 999px;
+      overflow:hidden;
+      border: 1px solid rgba(17,24,39,.06);
+    }
+    .progressFill{
+      height:100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      border-radius: 999px;
+      transition: width .35s ease;
+    }
+    .pct{
+      font-variant-numeric: tabular-nums;
+      color: rgba(17,24,39,.65);
+      min-width: 42px;
+      text-align:right;
+    }
+
+    .qBody{
+      padding: 16px 18px 18px;
+    }
+    .qLabel{
+      margin:0;
+      color: #4c1d95;
+      font-weight: 800;
+      font-size: 18px;
+    }
+    .qText{
+      margin: 12px 0 0;
+      padding: 14px 14px;
+      border-left: 4px solid #7c3aed;
+      background: rgba(124,58,237,.05);
+      border-radius: 12px;
+      font-size: 17px;
+      line-height: 1.35;
+    }
+    .expr{
+      margin-top: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 18px;
+      background: rgba(17,24,39,.04);
+      border: 1px solid rgba(17,24,39,.08);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display:inline-block;
+    }
+
+    .inputBlock{
+      margin-top: 14px;
+    }
+    .inputLabel{
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 8px;
+    }
+    .inputRow{
+      display:flex;
+      gap:12px;
+      align-items:stretch;
+      flex-wrap:wrap;
+    }
+    input[type="text"]{
+      flex:1 1 360px;
+      border-radius: 12px;
+      border: 2px solid rgba(124,58,237,.35);
+      padding: 12px 12px;
+      font-size: 16px;
+      outline:none;
+      background:#fff;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    input[type="text"]:focus{
+      border-color: rgba(124,58,237,.7);
+      box-shadow: 0 0 0 4px rgba(124,58,237,.15);
+    }
+
+    .btnRow{
+      margin-top: 14px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+    }
+    button{
+      border:0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: 800;
+      color:#fff;
+      cursor:pointer;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      transition: transform .06s ease, filter .12s ease, opacity .12s ease;
+      user-select:none;
+    }
+    button:active{ transform: translateY(1px); }
+    .submitBtn{
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      min-width: 210px;
+      justify-content:center;
+      box-shadow: 0 10px 24px rgba(34,197,94,.25);
+    }
+    .hintBtn{
+      background: linear-gradient(90deg, #fb7185, #ef4444);
+      min-width: 170px;
+      justify-content:center;
+      box-shadow: 0 10px 24px rgba(239,68,68,.18);
+    }
+    .nextBtn{
+      background: linear-gradient(90deg, #2563eb, #60a5fa);
+      min-width: 160px;
+      justify-content:center;
+      box-shadow: 0 10px 24px rgba(37,99,235,.20);
+    }
+    .ghostBtn{
+      background: rgba(17,24,39,.08);
+      color: rgba(17,24,39,.85);
+      box-shadow:none;
+      border: 1px solid rgba(17,24,39,.10);
+    }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    /* Feedback panel */
+    .panel{
+      margin-top: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(17,24,39,.10);
+      overflow:hidden;
+      background:#fff;
+    }
+    .panelHead{
+      padding: 12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom: 1px solid rgba(17,24,39,.06);
+    }
+    .status{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight: 900;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing:.2px;
+      border: 1px solid rgba(17,24,39,.12);
+    }
+    .pill.good{
+      background: rgba(34,197,94,.10);
+      color: #166534;
+      border-color: rgba(34,197,94,.25);
+    }
+    .pill.bad{
+      background: rgba(239,68,68,.10);
+      color: #7f1d1d;
+      border-color: rgba(239,68,68,.25);
+    }
+    .panelBody{
+      padding: 14px;
+      color: rgba(17,24,39,.92);
+      line-height:1.45;
+    }
+    .panelBody h4{
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: rgba(17,24,39,.8);
+      text-transform: uppercase;
+      letter-spacing:.08em;
+    }
+    .panelBody .answerLine{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      background: rgba(17,24,39,.04);
+      border: 1px solid rgba(17,24,39,.08);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin: 6px 0 12px;
+      display:block;
+    }
+    .bullets{
+      margin: 10px 0 0 18px;
+      color: rgba(17,24,39,.88);
+    }
+    .hintBox{
+      margin-top: 12px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      background: rgba(251,113,133,.10);
+      border: 1px solid rgba(239,68,68,.18);
+      color: rgba(127,29,29,.95);
+    }
+    .hintBox strong{display:block;margin-bottom:6px}
+
+    /* Footer stats */
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 14px 18px 18px;
+      border-top: 1px solid rgba(17,24,39,.06);
+      background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.92));
+    }
+    .stat{
+      text-align:center;
+      padding: 10px 8px;
+      border-radius: 16px;
+      background: rgba(17,24,39,.03);
+      border: 1px solid rgba(17,24,39,.06);
+    }
+    .stat .num{
+      font-size: 22px;
+      font-weight: 900;
+      color:#111827;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat .lab{
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing:.02em;
+    }
+
+    @media (max-width:720px){
+      .progressBar{ width: 160px; }
+      .heroTitle{ font-size: 22px; }
+      .expr{ font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="hero" aria-label="Header">
+      <div class="heroRow">
+        <div class="icon" aria-hidden="true" title="Calculator">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="white" stroke-width="2" opacity="0.95"/>
+            <path d="M8 6h8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M8 11h3M13 11h3M8 15h3M13 15h3M8 19h3M13 19h3" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.95"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="heroTitle">Division & Multiplication Problem Solver</h1>
+          <p class="heroSub">Guided practice with immediate feedback, full worked answers, and common pitfalls to avoid.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" role="application" aria-label="Practice card">
+      <div class="cardTop">
+        <div class="metaRow">
+          <div class="progressWrap">
+            <div class="progressBar" aria-label="Progress">
+              <div class="progressFill" id="progressFill"></div>
+            </div>
+            <div class="pct" id="pct">0%</div>
+          </div>
+          <div id="qCounter">Question 1 of 20</div>
+        </div>
+      </div>
+
+      <div class="qBody">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <p class="qLabel" id="qTitle">Question 1</p>
+          <span style="font-size:12px;color:rgba(17,24,39,.55);font-weight:700;" id="qTag"></span>
+        </div>
+
+        <div class="qText" id="qText"></div>
+        <div class="expr" id="qExpr" aria-label="Expression"></div>
+
+        <div class="inputBlock">
+          <p class="inputLabel">Your Answer:</p>
+          <div class="inputRow">
+            <input id="answerInput" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="Enter your answer here" />
+          </div>
+
+          <div class="btnRow">
+            <button class="submitBtn" id="submitBtn" title="Submit answer">
+              <span aria-hidden="true">➤</span>
+              <span>Submit Answer</span>
+            </button>
+            <button class="hintBtn" id="hintBtn" title="Show hint">
+              <span aria-hidden="true">💡</span>
+              <span>Show Hint</span>
+            </button>
+            <button class="ghostBtn" id="resetBtn" title="Restart practice" style="margin-left:auto;">
+              <span aria-hidden="true">↻</span>
+              <span>Restart</span>
+            </button>
+          </div>
+
+          <div id="feedback" class="panel" style="display:none;" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <div class="stats" aria-label="Stats">
+        <div class="stat">
+          <div class="num" id="correctNum">0</div>
+          <div class="lab">Correct Answers</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="incorrectNum">0</div>
+          <div class="lab">Incorrect Answers</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="hintsNum">0</div>
+          <div class="lab">Hints Used</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const questions = [
+    // Division Problems
+    {
+      id: "div-1",
+      group: "Division",
+      title: "Long division (quotient has zero in middle)",
+      prompt: "Compute 4084 ÷ 4.",
+      expr: "4084 ÷ 4",
+      type: "number",
+      answer: 1021,
+      explanation: [
+        "Use long division: 4 goes into 4 → 1 (remainder 0). Bring down 0 → 0 goes into 0 → 0. Bring down 8 → 4 goes into 8 → 2. Bring down 4 → 4 goes into 4 → 1.",
+        "So the quotient is 1021."
+      ],
+      pitfalls: [
+        "Skipping the zero in the quotient when a digit divides to 0 (you must write it to preserve place value).",
+        "Losing alignment when bringing digits down in long division."
+      ],
+      hint: "After dividing 4 by 4, you must still process the next digit (0). If it divides to 0, write a 0 in the quotient."
+    },
+    {
+      id: "div-2",
+      group: "Division",
+      title: "Divisor is a decimal",
+      prompt: "Compute 86.4 ÷ 0.12.",
+      expr: "86.4 ÷ 0.12",
+      type: "number",
+      answer: 720,
+      explanation: [
+        "Make the divisor a whole number by multiplying both numbers by 100 (because 0.12 has 2 decimal places).",
+        "86.4 ÷ 0.12 = 8640 ÷ 12.",
+        "8640 ÷ 12 = 720."
+      ],
+      pitfalls: [
+        "Moving the decimal in the divisor but not moving it the same amount in the dividend.",
+        "Dropping zeros when scaling (e.g., writing 864 instead of 8640)."
+      ],
+      hint: "Scale both numbers by 100 to turn 0.12 into 12, then divide."
+    },
+    {
+      id: "div-3",
+      group: "Division",
+      title: "Dividend has zeros inside (quotient also has zeros)",
+      prompt: "Compute 10208 ÷ 4.",
+      expr: "10208 ÷ 4",
+      type: "number",
+      answer: 2552,
+      explanation: [
+        "Long division: 4 into 10 → 2 (remainder 2). Bring down 2 → 22 → 5 (remainder 2). Bring down 0 → 20 → 5 (remainder 0). Bring down 8 → 8 → 2.",
+        "Quotient = 2552."
+      ],
+      pitfalls: [
+        "Forgetting to bring down a 0 and therefore shifting all later digits.",
+        "Confusing remainder handling when a 0 is brought down."
+      ],
+      hint: "When you bring down the 0 after 20, you still divide 20 by 4 before continuing."
+    },
+    {
+      id: "div-4",
+      group: "Division",
+      title: "Decimal divisor, decimal dividend",
+      prompt: "Compute 0.675 ÷ 0.05.",
+      expr: "0.675 ÷ 0.05",
+      type: "number",
+      answer: 13.5,
+      explanation: [
+        "Scale both numbers so the divisor is a whole number: multiply by 100 (0.05 → 5).",
+        "0.675 ÷ 0.05 = 67.5 ÷ 5.",
+        "67.5 ÷ 5 = 13.5."
+      ],
+      pitfalls: [
+        "Scaling by 10 instead of 100 (0.05 needs two places moved).",
+        "Misplacing the decimal point in the final quotient."
+      ],
+      hint: "Turn 0.05 into 5 by multiplying numerator and denominator by 100."
+    },
+    {
+      id: "div-5",
+      group: "Division",
+      title: "Long division with remainder",
+      prompt: "Compute 5723 ÷ 7. Give quotient and remainder.",
+      expr: "5723 ÷ 7",
+      type: "remainder",
+      answerText: "817 R 4",
+      answer: { q: 817, r: 4 },
+      explanation: [
+        "Compute 7 × 800 = 5600. Subtract: 5723 − 5600 = 123.",
+        "Then 7 × 17 = 119. Subtract: 123 − 119 = 4.",
+        "So quotient = 817 and remainder = 4."
+      ],
+      pitfalls: [
+        "Reporting remainder larger than or equal to the divisor (remainder must be 0–6 here).",
+        "Stopping early after 800 and forgetting to finish the division of the leftover."
+      ],
+      hint: "Find the closest multiple of 7 below 5723, then subtract to get the remainder."
+    },
+    {
+      id: "div-6",
+      group: "Division",
+      title: "Zero in dividend at start (multi-digit quotient)",
+      prompt: "Compute 2041.5 ÷ 5.",
+      expr: "2041.5 ÷ 5",
+      type: "number",
+      answer: 408.3,
+      explanation: [
+        "Divide stepwise: 2000 ÷ 5 = 400, leaving 41.5.",
+        "41.5 ÷ 5 = 8.3.",
+        "Total = 400 + 8.3 = 408.3."
+      ],
+      pitfalls: [
+        "Misplacing the decimal point in the quotient.",
+        "Treating 41.5 ÷ 5 as 8 remainder something instead of 8.3."
+      ],
+      hint: "Break it into 2000 ÷ 5 and 41.5 ÷ 5."
+    },
+    {
+      id: "div-7",
+      group: "Division",
+      title: "Decimal divisor > dividend",
+      prompt: "Compute 5.46 ÷ 1.3.",
+      expr: "5.46 ÷ 1.3",
+      type: "number",
+      answer: 4.2,
+      explanation: [
+        "Make the divisor a whole number by multiplying both by 10: 5.46 ÷ 1.3 = 54.6 ÷ 13.",
+        "13 × 4 = 52, remainder 2.6. Then 2.6 ÷ 13 = 0.2.",
+        "So 54.6 ÷ 13 = 4.2."
+      ],
+      pitfalls: [
+        "Scaling the divisor but not the dividend.",
+        "Rounding too early and missing the exact decimal."
+      ],
+      hint: "Multiply both numbers by 10: 54.6 ÷ 13."
+    },
+    {
+      id: "div-8",
+      group: "Division",
+      title: "Large number divided by decimal",
+      prompt: "Compute 1234 ÷ 0.25.",
+      expr: "1234 ÷ 0.25",
+      type: "number",
+      answer: 4936,
+      explanation: [
+        "Dividing by 0.25 is the same as multiplying by 4 (because 0.25 = 1/4).",
+        "1234 ÷ 0.25 = 1234 × 4 = 4936."
+      ],
+      pitfalls: [
+        "Incorrectly moving the decimal one place (0.25 needs two places if scaling).",
+        "Confusing 0.25 with 0.2 (multiply by 5 is for 0.2, not 0.25)."
+      ],
+      hint: "0.25 is one quarter—dividing by a quarter multiplies by 4."
+    },
+    {
+      id: "div-9",
+      group: "Division",
+      title: "Divide by 0.2 (same as multiply by 5)",
+      prompt: "Compute 84.6 ÷ 0.2.",
+      expr: "84.6 ÷ 0.2",
+      type: "number",
+      answer: 423,
+      explanation: [
+        "0.2 = 1/5, so dividing by 0.2 is multiplying by 5.",
+        "84.6 × 5 = 423.0, so the answer is 423."
+      ],
+      pitfalls: [
+        "Multiplying by 2 instead of 5 (common confusion with 0.5 vs 0.2).",
+        "Losing the decimal point when multiplying."
+      ],
+      hint: "Replace ÷ 0.2 with × 5."
+    },
+    {
+      id: "div-10",
+      group: "Division",
+      title: "Divide where answer is a decimal",
+      prompt: "Compute 115 ÷ 8.",
+      expr: "115 ÷ 8",
+      type: "number",
+      answer: 14.375,
+      explanation: [
+        "8 goes into 115: 8 × 14 = 112, remainder 3.",
+        "Remainder 3 means 3/8 = 0.375.",
+        "So 115 ÷ 8 = 14 + 0.375 = 14.375."
+      ],
+      pitfalls: [
+        "Stopping at 14 remainder 3 without converting the remainder to a decimal.",
+        "Turning 3/8 into 0.3 or 0.38 by rough rounding instead of exact division."
+      ],
+      hint: "Compute 14 remainder 3, then convert 3/8 to a decimal."
+    },
+
+    // Multiplication Problems
+    {
+      id: "mul-1",
+      group: "Multiplication",
+      title: "Multiplying by a decimal",
+      prompt: "Compute 43 × 0.15.",
+      expr: "43 × 0.15",
+      type: "number",
+      answer: 6.45,
+      explanation: [
+        "Compute 43 × 15 = 645.",
+        "0.15 has 2 decimal places, so place the decimal 2 places from the right: 6.45."
+      ],
+      pitfalls: [
+        "Placing the decimal incorrectly (e.g., 64.5 or 0.645).",
+        "Forgetting that 0.15 has two decimal places."
+      ],
+      hint: "Multiply as whole numbers (43×15), then shift the decimal 2 places."
+    },
+    {
+      id: "mul-2",
+      group: "Multiplication",
+      title: "Multiplying two decimals",
+      prompt: "Compute 0.28 × 0.4.",
+      expr: "0.28 × 0.4",
+      type: "number",
+      answer: 0.112,
+      explanation: [
+        "Compute 28 × 4 = 112.",
+        "Total decimal places = 2 (from 0.28) + 1 (from 0.4) = 3 places.",
+        "So the product is 0.112."
+      ],
+      pitfalls: [
+        "Using only one decimal place total instead of three.",
+        "Writing 0.28×0.4 as 0.28×4 (that changes the problem)."
+      ],
+      hint: "Multiply 28×4=112, then place 3 decimals in the result."
+    },
+    {
+      id: "mul-3",
+      group: "Multiplication",
+      title: "Long multiplication with zeros inside",
+      prompt: "Compute 304 × 205.",
+      expr: "304 × 205",
+      type: "number",
+      answer: 62320,
+      explanation: [
+        "Break 205 into 200 + 5.",
+        "304×200 = 60,800 and 304×5 = 1,520.",
+        "Add: 60,800 + 1,520 = 62,320."
+      ],
+      pitfalls: [
+        "Misaligning place values when multiplying by 200 (must shift two places).",
+        "Dropping the internal zero in 304 and treating it like 34."
+      ],
+      hint: "Use distributive property: 304×(200+5)."
+    },
+    {
+      id: "mul-4",
+      group: "Multiplication",
+      title: "Decimal × large whole number",
+      prompt: "Compute 0.025 × 4000.",
+      expr: "0.025 × 4000",
+      type: "number",
+      answer: 100,
+      explanation: [
+        "0.025 = 25/1000.",
+        "(25/1000)×4000 = 25×4 = 100.",
+        "So the product is 100."
+      ],
+      pitfalls: [
+        "Moving decimals in the wrong direction (multiplying by 4000 shifts right, not left).",
+        "Treating 0.025 as 0.25."
+      ],
+      hint: "Rewrite 0.025 as 25/1000, then simplify with 4000."
+    },
+    {
+      id: "mul-5",
+      group: "Multiplication",
+      title: "Three-digit × two-digit",
+      prompt: "Compute 317 × 48.",
+      expr: "317 × 48",
+      type: "number",
+      answer: 15216,
+      explanation: [
+        "Use 48 = 50 − 2.",
+        "317×50 = 15,850 and 317×2 = 634.",
+        "15,850 − 634 = 15,216."
+      ],
+      pitfalls: [
+        "Arithmetic slip in subtraction after using a shortcut.",
+        "Misplacing a zero when computing ×50."
+      ],
+      hint: "Use 48 = 50 − 2 to reduce long multiplication."
+    },
+    {
+      id: "mul-6",
+      group: "Multiplication",
+      title: "Multiplying by 10.1 pattern",
+      prompt: "Compute 89 × 10.1.",
+      expr: "89 × 10.1",
+      type: "number",
+      answer: 898.9,
+      explanation: [
+        "10.1 = 10 + 0.1.",
+        "89×10 = 890 and 89×0.1 = 8.9.",
+        "Add: 890 + 8.9 = 898.9."
+      ],
+      pitfalls: [
+        "Treating ×0.1 as ×1 (it shifts the decimal left by one place).",
+        "Adding incorrectly (890 + 8.9 ≠ 8908.9)."
+      ],
+      hint: "Split 10.1 into 10 and 0.1, then add the partial products."
+    },
+    {
+      id: "mul-7",
+      group: "Multiplication",
+      title: "Multiplying decimals with many places",
+      prompt: "Compute 1.25 × 0.08.",
+      expr: "1.25 × 0.08",
+      type: "number",
+      answer: 0.1,
+      explanation: [
+        "Compute 125 × 8 = 1000.",
+        "Total decimal places = 2 (from 1.25) + 2 (from 0.08) = 4 places.",
+        "So 1000 with 4 decimal places is 0.1000 = 0.1."
+      ],
+      pitfalls: [
+        "Forgetting that 0.08 contributes two decimal places (not one).",
+        "Overthinking leading/trailing zeros: 0.1000 is the same as 0.1."
+      ],
+      hint: "Multiply 125×8 first, then place 4 decimals in the result."
+    },
+    {
+      id: "mul-8",
+      group: "Multiplication",
+      title: "Word problem",
+      prompt: "If each box weighs 2.5 kg, how much do 24 boxes weigh?",
+      expr: "2.5 × 24",
+      type: "number",
+      answer: 60,
+      explanation: [
+        "Multiply: 2.5×24 = (2×24) + (0.5×24).",
+        "2×24 = 48 and 0.5×24 = 12.",
+        "Total weight = 48 + 12 = 60 kg."
+      ],
+      pitfalls: [
+        "Forgetting units (final answer should be in kg).",
+        "Mistaking 0.5×24 for 0.05×24."
+      ],
+      hint: "Split 2.5 into 2 + 0.5, multiply each by 24, then add."
+    },
+    {
+      id: "mul-9",
+      group: "Multiplication",
+      title: "Large whole numbers",
+      prompt: "Compute 1250 × 36.",
+      expr: "1250 × 36",
+      type: "number",
+      answer: 45000,
+      explanation: [
+        "Use 36 = 30 + 6.",
+        "1250×30 = 37,500 and 1250×6 = 7,500.",
+        "Add: 37,500 + 7,500 = 45,000."
+      ],
+      pitfalls: [
+        "Dropping zeros in 1250 during multiplication.",
+        "Misplacing commas / place value when adding partial products."
+      ],
+      hint: "Compute 1250×30 and 1250×6, then add."
+    },
+    {
+      id: "mul-10",
+      group: "Multiplication",
+      title: "Decimal × decimal needing place value care",
+      prompt: "Compute 0.07 × 0.006.",
+      expr: "0.07 × 0.006",
+      type: "number",
+      answer: 0.00042,
+      explanation: [
+        "Compute 7 × 6 = 42.",
+        "Total decimal places = 2 (from 0.07) + 3 (from 0.006) = 5 places.",
+        "So 42 becomes 0.00042."
+      ],
+      pitfalls: [
+        "Using too few decimal places (common wrong answers: 0.0042 or 0.000042).",
+        "Ignoring that leading zeros after the decimal still count for place value."
+      ],
+      hint: "Multiply 7×6=42, then place 5 decimals."
+    }
+  ];
+
+  // State
+  let idx = 0;
+  let correct = 0, incorrect = 0, hints = 0;
+  let hintShownForCurrent = false;
+  let locked = false;
+
+  // Elements
+  const progressFill = document.getElementById("progressFill");
+  const pct = document.getElementById("pct");
+  const qCounter = document.getElementById("qCounter");
+  const qTitle = document.getElementById("qTitle");
+  const qTag = document.getElementById("qTag");
+  const qText = document.getElementById("qText");
+  const qExpr = document.getElementById("qExpr");
+  const input = document.getElementById("answerInput");
+  const submitBtn = document.getElementById("submitBtn");
+  const hintBtn = document.getElementById("hintBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const feedback = document.getElementById("feedback");
+  const correctNum = document.getElementById("correctNum");
+  const incorrectNum = document.getElementById("incorrectNum");
+  const hintsNum = document.getElementById("hintsNum");
+
+  function roundish(n){
+    // String formatting without scientific notation for typical values
+    if (!isFinite(n)) return String(n);
+    const s = (Math.abs(n) >= 1e-6 && Math.abs(n) < 1e9) ? n.toString() : n.toFixed(12);
+    // trim trailing zeros
+    return s.replace(/(\.\d*?[1-9])0+$/,"$1").replace(/\.0+$/,"").replace(/^-0$/,"0");
+  }
+
+  function parseUserNumber(raw){
+    // Allow commas/spaces; keep leading -; allow decimal
+    const cleaned = raw.trim().replace(/,/g,"").replace(/\s+/g,"");
+    if (cleaned === "") return { ok:false };
+    const v = Number(cleaned);
+    if (!isFinite(v)) return { ok:false };
+    return { ok:true, value:v };
+  }
+
+  function parseRemainder(raw){
+    // Accept: "817 R 4", "817 r4", "817 remainder 4", "817,4", "817 4"
+    const t = raw.trim().toLowerCase().replace(/,/g," ").replace(/\s+/g," ");
+    if (!t) return { ok:false };
+    const m1 = t.match(/^(-?\d+)\s*(?:r|rem|remainder)\s*(-?\d+)$/i);
+    if (m1) return { ok:true, q: Number(m1[1]), r: Number(m1[2]) };
+    const m2 = t.match(/^(-?\d+)\s+(-?\d+)$/); // "817 4"
+    if (m2) return { ok:true, q: Number(m2[1]), r: Number(m2[2]) };
+    const m3 = t.match(/^(-?\d+)\s*r\s*(-?\d+)$/);
+    if (m3) return { ok:true, q: Number(m3[1]), r: Number(m3[2]) };
+    return { ok:false };
+  }
+
+  function isCorrect(q, userRaw){
+    if (q.type === "remainder"){
+      const pr = parseRemainder(userRaw);
+      if (!pr.ok) return { ok:false, message:"Enter in the form: 817 R 4 (quotient then remainder)." };
+      const ok = (pr.q === q.answer.q && pr.r === q.answer.r);
+      return { ok, message: ok ? "" : "Check both quotient and remainder." };
+    }
+    const pn = parseUserNumber(userRaw);
+    if (!pn.ok) return { ok:false, message:"Please enter a valid number." };
+    // Tolerance for decimals
+    const tol = 1e-9;
+    const ok = Math.abs(pn.value - q.answer) <= tol;
+    return { ok, message: ok ? "" : "Not quite—check place value and decimal placement." };
+  }
+
+  function updateStats(){
+    correctNum.textContent = String(correct);
+    incorrectNum.textContent = String(incorrect);
+    hintsNum.textContent = String(hints);
+  }
+
+  function setProgress(){
+    const total = questions.length;
+    const done = idx; // 0-based current index
+    const pctVal = Math.round((done / total) * 100);
+    progressFill.style.width = pctVal + "%";
+    pct.textContent = pctVal + "%";
+    qCounter.textContent = `Question ${idx + 1} of ${total}`;
+  }
+
+  function renderQuestion(){
+    locked = false;
+    hintShownForCurrent = false;
+    feedback.style.display = "none";
+    feedback.innerHTML = "";
+    input.value = "";
+    input.disabled = false;
+    submitBtn.disabled = false;
+    hintBtn.disabled = false;
+    input.focus();
+
+    const q = questions[idx];
+    qTitle.textContent = `Question ${idx + 1}`;
+    qTag.textContent = `${q.group} • ${q.title}`;
+    qText.textContent = q.prompt;
+    qExpr.textContent = q.expr;
+
+    setProgress();
+  }
+
+  function buildFeedbackHTML({correctness, userRaw, q, extraMsg, showHintBox}){
+    const good = correctness === "correct";
+    const pillClass = good ? "good" : "bad";
+    const pillText  = good ? "Correct" : "Incorrect";
+    const answerDisplay = (q.type === "remainder") ? q.answerText : roundish(q.answer);
+
+    const explanationHTML = q.explanation.map(p => `<p style="margin:0 0 10px;">${escapeHTML(p)}</p>`).join("");
+    const pitfallsHTML = q.pitfalls.map(x => `<li>${escapeHTML(x)}</li>`).join("");
+
+    const hintHTML = showHintBox
+      ? `<div class="hintBox"><strong>Hint</strong>${escapeHTML(q.hint)}</div>`
+      : "";
+
+    return `
+      <div class="panelHead">
+        <div class="status">
+          <span class="pill ${pillClass}">${pillText}</span>
+          <span style="font-weight:900;">${good ? "Nice work." : "Let’s correct it precisely."}</span>
+        </div>
+        <div style="color:rgba(17,24,39,.55);font-size:12px;font-weight:800;">
+          ${escapeHTML(q.group)}
+        </div>
+      </div>
+      <div class="panelBody">
+        ${extraMsg ? `<p style="margin:0 0 10px;color:rgba(17,24,39,.75);font-weight:700;">${escapeHTML(extraMsg)}</p>` : ""}
+        <h4>Right answer</h4>
+        <span class="answerLine">${escapeHTML(q.expr)} = <strong>${escapeHTML(answerDisplay)}</strong></span>
+
+        <h4>Explanation</h4>
+        ${explanationHTML}
+
+        <h4>Pitfalls to avoid</h4>
+        <ul class="bullets">${pitfallsHTML}</ul>
+
+        ${hintHTML}
+
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;">
+          <button class="nextBtn" id="nextBtn">${idx === questions.length - 1 ? "Finish" : "Next Question"} →</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function escapeHTML(s){
+    return String(s)
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+  }
+
+  function onSubmit(){
+    if (locked) return;
+    const q = questions[idx];
+    const userRaw = input.value;
+
+    const res = isCorrect(q, userRaw);
+
+    locked = true;
+    input.disabled = true;
+    submitBtn.disabled = true;
+    hintBtn.disabled = true;
+
+    if (res.ok){
+      correct++;
+      updateStats();
+      feedback.innerHTML = buildFeedbackHTML({
+        correctness: "correct",
+        userRaw,
+        q,
+        extraMsg: "",
+        showHintBox: hintShownForCurrent
+      });
+    } else {
+      incorrect++;
+      updateStats();
+      feedback.innerHTML = buildFeedbackHTML({
+        correctness: "incorrect",
+        userRaw,
+        q,
+        extraMsg: res.message || "",
+        showHintBox: hintShownForCurrent
+      });
+    }
+
+    feedback.style.display = "block";
+
+    // Wire next
+    const nextBtn = document.getElementById("nextBtn");
+    nextBtn.addEventListener("click", () => {
+      if (idx === questions.length - 1){
+        showFinishScreen();
+      } else {
+        idx++;
+        renderQuestion();
+      }
+    }, { once:true });
+  }
+
+  function onHint(){
+    const q = questions[idx];
+    if (!hintShownForCurrent){
+      hints++;
+      updateStats();
+      hintShownForCurrent = true;
+    }
+    // If feedback already visible, just re-render it with hint box; otherwise show a lightweight hint panel.
+    if (feedback.style.display === "block"){
+      // Rebuild preserving last correctness look? simplest: show hint-only panel if locked is false; else rebuild as neutral.
+      if (locked){
+        // If already submitted, keep the existing panel but append hint if not present.
+        if (!feedback.querySelector(".hintBox")){
+          const box = document.createElement("div");
+          box.className = "hintBox";
+          box.innerHTML = `<strong>Hint</strong>${escapeHTML(q.hint)}`;
+          feedback.querySelector(".panelBody")?.appendChild(box);
+        }
+      } else {
+        // Not submitted yet: show hint-only panel
+        feedback.innerHTML = `
+          <div class="panelHead">
+            <div class="status">
+              <span class="pill bad" style="background:rgba(124,58,237,.08);border-color:rgba(124,58,237,.18);color:#4c1d95;">Hint</span>
+              <span style="font-weight:900;">Use this cue, then submit your answer.</span>
+            </div>
+          </div>
+          <div class="panelBody">
+            <div class="hintBox" style="margin-top:0;">
+              <strong>Hint</strong>${escapeHTML(q.hint)}
+            </div>
+          </div>
+        `;
+      }
+    } else {
+      feedback.innerHTML = `
+        <div class="panelHead">
+          <div class="status">
+            <span class="pill bad" style="background:rgba(124,58,237,.08);border-color:rgba(124,58,237,.18);color:#4c1d95;">Hint</span>
+            <span style="font-weight:900;">Use this cue, then submit your answer.</span>
+          </div>
+        </div>
+        <div class="panelBody">
+          <div class="hintBox" style="margin-top:0;">
+            <strong>Hint</strong>${escapeHTML(q.hint)}
+          </div>
+        </div>
+      `;
+      feedback.style.display = "block";
+    }
+    input.focus();
+  }
+
+  function showFinishScreen(){
+    const total = questions.length;
+    const pctCorrect = Math.round((correct / total) * 100);
+
+    // Set progress to 100%
+    progressFill.style.width = "100%";
+    pct.textContent = "100%";
+    qCounter.textContent = `Completed • ${total} questions`;
+
+    qTitle.textContent = "Complete";
+    qTag.textContent = "Session summary";
+    qText.textContent = "You’ve finished the full set. Restart to practice again or focus on your weak points.";
+    qExpr.textContent = `Score: ${correct}/${total} (${pctCorrect}%) • Hints used: ${hints}`;
+
+    input.value = "";
+    input.disabled = true;
+    submitBtn.disabled = true;
+    hintBtn.disabled = true;
+
+    feedback.style.display = "block";
+    feedback.innerHTML = `
+      <div class="panelHead">
+        <div class="status">
+          <span class="pill good">Done</span>
+          <span style="font-weight:900;">Practice complete.</span>
+        </div>
+      </div>
+      <div class="panelBody">
+        <h4>Performance</h4>
+        <p style="margin:0 0 10px;">Correct: <strong>${correct}</strong> • Incorrect: <strong>${incorrect}</strong> • Hints: <strong>${hints}</strong></p>
+        <p style="margin:0 0 12px;color:rgba(17,24,39,.85);">
+          If you missed items, the most common failure modes are (1) decimal scaling errors and (2) place-value alignment in long operations.
+          Re-run and slow down at the decimal placement step.
+        </p>
+        <div style="display:flex;justify-content:flex-end;">
+          <button class="nextBtn" id="restartBtn">Restart ↻</button>
+        </div>
+      </div>
+    `;
+    document.getElementById("restartBtn").addEventListener("click", resetAll, { once:true });
+  }
+
+  function resetAll(){
+    idx = 0;
+    correct = 0; incorrect = 0; hints = 0;
+    updateStats();
+    renderQuestion();
+  }
+
+  // Events
+  submitBtn.addEventListener("click", onSubmit);
+  hintBtn.addEventListener("click", onHint);
+  resetBtn.addEventListener("click", resetAll);
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter"){
+      e.preventDefault();
+      if (!submitBtn.disabled) onSubmit();
+    }
+  });
+
+  // Init
+  updateStats();
+  renderQuestion();
+})();
+</script>
+</body>
+</html>

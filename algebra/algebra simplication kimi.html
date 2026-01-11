@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra Simplification Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.3);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            background: white;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .question-card {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .question-number {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .expression {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 30px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .instruction {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .answer-input {
+            font-size: 24px;
+            padding: 15px 25px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .answer-input.success {
+            border-color: #4caf50;
+            background-color: #f1f8e9;
+        }
+
+        .answer-input.error {
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            font-weight: 600;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .skip-btn {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            font-weight: 600;
+        }
+
+        .skip-btn:hover {
+            background: #d5d5d5;
+        }
+
+        .feedback-card {
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            text-align: left;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-card.show {
+            display: block;
+        }
+
+        .feedback-card.correct {
+            background: #e8f5e9;
+            border-left: 5px solid #4caf50;
+        }
+
+        .feedback-card.incorrect {
+            background: #ffebee;
+            border-left: 5px solid #f44336;
+        }
+        
+        .feedback-card.skipped {
+            background: #fff8e1;
+            border-left: 5px solid #ffc107;
+        }
+
+        .feedback-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .feedback-card.correct .feedback-title { color: #2e7d32; }
+        .feedback-card.incorrect .feedback-title { color: #c62828; }
+        .feedback-card.skipped .feedback-title { color: #f57f17; }
+
+        .explanation {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .correct-answer {
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .pitfalls {
+            background: #fff3e0;
+            border-left: 5px solid #ff9800;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .pitfalls-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #e65100;
+            margin-bottom: 8px;
+        }
+
+        .pitfalls-text {
+            font-size: 14px;
+            color: #bf360c;
+            line-height: 1.5;
+        }
+
+        .controls {
+            padding: 20px 40px 40px;
+            text-align: center;
+        }
+
+        .next-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            display: none;
+            transition: transform 0.2s ease;
+            font-weight: 600;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            background: #43a047;
+        }
+
+        .score-screen {
+            padding: 60px 40px;
+            text-align: center;
+            display: none;
+        }
+
+        .score-screen h2 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 56px;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 30px;
+        }
+
+        .attempts-display {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Algebra Simplification Practice</h1>
+            <div>Master combining like terms</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div id="questionScreen">
+            <div class="question-card">
+                <div class="question-number" id="questionNumber">Question 1 of 40</div>
+                <div class="expression" id="expression">Loading...</div>
+                <div class="instruction">Simplify the expression:</div>
+                <div class="input-group">
+                    <input type="text" id="answerInput" class="answer-input" placeholder="Your answer" autofocus>
+                </div>
+                
+                <div class="btn-group">
+                    <button id="skipBtn" class="skip-btn" onclick="skipQuestion()">Skip</button>
+                    <button id="submitBtn" class="submit-btn" onclick="checkAnswer()">Check Answer</button>
+                </div>
+                
+                <div class="attempts-display" id="attemptsDisplay"></div>
+            </div>
+
+            <div id="feedbackCard" class="feedback-card">
+                <div class="feedback-title" id="feedbackTitle"></div>
+                <div class="explanation" id="explanation"></div>
+                <div class="correct-answer" id="correctAnswer"></div>
+                <div class="pitfalls" id="pitfallsSection">
+                    <div class="pitfalls-title">⚠️ Common Pitfalls to Avoid</div>
+                    <div class="pitfalls-text" id="pitfalls"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="nextBtn" class="next-btn" onclick="nextQuestion()">Next Question →</button>
+            </div>
+        </div>
+
+        <div id="scoreScreen" class="score-screen">
+            <h2>🎉 Great Job!</h2>
+            <div>You completed all 40 questions</div>
+            <div class="score-display" id="finalScore"></div>
+            <div id="scoreMessage"></div>
+            <button class="restart-btn" onclick="restartQuiz()">Practice Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                expression: "12x + 7x",
+                answer: "19x",
+                explanation: "Add the coefficients: 12 + 7 = 19. The variable x stays the same. Think of it as 12 apples + 7 apples = 19 apples.",
+                pitfalls: "Don't multiply: 12x × 7x = 84x² (WRONG). Only add the numbers in front (coefficients)."
+            },
+            {
+                expression: "26d + d",
+                answer: "27d",
+                explanation: "d is the same as 1d. So 26d + 1d = 27d. When a variable has no number, the coefficient is 1.",
+                pitfalls: "Forgetting that 'd' means '1d'. Some write '26d' or '26d²' incorrectly."
+            },
+            {
+                expression: "3a + 8a",
+                answer: "11a",
+                explanation: "3 + 8 = 11, keep the variable a. This is like counting the same type of object.",
+                pitfalls: "Don't change the variable: '11a' not '11a²' or '11ax'."
+            },
+            {
+                expression: "96 + 36",
+                answer: "132",
+                explanation: "Pure numbers: 96 + 36 = 132. No variables to worry about here!",
+                pitfalls: "Don't overthink! This is just regular addition without algebraic rules."
+            },
+            {
+                expression: "3m + 5n",
+                answer: "3m + 5n",
+                explanation: "Cannot be simplified! m and n are different variables (like apples and oranges). You can only combine identical variables.",
+                pitfalls: "BIG MISTAKE: Don't write '8mn' or '8m'. Different variables cannot be combined!"
+            },
+            {
+                expression: "3y + 2y + 5y",
+                answer: "10y",
+                explanation: "Add all three coefficients: 3 + 2 + 5 = 10. Keep y.",
+                pitfalls: "Missing terms: Some forget to add all coefficients. Others try to multiply: 3×2×5 = 30y (WRONG)."
+            },
+            {
+                expression: "4h + 9h + 12h",
+                answer: "25h",
+                explanation: "4 + 9 + 12 = 25. The variable h remains unchanged.",
+                pitfalls: "Adding errors: 4+9+12 is not 24 or 26. Double-check arithmetic."
+            },
+            {
+                expression: "2x + 6y",
+                answer: "2x + 6y",
+                explanation: "Cannot be simplified! x and y are different variables.",
+                pitfalls: "Classic error: Writing '8xy' or '8x+y'. Different variables stay separate."
+            },
+            {
+                expression: "8n - 5n",
+                answer: "3n",
+                explanation: "Subtract coefficients: 8 - 5 = 3. Keep the variable n.",
+                pitfalls: "Sign errors: 8-5 is not 3, but some write '13n' by adding instead of subtracting."
+            },
+            {
+                expression: "14k - 6k",
+                answer: "8k",
+                explanation: "14 - 6 = 8, keep k. Subtraction works just like addition for like terms.",
+                pitfalls: "Don't get confused with division: 14k ÷ 6k ≠ 8k."
+            },
+            {
+                expression: "8e + 5e - 7e",
+                answer: "6e",
+                explanation: "Combine left to right: 8 + 5 = 13, then 13 - 7 = 6. Keep e.",
+                pitfalls: "Order of operations: Do addition/subtraction left to right. Don't skip steps."
+            },
+            {
+                expression: "4g - g + 3g",
+                answer: "6g",
+                explanation: "4 - 1 + 3 = 6. Remember: -g means -1g.",
+                pitfalls: "Sign error: -g is -1g, not +g. Some incorrectly calculate 4-0+3=7."
+            },
+            {
+                expression: "15a - 2",
+                answer: "15a - 2",
+                explanation: "Cannot combine! 15a has variable 'a', but 2 is just a number (constant). They are different types.",
+                pitfalls: "Don't write '13a' or '13'. Variables and numbers cannot combine."
+            },
+            {
+                expression: "196 - 12b",
+                answer: "196 - 12b",
+                explanation: "Cannot be simplified! 196 has no variable, 12b has variable b.",
+                pitfalls: "Resist the urge to subtract: 196-12 = 184, but that would be wrong here."
+            },
+            {
+                expression: "5x - 14x + 49x",
+                answer: "40x",
+                explanation: "5 - 14 + 49: Start with 5, subtract 14 gives -9, add 49 gives 40. Keep x.",
+                pitfalls: "Sign errors with negative numbers. Work step by step: (5-14) = -9, then -9+49 = 40."
+            },
+            {
+                expression: "17d - 8d - 3d",
+                answer: "6d",
+                explanation: "17 - 8 - 3 = 6. The variable d stays the same.",
+                pitfalls: "Double subtraction: 17-8=9, then 9-3=6 (not 9-3=12)."
+            },
+            {
+                expression: "6m - 9m + 4m",
+                answer: "m",
+                explanation: "6 - 9 + 4 = 1. The answer is 1m, which we write as just m.",
+                pitfalls: "Final coefficient is 1: Write 'm' not '1m'. Don't write '0m' or '2m'."
+            },
+            {
+                expression: "8a + 14a - 21a",
+                answer: "a",
+                explanation: "8 + 14 = 22, then 22 - 21 = 1. So we get 1a, which is written as a.",
+                pitfalls: "Coefficient 1 is invisible: Write 'a' not '1a'. Check: 8+14-21 = 1 (not 0)."
+            },
+            {
+                expression: "356 - 27b",
+                answer: "356 - 27b",
+                explanation: "Cannot simplify! 356 is a number, 27b has variable b.",
+                pitfalls: "Don't combine different types: 356-27b cannot become 329b or 329."
+            },
+            {
+                expression: "31p - 9q",
+                answer: "31p - 9q",
+                explanation: "Cannot be simplified! p and q are different variables.",
+                pitfalls: "Don't write '22pq' or '22p'. Different variables must stay separate."
+            },
+            {
+                expression: "28f - 11",
+                answer: "28f - 11",
+                explanation: "Cannot combine! 28f has variable f, 11 is just a number.",
+                pitfalls: "Variables and constants don't mix: 28f - 11 ≠ 17f or 17."
+            },
+            {
+                expression: "4c - 9c + 15c - 7c",
+                answer: "3c",
+                explanation: "4 - 9 = -5, -5 + 15 = 10, 10 - 7 = 3. Keep c.",
+                pitfalls: "Sign errors: Watch negative signs. Work step by step left to right."
+            },
+            {
+                expression: "7d + 15d - 9d - 11d",
+                answer: "2d",
+                explanation: "Group: (7d + 15d) = 22d, (9d + 11d) = 20d, then 22d - 20d = 2d.",
+                pitfalls: "Pairing errors: You can group positives and negatives, but final subtraction must be correct."
+            },
+            {
+                expression: "8m - 9m - 5m + 10m",
+                answer: "4m",
+                explanation: "8 - 9 - 5 + 10 = (8 + 10) - (9 + 5) = 18 - 14 = 4. Keep m.",
+                pitfalls: "Order matters: Work left to right or group positives and negatives correctly."
+            },
+            {
+                expression: "11n - 3n - 6n + 9n - 5n",
+                answer: "6n",
+                explanation: "11 - 3 - 6 + 9 - 5 = 6. The variable n remains.",
+                pitfalls: "Double negatives: Subtracting a negative is adding. But here all are subtraction/addition."
+            },
+            {
+                expression: "4x + 9x - 7x - 6x + 8x - 3x",
+                answer: "5x",
+                explanation: "Combine: (4+9+8) = 21, (-7-6-3) = -16, then 21 - 16 = 5. Keep x.",
+                pitfalls: "Large expressions: Group all positives and all negatives separately to avoid errors."
+            },
+            {
+                expression: "3m + 5n + 4m + 6n",
+                answer: "7m + 11n",
+                explanation: "Group like terms: (3m + 4m) = 7m, (5n + 6n) = 11n. Different variables stay separate.",
+                pitfalls: "Don't combine different variables: Answer is two terms, not '18mn' or '18m'."
+            },
+            {
+                expression: "9a + 10b - 5a - 4b",
+                answer: "4a + 6b",
+                explanation: "Rearrange: (9a - 5a) + (10b - 4b) = 4a + 6b. Only combine identical variables.",
+                pitfalls: "Sign errors: -5a and -4b are subtractions. Don't lose the negative signs."
+            },
+            {
+                expression: "8h - 3 - 5h + 9",
+                answer: "3h + 6",
+                explanation: "Combine variables: 8h - 5h = 3h. Combine numbers: -3 + 9 = 6.",
+                pitfalls: "Mixing variables and constants: 8h and -3 cannot combine. Keep them separate."
+            },
+            {
+                expression: "7x + 5y - 4",
+                answer: "7x + 5y - 4",
+                explanation: "Cannot simplify! Three different types: variable x, variable y, and constant -4.",
+                pitfalls: "Don't force combination: 7x+5y-4 ≠ 8xy or 8x or 8y. All three terms stay separate."
+            },
+            {
+                expression: "11x + 9y - 7x",
+                answer: "4x + 9y",
+                explanation: "Only combine x terms: 11x - 7x = 4x. 9y remains unchanged (no other y terms).",
+                pitfalls: "Leaving terms out: Don't forget the 9y in your final answer."
+            },
+            {
+                expression: "13a + 26 - 9a + 7b",
+                answer: "4a + 26 + 7b",
+                explanation: "Combine a terms: 13a - 9a = 4a. 26 stays (constant). 7b stays (no other b terms).",
+                pitfalls: "Final answer has three terms: 4a (variable), 26 (number), 7b (different variable)."
+            },
+            {
+                expression: "5f - 3g - 7f + 9g + 3f - 4g",
+                answer: "f + 2g",
+                explanation: "Group f: 5f - 7f + 3f = 1f. Group g: -3g + 9g - 4g = 2g. Result: f + 2g.",
+                pitfalls: "Sign errors: -7f and -4g are negative. Final coefficient 1 is invisible: 'f' not '1f'."
+            },
+            {
+                expression: "7m - 2n + 6 - 5m + 7n + 3",
+                answer: "2m + 5n + 9",
+                explanation: "m: 7m - 5m = 2m. n: -2n + 7n = 5n. Numbers: 6 + 3 = 9. Combine all.",
+                pitfalls: "Pairing terms correctly: Make sure you match variables correctly and don't lose constants."
+            },
+            {
+                expression: "3x + 2 - 7x - 4 + 5x + 6",
+                answer: "x + 4",
+                explanation: "x terms: 3x - 7x + 5x = 1x. Constants: 2 - 4 + 6 = 4. Result: x + 4.",
+                pitfalls: "Multiple constants: Don't forget to combine all numbers. Watch signs: -4 is negative."
+            },
+            {
+                expression: "a - 7b + 3c + 8b + 2a",
+                answer: "3a + b + 3c",
+                explanation: "a + 2a = 3a. -7b + 8b = 1b (just b). 3c stays (no other c). Final: 3a + b + 3c.",
+                pitfalls: "Invisible coefficients: 'a' is '1a', '-7b' is '-7b'. Don't drop terms with no match."
+            },
+            {
+                expression: "5h + 8k + 2 - 3k - 2h",
+                answer: "3h + 5k + 2",
+                explanation: "h terms: 5h - 2h = 3h. k terms: 8k - 3k = 5k. Constant 2 stays.",
+                pitfalls: "Mixing variables: h and k are different. Don't combine them. Keep constant separate."
+            },
+            {
+                expression: "6m + 3n - 1 - 6m + 4",
+                answer: "3n + 3",
+                explanation: "6m - 6m = 0 (they cancel!). 3n stays. Constants: -1 + 4 = 3. Final: 3n + 3.",
+                pitfalls: "Canceling terms: 6m - 6m = 0, so m disappears from final answer! Don't write '0m'."
+            },
+            {
+                expression: "a - 2b - 4a + 3c + 4a + 5b",
+                answer: "a + 3b + 3c",
+                explanation: "a - 4a + 4a = a (cancel). -2b + 5b = 3b. 3c stays. Result: a + 3b + 3c.",
+                pitfalls: "Watch cancellation: -4a + 4a = 0, but you still have the first 'a'. Final has 3 terms."
+            },
+            {
+                expression: "6p - 2q + 4r - 2p + 3s + 5q",
+                answer: "4p + 3q + 4r + 3s",
+                explanation: "p: 6p - 2p = 4p. q: -2q + 5q = 3q. r: 4r stays. s: 3s stays. Four different variables!",
+                pitfalls: "Many different variables: p, q, r, s are all different. Only combine matching ones. Don't create pqrs combinations."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let attempts = 0;
+
+        function init() {
+            showQuestion();
+            updateProgress();
+        }
+
+        function showQuestion() {
+            if (currentQuestion >= questions.length) {
+                showScore();
+                return;
+            }
+
+            const q = questions[currentQuestion];
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('expression').textContent = q.expression;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').className = 'answer-input';
+            document.getElementById('answerInput').disabled = false;
+            
+            // Show action buttons, hide next
+            document.getElementById('submitBtn').style.display = 'block';
+            document.getElementById('skipBtn').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            document.getElementById('feedbackCard').className = 'feedback-card';
+            document.getElementById('attemptsDisplay').textContent = '';
+            attempts = 0;
+            
+            // Focus input
+            setTimeout(() => document.getElementById('answerInput').focus(), 100);
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function skipQuestion() {
+            // Show the answer as if it was incorrect, but label it skipped
+            const feedbackCard = document.getElementById('feedbackCard');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const explanation = document.getElementById('explanation');
+            const correctAnswerDiv = document.getElementById('correctAnswer');
+            const pitfalls = document.getElementById('pitfalls');
+
+            feedbackCard.className = 'feedback-card show skipped';
+            feedbackTitle.textContent = '⏭️ Skipped';
+            explanation.textContent = questions[currentQuestion].explanation;
+            correctAnswerDiv.textContent = `Answer: ${questions[currentQuestion].answer}`;
+            pitfalls.textContent = questions[currentQuestion].pitfalls;
+
+            // Lock input
+            const input = document.getElementById('answerInput');
+            input.disabled = true;
+
+            // Swap buttons
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('skipBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('attemptsDisplay').textContent = '';
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answerInput').value.trim().replace(/\s+/g, '');
+            const correctAnswer = questions[currentQuestion].answer.replace(/\s+/g, '');
+            
+            attempts++;
+            
+            // Normalize answers for comparison
+            const normalize = (ans) => {
+                // Handle "m" vs "1m" equivalence
+                ans = ans.replace(/^1([a-z])$/, '$1');
+                // Handle terms with coefficient 0
+                ans = ans.replace(/0[a-z]\+?/g, '').replace(/\+0$/, '').replace(/^0$/, '');
+                // Remove leading + signs
+                ans = ans.replace(/^\+/, '');
+                return ans;
+            };
+
+            const normalizedUser = normalize(userAnswer);
+            const normalizedCorrect = normalize(correctAnswer);
+
+            const isCorrect = normalizedUser === normalizedCorrect;
+
+            // Show feedback
+            const feedbackCard = document.getElementById('feedbackCard');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const explanation = document.getElementById('explanation');
+            const correctAnswerDiv = document.getElementById('correctAnswer');
+            const pitfalls = document.getElementById('pitfalls');
+
+            if (isCorrect) {
+                feedbackCard.className = 'feedback-card show correct';
+                feedbackTitle.textContent = '✅ Correct! Well done!';
+                if (attempts === 1) score++;
+                
+                // If correct, finish immediately
+                const input = document.getElementById('answerInput');
+                input.className = 'answer-input success';
+                input.disabled = true;
+                
+                document.getElementById('submitBtn').style.display = 'none';
+                document.getElementById('skipBtn').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'inline-block';
+                document.getElementById('attemptsDisplay').textContent = '';
+                
+            } else {
+                feedbackCard.className = 'feedback-card show incorrect';
+                feedbackTitle.textContent = `❌ Not quite. (Attempt ${attempts})`;
+                
+                explanation.textContent = questions[currentQuestion].explanation;
+                correctAnswerDiv.textContent = `Answer: ${questions[currentQuestion].answer}`;
+                pitfalls.textContent = questions[currentQuestion].pitfalls;
+
+                const input = document.getElementById('answerInput');
+                input.className = 'answer-input error';
+                
+                // Logic for Retries
+                if (attempts < 2) {
+                    // First wrong attempt: Show message, then allow retry
+                    input.disabled = true; // Briefly disable
+                    document.getElementById('submitBtn').style.display = 'none';
+                    document.getElementById('skipBtn').style.display = 'none';
+                    
+                    document.getElementById('attemptsDisplay').textContent = 'Try once more...';
+                    
+                    setTimeout(() => {
+                        input.disabled = false; // Re-enable input!
+                        input.focus();
+                        document.getElementById('submitBtn').style.display = 'block';
+                        document.getElementById('skipBtn').style.display = 'block';
+                        document.getElementById('nextBtn').style.display = 'none';
+                        document.getElementById('attemptsDisplay').textContent = 'Attempt 2 of 2';
+                    }, 1500);
+                } else {
+                    // Second wrong attempt: Show answer and move on
+                    input.disabled = true;
+                    document.getElementById('submitBtn').style.display = 'none';
+                    document.getElementById('skipBtn').style.display = 'none';
+                    document.getElementById('nextBtn').style.display = 'inline-block';
+                    document.getElementById('attemptsDisplay').textContent = 'Moving to next question...';
+                }
+            }
+
+            updateProgress();
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            showQuestion();
+            updateProgress();
+        }
+
+        function showScore() {
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('scoreScreen').style.display = 'block';
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('finalScore').textContent = `${score}/${questions.length}`;
+            
+            let message = '';
+            if (percentage >= 90) message = '🌟 Excellent! You\'re an algebra master!';
+            else if (percentage >= 75) message = '👏 Great job! You understand this well!';
+            else if (percentage >= 60) message = '👍 Good work! Keep practicing!';
+            else message = '📚 Keep practicing! Review the explanations and try again.';
+            
+            // FIXED: Added backticks for template literal
+            document.getElementById('scoreMessage').innerHTML = `<p style="font-size: 18px; color: #666; margin-top: 10px;">${message}</p>`;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('questionScreen').style.display = 'block';
+            document.getElementById('scoreScreen').style.display = 'none';
+            init();
+        }
+
+        // Enter key support
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !this.disabled) {
+                checkAnswer();
+            }
+        });
+
+        // Initialize the quiz
+        init();
+    </script>
+</body>
+</html>

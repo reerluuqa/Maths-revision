@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra Expression Simplifier</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #4a6fa5, #2c3e50);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 5px solid #ff9a3c;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            display: flex;
+            min-height: 500px;
+        }
+        
+        .question-section {
+            flex: 3;
+            padding: 40px;
+            border-right: 1px solid #eaeaea;
+        }
+        
+        .info-section {
+            flex: 2;
+            padding: 40px;
+            background-color: #f8faff;
+        }
+        
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            flex-grow: 1;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #4a6fa5;
+            width: 5%;
+            transition: width 0.5s ease;
+        }
+        
+        .question-counter {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            white-space: nowrap;
+        }
+        
+        .question-box {
+            background-color: #f8faff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #4a6fa5;
+        }
+        
+        .question-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .expression {
+            font-size: 2.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 25px 0;
+            color: #2c3e50;
+            font-family: 'Courier New', monospace;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .input-container input {
+            flex-grow: 1;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .input-container input:focus {
+            border-color: #4a6fa5;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn {
+            background-color: #4a6fa5;
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background-color: #3a5a80;
+            transform: translateY(-2px);
+        }
+        
+        .next-btn {
+            background-color: #ff9a3c;
+            color: white;
+        }
+        
+        .next-btn:hover {
+            background-color: #e88b2d;
+            transform: translateY(-2px);
+        }
+        
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .correct {
+            background-color: #e8f7ef;
+            border-left: 5px solid #2ecc71;
+        }
+        
+        .incorrect {
+            background-color: #fdeaea;
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feedback-content {
+            margin-top: 15px;
+        }
+        
+        .info-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .explanation-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        
+        .explanation-title {
+            color: #4a6fa5;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tip-box {
+            background-color: #fff9e6;
+            border-left: 5px solid #ff9a3c;
+            padding: 18px;
+            border-radius: 8px;
+        }
+        
+        .tip-title {
+            color: #d35400;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #ccc;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4a6fa5;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .question-section, .info-section {
+                padding: 25px;
+            }
+            
+            .question-section {
+                border-right: none;
+                border-bottom: 1px solid #eaeaea;
+            }
+            
+            .expression {
+                font-size: 1.8rem;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .rules-list {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+        
+        .rules-list li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Algebra Expression Simplifier</h1>
+            <p>Practice simplifying algebraic expressions. Combine like terms to simplify each expression. Get immediate feedback and detailed explanations to improve your skills.</p>
+        </header>
+        
+        <div class="content">
+            <section class="question-section">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="question-counter">Question <span id="currentQuestion">1</span> of <span id="totalQuestions">40</span></div>
+                </div>
+                
+                <div class="question-box">
+                    <h2 class="question-title"><i class="fas fa-question-circle"></i> Simplify the expression:</h2>
+                    <div class="expression" id="expression">2x + 7x</div>
+                    
+                    <div class="input-container">
+                        <input type="text" id="userAnswer" placeholder="Enter your simplified answer" autocomplete="off">
+                        <button class="btn submit-btn" id="submitBtn">Submit Answer</button>
+                    </div>
+                    
+                    <div class="feedback" id="feedback">
+                        <div class="feedback-title" id="feedbackTitle">
+                            <i class="fas fa-check-circle"></i> Correct!
+                        </div>
+                        <div id="feedbackContent">
+                            Your answer is correct! Well done.
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn next-btn hidden" id="nextBtn">Next Question <i class="fas fa-arrow-right"></i></button>
+            </section>
+            
+            <section class="info-section">
+                <h2 class="info-title"><i class="fas fa-lightbulb"></i> How to Simplify Expressions</h2>
+                
+                <div class="explanation-box">
+                    <h3 class="explanation-title"><i class="fas fa-book"></i> Explanation</h3>
+                    <div id="explanationText">
+                        <p>To simplify algebraic expressions:</p>
+                        <ol class="rules-list">
+                            <li><strong>Identify like terms</strong> - terms with the same variable and exponent</li>
+                            <li><strong>Combine coefficients</strong> of like terms by adding or subtracting</li>
+                            <li><strong>Keep the variable part</strong> unchanged</li>
+                            <li><strong>Write terms in alphabetical order</strong> as a convention</li>
+                        </ol>
+                        <p>Example: 2x + 7x = (2+7)x = 9x</p>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <h3 class="tip-title"><i class="fas fa-exclamation-triangle"></i> Pitfalls to Avoid</h3>
+                    <div id="tipText">
+                        <ul class="rules-list">
+                            <li>Don't combine terms with different variables (e.g., 3x + 2y cannot be combined)</li>
+                            <li>Watch the signs when subtracting (e.g., 5x - 8x = -3x, not 3x)</li>
+                            <li>Don't forget to include the variable in your answer</li>
+                            <li>Remember that terms without variables (constants) can only combine with other constants</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="correctCount">0</div>
+                        <div class="stat-label">Correct</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="incorrectCount">0</div>
+                        <div class="stat-label">Incorrect</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="scorePercentage">0%</div>
+                        <div class="stat-label">Score</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Question data from the image
+        const questions = [
+            { expression: "2x + 7x", answer: "9x", explanation: "Combine the coefficients: 2 + 7 = 9, keep the variable x. So 2x + 7x = 9x.", tip: "Remember to add the coefficients but keep the variable part unchanged." },
+            { expression: "6d + d", answer: "7d", explanation: "d is the same as 1d. So 6d + 1d = 7d.", tip: "When a variable has no coefficient, it means the coefficient is 1." },
+            { expression: "a + 8a", answer: "9a", explanation: "Combine the coefficients: 1 + 8 = 9. So a + 8a = 9a.", tip: "Remember that 'a' by itself has an implied coefficient of 1." },
+            { expression: "9b + 3b", answer: "12b", explanation: "Combine the coefficients: 9 + 3 = 12. So 9b + 3b = 12b.", tip: "Simple addition of coefficients when both terms have the same variable." },
+            { expression: "3m + 5n", answer: "3m + 5n", explanation: "These are not like terms because they have different variables (m and n). They cannot be combined.", tip: "Only like terms (same variable) can be combined. Different variables must stay separate." },
+            { expression: "3y + 2y + 5y", answer: "10y", explanation: "Combine all coefficients: 3 + 2 + 5 = 10. So 3y + 2y + 5y = 10y.", tip: "When you have multiple like terms, add all their coefficients together." },
+            { expression: "4h + 9h + 12h", answer: "25h", explanation: "Combine all coefficients: 4 + 9 + 12 = 25. So 4h + 9h + 12h = 25h.", tip: "Add all coefficients carefully, especially with larger numbers." },
+            { expression: "2x + 6y", answer: "2x + 6y", explanation: "These are not like terms (x and y are different variables). They cannot be combined.", tip: "Variables must be exactly the same to combine terms." },
+            { expression: "8n - 5n", answer: "3n", explanation: "Subtract the coefficients: 8 - 5 = 3. So 8n - 5n = 3n.", tip: "When subtracting, pay attention to the order: first coefficient minus second coefficient." },
+            { expression: "14k - 6k", answer: "8k", explanation: "Subtract the coefficients: 14 - 6 = 8. So 14k - 6k = 8k.", tip: "Simple subtraction of coefficients for like terms." },
+            { expression: "8e + 5e - 7e", answer: "6e", explanation: "Combine all operations: 8 + 5 - 7 = 6. So 8e + 5e - 7e = 6e.", tip: "Work left to right with addition and subtraction of coefficients." },
+            { expression: "4g - g + 3g", answer: "6g", explanation: "Remember g = 1g. So 4g - 1g + 3g = (4-1+3)g = 6g.", tip: "Don't forget the implied coefficient of 1 when a variable stands alone." },
+            { expression: "15a - 2", answer: "15a - 2", explanation: "These are not like terms (variable term and constant). They cannot be combined.", tip: "Terms with variables and constants (numbers without variables) cannot be combined." },
+            { expression: "19b - 12b", answer: "7b", explanation: "Subtract coefficients: 19 - 12 = 7. So 19b - 12b = 7b.", tip: "Simple subtraction of coefficients." },
+            { expression: "5x - 14x + 9x", answer: "0", explanation: "Combine coefficients: 5 - 14 + 9 = 0. So 5x - 14x + 9x = 0x = 0.", tip: "When coefficients cancel out to zero, the result is 0, not 0x." },
+            { expression: "17d - 8d - 3d", answer: "6d", explanation: "Combine coefficients: 17 - 8 - 3 = 6. So 17d - 8d - 3d = 6d.", tip: "Work carefully with multiple subtractions." },
+            { expression: "6m - 9m + 4m", answer: "m", explanation: "Combine coefficients: 6 - 9 + 4 = 1. So 6m - 9m + 4m = 1m = m.", tip: "A coefficient of 1 is usually not written, so 1m becomes just m." },
+            { expression: "8a + 14a - 21a", answer: "a", explanation: "Combine coefficients: 8 + 14 - 21 = 1. So 8a + 14a - 21a = 1a = a.", tip: "When the result is 1a, we write it as just a." },
+            { expression: "35b - 27b", answer: "8b", explanation: "Subtract coefficients: 35 - 27 = 8. So 35b - 27b = 8b.", tip: "Simple subtraction of coefficients." },
+            { expression: "31p - 9q", answer: "31p - 9q", explanation: "These are not like terms (p and q are different). They cannot be combined.", tip: "Different variables cannot be combined, even if the coefficients could be subtracted." },
+            { expression: "28f - 11", answer: "28f - 11", explanation: "These are not like terms (variable term and constant). They cannot be combined.", tip: "Variable terms and constants are not like terms." },
+            { expression: "4c - 9c + 15c - 7c", answer: "3c", explanation: "Combine coefficients: 4 - 9 + 15 - 7 = 3. So 4c - 9c + 15c - 7c = 3c.", tip: "Work carefully with alternating addition and subtraction." },
+            { expression: "7d + 15d - 9d - 11d", answer: "2d", explanation: "Combine coefficients: 7 + 15 - 9 - 11 = 2. So 7d + 15d - 9d - 11d = 2d.", tip: "Add and subtract coefficients in order from left to right." },
+            { expression: "8m - 9m - 5m + 10m", answer: "4m", explanation: "Combine coefficients: 8 - 9 - 5 + 10 = 4. So 8m - 9m - 5m + 10m = 4m.", tip: "Be careful with negative coefficients when subtracting." },
+            { expression: "11n - 3n - 6n + 9n - 5n", answer: "6n", explanation: "Combine coefficients: 11 - 3 - 6 + 9 - 5 = 6. So 11n - 3n - 6n + 9n - 5n = 6n.", tip: "With many terms, add and subtract carefully step by step." },
+            { expression: "4x + 9x - 7x - 6x + 8x - 3x", answer: "5x", explanation: "Combine coefficients: 4 + 9 - 7 - 6 + 8 - 3 = 5. So 4x + 9x - 7x - 6x + 8x - 3x = 5x.", tip: "For expressions with many terms, consider adding all positives first, then subtracting negatives." },
+            { expression: "3m + 5n + 4m + 6n", answer: "7m + 11n", explanation: "Combine like terms: (3m + 4m) + (5n + 6n) = 7m + 11n.", tip: "Group like terms together before combining." },
+            { expression: "9a + 10b - 5a - 4b", answer: "4a + 6b", explanation: "Combine like terms: (9a - 5a) + (10b - 4b) = 4a + 6b.", tip: "Remember to subtract coefficients for terms being subtracted." },
+            { expression: "8h - 3 - 5h + 9", answer: "3h + 6", explanation: "Combine like terms: (8h - 5h) + (-3 + 9) = 3h + 6.", tip: "Group variable terms and constants separately." },
+            { expression: "7x + 5y - 4", answer: "7x + 5y - 4", explanation: "No like terms to combine. The expression is already simplified.", tip: "When terms have different variables or types, they cannot be combined." },
+            { expression: "11x + 9y - 7x", answer: "4x + 9y", explanation: "Combine x terms: 11x - 7x = 4x. The 9y stays as is. So 11x + 9y - 7x = 4x + 9y.", tip: "Only combine terms with the same variable." },
+            { expression: "13a + 2b - 9a + 7b", answer: "4a + 9b", explanation: "Combine like terms: (13a - 9a) + (2b + 7b) = 4a + 9b.", tip: "Carefully track addition and subtraction for each group of like terms." },
+            { expression: "5f - 3g - 7f + 9g + 3f - 4g", answer: "f + 2g", explanation: "Combine f terms: 5f - 7f + 3f = 1f = f. Combine g terms: -3g + 9g - 4g = 2g. So result is f + 2g.", tip: "Group terms by variable and combine carefully, watching signs." },
+            { expression: "7m - 2n + 6 - 5m + 7n + 3", answer: "2m + 5n + 9", explanation: "Combine m terms: 7m - 5m = 2m. Combine n terms: -2n + 7n = 5n. Combine constants: 6 + 3 = 9. Result is 2m + 5n + 9.", tip: "Organize your work by grouping each type of term before combining." },
+            { expression: "3x + 2 - 7x - 4 + 5x + 6", answer: "x + 4", explanation: "Combine x terms: 3x - 7x + 5x = 1x = x. Combine constants: 2 - 4 + 6 = 4. Result is x + 4.", tip: "Work methodically: combine variables first, then constants." },
+            { expression: "a - 7b + 3c + 8b + 2a", answer: "3a + b + 3c", explanation: "Combine a terms: a + 2a = 3a. Combine b terms: -7b + 8b = 1b = b. c term stays as 3c. Result is 3a + b + 3c.", tip: "Write terms in alphabetical order as a convention." },
+            { expression: "5h + 8k + 2 - 3k - 2h", answer: "3h + 5k + 2", explanation: "Combine h terms: 5h - 2h = 3h. Combine k terms: 8k - 3k = 5k. Constant 2 stays. Result is 3h + 5k + 2.", tip: "Remember to keep constants separate from variable terms." },
+            { expression: "6m + 3n - 1 - 6m + 4", answer: "3n + 3", explanation: "Combine m terms: 6m - 6m = 0 (cancel out). Combine constants: -1 + 4 = 3. n term stays as 3n. Result is 3n + 3.", tip: "When terms cancel completely, they don't appear in the final answer." },
+            { expression: "a - 2b - 4a + 3c + 4a + 5b", answer: "a + 3b + 3c", explanation: "Combine a terms: a - 4a + 4a = 1a = a. Combine b terms: -2b + 5b = 3b. c term stays as 3c. Result is a + 3b + 3c.", tip: "Watch for terms that cancel each other out (like -4a and +4a)." },
+            { expression: "6p - 2q + 4r - 2p + 3s + 5q", answer: "4p + 3q + 4r + 3s", explanation: "Combine p terms: 6p - 2p = 4p. Combine q terms: -2q + 5q = 3q. r and s terms stay. Result is 4p + 3q + 4r + 3s.", tip: "Write terms in alphabetical order: p, q, r, s." }
+        ];
+
+        // App state
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        
+        // DOM elements
+        const expressionElement = document.getElementById('expression');
+        const userAnswerInput = document.getElementById('userAnswer');
+        const submitButton = document.getElementById('submitBtn');
+        const nextButton = document.getElementById('nextBtn');
+        const feedbackElement = document.getElementById('feedback');
+        const feedbackTitle = document.getElementById('feedbackTitle');
+        const feedbackContent = document.getElementById('feedbackContent');
+        const explanationText = document.getElementById('explanationText');
+        const tipText = document.getElementById('tipText');
+        const currentQuestionElement = document.getElementById('currentQuestion');
+        const totalQuestionsElement = document.getElementById('totalQuestions');
+        const progressFill = document.getElementById('progressFill');
+        const correctCountElement = document.getElementById('correctCount');
+        const incorrectCountElement = document.getElementById('incorrectCount');
+        const scorePercentageElement = document.getElementById('scorePercentage');
+        
+        // Initialize the app
+        function init() {
+            totalQuestionsElement.textContent = questions.length;
+            loadQuestion(currentQuestionIndex);
+            updateStats();
+            
+            // Event listeners
+            submitButton.addEventListener('click', checkAnswer);
+            nextButton.addEventListener('click', nextQuestion);
+            userAnswerInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        }
+        
+        // Load a question
+        function loadQuestion(index) {
+            const question = questions[index];
+            expressionElement.textContent = question.expression;
+            explanationText.innerHTML = `<p>${question.explanation}</p>`;
+            tipText.innerHTML = `<ul class="rules-list"><li>${question.tip}</li></ul>`;
+            
+            // Reset UI
+            userAnswerInput.value = '';
+            userAnswerInput.disabled = false;
+            feedbackElement.classList.add('hidden');
+            nextButton.classList.add('hidden');
+            submitButton.classList.remove('hidden');
+            userAnswerInput.focus();
+            
+            // Update progress
+            currentQuestionElement.textContent = index + 1;
+            const progressPercent = ((index + 1) / questions.length) * 100;
+            progressFill.style.width = `${progressPercent}%`;
+        }
+        
+        // Check the user's answer
+        function checkAnswer() {
+            const userAnswer = userAnswerInput.value.trim();
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            
+            // Normalize answers for comparison (remove spaces, handle 0x = 0, etc.)
+            const normalizedUserAnswer = normalizeAnswer(userAnswer);
+            const normalizedCorrectAnswer = normalizeAnswer(correctAnswer);
+            
+            const isCorrect = normalizedUserAnswer === normalizedCorrectAnswer;
+            
+            // Update stats
+            if (isCorrect) {
+                correctAnswers++;
+                showFeedback(true, correctAnswer);
+            } else {
+                incorrectAnswers++;
+                showFeedback(false, correctAnswer);
+            }
+            
+            // Update UI
+            userAnswerInput.disabled = true;
+            submitButton.classList.add('hidden');
+            nextButton.classList.remove('hidden');
+            updateStats();
+        }
+        
+        // Normalize answer for comparison
+        function normalizeAnswer(answer) {
+            // Remove all spaces
+            let normalized = answer.replace(/\s+/g, '');
+            
+            // Handle "0x" which should be "0"
+            if (normalized === '0x' || normalized === '0y' || normalized === '0z' || 
+                normalized === '0a' || normalized === '0b' || normalized === '0c' ||
+                normalized === '0d' || normalized === '0e' || normalized === '0f' ||
+                normalized === '0g' || normalized === '0h' || normalized === '0k' ||
+                normalized === '0m' || normalized === '0n' || normalized === '0p' ||
+                normalized === '0q' || normalized === '0r' || normalized === '0s') {
+                return '0';
+            }
+            
+            // Handle "1x" which should be "x", etc.
+            normalized = normalized.replace(/^1([a-z])$/, '$1');
+            
+            return normalized.toLowerCase();
+        }
+        
+        // Show feedback
+        function showFeedback(isCorrect, correctAnswer) {
+            if (isCorrect) {
+                feedbackElement.className = 'feedback correct';
+                feedbackTitle.innerHTML = '<i class="fas fa-check-circle"></i> Correct!';
+                feedbackContent.innerHTML = `Your answer is correct! The simplified expression is <strong>${correctAnswer}</strong>.`;
+            } else {
+                feedbackElement.className = 'feedback incorrect';
+                feedbackTitle.innerHTML = '<i class="fas fa-times-circle"></i> Incorrect';
+                feedbackContent.innerHTML = `The correct answer is <strong>${correctAnswer}</strong>. ${questions[currentQuestionIndex].explanation}`;
+            }
+            
+            feedbackElement.classList.remove('hidden');
+        }
+        
+        // Move to next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                // Quiz completed
+                showCompletionScreen();
+            }
+        }
+        
+        // Show completion screen
+        function showCompletionScreen() {
+            expressionElement.textContent = "Quiz Completed!";
+            explanationText.innerHTML = `<p>You've completed all ${questions.length} questions. Great job!</p>`;
+            
+            userAnswerInput.classList.add('hidden');
+            submitButton.classList.add('hidden');
+            nextButton.classList.add('hidden');
+            feedbackElement.classList.add('hidden');
+            
+            // Show final stats
+            const percentage = Math.round((correctAnswers / questions.length) * 100);
+            tipText.innerHTML = `
+                <ul class="rules-list">
+                    <li>Final Score: ${correctAnswers} out of ${questions.length} (${percentage}%)</li>
+                    <li>Correct Answers: ${correctAnswers}</li>
+                    <li>Incorrect Answers: ${incorrectAnswers}</li>
+                </ul>
+                <p style="margin-top: 15px;">Refresh the page to start over.</p>
+            `;
+        }
+        
+        // Update statistics display
+        function updateStats() {
+            correctCountElement.textContent = correctAnswers;
+            incorrectCountElement.textContent = incorrectAnswers;
+            
+            const totalAnswered = correctAnswers + incorrectAnswers;
+            const percentage = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
+            scorePercentageElement.textContent = `${percentage}%`;
+        }
+        
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

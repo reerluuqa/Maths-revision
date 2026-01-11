@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Division Practice (Grade 7) — 20+ Mixed Problems</title>
+  <style>
+    :root{
+      --bg1:#4f2bd6;
+      --bg2:#2f7bdc;
+      --card:#ffffff;
+      --ink:#0f172a;
+      --muted:#475569;
+      --soft:#f1f5f9;
+      --line:#e2e8f0;
+      --good:#16a34a;
+      --bad:#dc2626;
+      --warn:#f59e0b;
+      --accent:#7c3aed;
+      --accent2:#06b6d4;
+      --shadow: 0 18px 40px rgba(2,6,23,.18);
+      --radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--ink);
+      background: radial-gradient(1100px 700px at 25% 20%, rgba(255,255,255,.18), transparent 60%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 22px;
+      min-height: 100vh;
+    }
+
+    .app{
+      width:min(980px, 100%);
+    }
+
+    .topbar{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+      color:#fff;
+    }
+    .brand h1{
+      margin:0;
+      font-size: clamp(20px, 3vw, 34px);
+      letter-spacing:.2px;
+      line-height:1.05;
+    }
+    .brand p{
+      margin:6px 0 0 0;
+      opacity:.92;
+      font-size: 14px;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+    .chip{
+      background: rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.24);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:13px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      backdrop-filter: blur(8px);
+      user-select:none;
+    }
+    .chip input{ transform: translateY(1px); }
+    .btn{
+      border:0;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-weight: 650;
+      cursor:pointer;
+      transition: transform .06s ease, filter .15s ease;
+      box-shadow: 0 10px 20px rgba(2,6,23,.15);
+      white-space:nowrap;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: linear-gradient(135deg, #22c55e, #84cc16);
+      color:#052e12;
+    }
+    .btn.next{
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      color:#fff;
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.16);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.28);
+      box-shadow:none;
+      backdrop-filter: blur(8px);
+    }
+    .btn.skip{
+      background: rgba(100,116,139,.12);
+      color: var(--muted);
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+    .btn.skip:hover{
+      background: rgba(100,116,139,.2);
+    }
+
+    .card{
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.45);
+    }
+
+    .progresswrap{
+      padding: 14px 18px 0 18px;
+      background: linear-gradient(180deg, rgba(124,58,237,.10), transparent 60%);
+    }
+    .progressrow{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      margin-bottom:10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .bar{
+      height: 10px;
+      background: var(--soft);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid var(--line);
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+
+    .content{
+      padding: 18px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+    }
+    @media (max-width: 860px){
+      .content{ grid-template-columns: 1fr; }
+      .controls{ justify-content:flex-start; }
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .qmeta{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+      margin-bottom:10px;
+    }
+    .qmeta .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 7px 10px;
+      background: rgba(124,58,237,.10);
+      border:1px solid rgba(124,58,237,.20);
+      color: #4c1d95;
+      border-radius:999px;
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .difficulty{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 7px 10px;
+      background: rgba(2,132,199,.10);
+      border:1px solid rgba(2,132,199,.20);
+      color:#0c4a6e;
+      border-radius:999px;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .question{
+      font-size: 18px;
+      line-height: 1.35;
+      margin: 6px 0 14px 0;
+      padding: 12px 12px;
+      border-left: 5px solid rgba(124,58,237,.65);
+      background: rgba(241,245,249,.65);
+      border-radius: 12px;
+    }
+
+    .answerRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .answerRow input{
+      flex: 1 1 200px;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border:2px solid rgba(124,58,237,.35);
+      outline:none;
+      font-size: 16px;
+      background:#fff;
+    }
+    .answerRow input:focus{
+      border-color: rgba(6,182,212,.65);
+      box-shadow: 0 0 0 4px rgba(6,182,212,.18);
+    }
+    
+    .buttonGroup{
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .help{
+      margin-top:10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.4;
+    }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background: rgba(15,23,42,.06);
+      border: 1px solid rgba(15,23,42,.10);
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+
+    .feedback{
+      margin-top: 12px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      background: #fff;
+      overflow:hidden;
+    }
+    .feedbackHeader{
+      padding: 12px 14px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      font-weight: 750;
+    }
+    .feedbackHeader.good{ background: rgba(22,163,74,.08); color: #14532d; border-bottom:1px solid rgba(22,163,74,.18); }
+    .feedbackHeader.bad{ background: rgba(220,38,38,.08); color: #7f1d1d; border-bottom:1px solid rgba(220,38,38,.18); }
+
+    .feedbackBody{
+      padding: 12px 14px 14px 14px;
+      color: var(--ink);
+    }
+    .feedbackBody h3{
+      margin: 10px 0 6px 0;
+      font-size: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+    .feedbackBody .box{
+      background: rgba(241,245,249,.8);
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 12px;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+    .feedbackBody ul{
+      margin: 8px 0 0 18px;
+      padding:0;
+      color: var(--ink);
+      font-size: 14px;
+      line-height:1.45;
+    }
+
+    .sideTitle{
+      margin:0 0 10px 0;
+      font-size: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .stat{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(241,245,249,.55);
+    }
+    .stat .n{
+      font-size: 26px;
+      font-weight: 800;
+      margin:0;
+    }
+    .stat .lbl{
+      margin: 2px 0 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .tips{
+      margin-top: 12px;
+      border:1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: #fff;
+    }
+    .tips p{
+      margin: 8px 0 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height:1.45;
+    }
+    .tips ul{
+      margin: 8px 0 0 18px;
+      color: var(--ink);
+      font-size: 14px;
+      line-height:1.45;
+    }
+
+    .footer{
+      margin-top: 10px;
+      text-align:center;
+      color: rgba(255,255,255,.88);
+      font-size: 12px;
+    }
+    .footer span{ opacity:.9; }
+
+    .tiny{
+      font-size:12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <h1>Division Practice (Grade 7)</h1>
+        <p>One question at a time • immediate feedback • full explanations + common pitfalls</p>
+      </div>
+      <div class="controls">
+        <label class="chip" title="Shuffle questions">
+          <input id="shuffleToggle" type="checkbox" />
+          Shuffle
+        </label>
+        <button class="btn ghost" id="restartBtn" type="button">Restart</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="progresswrap">
+        <div class="progressrow">
+          <div><strong id="qCounter">Question 1</strong> <span class="tiny">of</span> <strong id="qTotal">0</strong></div>
+          <div><strong id="pct">0%</strong></div>
+        </div>
+        <div class="bar" aria-label="Progress">
+          <div id="barFill"></div>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- LEFT: Question + interaction -->
+        <div class="panel">
+          <div class="qmeta">
+            <div class="tag" id="qType">Skill</div>
+            <div class="difficulty" id="qDiff">Difficulty</div>
+          </div>
+
+          <div class="question" id="questionText">Loading…</div>
+
+          <div class="answerRow">
+            <input id="answerInput" type="text" inputmode="decimal" autocomplete="off" placeholder="Type your answer here" />
+            <div class="buttonGroup">
+              <button class="btn primary" id="checkBtn" type="button">Check</button>
+              <button class="btn skip" id="skipBtn" type="button">Skip →</button>
+              <button class="btn next" id="nextBtn" type="button" style="display:none;">Next →</button>
+            </div>
+          </div>
+
+          <div class="help" id="formatHelp">
+            Tip: For remainders, you can type like <span class="kbd">23 R 5</span> (meaning 23 remainder 5). For fractions, you can type <span class="kbd">3/8</span>.
+          </div>
+
+          <div class="feedback" id="feedback" style="display:none;">
+            <div class="feedbackHeader" id="feedbackHeader">Result</div>
+            <div class="feedbackBody">
+              <div class="box" id="correctAnswerBox"></div>
+
+              <h3>Explanation</h3>
+              <div class="box" id="explanationBox"></div>
+
+              <h3>Pitfalls to avoid</h3>
+              <ul id="pitfallsList"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Stats + quick guidance -->
+        <div class="panel">
+          <p class="sideTitle">Score</p>
+          <div class="stats">
+            <div class="stat">
+              <p class="n" id="correctN">0</p>
+              <p class="lbl">Correct</p>
+            </div>
+            <div class="stat">
+              <p class="n" id="incorrectN">0</p>
+              <p class="lbl">Incorrect</p>
+            </div>
+            <div class="stat">
+              <p class="n" id="skippedN">0</p>
+              <p class="lbl">Skipped</p>
+            </div>
+          </div>
+
+          <div class="tips">
+            <p class="sideTitle" style="margin:0 0 8px 0;">Quick reminders</p>
+            <ul>
+              <li><strong>Division</strong> is the inverse of multiplication: check by multiplying back.</li>
+              <li>When dividing by a <strong>decimal</strong>, shift decimals equally in both numbers to make the divisor a whole number.</li>
+              <li>When dividing by a <strong>fraction</strong>, multiply by the reciprocal.</li>
+              <li>For word problems, identify: <strong>total ÷ number of groups</strong> or <strong>total ÷ size of each group</strong>.</li>
+            </ul>
+            <p>Use the explanation after each attempt to learn the method and spot the "trap".</p>
+          </div>
+
+          <div class="tips" id="endCard" style="display:none;">
+            <p class="sideTitle" style="margin:0 0 8px 0;">Finished</p>
+            <p id="endMsg" style="margin:0;"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer"><span>Educational practice app • Division focus (integers, decimals, fractions, remainders, word problems)</span></div>
+  </div>
+
+<script>
+/** -------------------------
+ *  Problem Bank (22 problems)
+ *  -------------------------
+ */
+const PROBLEMS = [
+  {
+    type: "Long division",
+    difficulty: "Easy",
+    prompt: "Compute: 504 ÷ 12",
+    answerType: "int",
+    answer: "42",
+    explanation:
+`12 goes into 50 four times (4×12=48), remainder 2. Bring down 4 → 24. 12 goes into 24 two times. So 504 ÷ 12 = 42.
+Quick check: 42 × 12 = 42×(10+2)=420+84=504.`,
+    pitfalls: [
+      "Forgetting to bring down the next digit after subtracting.",
+      "Not checking by multiplication (it quickly catches slips)."
+    ]
+  },
+  {
+    type: "Long division",
+    difficulty: "Medium",
+    prompt: "Compute: 7,248 ÷ 24",
+    answerType: "int",
+    answer: "302",
+    explanation:
+`24 into 72 = 3 (3×24=72), remainder 0. Bring down 4 → 4; 24 into 4 = 0 (place a 0). Bring down 8 → 48; 24 into 48 = 2. Answer = 302.
+Check: 302×24 = 302×(20+4)=6040+1208=7248.`,
+    pitfalls: [
+      "Skipping the zero in the quotient when the divisor doesn't fit (the '302' needs the middle 0).",
+      "Subtracting errors; always subtract carefully."
+    ]
+  },
+  {
+    type: "Remainders",
+    difficulty: "Easy",
+    prompt: "Compute: 13 ÷ 4 (give quotient and remainder)",
+    answerType: "remainder",
+    answer: { q: 3, r: 1 },
+    explanation:
+`4×3=12 and 13−12=1. So quotient = 3, remainder = 1. (Because remainder must be less than 4.)`,
+    pitfalls: [
+      "Giving a remainder ≥ divisor (remainder must be smaller than 4).",
+      "Confusing remainder with a decimal; 13÷4 = 3.25, but remainder form is 3 R 1."
+    ]
+  },
+  {
+    type: "Integers",
+    difficulty: "Easy",
+    prompt: "Compute: −84 ÷ 6",
+    answerType: "int",
+    answer: "-14",
+    explanation:
+`A negative divided by a positive is negative. 84 ÷ 6 = 14, so −84 ÷ 6 = −14.`,
+    pitfalls: [
+      "Sign error: one negative means the result is negative.",
+      "Forgetting that division follows the same sign rules as multiplication."
+    ]
+  },
+  {
+    type: "Divisibility / mental math",
+    difficulty: "Easy",
+    prompt: "Compute: 987 ÷ 9 (give quotient and remainder)",
+    answerType: "remainder",
+    answer: { q: 109, r: 6 },
+    explanation:
+`Do long division: 9 into 98 = 10 (90), remainder 8; bring down 7 → 87; 9 into 87 = 9 (81), remainder 6. So 987 ÷ 9 = 109 R 6.`,
+    pitfalls: [
+      "Assuming it's divisible by 9 without checking carefully (digit sum test for 9 requires sum divisible by 9).",
+      "Forgetting remainder form when it doesn't divide evenly."
+    ]
+  },
+  {
+    type: "Long division",
+    difficulty: "Easy",
+    prompt: "Compute: 1,005 ÷ 5",
+    answerType: "int",
+    answer: "201",
+    explanation:
+`1000 ÷ 5 = 200 and 5 ÷ 5 = 1. Total = 201.
+Or long division gives 201 exactly.`,
+    pitfalls: [
+      "Dropping the zero in the middle (1005 has a zero that matters).",
+      "Not checking: 201×5=1005."
+    ]
+  },
+  {
+    type: "Decimals",
+    difficulty: "Medium",
+    prompt: "Compute: 5.6 ÷ 0.7",
+    answerType: "decimal",
+    answer: "8",
+    explanation:
+`Make the divisor a whole number by shifting decimals one place: 5.6 ÷ 0.7 = 56 ÷ 7 = 8.`,
+    pitfalls: [
+      "Shifting the decimal in only one number (you must shift BOTH equally).",
+      "Forgetting 56 ÷ 7 = 8 exactly."
+    ]
+  },
+  {
+    type: "Decimals",
+    difficulty: "Medium",
+    prompt: "Compute: 2.45 ÷ 0.05",
+    answerType: "decimal",
+    answer: "49",
+    explanation:
+`Shift two decimal places to make 0.05 → 5. Then 2.45 → 245. So 2.45 ÷ 0.05 = 245 ÷ 5 = 49.`,
+    pitfalls: [
+      "Shifting the wrong number of places (0.05 needs 2 places to become 5).",
+      "Mistaking 245 ÷ 5 as 45 (it's 49)."
+    ]
+  },
+  {
+    type: "Decimals",
+    difficulty: "Hard",
+    prompt: "Compute: 0.006 ÷ 3",
+    answerType: "decimal",
+    answer: "0.002",
+    explanation:
+`6 thousandths divided by 3 = 2 thousandths. So 0.006 ÷ 3 = 0.002.
+Check: 0.002 × 3 = 0.006.`,
+    pitfalls: [
+      "Losing zeros in small decimals (place value matters).",
+      "Putting the decimal point incorrectly without checking by multiplication."
+    ]
+  },
+  {
+    type: "Fractions",
+    difficulty: "Medium",
+    prompt: "Compute: 3/4 ÷ 1/8",
+    answerType: "fraction",
+    answer: "6/1",
+    explanation:
+`Dividing by a fraction means multiply by its reciprocal:
+(3/4) ÷ (1/8) = (3/4) × (8/1) = 24/4 = 6.`,
+    pitfalls: [
+      "Multiplying fractions without flipping the second fraction (you must use the reciprocal).",
+      "Not simplifying at the end."
+    ]
+  },
+  {
+    type: "Fractions",
+    difficulty: "Medium",
+    prompt: "Compute: 5/6 ÷ 4",
+    answerType: "fraction",
+    answer: "5/24",
+    explanation:
+`Divide by 4 = multiply by 1/4:
+(5/6) ÷ 4 = (5/6) × (1/4) = 5/24.`,
+    pitfalls: [
+      "Dividing only the numerator by 4 (fraction division doesn't work that way).",
+      "Forgetting to write 4 as 4/1 before flipping."
+    ]
+  },
+  {
+    type: "Fractions",
+    difficulty: "Hard",
+    prompt: "Compute: 2 ÷ (3/5)",
+    answerType: "fraction",
+    answer: "10/3",
+    explanation:
+`2 = 2/1. Divide by 3/5 means multiply by 5/3:
+(2/1) × (5/3) = 10/3 = 3 1/3.`,
+    pitfalls: [
+      "Flipping the wrong fraction (flip the divisor 3/5, not the 2).",
+      "Stopping at 10/3 without understanding it can be a mixed number (optional)."
+    ]
+  },
+  {
+    type: "Remainders",
+    difficulty: "Medium",
+    prompt: "Compute: 389 ÷ 7 (give quotient and remainder)",
+    answerType: "remainder",
+    answer: { q: 55, r: 4 },
+    explanation:
+`7×55 = 385. Then 389−385=4. So 389 ÷ 7 = 55 R 4.`,
+    pitfalls: [
+      "Choosing 7×56=392 which is too high (quotient must not overshoot).",
+      "Remainder must be less than 7."
+    ]
+  },
+  {
+    type: "Powers of 10 / place value",
+    difficulty: "Medium",
+    prompt: "Compute: 4.8 ÷ 0.12",
+    answerType: "decimal",
+    answer: "40",
+    explanation:
+`Shift two decimals: 4.8 ÷ 0.12 = 480 ÷ 12 = 40.`,
+    pitfalls: [
+      "Shifting only one place (0.12 needs 2 places to become 12).",
+      "Forgetting 480 ÷ 12 = 40 (since 48 ÷ 12 = 4)."
+    ]
+  },
+  {
+    type: "Word problem (equal groups)",
+    difficulty: "Easy",
+    prompt: "A teacher has 156 candies and packs them equally into 12 bags. How many candies per bag?",
+    answerType: "int",
+    answer: "13",
+    explanation:
+`Equal sharing means divide: 156 ÷ 12.
+12×10=120 remainder 36. 12×3=36 remainder 0. Total = 13 candies per bag.`,
+    pitfalls: [
+      "Multiplying instead of dividing (sharing equally is division).",
+      "Not checking: 13×12=156."
+    ]
+  },
+  {
+    type: "Word problem (unit rate)",
+    difficulty: "Medium",
+    prompt: "A car travels 3.6 km in 0.8 hours at a steady speed. What is the speed in km/h?",
+    answerType: "decimal",
+    answer: "4.5",
+    explanation:
+`Speed = distance ÷ time = 3.6 ÷ 0.8.
+Shift one decimal: 36 ÷ 8 = 4.5 km/h.`,
+    pitfalls: [
+      "Using time ÷ distance (formula order matters).",
+      "Incorrect decimal shifting; check by multiplying: 4.5×0.8=3.6."
+    ]
+  },
+  {
+    type: "Word problem (fractions)",
+    difficulty: "Medium",
+    prompt: "You have 5/6 of a pizza and share it equally among 4 people. What fraction of a whole pizza does each person get?",
+    answerType: "fraction",
+    answer: "5/24",
+    explanation:
+`Sharing equally among 4 means divide by 4:
+(5/6) ÷ 4 = (5/6) × (1/4) = 5/24.`,
+    pitfalls: [
+      "Dividing numerator only by 4.",
+      "Forgetting that 4 = 4/1 before using reciprocals."
+    ]
+  },
+  {
+    type: "Word problem (daily rate)",
+    difficulty: "Easy",
+    prompt: "A student reads 45 pages in 3 days, the same number each day. How many pages per day?",
+    answerType: "int",
+    answer: "15",
+    explanation:
+`Equal amount per day means 45 ÷ 3 = 15 pages/day.`,
+    pitfalls: [
+      "Adding days instead of dividing.",
+      "Not noticing it divides evenly."
+    ]
+  },
+  {
+    type: "Word problem (money)",
+    difficulty: "Easy",
+    prompt: "Seven movie tickets cost $84 in total. What is the cost per ticket?",
+    answerType: "int",
+    answer: "12",
+    explanation:
+`Cost per ticket = total ÷ number of tickets = 84 ÷ 7 = 12.`,
+    pitfalls: [
+      "Multiplying 84×7 instead of dividing.",
+      "Forgetting the unit (dollars per ticket)."
+    ]
+  },
+  {
+    type: "Word problem (measurement)",
+    difficulty: "Medium",
+    prompt: "You have 2.5 liters of juice and pour it equally into 6 bottles. How many liters go into each bottle? (Round to 2 decimal places)",
+    answerType: "decimal",
+    answer: "0.42",
+    explanation:
+`Equal sharing: 2.5 ÷ 6 ≈ 0.4166… ≈ 0.42 liters.`,
+    pitfalls: [
+      "Rounding too early (keep it as 5/12, then round at the end).",
+      "Forgetting that repeating decimals are okay; fractions can be cleaner."
+    ]
+  },
+  {
+    type: "Word problem (groups / buses)",
+    difficulty: "Easy",
+    prompt: "280 students are seated equally into 8 buses. How many students per bus?",
+    answerType: "int",
+    answer: "35",
+    explanation:
+`280 ÷ 8 = 35 (since 28 ÷ 8 = 3.5, then ×10 → 35).`,
+    pitfalls: [
+      "Dropping the zero: 280 is not 28.",
+      "Not checking: 35×8=280."
+    ]
+  },
+  {
+    type: "Word problem (unit price)",
+    difficulty: "Medium",
+    prompt: "18 pencils cost $4.50. What is the cost per pencil?",
+    answerType: "decimal",
+    answer: "0.25",
+    explanation:
+`Unit price = 4.50 ÷ 18.
+450 cents ÷ 18 = 25 cents, so $0.25 per pencil.`,
+    pitfalls: [
+      "Working in dollars can be messy; switching to cents makes it cleaner.",
+      "Decimal placement errors; verify by 0.25×18=4.50."
+    ]
+  },
+  {
+    type: "Word problem (how many pieces)",
+    difficulty: "Easy",
+    prompt: "A 900 m rope is cut into 12 m pieces. How many pieces are made?",
+    answerType: "int",
+    answer: "75",
+    explanation:
+`Number of pieces = total length ÷ length per piece = 900 ÷ 12.
+12×75=900, so 75 pieces.`,
+    pitfalls: [
+      "Multiplying 900×12 (wrong direction).",
+      "Mixing up 'how many pieces' with 'how long each piece' (both are division, but interpret carefully)."
+    ]
+  },
+  {
+    type: "Word problem (fraction division)",
+    difficulty: "Hard",
+    prompt: "A recipe uses 3/5 cup of sugar per batch. You have 2 cups of sugar. How many batches can you make? (Give as a fraction or mixed number)",
+    answerType: "fraction",
+    answer: "10/3",
+    explanation:
+`Batches = total ÷ per batch = 2 ÷ (3/5) = (2/1)×(5/3)=10/3 = 3 1/3.
+That means you can make 3 full batches, with some sugar left.`,
+    pitfalls: [
+      "Forgetting to flip 3/5 when dividing.",
+      "Not interpreting 10/3: it represents 3 full batches plus extra (context matters)."
+    ]
+  }
+];
+
+/** -------------------------
+ *  Helpers: parsing & checking
+ *  -------------------------
+ */
+function trimSpaces(s){ return (s ?? "").toString().trim(); }
+
+function gcd(a,b){
+  a = Math.abs(a); b = Math.abs(b);
+  while(b){ const t=a%b; a=b; b=t; }
+  return a || 1;
+}
+
+function parseFraction(str){
+  str = trimSpaces(str).replace(/\s+/g,' ');
+  if(!str) return null;
+
+  const mixed = str.match(/^([+-]?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+  if(mixed){
+    const whole = parseInt(mixed[1],10);
+    const num = parseInt(mixed[2],10);
+    const den = parseInt(mixed[3],10);
+    if(den===0) return null;
+    const sign = whole < 0 ? -1 : 1;
+    const absWhole = Math.abs(whole);
+    const n = sign * (absWhole*den + num);
+    return { n, d: den };
+  }
+
+  const frac = str.match(/^([+-]?\d+)\s*\/\s*(\d+)$/);
+  if(frac){
+    const n = parseInt(frac[1],10);
+    const d = parseInt(frac[2],10);
+    if(d===0) return null;
+    return { n, d };
+  }
+
+  const intm = str.match(/^([+-]?\d+)$/);
+  if(intm){
+    return { n: parseInt(intm[1],10), d: 1 };
+  }
+
+  if(/^[-+]?\d*\.?\d+$/.test(str)){
+    const x = Number(str);
+    if(!Number.isFinite(x)) return null;
+    const parts = str.split('.');
+    const decLen = (parts[1]||"").length;
+    const scale = Math.pow(10, decLen);
+    const n = Math.round(x * scale);
+    return { n, d: scale };
+  }
+
+  return null;
+}
+
+function reduceFrac(fr){
+  const g = gcd(fr.n, fr.d);
+  let n = fr.n / g;
+  let d = fr.d / g;
+  if(d < 0){ d = -d; n = -n; }
+  return { n, d };
+}
+
+function equalFractions(a,b){
+  a = reduceFrac(a); b = reduceFrac(b);
+  return a.n === b.n && a.d === b.d;
+}
+
+function parseRemainder(str){
+  str = trimSpaces(str).toLowerCase();
+  if(!str) return null;
+
+  str = str.replace(/remainder/g,'r').replace(/rem/g,'r');
+  let m = str.match(/^([+-]?\d+)\s*r\s*([+-]?\d+)$/);
+  if(m) return { q: parseInt(m[1],10), r: parseInt(m[2],10) };
+
+  m = str.match(/^([+-]?\d+)\s+r\s+([+-]?\d+)$/);
+  if(m) return { q: parseInt(m[1],10), r: parseInt(m[2],10) };
+
+  m = str.match(/^([+-]?\d+)\s+([+-]?\d+)$/);
+  if(m) return { q: parseInt(m[1],10), r: parseInt(m[2],10) };
+
+  return null;
+}
+
+function parseNumber(str){
+  str = trimSpaces(str).replace(/,/g,'');
+  if(!str) return null;
+  if(!/^[-+]?\d*\.?\d+$/.test(str)) return null;
+  const x = Number(str);
+  return Number.isFinite(x) ? x : null;
+}
+
+function formatCorrectAnswer(p){
+  if(p.answerType === "remainder"){
+    return `Correct answer: <strong>${p.answer.q} R ${p.answer.r}</strong>`;
+  }
+  if(p.answerType === "fraction"){
+    const fr = reduceFrac(parseFraction(p.answer));
+    if(fr.d === 1) return `Correct answer: <strong>${fr.n}</strong>`;
+    const absN = Math.abs(fr.n);
+    const whole = Math.trunc(absN / fr.d);
+    const rem = absN % fr.d;
+    let extra = "";
+    if(whole >= 1 && rem !== 0){
+      const sign = fr.n < 0 ? "-" : "";
+      extra = ` <span class="tiny">(also ${sign}${whole} ${rem}/${fr.d})</span>`;
+    }
+    return `Correct answer: <strong>${fr.n}/${fr.d}</strong>${extra}`;
+  }
+  if(p.answerType === "decimal"){
+    const n = Number(p.answer);
+    return `Correct answer: <strong>${Number.isFinite(n) ? n : p.answer}</strong>`;
+  }
+  return `Correct answer: <strong>${p.answer}</strong>`;
+}
+
+function isCorrect(p, userInput){
+  const s = trimSpaces(userInput);
+
+  if(p.answerType === "int"){
+    const n = parseNumber(s);
+    return n !== null && Number.isInteger(n) && (n === Number(p.answer));
+  }
+
+  if(p.answerType === "decimal"){
+    const n = parseNumber(s);
+    if(n === null) return false;
+    const target = Number(p.answer);
+    if(!Number.isFinite(target)) return false;
+    const tol = 0.01;
+    return Math.abs(n - target) <= tol;
+  }
+
+  if(p.answerType === "fraction"){
+    const userFr = parseFraction(s);
+    const ansFr = parseFraction(p.answer);
+    if(!userFr || !ansFr) return false;
+    return equalFractions(userFr, ansFr);
+  }
+
+  if(p.answerType === "remainder"){
+    const rr = parseRemainder(s);
+    if(!rr) return false;
+    return rr.q === p.answer.q && rr.r === p.answer.r;
+  }
+
+  return false;
+}
+
+/** -------------------------
+ *  App state & UI
+ *  -------------------------
+ */
+let problems = [];
+let idx = 0;
+let correct = 0;
+let incorrect = 0;
+let skipped = 0;
+let locked = false;
+
+const el = (id)=>document.getElementById(id);
+
+function setProgress(){
+  const total = problems.length;
+  el("qTotal").textContent = total;
+  el("qCounter").textContent = `Question ${Math.min(idx+1, total)}`;
+  const pct = total ? Math.round((idx/total)*100) : 0;
+  el("pct").textContent = `${pct}%`;
+  el("barFill").style.width = `${pct}%`;
+}
+
+function renderQuestion(){
+  locked = false;
+  el("feedback").style.display = "none";
+  el("nextBtn").style.display = "none";
+  el("checkBtn").style.display = "inline-block";
+  el("skipBtn").style.display = "inline-block";
+  el("answerInput").value = "";
+  el("answerInput").disabled = false;
+  el("answerInput").focus();
+
+  el("endCard").style.display = "none";
+
+  const p = problems[idx];
+  el("qType").textContent = p.type;
+  el("qDiff").textContent = p.difficulty;
+  el("questionText").textContent = p.prompt;
+
+  setProgress();
+}
+
+function renderFeedback(isRight){
+  const p = problems[idx];
+
+  el("feedback").style.display = "block";
+  const fh = el("feedbackHeader");
+  fh.className = "feedbackHeader " + (isRight ? "good" : "bad");
+  fh.textContent = isRight ? "Correct ✅" : "Not quite ❌";
+
+  el("correctAnswerBox").innerHTML = formatCorrectAnswer(p);
+  el("explanationBox").textContent = p.explanation;
+
+  const ul = el("pitfallsList");
+  ul.innerHTML = "";
+  (p.pitfalls || []).forEach(t=>{
+    const li = document.createElement("li");
+    li.textContent = t;
+    ul.appendChild(li);
+  });
+
+  el("checkBtn").style.display = "none";
+  el("skipBtn").style.display = "none";
+  el("nextBtn").style.display = "inline-block";
+  el("answerInput").disabled = true;
+}
+
+function finish(){
+  const total = problems.length;
+  el("pct").textContent = "100%";
+  el("barFill").style.width = "100%";
+  el("qCounter").textContent = "Done";
+  el("questionText").textContent = "You completed the set. Restart to practice again (optionally shuffled).";
+  el("qType").textContent = "Summary";
+  el("qDiff").textContent = "—";
+  el("feedback").style.display = "none";
+  el("checkBtn").style.display = "none";
+  el("skipBtn").style.display = "none";
+  el("nextBtn").style.display = "none";
+  el("answerInput").disabled = true;
+
+  el("endCard").style.display = "block";
+  const attempted = correct + incorrect;
+  const pctCorrect = attempted > 0 ? Math.round(100*correct/attempted) : 0;
+  el("endMsg").innerHTML = `<strong>Score:</strong> ${correct}/${attempted} correct (${pctCorrect}%).<br>
+  <strong>Skipped:</strong> ${skipped} questions.<br>
+  <span class="tiny">If you missed any, re-do them and use "multiply back" to verify.</span>`;
+}
+
+function check(){
+  if(locked) return;
+  const p = problems[idx];
+  const input = el("answerInput").value;
+
+  const ok = isCorrect(p, input);
+  locked = true;
+
+  if(ok) correct++;
+  else incorrect++;
+
+  el("correctN").textContent = String(correct);
+  el("incorrectN").textContent = String(incorrect);
+
+  renderFeedback(ok);
+}
+
+function next(){
+  if(idx < problems.length - 1){
+    idx++;
+    renderQuestion();
+  }else{
+    finish();
+  }
+}
+
+function skip(){
+  skipped++;
+  el("skippedN").textContent = String(skipped);
+  next();
+}
+
+function restart(){
+  const doShuffle = el("shuffleToggle").checked;
+  problems = PROBLEMS.map(x => ({...x}));
+  if(doShuffle){
+    for(let i=problems.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [problems[i],problems[j]] = [problems[j],problems[i]];
+    }
+  }
+  idx = 0;
+  correct = 0;
+  incorrect = 0;
+  skipped = 0;
+  el("correctN").textContent = "0";
+  el("incorrectN").textContent = "0";
+  el("skippedN").textContent = "0";
+  el("checkBtn").style.display = "inline-block";
+  el("skipBtn").style.display = "inline-block";
+  el("answerInput").disabled = false;
+  renderQuestion();
+}
+
+/** Keyboard UX */
+el("answerInput").addEventListener("keydown", (e)=>{
+  if(e.key === "Enter"){
+    e.preventDefault();
+    if(el("nextBtn").style.display !== "none") next();
+    else if(!locked) check();
+  }
+});
+
+el("checkBtn").addEventListener("click", check);
+el("nextBtn").addEventListener("click", next);
+el("skipBtn").addEventListener("click", skip);
+el("restartBtn").addEventListener("click", restart);
+
+restart();
+</script>
+</body>
+</html>

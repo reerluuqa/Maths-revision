@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H.C.F. Practice Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+        .header { text-align: center; margin-bottom: 30px; }
+        h1 { color: #667eea; font-size: 2.5em; margin-bottom: 10px; }
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .progress-text { font-weight: 600; color: #495057; }
+        .progress-bar-container {
+            flex: 1;
+            height: 100%;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin: 0 20px;
+            overflow: hidden;
+            height: 10px;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        .question-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+        .question-number { color: #667eea; font-weight: 700; font-size: 1.1em; margin-bottom: 15px; }
+        .question-text { font-size: 1.3em; color: #212529; line-height: 1.6; margin-bottom: 20px; }
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+        }
+        .answer-input:focus { outline: none; border-color: #667eea; }
+        .button-group { display: flex; gap: 15px; margin-top: 20px; }
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .submit-btn { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        .skip-btn { background: #6c757d; color: white; }
+        .feedback { margin-top: 25px; padding: 25px; border-radius: 10px; display: none; }
+        .feedback.show { display: block; animation: slideIn 0.3s ease; }
+        .feedback.correct { background: #d4edda; border-left: 5px solid #28a745; }
+        .feedback.incorrect { background: #f8d7da; border-left: 5px solid #dc3545; }
+        .feedback-title { font-size: 1.3em; font-weight: 700; margin-bottom: 15px; }
+        .feedback-content { line-height: 1.8; color: #212529; }
+        .next-btn { background: #28a745; color: white; width: 100%; margin-top: 20px; }
+        .completion-screen { text-align: center; display: none; }
+        .completion-screen.show { display: block; }
+        .score { font-size: 2.5em; font-weight: 700; color: #667eea; margin: 20px 0; }
+        .restart-btn { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px 50px; margin-top: 30px; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📐 H.C.F. Practice Quiz</h1>
+            <p>Master finding the Highest Common Factor!</p>
+        </div>
+
+        <div id="quizContainer">
+            <div class="progress">
+                <span class="progress-text">Question <span id="current">1</span> of <span id="total">0</span></span>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <span class="progress-text">Score: <span id="scoreDisplay">0</span></span>
+            </div>
+
+            <div id="quizContent">
+                <div class="question-card">
+                    <div class="question-number">Question <span id="qNum">1</span></div>
+                    <div class="question-text" id="questionText">Loading question...</div>
+                    <input type="text" class="answer-input" id="answerInput" placeholder="Enter your answer">
+                </div>
+
+                <div class="button-group" id="btnGroup">
+                    <button class="submit-btn" id="submitBtn">Submit Answer</button>
+                    <button class="skip-btn" id="skipBtn">Skip</button>
+                </div>
+
+                <div class="feedback" id="feedback">
+                    <div class="feedback-title" id="feedbackTitle"></div>
+                    <div class="feedback-content" id="feedbackContent"></div>
+                    <button class="next-btn" id="nextBtn">Next Question →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="completion-screen" id="completionScreen">
+            <div class="completion-icon">🎉</div>
+            <h2>Quiz Complete!</h2>
+            <div class="score" id="finalScore"></div>
+            <p>Great work on practicing H.C.F. problems!</p>
+            <button class="restart-btn" id="restartBtn">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "Find the H.C.F. of 9, 15 and 24", a: "3", explanation: "9=3², 15=3×5, 24=2³×3. Common: 3." },
+            { q: "Find the H.C.F. of 18, 24 and 32", a: "2", explanation: "18=2×3², 24=2³×3, 32=2⁵. Common: 2." },
+            { q: "Find the H.C.F. of 12, 30 and 42", a: "6", explanation: "12=2²×3, 30=2×3×5, 42=2×3×7. Common: 2×3=6." },
+            { q: "Find the H.C.F. of 24, 40 and 64", a: "8", explanation: "24=2³×3, 40=2³×5, 64=2⁶. Common: 2³=8." },
+            { q: "Find the H.C.F. of 54 and 126", a: "18", explanation: "54=2×3³, 126=2×3²×7. Common: 2×3²=18." },
+            { q: "Find the H.C.F. of 84 and 140", a: "28", explanation: "84=2²×3×7, 140=2²×5×7. Common: 2²×7=28." },
+            { q: "Find the H.C.F. of 30, 45 and 75", a: "15", explanation: "30=2×3×5, 45=3²×5, 75=3×5². Common: 3×5=15." },
+            { q: "Find the H.C.F. of 42, 70 and 56", a: "14", explanation: "42=2×3×7, 70=2×5×7, 56=2³×7. Common: 2×7=14." },
+            { q: "Find the H.C.F. of 48, 120 and 72", a: "24", explanation: "48=2⁴×3, 120=2³×3×5, 72=2³×3². Common: 2³×3=24." },
+            { q: "Find the H.C.F. of 63, 42, 105 and 21", a: "21", explanation: "63=3²×7, 42=2×3×7, 105=3×5×7, 21=3×7. Common: 3×7=21." }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+
+        const elements = {
+            current: document.getElementById('current'),
+            total: document.getElementById('total'),
+            progressBar: document.getElementById('progressBar'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            questionText: document.getElementById('questionText'),
+            answerInput: document.getElementById('answerInput'),
+            submitBtn: document.getElementById('submitBtn'),
+            skipBtn: document.getElementById('skipBtn'),
+            feedback: document.getElementById('feedback'),
+            feedbackTitle: document.getElementById('feedbackTitle'),
+            feedbackContent: document.getElementById('feedbackContent'),
+            nextBtn: document.getElementById('nextBtn'),
+            quizContainer: document.getElementById('quizContainer'),
+            completionScreen: document.getElementById('completionScreen'),
+            finalScore: document.getElementById('finalScore'),
+            restartBtn: document.getElementById('restartBtn'),
+            btnGroup: document.getElementById('btnGroup'),
+            qNum: document.getElementById('qNum')
+        };
+
+        function initQuiz() {
+            currentIdx = 0;
+            score = 0;
+            elements.total.innerText = questions.length;
+            elements.completionScreen.classList.remove('show');
+            elements.quizContainer.style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentIdx];
+            elements.current.innerText = currentIdx + 1;
+            elements.qNum.innerText = currentIdx + 1;
+            elements.questionText.innerText = q.q;
+            elements.answerInput.value = '';
+            elements.answerInput.disabled = false;
+            elements.feedback.classList.remove('show');
+            elements.btnGroup.style.display = 'flex';
+            elements.scoreDisplay.innerText = score;
+            elements.progressBar.style.width = `${((currentIdx) / questions.length) * 100}%`;
+            elements.answerInput.focus();
+        }
+
+        function checkAnswer() {
+            const userAns = elements.answerInput.value.trim();
+            if (!userAns) return;
+
+            const correctAns = questions[currentIdx].a;
+            elements.btnGroup.style.display = 'none';
+            elements.answerInput.disabled = true;
+            elements.feedback.classList.add('show');
+
+            if (userAns === correctAns) {
+                score++;
+                elements.feedback.className = 'feedback show correct';
+                elements.feedbackTitle.innerText = "Correct! ✅";
+            } else {
+                elements.feedback.className = 'feedback show incorrect';
+                elements.feedbackTitle.innerText = "Incorrect ❌";
+            }
+            
+            elements.feedbackContent.innerHTML = `
+                <p>The answer is <strong>${correctAns}</strong></p>
+                <div style="margin-top:10px; font-size:0.9em; color:#555;">
+                    ${questions[currentIdx].explanation}
+                </div>
+            `;
+        }
+
+        elements.submitBtn.addEventListener('click', checkAnswer);
+        
+        elements.answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkAnswer();
+        });
+
+        elements.skipBtn.addEventListener('click', () => {
+            elements.answerInput.value = "Skipped";
+            checkAnswer();
+        });
+
+        elements.nextBtn.addEventListener('click', () => {
+            currentIdx++;
+            if (currentIdx < questions.length) {
+                loadQuestion();
+            } else {
+                showCompletion();
+            }
+        });
+
+        function showCompletion() {
+            elements.quizContainer.style.display = 'none';
+            elements.completionScreen.classList.add('show');
+            elements.finalScore.innerText = `${score} / ${questions.length}`;
+        }
+
+        elements.restartBtn.addEventListener('click', initQuiz);
+
+        // Start the app
+        initQuiz();
+    </script>
+</body>
+</html>

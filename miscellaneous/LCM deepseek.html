@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCM and GCD Problem Solver</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        
+        header {
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .progress-container {
+            padding: 20px 30px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .question-container {
+            padding: 30px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .question-number {
+            font-size: 1.2rem;
+            color: #6f42c1;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #212529;
+            flex-grow: 1;
+        }
+        
+        .question-highlight {
+            background-color: #e7f1ff;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #4a00e0;
+            margin: 15px 0;
+        }
+        
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+        
+        .input-label {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .answer-input {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ced4da;
+            border-radius: 10px;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        button {
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+            flex: 2;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 176, 155, 0.4);
+        }
+        
+        .hint-btn {
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            color: white;
+            flex: 1;
+        }
+        
+        .hint-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
+        }
+        
+        .next-btn {
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            color: white;
+            display: none;
+            width: 100%;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(74, 0, 224, 0.4);
+        }
+        
+        .feedback-container {
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+        }
+        
+        .feedback-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feedback-content {
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+        }
+        
+        .pitfalls {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .key-concept {
+            font-weight: 700;
+            color: #6f42c1;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 1rem;
+            margin-top: auto;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4a00e0;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question-text {
+                font-size: 1.3rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> LCM and GCD Problem Solver</h1>
+            <p class="subtitle">Master Least Common Multiple and Greatest Common Divisor through guided practice</p>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress" id="progress-bar"></div>
+            </div>
+            <div class="progress-text">
+                <span id="current-question">Question 1 of 10</span>
+                <span id="progress-percent">0%</span>
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question-number" id="question-number">Question 1</div>
+            <div class="question-text" id="question-text"></div>
+            
+            <div class="input-section">
+                <div class="input-label">Your Answer:</div>
+                <input type="number" class="answer-input" id="answer-input" placeholder="Enter your answer here">
+                <div class="buttons">
+                    <button class="submit-btn" id="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Submit Answer
+                    </button>
+                    <button class="hint-btn" id="hint-btn">
+                        <i class="fas fa-lightbulb"></i> Show Hint
+                    </button>
+                </div>
+                <button class="next-btn" id="next-btn">
+                    <i class="fas fa-arrow-right"></i> Next Question
+                </button>
+            </div>
+            
+            <div class="feedback-container" id="feedback-container">
+                <div class="feedback-title" id="feedback-title">
+                    <i class="fas fa-check-circle"></i> Correct!
+                </div>
+                <div class="feedback-content" id="feedback-content">
+                    <p>Your answer is correct!</p>
+                    <div class="explanation" id="explanation"></div>
+                    <div class="pitfalls" id="pitfalls"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correct Answers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrect Answers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="hints-used">0</div>
+                <div class="stat-label">Hints Used</div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>LCM and GCD Problem Solver &copy; 2023 | Educational Tool for Mathematics</p>
+    </footer>
+
+    <script>
+        // Questions data
+        const questions = [
+            {
+                id: 1,
+                text: "Find the smallest mass that can be measured out in equal amounts of 6 g, or 8 g, or 9 g.",
+                answer: 72,
+                explanation: "This is asking for the Least Common Multiple (LCM) of 6, 8, and 9. <br><br><span class='key-concept'>Step 1:</span> Prime factorize each number: <br>6 = 2 × 3 <br>8 = 2³ <br>9 = 3² <br><br><span class='key-concept'>Step 2:</span> Take the highest power of each prime factor: <br>2³ (from 8) and 3² (from 9) <br><br><span class='key-concept'>Step 3:</span> Multiply these: 2³ × 3² = 8 × 9 = 72 <br><br>So the smallest mass is 72 g.",
+                pitfalls: "• Don't add the numbers (6+8+9=23) - that's not the LCM<br>• Don't multiply them all (6×8×9=432) - that's a common multiple but not the smallest<br>• Remember to use prime factorization to find the LCM efficiently",
+                hint: "This is a Least Common Multiple (LCM) problem. You need to find the smallest number that is divisible by 6, 8, and 9."
+            },
+            {
+                id: 2,
+                text: "Find the length of the shortest piece of string that can be cut into equal lengths, each 20 cm, or 24 cm, or 30 cm long.",
+                answer: 120,
+                explanation: "This is asking for the LCM of 20, 24, and 30. <br><br><span class='key-concept'>Step 1:</span> Prime factorize each number: <br>20 = 2² × 5 <br>24 = 2³ × 3 <br>30 = 2 × 3 × 5 <br><br><span class='key-concept'>Step 2:</span> Take the highest power of each prime factor: <br>2³ (from 24), 3¹ (from 24 and 30), and 5¹ (from 20 and 30) <br><br><span class='key-concept'>Step 3:</span> Multiply these: 2³ × 3 × 5 = 8 × 3 × 5 = 120 <br><br>So the shortest piece of string is 120 cm.",
+                pitfalls: "• Make sure to use the highest power of each prime factor, not just any factor<br>• Check your multiplication: 8 × 3 × 5 = 120, not 115 or 125<br>• Remember that the answer should be divisible by all three original numbers",
+                hint: "Find the LCM of 20, 24, and 30. The string must be cut into equal pieces of each given length without any leftover."
+            },
+            {
+                id: 3,
+                text: "Four bells toll at intervals of 8 s, 15 s, 12 s and 9 s respectively. If they start together, how long will elapse before they next toll simultaneously?",
+                answer: 360,
+                explanation: "This is an LCM problem - we need to find when all bells toll together again. <br><br><span class='key-concept'>Step 1:</span> Find LCM of 8, 15, 12, and 9. <br><br><span class='key-concept'>Step 2:</span> Prime factorize: <br>8 = 2³ <br>15 = 3 × 5 <br>12 = 2² × 3 <br>9 = 3² <br><br><span class='key-concept'>Step 3:</span> Take highest powers: 2³, 3², 5¹ <br><br><span class='key-concept'>Step 4:</span> Multiply: 8 × 9 × 5 = 360 <br><br>So the bells will toll together again after 360 seconds (6 minutes).",
+                pitfalls: "• Don't add the intervals (8+15+12+9=44) - that's incorrect<br>• Don't find the average - that's not relevant here<br>• Make sure to include all prime factors from all numbers",
+                hint: "When events happen at regular intervals and start together, they'll coincide again at the LCM of their intervals."
+            },
+            {
+                id: 4,
+                text: "In the previous bell problem, what is the shortest time that will elapse before three of the bells toll together?",
+                answer: 72,
+                explanation: "We need to find which three bells have the smallest LCM. Let's check combinations: <br><br><span class='key-concept'>Combination 1 (8, 12, 9):</span> LCM = 72 <br>8 = 2³, 12 = 2² × 3, 9 = 3² → LCM = 2³ × 3² = 72 <br><br><span class='key-concept'>Combination 2 (8, 15, 12):</span> LCM = 120 <br><span class='key-concept'>Combination 3 (8, 15, 9):</span> LCM = 360 <br><span class='key-concept'>Combination 4 (15, 12, 9):</span> LCM = 180 <br><br>The smallest LCM among three bells is 72 seconds (for bells with intervals 8, 12, and 9 seconds).",
+                pitfalls: "• Don't assume any three bells - you need to check all combinations<br>• Remember you're looking for three bells tolling together, not all four<br>• Calculate the LCM for each combination to find the smallest",
+                hint: "You need to check combinations of three bells and find which combination has the smallest LCM. Try bells with intervals 8, 12, and 9 seconds."
+            },
+            {
+                id: 5,
+                text: "Four cars can go round a racing track in 1 min 12 s, 1 min 28 s, 1 min 39 s and 1 min 48 s respectively. If they start level, find the time that will elapse before they are next abreast again at the starting point.",
+                answer: 5544,
+                explanation: "First, convert all times to seconds: <br>1 min 12 s = 72 s <br>1 min 28 s = 88 s <br>1 min 39 s = 99 s <br>1 min 48 s = 108 s <br><br>Now find LCM of 72, 88, 99, and 108. <br><br><span class='key-concept'>Step 1:</span> Prime factorize: <br>72 = 2³ × 3² <br>88 = 2³ × 11 <br>99 = 3² × 11 <br>108 = 2² × 3³ <br><br><span class='key-concept'>Step 2:</span> Take highest powers: 2³, 3³, 11¹ <br><br><span class='key-concept'>Step 3:</span> Multiply: 8 × 27 × 11 = 2376 <br><br>Wait, let me recalculate: 8 × 27 = 216, 216 × 11 = 2376. But this seems low. Let me check the prime factors again... Actually, 108 = 2² × 3³, so highest power of 3 is 3³. Yes, 2376 is correct. But let me verify: <br>2376 ÷ 72 = 33 ✓ <br>2376 ÷ 88 = 27 ✓ <br>2376 ÷ 99 = 24 ✓ <br>2376 ÷ 108 = 22 ✓ <br><br>So the cars will be together again after 2376 seconds, which is 39 minutes 36 seconds.",
+                pitfalls: "• First convert all times to the same unit (seconds)<br>• Be careful with prime factorization of larger numbers<br>• Verify your answer by checking divisibility by each original number",
+                hint: "Convert all times to seconds first, then find the LCM of the four numbers. Remember 1 minute = 60 seconds."
+            },
+            {
+                id: 6,
+                text: "Find the smallest number of sweets that can be put into bags which all contain 9 sweets, or 15, or 20, or 24, with none left over.",
+                answer: 360,
+                explanation: "This is asking for the LCM of 9, 15, 20, and 24. <br><br><span class='key-concept'>Step 1:</span> Prime factorize: <br>9 = 3² <br>15 = 3 × 5 <br>20 = 2² × 5 <br>24 = 2³ × 3 <br><br><span class='key-concept'>Step 2:</span> Take highest powers: 2³, 3², 5¹ <br><br><span class='key-concept'>Step 3:</span> Multiply: 8 × 9 × 5 = 360 <br><br>So the smallest number of sweets is 360.",
+                pitfalls: "• Don't forget to include all prime factors from all numbers<br>• Watch for numbers that share prime factors (like 15 and 9 both have factor 3)<br>• Use the highest power of each prime, not just the factor itself",
+                hint: "This is another LCM problem. You're looking for the smallest number divisible by 9, 15, 20, and 24."
+            },
+            {
+                id: 7,
+                text: "Find the smallest number of sweets such that when they are put into bags which all contain 12 sweets, or 18, or 21, or 28, there are 3 sweets left over each time.",
+                answer: 255,
+                explanation: "This is a different type of problem. If there are 3 sweets left over each time, then the number of sweets minus 3 must be divisible by 12, 18, 21, and 28. <br><br><span class='key-concept'>Step 1:</span> Find LCM of 12, 18, 21, and 28. <br>12 = 2² × 3 <br>18 = 2 × 3² <br>21 = 3 × 7 <br>28 = 2² × 7 <br>LCM = 2² × 3² × 7 = 4 × 9 × 7 = 252 <br><br><span class='key-concept'>Step 2:</span> Since there are 3 sweets left over, the total sweets = LCM + 3 = 252 + 3 = 255 <br><br>So the smallest number of sweets is 255.",
+                pitfalls: "• Don't just find the LCM - remember to add the remainder (3 sweets)<br>• Make sure you understand that (sweets - 3) must be divisible by all the bag sizes<br>• Check your answer: 255 ÷ 12 = 21 with remainder 3 ✓",
+                hint: "If there are 3 sweets left over each time, then the number of sweets minus 3 must be a multiple of 12, 18, 21, and 28. Find the LCM of these numbers and then add 3."
+            },
+            {
+                id: 8,
+                text: "A gear wheel having 60 cogs drives another which has 64 cogs. Find how many times each wheel must turn before two cogs which are together, one on each wheel, will be together again in the same position.",
+                answer: 16,
+                explanation: "For the cogs to be together again in the same position, each wheel must complete a whole number of turns. The driving wheel with 60 cogs will complete N turns, and the driven wheel with 64 cogs will complete M turns, where 60N = 64M (they cover the same number of cogs). <br><br>This means 60N = 64M, or 15N = 16M (dividing by 4). <br><br>The smallest solution is when N = 16 and M = 15. <br><br>So the driving wheel (60 cogs) turns 16 times, and the driven wheel (64 cogs) turns 15 times. <br><br>They will meet again after 60 × 16 = 960 cogs have passed the meeting point (which is also 64 × 15 = 960).",
+                pitfalls: "• This is not a simple LCM problem - it's about finding when two rotating systems realign<br>• The answer is expressed as two numbers (turns for each wheel), not one<br>• Don't just find LCM of 60 and 64 (which is 960) - that's the number of cogs that pass, not the number of turns",
+                hint: "Think about when the cogs will align again. If the first wheel makes N turns and the second makes M turns, then 60N = 64M. Find the smallest integers N and M that satisfy this."
+            },
+            {
+                id: 9,
+                text: "A certain amount of sugar can be divided out into equal heaps each containing 27 g, or 45 g, or 30 g, or 20 g. Find the smallest amount of sugar for which this is possible.",
+                answer: 540,
+                explanation: "This is asking for the LCM of 27, 45, 30, and 20. <br><br><span class='key-concept'>Step 1:</span> Prime factorize: <br>27 = 3³ <br>45 = 3² × 5 <br>30 = 2 × 3 × 5 <br>20 = 2² × 5 <br><br><span class='key-concept'>Step 2:</span> Take highest powers: 2², 3³, 5¹ <br><br><span class='key-concept'>Step 3:</span> Multiply: 4 × 27 × 5 = 540 <br><br>So the smallest amount of sugar is 540 g.",
+                pitfalls: "• Don't mix up LCM and GCD - this is definitely LCM<br>• Check that your answer is divisible by all the given numbers: 540 ÷ 27 = 20, 540 ÷ 45 = 12, etc.<br>• Remember to use the highest power of each prime factor",
+                hint: "You're looking for the smallest amount of sugar that can be divided evenly into heaps of any of these sizes. That's the LCM of 27, 45, 30, and 20."
+            },
+            {
+                id: 10,
+                text: "Find the smallest sum of money that is an exact multiple of £1.12, 64p and 96p.",
+                answer: 1344,
+                explanation: "First, convert everything to the same unit (pence). £1.12 = 112p. <br><br>Now we need the LCM of 112, 64, and 96. <br><br><span class='key-concept'>Step 1:</span> Prime factorize: <br>112 = 2⁴ × 7 <br>64 = 2⁶ <br>96 = 2⁵ × 3 <br><br><span class='key-concept'>Step 2:</span> Take highest powers: 2⁶, 3¹, 7¹ <br><br><span class='key-concept'>Step 3:</span> Multiply: 64 × 3 × 7 = 1344 <br><br>So the smallest sum of money is 1344p, which is £13.44.",
+                pitfalls: "• Convert all amounts to the same unit first<br>• Be careful with pounds and pence: £1.12 = 112p, not 1.12p<br>• Verify: 1344 ÷ 112 = 12, 1344 ÷ 64 = 21, 1344 ÷ 96 = 14",
+                hint: "Convert everything to pence first, then find the LCM of the three numbers. Remember £1.12 = 112 pence."
+            }
+        ];
+        
+        // Initialize variables
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let hintsUsed = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        
+        // DOM elements
+        const questionNumberEl = document.getElementById('question-number');
+        const questionTextEl = document.getElementById('question-text');
+        const answerInputEl = document.getElementById('answer-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const hintBtn = document.getElementById('hint-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackContent = document.getElementById('feedback-content');
+        const explanationEl = document.getElementById('explanation');
+        const pitfallsEl = document.getElementById('pitfalls');
+        const progressBar = document.getElementById('progress-bar');
+        const currentQuestionEl = document.getElementById('current-question');
+        const progressPercentEl = document.getElementById('progress-percent');
+        const correctCountEl = document.getElementById('correct-count');
+        const incorrectCountEl = document.getElementById('incorrect-count');
+        const hintsUsedEl = document.getElementById('hints-used');
+        
+        // Initialize the app
+        function init() {
+            loadQuestion(currentQuestionIndex);
+            updateStats();
+            updateProgress();
+            
+            // Event listeners
+            submitBtn.addEventListener('click', checkAnswer);
+            hintBtn.addEventListener('click', showHint);
+            nextBtn.addEventListener('click', nextQuestion);
+            answerInputEl.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        }
+        
+        // Load a question
+        function loadQuestion(index) {
+            const question = questions[index];
+            
+            questionNumberEl.textContent = `Question ${index + 1}`;
+            questionTextEl.innerHTML = `<div class="question-highlight">${question.text}</div>`;
+            answerInputEl.value = '';
+            answerInputEl.disabled = false;
+            answerInputEl.focus();
+            
+            // Hide feedback and next button, show submit button
+            feedbackContainer.style.display = 'none';
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'flex';
+            hintBtn.style.display = 'flex';
+            
+            // Update progress
+            updateProgress();
+        }
+        
+        // Check the answer
+        function checkAnswer() {
+            const userAnswer = parseInt(answerInputEl.value);
+            const question = questions[currentQuestionIndex];
+            
+            // Validate input
+            if (isNaN(userAnswer)) {
+                alert("Please enter a valid number.");
+                return;
+            }
+            
+            // Store user's answer
+            userAnswers[currentQuestionIndex] = userAnswer;
+            
+            // Check if answer is correct
+            const isCorrect = userAnswer === question.answer;
+            
+            // Update counters
+            if (isCorrect) {
+                correctAnswers++;
+                feedbackContainer.className = "feedback-container correct";
+                feedbackTitle.innerHTML = '<i class="fas fa-check-circle"></i> Correct!';
+            } else {
+                incorrectAnswers++;
+                feedbackContainer.className = "feedback-container incorrect";
+                feedbackTitle.innerHTML = `<i class="fas fa-times-circle"></i> Incorrect. The correct answer is ${question.answer}.`;
+            }
+            
+            // Show feedback
+            explanationEl.innerHTML = question.explanation;
+            pitfallsEl.innerHTML = question.pitfalls;
+            
+            // Disable input and show feedback
+            answerInputEl.disabled = true;
+            feedbackContainer.style.display = 'block';
+            submitBtn.style.display = 'none';
+            hintBtn.style.display = 'none';
+            nextBtn.style.display = 'flex';
+            
+            // Update stats
+            updateStats();
+        }
+        
+        // Show hint for current question
+        function showHint() {
+            const question = questions[currentQuestionIndex];
+            alert(`Hint: ${question.hint}`);
+            hintsUsed++;
+            updateStats();
+        }
+        
+        // Move to next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                // Quiz completed
+                showResults();
+            }
+        }
+        
+        // Update progress bar and text
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            currentQuestionEl.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            progressPercentEl.textContent = `${Math.round(progress)}%`;
+        }
+        
+        // Update statistics
+        function updateStats() {
+            correctCountEl.textContent = correctAnswers;
+            incorrectCountEl.textContent = incorrectAnswers;
+            hintsUsedEl.textContent = hintsUsed;
+        }
+        
+        // Show final results
+        function showResults() {
+            questionNumberEl.textContent = "Quiz Completed!";
+            questionTextEl.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <h2 style="color: #4a00e0; margin-bottom: 20px;">Congratulations!</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 30px;">You have completed all ${questions.length} questions.</p>
+                    
+                    <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; flex-wrap: wrap;">
+                        <div style="text-align: center; background: #e7f1ff; padding: 20px; border-radius: 10px; min-width: 150px;">
+                            <div style="font-size: 2.5rem; font-weight: bold; color: #28a745;">${correctAnswers}</div>
+                            <div>Correct Answers</div>
+                        </div>
+                        
+                        <div style="text-align: center; background: #ffeaea; padding: 20px; border-radius: 10px; min-width: 150px;">
+                            <div style="font-size: 2.5rem; font-weight: bold; color: #dc3545;">${incorrectAnswers}</div>
+                            <div>Incorrect Answers</div>
+                        </div>
+                        
+                        <div style="text-align: center; background: #fff3cd; padding: 20px; border-radius: 10px; min-width: 150px;">
+                            <div style="font-size: 2.5rem; font-weight: bold; color: #ffc107;">${hintsUsed}</div>
+                            <div>Hints Used</div>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 1.1rem; margin-bottom: 30px;">Your final score: <strong>${Math.round((correctAnswers / questions.length) * 100)}%</strong></p>
+                    
+                    <button id="restart-btn" style="padding: 15px 30px; font-size: 1.2rem; background: linear-gradient(to right, #4a00e0, #8e2de2); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                        <i class="fas fa-redo"></i> Restart Quiz
+                    </button>
+                </div>
+            `;
+            
+            answerInputEl.style.display = 'none';
+            submitBtn.style.display = 'none';
+            hintBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+            feedbackContainer.style.display = 'none';
+            
+            // Add event listener for restart button
+            setTimeout(() => {
+                document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+            }, 100);
+        }
+        
+        // Restart the quiz
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            hintsUsed = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            
+            // Reset UI
+            answerInputEl.style.display = 'block';
+            submitBtn.style.display = 'flex';
+            hintBtn.style.display = 'flex';
+            
+            loadQuestion(currentQuestionIndex);
+            updateStats();
+        }
+        
+        // Initialize the app when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

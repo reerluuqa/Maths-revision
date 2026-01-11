@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LCM and GCD Problem Solver — LCM Practice</title>
+  <style>
+    :root{
+      --bg1:#4b2dbf;
+      --bg2:#3a63ff;
+      --card:#ffffff;
+      --ink:#1b1b28;
+      --muted:#6b6b86;
+      --soft:#f4f5ff;
+      --line:#e6e7ff;
+      --purple:#6d28d9;
+      --purple2:#7c3aed;
+      --good:#10b981;
+      --bad:#ef4444;
+      --warn:#f59e0b;
+      --shadow: 0 18px 60px rgba(16, 8, 60, .28);
+      --shadow2: 0 10px 28px rgba(16, 8, 60, .16);
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background:
+        radial-gradient(900px 600px at 20% 20%, rgba(255,255,255,.18), transparent 55%),
+        radial-gradient(900px 600px at 85% 75%, rgba(0,0,0,.14), transparent 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 16px;
+    }
+
+    .app{
+      width:min(980px, 100%);
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      align-items:center;
+    }
+
+    .card{
+      width:min(840px, 100%);
+      background:var(--card);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.35);
+    }
+
+    .header{
+      padding:26px 28px 18px;
+      background: linear-gradient(135deg, rgba(124,58,237,.22), rgba(99,102,241,.12));
+      border-bottom:1px solid var(--line);
+      position:relative;
+    }
+
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .title h1{
+      margin:0;
+      font-size:26px;
+      letter-spacing:.2px;
+      line-height:1.15;
+      color:#24124b;
+    }
+    .title p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.35;
+    }
+
+    .toprow{
+      margin-top:18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .progressWrap{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-width:200px;
+    }
+    .progressMeta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .bar{
+      height:10px;
+      width:100%;
+      background:#e9e6ff;
+      border-radius:999px;
+      overflow:hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, #22c55e, #a3e635);
+      border-radius:999px;
+      transition:width .45s ease;
+    }
+
+    .chip{
+      flex:0 0 auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(255,255,255,.7);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 12px;
+      box-shadow: var(--shadow2);
+    }
+    .chip b{
+      font-size:12px;
+      color:#3a2b66;
+      letter-spacing:.2px;
+    }
+    .chip span{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .content{
+      padding:22px 28px 26px;
+    }
+
+    .qMeta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .qMeta .qNo{
+      color:#4c1d95;
+      font-weight:700;
+      font-size:14px;
+    }
+    .qMeta .pill{
+      font-size:12px;
+      color:var(--muted);
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--soft);
+      border:1px solid var(--line);
+    }
+
+    .prompt{
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(124,58,237,.10), rgba(99,102,241,.06));
+      border:1px solid rgba(124,58,237,.22);
+      padding:16px 16px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      position:relative;
+    }
+    .prompt::before{
+      content:"";
+      width:4px;
+      border-radius:999px;
+      background: linear-gradient(180deg, var(--purple), #60a5fa);
+      position:absolute;
+      left:10px;
+      top:12px;
+      bottom:12px;
+      opacity:.9;
+    }
+    .promptText{
+      padding-left:14px;
+      font-size:16px;
+      line-height:1.45;
+      color:#1f1a2c;
+    }
+
+    .answerRow{
+      margin-top:16px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+    }
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .field{
+      flex:1;
+      min-width:230px;
+    }
+    input[type="text"]{
+      width:100%;
+      padding:14px 14px;
+      font-size:16px;
+      border-radius:14px;
+      border:2px solid rgba(109,40,217,.35);
+      outline:none;
+      background:#ffffff;
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+    input[type="text"]:focus{
+      border-color: rgba(109,40,217,.8);
+      box-shadow: 0 0 0 4px rgba(109,40,217,.15);
+    }
+    input[type="text"][disabled]{
+      background:#f7f7ff;
+      cursor:not-allowed;
+      opacity:.9;
+    }
+
+    .btnRow{
+      display:flex;
+      gap:12px;
+      flex:0 0 auto;
+      flex-wrap:wrap;
+    }
+    button{
+      border:0;
+      cursor:pointer;
+      font-weight:700;
+      letter-spacing:.2px;
+      padding:13px 16px;
+      border-radius:14px;
+      transition: transform .06s ease, filter .15s ease, box-shadow .15s ease;
+      box-shadow: var(--shadow2);
+      user-select:none;
+      white-space:nowrap;
+    }
+    button:active{ transform: translateY(1px); }
+    .primary{
+      color:#fff;
+      background: linear-gradient(90deg, #10b981, #a3e635);
+    }
+    .secondary{
+      color:#3a2b66;
+      background: linear-gradient(90deg, rgba(245,158,11,.18), rgba(251,191,36,.18));
+      border:1px solid rgba(245,158,11,.35);
+      box-shadow:none;
+    }
+    .ghost{
+      color:#3a2b66;
+      background: #ffffff;
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+
+    .feedback{
+      margin-top:14px;
+      display:none;
+      padding:14px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: var(--soft);
+    }
+    .feedback.show{ display:block; }
+    .fbHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .badge{
+      font-size:12px;
+      font-weight:800;
+      padding:6px 10px;
+      border-radius:999px;
+      letter-spacing:.2px;
+      color:#fff;
+    }
+    .badge.good{ background: var(--good); }
+    .badge.bad{ background: var(--bad); }
+    .badge.hint{ background: var(--warn); color:#2a1700; }
+    .fbHead .correctAns{
+      color:#2b2450;
+      font-weight:800;
+      font-size:13px;
+    }
+
+    .explain{
+      color:#2b2450;
+      font-size:14px;
+      line-height:1.55;
+    }
+    .explain .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 13px;
+      background: rgba(124,58,237,.08);
+      border:1px solid rgba(124,58,237,.15);
+      padding:2px 6px;
+      border-radius:8px;
+      white-space:nowrap;
+    }
+    .explain ul{
+      margin:10px 0 0 18px;
+      padding:0;
+    }
+    .explain li{
+      margin:6px 0;
+      color:#2b2450;
+    }
+
+    .bottomStats{
+      width:min(840px, 100%);
+      display:flex;
+      gap:14px;
+      justify-content:center;
+      align-items:center;
+      color:#fff;
+      opacity:.95;
+      margin-top:2px;
+      flex-wrap:wrap;
+    }
+    .stat{
+      text-align:center;
+      min-width:160px;
+    }
+    .stat .n{
+      font-size:28px;
+      font-weight:900;
+      line-height:1.05;
+    }
+    .stat .t{
+      font-size:12px;
+      letter-spacing:.2px;
+      opacity:.9;
+    }
+
+    .footer{
+      color:rgba(255,255,255,.85);
+      font-size:12px;
+      text-align:center;
+      margin-top:6px;
+    }
+
+    @media (max-width:560px){
+      .header{ padding:22px 18px 16px; }
+      .content{ padding:18px 18px 22px; }
+      .title h1{ font-size:22px; }
+      .promptText{ font-size:15px; }
+      .chip{ display:none; }
+      .stat{ min-width:140px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card" role="application" aria-label="LCM practice app">
+      <div class="header">
+        <div class="title">
+          <h1>LCM and GCD Problem Solver</h1>
+          <p>Master Least Common Multiple and Greatest Common Divisor through guided practice (with instant feedback and explanations).</p>
+        </div>
+
+        <div class="toprow">
+          <div class="progressWrap">
+            <div class="progressMeta">
+              <div id="qCount">Question 1 of 1</div>
+              <div id="pct">0%</div>
+            </div>
+            <div class="bar" aria-label="progress bar" aria-valuemin="0" aria-valuemax="100">
+              <div id="barFill" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div class="chip" aria-label="mode">
+            <b>Mode</b><span>LCM practice</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="qMeta">
+          <div class="qNo" id="qLabel">Question</div>
+          <div class="pill" id="topicPill">LCM</div>
+        </div>
+
+        <div class="prompt" aria-live="polite">
+          <div class="promptText" id="promptText"></div>
+        </div>
+
+        <div class="answerRow">
+          <div class="field">
+            <label for="answerInput">Your Answer</label>
+            <input id="answerInput" type="text" inputmode="numeric" autocomplete="off" placeholder="Enter your answer (e.g., 60)" />
+          </div>
+
+          <div class="btnRow">
+            <button class="primary" id="submitBtn">Submit Answer</button>
+            <button class="secondary" id="hintBtn">Show Hint</button>
+            <button class="ghost" id="skipBtn" title="Skip without scoring">Skip</button>
+          </div>
+        </div>
+
+        <div class="feedback" id="feedbackBox">
+          <div class="fbHead">
+            <div class="badge" id="badge">—</div>
+            <div class="correctAns" id="correctAns"></div>
+          </div>
+          <div class="explain" id="explainText"></div>
+          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="primary" id="nextBtn" style="display:none;">Next Question</button>
+            <button class="ghost" id="retryBtn" style="display:none;">Try Again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottomStats" aria-label="scoreboard">
+      <div class="stat">
+        <div class="n" id="correctN">0</div>
+        <div class="t">Correct Answers</div>
+      </div>
+      <div class="stat">
+        <div class="n" id="incorrectN">0</div>
+        <div class="t">Incorrect Answers</div>
+      </div>
+      <div class="stat">
+        <div class="n" id="hintsN">0</div>
+        <div class="t">Hints Used</div>
+      </div>
+    </div>
+
+    <div class="footer">Educational tool for mathematics — LCM focus</div>
+  </div>
+
+  <script>
+    // -----------------------------
+    // Question bank (includes the bell-interval LCM word problem + the attached list #11–#40)
+    // -----------------------------
+    const QUESTIONS = [
+      {
+        id: "WP-1",
+        type: "lcm",
+        nums: [8, 15, 12, 9],
+        prompt:
+          "Four bells toll at intervals of 8 s, 15 s, 12 s and 9 s respectively. If they start together, how long will elapse before they next toll simultaneously?",
+        units: "seconds"
+      },
+
+      // From the attached page:
+      { id: 11, type: "lcm", nums: [4, 6], prompt: "Find the L.C.M. of 4 and 6." },
+      { id: 12, type: "lcm", nums: [6, 8], prompt: "Find the L.C.M. of 6 and 8." },
+      { id: 13, type: "lcm", nums: [6, 9], prompt: "Find the L.C.M. of 6 and 9." },
+      { id: 14, type: "lcm", nums: [7, 8], prompt: "Find the L.C.M. of 7 and 8." },
+      { id: 15, type: "lcm", nums: [8, 12], prompt: "Find the L.C.M. of 8 and 12." },
+      { id: 16, type: "lcm", nums: [9, 12], prompt: "Find the L.C.M. of 9 and 12." },
+      { id: 17, type: "lcm", nums: [2, 3, 4], prompt: "Find the L.C.M. of 2, 3 and 4." },
+      { id: 18, type: "lcm", nums: [3, 4, 6], prompt: "Find the L.C.M. of 3, 4 and 6." },
+      { id: 19, type: "lcm", nums: [4, 6, 9], prompt: "Find the L.C.M. of 4, 6 and 9." },
+      { id: 20, type: "lcm", nums: [6, 8, 12], prompt: "Find the L.C.M. of 6, 8 and 12." },
+      { id: 21, type: "lcm", nums: [8, 10, 15], prompt: "Find the L.C.M. of 8, 10 and 15." },
+      { id: 22, type: "lcm", nums: [6, 8, 10], prompt: "Find the L.C.M. of 6, 8 and 10." },
+      { id: 23, type: "lcm", nums: [10, 12, 15], prompt: "Find the L.C.M. of 10, 12 and 15." },
+      { id: 24, type: "lcm", nums: [5, 6, 9], prompt: "Find the L.C.M. of 5, 6 and 9." },
+      { id: 25, type: "lcm", nums: [7, 8, 12], prompt: "Find the L.C.M. of 7, 8 and 12." },
+      { id: 26, type: "lcm", nums: [9, 12, 15], prompt: "Find the L.C.M. of 9, 12 and 15." },
+      { id: 27, type: "lcm", nums: [10, 16, 18], prompt: "Find the L.C.M. of 10, 16 and 18." },
+      { id: 28, type: "lcm", nums: [4, 5, 6, 9], prompt: "Find the L.C.M. of 4, 5, 6 and 9." },
+      { id: 29, type: "lcm", nums: [6, 8, 10, 12], prompt: "Find the L.C.M. of 6, 8, 10 and 12." },
+      { id: 30, type: "lcm", nums: [9, 10, 12, 15], prompt: "Find the L.C.M. of 9, 10, 12 and 15." },
+      { id: 31, type: "lcm", nums: [5, 7, 11], prompt: "Find the L.C.M. of 5, 7 and 11." },
+      { id: 32, type: "lcm", nums: [9, 11, 13], prompt: "Find the L.C.M. of 9, 11 and 13." },
+      { id: 33, type: "lcm", nums: [14, 21, 18], prompt: "Find the L.C.M. of 14, 21 and 18." },
+      { id: 34, type: "lcm", nums: [24, 15, 20], prompt: "Find the L.C.M. of 24, 15 and 20." },
+      { id: 35, type: "lcm", nums: [32, 24, 40], prompt: "Find the L.C.M. of 32, 24 and 40." },
+      { id: 36, type: "lcm", nums: [35, 42, 28], prompt: "Find the L.C.M. of 35, 42 and 28." },
+      { id: 37, type: "lcm", nums: [36, 48, 54, 72], prompt: "Find the L.C.M. of 36, 48, 54 and 72." },
+      { id: 38, type: "lcm", nums: [90, 45, 30, 75], prompt: "Find the L.C.M. of 90, 45, 30 and 75." },
+      { id: 39, type: "lcm", nums: [49, 70, 105, 84], prompt: "Find the L.C.M. of 49, 70, 105 and 84." },
+      { id: 40, type: "lcm", nums: [84, 72, 112, 60], prompt: "Find the L.C.M. of 84, 72, 112 and 60." },
+    ];
+
+    // -----------------------------
+    // Math helpers
+    // -----------------------------
+    function gcd(a, b){
+      a = Math.abs(a); b = Math.abs(b);
+      while(b !== 0){ const t = a % b; a = b; b = t; }
+      return a;
+    }
+
+    function lcm2(a, b){
+      if (a === 0 || b === 0) return 0;
+      return Math.abs(a / gcd(a,b) * b);
+    }
+
+    function lcmMany(arr){
+      return arr.reduce((acc, v) => lcm2(acc, v), 1);
+    }
+
+    function primeFactorMap(n){
+      // returns map: prime -> exponent (for n>=1)
+      let x = n;
+      const m = new Map();
+      let p = 2;
+      while(p * p <= x){
+        while(x % p === 0){
+          m.set(p, (m.get(p) || 0) + 1);
+          x = Math.floor(x / p);
+        }
+        p = (p === 2) ? 3 : (p + 2);
+      }
+      if (x > 1) m.set(x, (m.get(x) || 0) + 1);
+      return m;
+    }
+
+    function factorString(n){
+      if (n === 1) return "1";
+      const m = primeFactorMap(n);
+      const parts = [];
+      for (const [p,e] of [...m.entries()].sort((a,b)=>a[0]-b[0])){
+        parts.push(e === 1 ? `${p}` : `${p}^${e}`);
+      }
+      return parts.join(" × ");
+    }
+
+    function lcmPrimeExplanation(nums){
+      // Build: prime exponents max across numbers
+      const maps = nums.map(primeFactorMap);
+      const allPrimes = new Set();
+      maps.forEach(mp => mp.forEach((_,p)=>allPrimes.add(p)));
+      const primesSorted = [...allPrimes].sort((a,b)=>a-b);
+
+      const maxExp = new Map();
+      primesSorted.forEach(p => {
+        let mx = 0;
+        maps.forEach(mp => { mx = Math.max(mx, mp.get(p) || 0); });
+        maxExp.set(p, mx);
+      });
+
+      // Construct LCM product string and compute product
+      let product = 1;
+      const prodParts = [];
+      primesSorted.forEach(p => {
+        const e = maxExp.get(p);
+        if (e > 0){
+          product *= Math.pow(p, e);
+          prodParts.push(e === 1 ? `${p}` : `${p}^${e}`);
+        }
+      });
+
+      // Per-number breakdown
+      const per = nums.map(n => `${n} = <span class="mono">${factorString(n)}</span>`).join("<br>");
+
+      const maxLine = primesSorted
+        .filter(p => maxExp.get(p) > 0)
+        .map(p => {
+          const e = maxExp.get(p);
+          const eText = e === 1 ? `${p}` : `${p}^${e}`;
+          return `<span class="mono">${eText}</span>`;
+        }).join(" × ");
+
+      const lcmLine = `<span class="mono">${maxLine || "1"}</span> = <span class="mono">${product}</span>`;
+
+      return { per, lcmLine, product };
+    }
+
+    function sanitizeNumericInput(raw){
+      // allow commas/spaces; extract first integer-looking token
+      const s = (raw ?? "").toString().trim().replace(/,/g,"").replace(/\s+/g," ");
+      if (!s) return null;
+      const m = s.match(/-?\d+/);
+      if (!m) return null;
+      const v = Number(m[0]);
+      if (!Number.isFinite(v)) return null;
+      return v;
+    }
+
+    // -----------------------------
+    // UI state
+    // -----------------------------
+    let idx = 0;
+    let correct = 0;
+    let incorrect = 0;
+    let hints = 0;
+
+    const el = {
+      qCount: document.getElementById("qCount"),
+      pct: document.getElementById("pct"),
+      barFill: document.getElementById("barFill"),
+      qLabel: document.getElementById("qLabel"),
+      topicPill: document.getElementById("topicPill"),
+      promptText: document.getElementById("promptText"),
+      answerInput: document.getElementById("answerInput"),
+      submitBtn: document.getElementById("submitBtn"),
+      hintBtn: document.getElementById("hintBtn"),
+      skipBtn: document.getElementById("skipBtn"),
+      feedbackBox: document.getElementById("feedbackBox"),
+      badge: document.getElementById("badge"),
+      correctAns: document.getElementById("correctAns"),
+      explainText: document.getElementById("explainText"),
+      nextBtn: document.getElementById("nextBtn"),
+      retryBtn: document.getElementById("retryBtn"),
+      correctN: document.getElementById("correctN"),
+      incorrectN: document.getElementById("incorrectN"),
+      hintsN: document.getElementById("hintsN"),
+    };
+
+    function setProgress(){
+      const total = QUESTIONS.length;
+      const n = Math.min(idx + 1, total);
+      el.qCount.textContent = `Question ${n} of ${total}`;
+      const pct = Math.round((idx / total) * 100);
+      el.pct.textContent = `${pct}%`;
+      el.barFill.style.width = `${pct}%`;
+      el.barFill.parentElement.setAttribute("aria-valuenow", String(pct));
+    }
+
+    function setStats(){
+      el.correctN.textContent = String(correct);
+      el.incorrectN.textContent = String(incorrect);
+      el.hintsN.textContent = String(hints);
+    }
+
+    function resetFeedback(){
+      el.feedbackBox.classList.remove("show");
+      el.explainText.innerHTML = "";
+      el.correctAns.textContent = "";
+      el.nextBtn.style.display = "none";
+      el.retryBtn.style.display = "none";
+    }
+
+    function lockAnswer(lock){
+      el.answerInput.disabled = lock;
+      el.submitBtn.disabled = lock;
+      el.hintBtn.disabled = lock;
+    }
+
+    function renderQuestion(){
+      if (idx >= QUESTIONS.length){
+        // End screen
+        const total = QUESTIONS.length;
+        el.qLabel.textContent = "All done";
+        el.topicPill.textContent = "Summary";
+        el.promptText.innerHTML =
+          `<b>You completed the set.</b><br><br>` +
+          `Score: <span class="mono">${correct}</span> correct, <span class="mono">${incorrect}</span> incorrect, <span class="mono">${hints}</span> hints used.<br><br>` +
+          `Restart to practice again (you can also focus on prime-factor LCM pitfalls below).`;
+
+        el.answerInput.value = "";
+        el.answerInput.placeholder = "Restart to try again";
+        lockAnswer(true);
+
+        el.feedbackBox.classList.add("show");
+        el.badge.className = "badge good";
+        el.badge.textContent = "Completed";
+        el.correctAns.textContent = "";
+
+        el.explainText.innerHTML = `
+          <div style="margin-bottom:10px;"><b>High-yield pitfalls to avoid (LCM)</b></div>
+          <ul>
+            <li><b>Taking the GCD by mistake:</b> LCM uses the <b>highest</b> prime powers; GCD uses the <b>lowest</b> shared powers.</li>
+            <li><b>Multiplying all numbers blindly:</b> that usually overcounts shared factors and explodes the result.</li>
+            <li><b>Dropping prime powers:</b> e.g., if one number has <span class="mono">2^4</span> and another has <span class="mono">2^3</span>, LCM needs <span class="mono">2^4</span> (not <span class="mono">2^3</span>).</li>
+            <li><b>Not fully factoring:</b> missing a factor (like treating 18 as 2×9 but forgetting 9=3²).</li>
+            <li><b>Units in word problems:</b> for intervals, the LCM is the next time they coincide (often convert to minutes only after computing seconds).</li>
+          </ul>
+          <div style="margin-top:12px;">
+            <button class="primary" id="restartBtn">Restart Practice</button>
+          </div>
+        `;
+
+        // bind restart button (created dynamically)
+        setTimeout(() => {
+          const r = document.getElementById("restartBtn");
+          if (r){
+            r.onclick = () => {
+              idx = 0; correct = 0; incorrect = 0; hints = 0;
+              setProgress(); setStats();
+              lockAnswer(false);
+              el.answerInput.placeholder = "Enter your answer (e.g., 60)";
+              renderQuestion();
+            };
+          }
+        }, 0);
+
+        return;
+      }
+
+      const q = QUESTIONS[idx];
+      el.qLabel.textContent = `Question ${q.id}`;
+      el.topicPill.textContent = "LCM";
+      el.promptText.textContent = q.prompt;
+      el.answerInput.value = "";
+      el.answerInput.focus();
+      resetFeedback();
+      lockAnswer(false);
+      setProgress();
+    }
+
+    function buildHint(q){
+      const nums = q.nums;
+      const { per, lcmLine } = lcmPrimeExplanation(nums);
+      const list = nums.join(", ");
+      const hint = `
+        <div style="margin-bottom:8px;">
+          <b>Hint:</b> Factor each number into primes, then take <b>each prime with the highest exponent</b> seen across all numbers.
+        </div>
+        <div style="margin-top:10px;">
+          Numbers: <span class="mono">${list}</span><br><br>
+          ${per}<br><br>
+          LCM uses max powers → ${lcmLine}
+        </div>
+      `;
+      return hint;
+    }
+
+    function buildExplanation(q){
+      const nums = q.nums;
+      const { per, lcmLine, product } = lcmPrimeExplanation(nums);
+
+      const pitfalls = `
+        <div style="margin-top:12px;"><b>Common pitfalls</b></div>
+        <ul>
+          <li><b>Using only common factors</b> (that’s GCD thinking). For LCM, include primes that appear in <i>any</i> number.</li>
+          <li><b>Forgetting the highest power</b>: if one number contains <span class="mono">p^k</span> and another contains <span class="mono">p^m</span>, LCM needs <span class="mono">p^{max(k,m)}</span>.</li>
+          <li><b>Stopping factoring early</b>: fully reduce composites (e.g., 12 = 2²×3, 18 = 2×3²).</li>
+          <li><b>Multiplying all numbers</b>: overcounts shared primes and gives an unnecessarily huge result.</li>
+        </ul>
+      `;
+
+      let unitsLine = "";
+      if (q.units === "seconds"){
+        const minutes = product / 60;
+        unitsLine = `
+          <div style="margin-top:10px;">
+            Since the intervals are in seconds, the next simultaneous toll occurs after <span class="mono">${product}</span> seconds.
+            That is <span class="mono">${minutes}</span> minutes.
+          </div>
+        `;
+      }
+
+      return `
+        <div style="margin-bottom:8px;"><b>Prime factorization method</b></div>
+        <div>${per}</div>
+        <div style="margin-top:10px;">
+          Take each prime at its <b>maximum</b> exponent across the set:
+          <br>${lcmLine}
+        </div>
+        ${unitsLine}
+        ${pitfalls}
+      `;
+    }
+
+    function checkAnswer(){
+      const q = QUESTIONS[idx];
+      const correctValue = lcmMany(q.nums);
+      const given = sanitizeNumericInput(el.answerInput.value);
+
+      if (given === null){
+        el.feedbackBox.classList.add("show");
+        el.badge.className = "badge bad";
+        el.badge.textContent = "Invalid";
+        el.correctAns.textContent = "Enter an integer (e.g., 60).";
+        el.explainText.innerHTML = `
+          <div>Only whole numbers are accepted here.</div>
+          <div style="margin-top:10px;"><b>Tip:</b> If you typed units (like “seconds”), just enter the number.</div>
+        `;
+        el.retryBtn.style.display = "inline-flex";
+        el.retryBtn.onclick = () => { resetFeedback(); el.answerInput.focus(); };
+        return;
+      }
+
+      const isCorrect = (given === correctValue);
+
+      el.feedbackBox.classList.add("show");
+      el.correctAns.textContent = `Correct answer: ${correctValue}${q.units ? " " + q.units : ""}`;
+
+      if (isCorrect){
+        correct++;
+        el.badge.className = "badge good";
+        el.badge.textContent = "Correct";
+        el.explainText.innerHTML = buildExplanation(q);
+        lockAnswer(true);
+        el.nextBtn.style.display = "inline-flex";
+        el.nextBtn.onclick = () => {
+          idx++;
+          renderQuestion();
+        };
+      }else{
+        incorrect++;
+        el.badge.className = "badge bad";
+        el.badge.textContent = "Incorrect";
+        el.explainText.innerHTML = `
+          <div style="margin-bottom:8px;">
+            Your answer: <span class="mono">${given}</span>.
+          </div>
+          ${buildExplanation(q)}
+        `;
+        // Allow either try again (no extra penalty) or next
+        el.retryBtn.style.display = "inline-flex";
+        el.nextBtn.style.display = "inline-flex";
+        el.retryBtn.onclick = () => { resetFeedback(); el.answerInput.focus(); };
+        el.nextBtn.onclick = () => { idx++; renderQuestion(); };
+      }
+
+      setStats();
+    }
+
+    function showHint(){
+      const q = QUESTIONS[idx];
+      hints++;
+      setStats();
+
+      el.feedbackBox.classList.add("show");
+      el.badge.className = "badge hint";
+      el.badge.textContent = "Hint";
+      el.correctAns.textContent = "";
+      el.explainText.innerHTML = buildHint(q);
+
+      el.retryBtn.style.display = "inline-flex";
+      el.retryBtn.textContent = "Got it";
+      el.retryBtn.onclick = () => { resetFeedback(); el.answerInput.focus(); };
+
+      el.nextBtn.style.display = "none";
+    }
+
+    function skipQuestion(){
+      idx++;
+      renderQuestion();
+    }
+
+    // -----------------------------
+    // Events
+    // -----------------------------
+    el.submitBtn.addEventListener("click", checkAnswer);
+    el.hintBtn.addEventListener("click", showHint);
+    el.skipBtn.addEventListener("click", skipQuestion);
+
+    el.answerInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") checkAnswer();
+    });
+
+    // Start
+    setStats();
+    setProgress();
+    renderQuestion();
+  </script>
+</body>
+</html>

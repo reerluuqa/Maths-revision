@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HCF (GCD) Tutor — One Question at a Time</title>
+  <style>
+    :root{
+      --bg: #f6f7f9;
+      --card: #ffffff;
+      --mutedCard: #f2f4f7;
+      --text: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --accent: #2563eb;
+      --good: #16a34a;
+      --bad: #dc2626;
+      --shadow: 0 10px 30px rgba(17,24,39,.08);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      line-height:1.45;
+    }
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 16px;
+    }
+    .app{
+      width:min(980px, 100%);
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:18px;
+    }
+    @media (max-width: 900px){
+      .app{grid-template-columns:1fr}
+    }
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .header{
+      padding:20px 22px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .title{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .pill{
+      background: #eef2ff;
+      color: #3730a3;
+      border: 1px solid #e0e7ff;
+      padding:6px 10px;
+      border-radius: 999px;
+      font-size:12px;
+      white-space:nowrap;
+      height: fit-content;
+    }
+    .body{
+      padding:18px 22px 22px;
+    }
+    .qbox{
+      background: var(--mutedCard);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding:14px 14px;
+      margin-bottom:14px;
+    }
+    .qmeta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .progress{
+      height:10px;
+      background:#e5e7eb;
+      border-radius:999px;
+      overflow:hidden;
+      width:100%;
+      border:1px solid #dde3ea;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: var(--accent);
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+    .qtext{
+      margin:0;
+      font-size:20px;
+      font-weight:650;
+      letter-spacing:.2px;
+    }
+    .hint{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+    }
+    label{
+      font-size:12px;
+      color: var(--muted);
+      display:block;
+      margin-bottom:6px;
+    }
+    input[type="text"]{
+      width:min(220px, 100%);
+      padding:12px 12px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      font-size:16px;
+      outline:none;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color: #c7d2fe;
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+    }
+    .btn{
+      border:1px solid var(--line);
+      background:#fff;
+      padding:12px 14px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:14px;
+      transition: transform .04s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+    }
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{
+      background: var(--accent);
+      border-color: var(--accent);
+      color:#fff;
+    }
+    .btn.primary:hover{filter: brightness(0.98)}
+    .btn.ghost{
+      background:#f8fafc;
+    }
+    .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
+    .feedback{
+      margin-top:14px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background:#fff;
+      overflow:hidden;
+    }
+    .feedbackHead{
+      padding:10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid var(--line);
+      font-size:13px;
+    }
+    .status{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-weight:700;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: var(--muted);
+    }
+    .dot.good{background: var(--good)}
+    .dot.bad{background: var(--bad)}
+    .feedbackBody{
+      padding:12px 12px 14px;
+      font-size:13px;
+      color:#111827;
+    }
+    .feedbackBody h4{
+      margin:12px 0 6px;
+      font-size:13px;
+      letter-spacing:.2px;
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size:12.5px;
+      background:#f8fafc;
+      border:1px solid var(--line);
+      padding:10px 10px;
+      border-radius: 12px;
+      overflow:auto;
+      white-space:pre-wrap;
+      margin:8px 0 0;
+    }
+
+    /* Right panel */
+    .side{
+      padding:18px 18px 18px;
+    }
+    .side .box{
+      background: var(--mutedCard);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding:14px 14px;
+      margin-bottom:12px;
+    }
+    .side h3{
+      margin:0 0 8px;
+      font-size:14px;
+      letter-spacing:.2px;
+    }
+    .side p, .side li{
+      margin:0;
+      color: var(--muted);
+      font-size:13px;
+    }
+    .side ul{margin:8px 0 0; padding-left:18px}
+    .kbd{
+      display:inline-block;
+      padding:1px 7px;
+      border-radius:8px;
+      background:#fff;
+      border:1px solid var(--line);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size:12px;
+      color:#374151;
+      margin:0 2px;
+    }
+    .tiny{
+      font-size:12px;
+      color: var(--muted);
+      margin-top:8px;
+    }
+    .footerRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-top:10px;
+      flex-wrap:wrap;
+      color: var(--muted);
+      font-size:12px;
+    }
+    .linkish{
+      color: var(--accent);
+      font-weight:600;
+      cursor:pointer;
+      text-decoration:none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="app">
+      <!-- Main -->
+      <section class="card" aria-label="HCF Tutor">
+        <div class="header">
+          <div>
+            <h1 class="title">Highest Common Factor (HCF / GCD) Tutor</h1>
+            <p class="subtitle">One question at a time • instant feedback • full working & pitfalls</p>
+          </div>
+          <div class="pill" id="scorePill">Score: 0 / 0</div>
+        </div>
+
+        <div class="body">
+          <div class="qbox">
+            <div class="qmeta">
+              <div style="min-width:170px">
+                <div style="font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.2px;">
+                  Question <span id="qIndex">1</span> of <span id="qTotal">—</span>
+                </div>
+              </div>
+              <div class="progress" aria-label="Progress">
+                <div class="bar" id="bar"></div>
+              </div>
+            </div>
+
+            <p class="qtext" id="qText">Loading…</p>
+            <p class="hint" id="qHint">Tip: HCF is the largest number that divides every given number exactly.</p>
+          </div>
+
+          <div class="controls">
+            <div>
+              <label for="answer">Your answer (HCF)</label>
+              <input id="answer" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g., 6" />
+            </div>
+            <button class="btn primary" id="checkBtn">Check</button>
+            <button class="btn ghost" id="showBtn" title="Reveal the correct HCF and working">Show answer</button>
+            <button class="btn" id="nextBtn" disabled>Next</button>
+            <button class="btn" id="resetBtn" title="Start over from question 1">Reset</button>
+          </div>
+
+          <div class="feedback" id="feedback" hidden>
+            <div class="feedbackHead">
+              <div class="status" id="statusLine">
+                <span class="dot" id="statusDot"></span>
+                <span id="statusText">—</span>
+              </div>
+              <div style="color:var(--muted);font-weight:700" id="correctLine">Correct HCF: —</div>
+            </div>
+            <div class="feedbackBody" id="feedbackBody"></div>
+          </div>
+
+          <div class="footerRow">
+            <div>Keyboard: <span class="kbd">Enter</span> check • <span class="kbd">N</span> next • <span class="kbd">R</span> reset</div>
+            <a class="linkish" href="#" id="toggleMethod">Show both methods: ON</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Side info -->
+      <aside class="card side" aria-label="Concepts and pitfalls">
+        <div class="box">
+          <h3>What you’re practising</h3>
+          <p><b>HCF (GCD)</b> of several numbers is the <b>largest</b> integer that divides <b>each</b> number with no remainder.</p>
+          <p class="tiny">To find HCF of 3+ numbers, compute it <b>pairwise</b>: HCF(a,b,c) = HCF(HCF(a,b), c).</p>
+        </div>
+        <div class="box">
+          <h3>Fast methods you’ll see</h3>
+          <ul>
+            <li><b>Prime factorisation</b>: keep only primes common to all, using the <b>smallest powers</b>.</li>
+            <li><b>Euclidean algorithm</b>: repeated remainders; very fast for large values.</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h3>Common pitfalls (avoid these)</h3>
+          <ul>
+            <li>Stopping at “a common factor” (like 2) instead of the <b>greatest</b>.</li>
+            <li>For prime factors, using the <b>largest</b> powers (that’s for LCM), not the <b>smallest</b>.</li>
+            <li>For 3–4 numbers, finding HCF of only two and forgetting to check the rest.</li>
+            <li>When the HCF is <b>1</b>, it means the numbers are <b>coprime</b> as a set — that’s valid.</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h3>Mini-check</h3>
+          <p>If your answer is the HCF, it must divide <b>every</b> number exactly. Quick test: divide each number mentally and ensure remainder = 0.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+<script>
+/* =========================
+   Data (from the attached list of number sets)
+   ========================= */
+const QUESTIONS = [
+  {id: 11, nums:[4,6]},
+  {id: 12, nums:[6,8]},
+  {id: 13, nums:[6,9]},
+  {id: 14, nums:[7,8]},
+  {id: 15, nums:[8,12]},
+  {id: 16, nums:[9,12]},
+  {id: 17, nums:[2,3,4]},
+  {id: 18, nums:[3,4,6]},
+  {id: 19, nums:[4,6,9]},
+  {id: 20, nums:[6,8,12]},
+  {id: 21, nums:[8,10,15]},
+  {id: 22, nums:[6,8,10]},
+  {id: 23, nums:[10,12,15]},
+  {id: 24, nums:[5,6,9]},
+  {id: 25, nums:[7,8,12]},
+  {id: 26, nums:[9,12,15]},
+  {id: 27, nums:[10,16,18]},
+  {id: 28, nums:[4,5,6,9]},
+  {id: 29, nums:[6,8,10,12]},
+  {id: 30, nums:[9,10,12,15]},
+  {id: 31, nums:[5,7,11]},
+  {id: 32, nums:[9,11,13]},
+  {id: 33, nums:[14,21,18]},
+  {id: 34, nums:[24,15,20]},
+  {id: 35, nums:[32,24,40]},
+  {id: 36, nums:[35,42,28]},
+  {id: 37, nums:[36,48,54,72]},
+  {id: 38, nums:[90,45,30,75]},
+  {id: 39, nums:[49,70,105,84]},
+  {id: 40, nums:[84,72,112,60]},
+];
+
+/* =========================
+   Math helpers
+   ========================= */
+function gcd(a,b){
+  a = Math.abs(a); b = Math.abs(b);
+  while(b !== 0){
+    const t = a % b;
+    a = b;
+    b = t;
+  }
+  return a;
+}
+function gcdList(arr){
+  return arr.reduce((acc,x)=>gcd(acc,x));
+}
+function primeFactors(n){
+  // returns map prime -> exponent
+  n = Math.abs(n);
+  const out = new Map();
+  let d = 2;
+  while(d*d <= n){
+    while(n % d === 0){
+      out.set(d, (out.get(d)||0) + 1);
+      n = Math.floor(n/d);
+    }
+    d = (d===2) ? 3 : d+2;
+  }
+  if(n > 1) out.set(n, (out.get(n)||0) + 1);
+  return out;
+}
+function formatFactorMap(m){
+  if(m.size === 0) return "1";
+  const parts = [];
+  [...m.entries()].sort((a,b)=>a[0]-b[0]).forEach(([p,e])=>{
+    parts.push(e===1 ? `${p}` : `${p}^${e}`);
+  });
+  return parts.join(" × ");
+}
+function intersectFactorMaps(maps){
+  // min exponent of primes common to all maps
+  if(maps.length === 0) return new Map();
+  const primes = [...maps[0].keys()];
+  const out = new Map();
+  for(const p of primes){
+    let minExp = maps[0].get(p);
+    let ok = true;
+    for(let i=1;i<maps.length;i++){
+      if(!maps[i].has(p)){ ok = false; break; }
+      minExp = Math.min(minExp, maps[i].get(p));
+    }
+    if(ok) out.set(p, minExp);
+  }
+  return out;
+}
+function evalFactorMap(m){
+  let v = 1;
+  for(const [p,e] of m.entries()){
+    v *= Math.pow(p,e);
+  }
+  return v;
+}
+function euclidSteps(a,b){
+  // returns an array of strings showing Euclid algorithm
+  let x = a, y = b;
+  const lines = [];
+  x = Math.abs(x); y = Math.abs(y);
+  while(y !== 0){
+    const q = Math.floor(x / y);
+    const r = x % y;
+    lines.push(`${x} = ${y} × ${q} + ${r}`);
+    x = y;
+    y = r;
+  }
+  lines.push(`HCF = ${x}`);
+  return lines;
+}
+function pairwiseEuclidAll(nums){
+  // Show gcd computed sequentially with Euclid for each pair
+  const lines = [];
+  let current = nums[0];
+  for(let i=1;i<nums.length;i++){
+    const next = nums[i];
+    lines.push(`Step ${i}: HCF(${current}, ${next})`);
+    euclidSteps(current, next).forEach(s=>lines.push("  " + s));
+    current = gcd(current, next);
+    lines.push("");
+  }
+  return lines.join("\n").trimEnd();
+}
+
+/* =========================
+   UI state
+   ========================= */
+let idx = 0;
+let scoreCorrect = 0;
+let scoreSeen = 0;
+let locked = false;
+let showBothMethods = true;
+
+const el = (id)=>document.getElementById(id);
+const qIndex = el("qIndex");
+const qTotal = el("qTotal");
+const qText  = el("qText");
+const qHint  = el("qHint");
+const bar    = el("bar");
+const answer = el("answer");
+const checkBtn = el("checkBtn");
+const showBtn  = el("showBtn");
+const nextBtn  = el("nextBtn");
+const resetBtn = el("resetBtn");
+const feedback = el("feedback");
+const statusDot = el("statusDot");
+const statusText = el("statusText");
+const correctLine = el("correctLine");
+const feedbackBody = el("feedbackBody");
+const scorePill = el("scorePill");
+const toggleMethod = el("toggleMethod");
+
+function setProgress(){
+  const total = QUESTIONS.length;
+  qTotal.textContent = total;
+  qIndex.textContent = idx + 1;
+  const pct = Math.round(((idx) / total) * 100);
+  bar.style.width = `${pct}%`;
+}
+function renderQuestion(){
+  locked = false;
+  feedback.hidden = true;
+  nextBtn.disabled = true;
+  checkBtn.disabled = false;
+  showBtn.disabled = false;
+  answer.value = "";
+  answer.focus();
+
+  const q = QUESTIONS[idx];
+  setProgress();
+
+  const nums = q.nums.join(", ");
+  qText.textContent = `Find the HCF of ${nums}.`;
+  qHint.textContent = (q.nums.length <= 2)
+    ? "Tip: you can list factors briefly, or use prime factors / Euclid."
+    : "Tip: compute HCF pairwise: HCF(a,b,c,…) = HCF(HCF(a,b), c, …).";
+}
+function sanitizeInt(str){
+  // allow spaces; reject empty/non-integer
+  const s = (str||"").trim();
+  if(!s) return null;
+  if(!/^-?\d+$/.test(s)) return null;
+  return parseInt(s,10);
+}
+function buildExplanation(nums, hcfValue){
+  // Prime factors section
+  const factorMaps = nums.map(n=>primeFactors(n));
+  const inter = intersectFactorMaps(factorMaps);
+  const hcfFromFactors = evalFactorMap(inter);
+
+  const pfLines = [];
+  pfLines.push("Prime factorisation:");
+  nums.forEach((n,i)=>{
+    pfLines.push(`  ${n} = ${formatFactorMap(factorMaps[i])}`);
+  });
+  if(hcfValue === 1){
+    pfLines.push("  Common primes across ALL numbers: none");
+    pfLines.push("  ⇒ HCF = 1");
+  }else{
+    pfLines.push(`  Common primes across ALL numbers (smallest powers): ${formatFactorMap(inter)}`);
+    pfLines.push(`  ⇒ HCF = ${formatFactorMap(inter)} = ${hcfFromFactors}`);
+  }
+
+  // Euclid / pairwise section
+  const euclidText = (nums.length === 2)
+    ? euclidSteps(nums[0], nums[1]).join("\n")
+    : pairwiseEuclidAll(nums);
+
+  // Pitfalls tailored
+  const pitfalls = [];
+  pitfalls.push("Pitfalls to avoid:");
+  pitfalls.push("  • Don’t stop at the first common factor — confirm it’s the greatest.");
+  pitfalls.push("  • With prime factors, HCF uses the SMALLEST exponents common to all (largest exponents are for LCM).");
+  if(nums.length > 2){
+    pitfalls.push("  • For 3–4 numbers, always fold pairwise and include EVERY number in the final check.");
+  }
+  if(hcfValue === 1){
+    pitfalls.push("  • HCF = 1 is a valid outcome: the set shares no prime factor common to all numbers.");
+  }else{
+    pitfalls.push("  • Quick validation: divide each number by the HCF; every remainder must be 0.");
+  }
+
+  // Assemble HTML
+  const methodHtml = showBothMethods
+    ? `
+      <h4>Method 1 — Prime factorisation (robust for many numbers)</h4>
+      <div class="mono">${escapeHtml(pfLines.join("\n"))}</div>
+
+      <h4>Method 2 — Euclidean algorithm (fast pairwise)</h4>
+      <div class="mono">${escapeHtml(euclidText)}</div>
+    `
+    : `
+      <h4>Working (prime factorisation)</h4>
+      <div class="mono">${escapeHtml(pfLines.join("\n"))}</div>
+    `;
+
+  return `
+    <div style="margin:0 0 6px;color:var(--muted)">
+      <b>Answer:</b> The HCF of ${nums.join(", ")} is <b>${hcfValue}</b>.
+    </div>
+    ${methodHtml}
+    <h4>Pitfalls & checks</h4>
+    <div class="mono">${escapeHtml(pitfalls.join("\n"))}</div>
+  `;
+}
+function escapeHtml(s){
+  return s
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function showFeedback(isCorrect, revealOnly=false){
+  const q = QUESTIONS[idx];
+  const hcfValue = gcdList(q.nums);
+
+  feedback.hidden = false;
+  correctLine.textContent = `Correct HCF: ${hcfValue}`;
+
+  if(revealOnly){
+    statusDot.className = "dot";
+    statusText.textContent = "Revealed";
+  }else if(isCorrect){
+    statusDot.className = "dot good";
+    statusText.textContent = "Correct";
+  }else{
+    statusDot.className = "dot bad";
+    statusText.textContent = "Not quite";
+  }
+
+  feedbackBody.innerHTML = buildExplanation(q.nums, hcfValue);
+  nextBtn.disabled = false;
+  checkBtn.disabled = true;
+  showBtn.disabled = true;
+  locked = true;
+
+  // Update progress bar with "current question viewed"
+  const total = QUESTIONS.length;
+  const pct = Math.round(((idx+1) / total) * 100);
+  bar.style.width = `${pct}%`;
+}
+
+function updateScorePill(){
+  scorePill.textContent = `Score: ${scoreCorrect} / ${scoreSeen}`;
+}
+
+function checkAnswer(){
+  if(locked) return;
+  const q = QUESTIONS[idx];
+  const hcfValue = gcdList(q.nums);
+
+  const user = sanitizeInt(answer.value);
+  if(user === null){
+    feedback.hidden = false;
+    statusDot.className = "dot bad";
+    statusText.textContent = "Enter an integer";
+    correctLine.textContent = `Correct HCF: ${hcfValue}`;
+    feedbackBody.innerHTML = `
+      <div style="color:var(--muted);font-size:13px">
+        Please type a whole number (e.g., <b>6</b>). Then press <b>Check</b>.
+      </div>
+    `;
+    return;
+  }
+
+  scoreSeen += 1;
+  const ok = (user === hcfValue);
+  if(ok) scoreCorrect += 1;
+  updateScorePill();
+
+  showFeedback(ok, false);
+}
+
+function reveal(){
+  if(locked) return;
+  scoreSeen += 1;
+  updateScorePill();
+  showFeedback(false, true);
+}
+
+function next(){
+  if(!locked) return;
+  idx += 1;
+  if(idx >= QUESTIONS.length){
+    // End screen
+    qText.textContent = "Completed ✅";
+    qHint.textContent = "Reset to practise again, aiming for perfect pairwise checks and clean factor work.";
+    feedback.hidden = false;
+    statusDot.className = "dot good";
+    statusText.textContent = "Session complete";
+    const pct = 100;
+    bar.style.width = `${pct}%`;
+    correctLine.textContent = `Final score: ${scoreCorrect} / ${scoreSeen}`;
+    feedbackBody.innerHTML = `
+      <div style="color:var(--muted);font-size:13px">
+        <b>What to internalize:</b>
+        <ul style="margin:8px 0 0;padding-left:18px">
+          <li>HCF uses <b>common primes</b> with <b>smallest powers</b>.</li>
+          <li>For many numbers: fold pairwise — <b>HCF(HCF(a,b),c)</b>.</li>
+          <li>If the set has no shared prime factor, <b>HCF = 1</b>.</li>
+        </ul>
+      </div>
+    `;
+    nextBtn.disabled = true;
+    checkBtn.disabled = true;
+    showBtn.disabled = true;
+    return;
+  }
+  renderQuestion();
+}
+
+function reset(){
+  idx = 0;
+  scoreCorrect = 0;
+  scoreSeen = 0;
+  updateScorePill();
+  renderQuestion();
+}
+
+/* =========================
+   Events
+   ========================= */
+checkBtn.addEventListener("click", checkAnswer);
+showBtn.addEventListener("click", reveal);
+nextBtn.addEventListener("click", next);
+resetBtn.addEventListener("click", reset);
+
+answer.addEventListener("keydown", (e)=>{
+  if(e.key === "Enter"){
+    e.preventDefault();
+    checkAnswer();
+  }
+});
+
+document.addEventListener("keydown", (e)=>{
+  // Avoid hijacking typing in input
+  const tag = (document.activeElement && document.activeElement.tagName) ? document.activeElement.tagName.toLowerCase() : "";
+  const typing = (tag === "input" || tag === "textarea");
+  if(typing) return;
+
+  if(e.key === "n" || e.key === "N") next();
+  if(e.key === "r" || e.key === "R") reset();
+});
+
+toggleMethod.addEventListener("click", (e)=>{
+  e.preventDefault();
+  showBothMethods = !showBothMethods;
+  toggleMethod.textContent = `Show both methods: ${showBothMethods ? "ON" : "OFF"}`;
+  // if feedback is visible, re-render explanation without altering correctness state
+  if(!feedback.hidden){
+    const q = QUESTIONS[idx] || null;
+    if(q){
+      const h = gcdList(q.nums);
+      feedbackBody.innerHTML = buildExplanation(q.nums, h);
+    }
+  }
+});
+
+/* =========================
+   Init
+   ========================= */
+updateScorePill();
+renderQuestion();
+</script>
+</body>
+</html>

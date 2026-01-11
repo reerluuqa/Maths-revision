@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Division Practice - 7th Grade Prep</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #4a6fa5;
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(74, 111, 165, 0.2);
+        }
+        
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background-color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4a6fa5;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .question-number {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #4a6fa5;
+        }
+        
+        .difficulty {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .difficulty-easy {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .difficulty-medium {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .difficulty-hard {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .problem-text {
+            font-size: 1.8rem;
+            text-align: center;
+            margin: 25px 0;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+        }
+        
+        .answer-section {
+            margin: 25px 0 30px;
+        }
+        
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .answer-input {
+            width: 200px;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-right: 15px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #4a6fa5;
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .btn-primary {
+            background-color: #4a6fa5;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a5a80;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .feedback-section {
+            display: none;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feedback-correct {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+        }
+        
+        .feedback-incorrect {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+        }
+        
+        .feedback-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feedback-title i {
+            margin-right: 10px;
+        }
+        
+        .correct-title {
+            color: #2e7d32;
+        }
+        
+        .incorrect-title {
+            color: #c62828;
+        }
+        
+        .explanation {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+        
+        .pitfall {
+            background-color: rgba(0, 0, 0, 0.03);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .pitfall-title {
+            font-weight: 600;
+            color: #ef6c00;
+            margin-bottom: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .progress-container {
+            margin-top: 25px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            height: 12px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: #4a6fa5;
+            width: 5%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-bar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .answer-input {
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .problem-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-divide"></i> Division Practice</h1>
+            <p class="subtitle">Master division concepts to prepare for 7th grade mathematics</p>
+        </header>
+        
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="current-question">1</div>
+                <div class="stat-label">Question</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="total-questions">20</div>
+                <div class="stat-label">Total Questions</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correct Answers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="score">0%</div>
+                <div class="stat-label">Score</div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="card">
+            <div class="question-header">
+                <div class="question-number">Question <span id="question-num">1</span> of 20</div>
+                <div class="difficulty" id="difficulty">Easy</div>
+            </div>
+            
+            <div class="problem-text" id="problem-text">72 ÷ 8 = ?</div>
+            
+            <div class="answer-section">
+                <div class="input-group">
+                    <input type="number" class="answer-input" id="answer-input" placeholder="Your answer" step="any">
+                    <button class="btn btn-primary" id="submit-btn">Submit Answer</button>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-secondary" id="hint-btn">
+                        <i class="fas fa-lightbulb"></i> Get Hint
+                    </button>
+                    <button class="btn btn-secondary" id="skip-btn">
+                        <i class="fas fa-forward"></i> Skip Question
+                    </button>
+                </div>
+            </div>
+            
+            <div class="feedback-section" id="feedback-section">
+                <div class="feedback-title" id="feedback-title">
+                    <i class="fas fa-check-circle"></i> Correct!
+                </div>
+                <div class="explanation" id="explanation">
+                    The correct answer is 9. 72 divided by 8 equals 9 because 8 × 9 = 72.
+                </div>
+                <div class="pitfall">
+                    <div class="pitfall-title">Pitfall to Avoid:</div>
+                    <div id="pitfall-text">Remember that division is the inverse of multiplication. When dividing, think about what number multiplied by the divisor equals the dividend.</div>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-secondary" id="show-explanation-btn">
+                        <i class="fas fa-book"></i> Detailed Explanation
+                    </button>
+                    <button class="btn btn-primary" id="next-btn">
+                        Next Question <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Division Practice App • Designed for 7th Grade Preparation • Keep practicing to improve your skills!</p>
+        </footer>
+    </div>
+
+    <script>
+        // Division problems data
+        const divisionProblems = [
+            {
+                problem: "72 ÷ 8 = ?",
+                answer: 9,
+                explanation: "72 divided by 8 equals 9 because 8 × 9 = 72. You can think of it as splitting 72 into 8 equal groups, with each group containing 9 items.",
+                pitfall: "Remember that division is the inverse of multiplication. When dividing, think about what number multiplied by the divisor equals the dividend.",
+                difficulty: "easy"
+            },
+            {
+                problem: "144 ÷ 12 = ?",
+                answer: 12,
+                explanation: "144 divided by 12 equals 12 because 12 × 12 = 144. This is a perfect square division problem.",
+                pitfall: "Some students mistakenly think 144 ÷ 12 = 11. Remember to check your multiplication: 12 × 11 = 132, not 144.",
+                difficulty: "easy"
+            },
+            {
+                problem: "3.6 ÷ 0.6 = ?",
+                answer: 6,
+                explanation: "3.6 divided by 0.6 equals 6. You can think of this as 'how many 0.6s are in 3.6?' Since 0.6 × 6 = 3.6, the answer is 6.",
+                pitfall: "When dividing decimals, remember to move the decimal points appropriately. Here, 3.6 ÷ 0.6 is equivalent to 36 ÷ 6 = 6.",
+                difficulty: "medium"
+            },
+            {
+                problem: "(-45) ÷ 5 = ?",
+                answer: -9,
+                explanation: "A negative number divided by a positive number gives a negative result. 45 ÷ 5 = 9, so (-45) ÷ 5 = -9.",
+                pitfall: "Remember the sign rules: positive ÷ positive = positive, negative ÷ positive = negative, negative ÷ negative = positive.",
+                difficulty: "medium"
+            },
+            {
+                problem: "2 ½ ÷ ½ = ?",
+                answer: 5,
+                explanation: "First convert 2½ to an improper fraction: 5/2. Then divide by ½, which is the same as multiplying by 2/1. So 5/2 × 2/1 = 10/2 = 5.",
+                pitfall: "When dividing mixed numbers, always convert to improper fractions first. Also, remember that dividing by a fraction is the same as multiplying by its reciprocal.",
+                difficulty: "medium"
+            },
+            {
+                problem: "0 ÷ 15 = ?",
+                answer: 0,
+                explanation: "Zero divided by any non-zero number is always zero. If you have nothing and try to divide it among people, each person gets nothing.",
+                pitfall: "Some students think 0 ÷ 15 is undefined. Remember that 0 divided by any number (except 0) is 0. Division by zero is what's undefined.",
+                difficulty: "easy"
+            },
+            {
+                problem: "15 ÷ 0 = ?",
+                answer: undefined,
+                explanation: "Division by zero is undefined in mathematics. You cannot divide any number by zero because there's no number that when multiplied by 0 gives 15 (or any non-zero number).",
+                pitfall: "Many students confuse this with 0 ÷ 15 = 0. Remember: division by zero is always undefined, while zero divided by a number is zero.",
+                difficulty: "hard"
+            },
+            {
+                problem: "125 ÷ 25 = ?",
+                answer: 5,
+                explanation: "125 divided by 25 equals 5 because 25 × 5 = 125. You can also think of it as 125 ÷ 5 = 25, so the inverse is also true.",
+                pitfall: "Sometimes students forget their multiplication facts. Remember that 25 × 4 = 100, so 25 × 5 = 125.",
+                difficulty: "easy"
+            },
+            {
+                problem: "1 ÷ ⅓ = ?",
+                answer: 3,
+                explanation: "Dividing by a fraction is the same as multiplying by its reciprocal. So 1 ÷ ⅓ = 1 × 3/1 = 3.",
+                pitfall: "When dividing by fractions, don't forget to flip the fraction and multiply. Dividing by ⅓ is the same as multiplying by 3.",
+                difficulty: "medium"
+            },
+            {
+                problem: "4.8 ÷ 0.2 = ?",
+                answer: 24,
+                explanation: "4.8 divided by 0.2 equals 24. You can multiply both numbers by 10 to get 48 ÷ 2 = 24, which is easier to calculate.",
+                pitfall: "When dividing decimals, you can multiply both numbers by the same power of 10 to eliminate decimals. 4.8 ÷ 0.2 = 48 ÷ 2 = 24.",
+                difficulty: "medium"
+            },
+            {
+                problem: "(-72) ÷ (-8) = ?",
+                answer: 9,
+                explanation: "A negative number divided by another negative number gives a positive result. 72 ÷ 8 = 9, so (-72) ÷ (-8) = 9.",
+                pitfall: "Remember the sign rules: negative ÷ negative = positive. Two negatives make a positive in division.",
+                difficulty: "medium"
+            },
+            {
+                problem: "3 ¾ ÷ 1 ¼ = ?",
+                answer: 3,
+                explanation: "First convert to improper fractions: 3¾ = 15/4, 1¼ = 5/4. Then 15/4 ÷ 5/4 = 15/4 × 4/5 = 60/20 = 3.",
+                pitfall: "When dividing mixed numbers, always convert to improper fractions first. Then multiply by the reciprocal of the divisor.",
+                difficulty: "hard"
+            },
+            {
+                problem: "56 ÷ 7 = ?",
+                answer: 8,
+                explanation: "56 divided by 7 equals 8 because 7 × 8 = 56. You can also think of it as splitting 56 into 7 equal groups of 8.",
+                pitfall: "Remember your multiplication facts: 7 × 8 = 56, so 56 ÷ 7 must equal 8.",
+                difficulty: "easy"
+            },
+            {
+                problem: "0.49 ÷ 0.07 = ?",
+                answer: 7,
+                explanation: "0.49 divided by 0.07 equals 7. Multiply both numbers by 100 to get 49 ÷ 7 = 7, which is easier to calculate.",
+                pitfall: "For decimal division, multiply both numbers by the same power of 10 to eliminate decimals before dividing.",
+                difficulty: "medium"
+            },
+            {
+                problem: "1 ÷ 0.125 = ?",
+                answer: 8,
+                explanation: "1 divided by 0.125 equals 8. Since 0.125 = 1/8, then 1 ÷ 1/8 = 1 × 8 = 8.",
+                pitfall: "Recognize common decimal equivalents: 0.125 = 1/8, 0.25 = 1/4, 0.5 = 1/2. This makes division easier.",
+                difficulty: "hard"
+            },
+            {
+                problem: "98 ÷ 14 = ?",
+                answer: 7,
+                explanation: "98 divided by 14 equals 7 because 14 × 7 = 98. You can also think of it as 98 ÷ 2 = 49, then 49 ÷ 7 = 7.",
+                pitfall: "If you don't know 14 × 7 = 98, break it down: 10 × 7 = 70 and 4 × 7 = 28, 70 + 28 = 98.",
+                difficulty: "medium"
+            },
+            {
+                problem: "⅔ ÷ ¼ = ?",
+                answer: 2.6667,
+                explanation: "Dividing by a fraction means multiplying by its reciprocal. So ⅔ ÷ ¼ = ⅔ × 4/1 = 8/3 ≈ 2.6667.",
+                pitfall: "When dividing fractions, multiply by the reciprocal of the divisor. Don't forget to simplify the result if possible.",
+                difficulty: "hard"
+            },
+            {
+                problem: "121 ÷ 11 = ?",
+                answer: 11,
+                explanation: "121 divided by 11 equals 11 because 11 × 11 = 121. This is a perfect square division.",
+                pitfall: "Remember that 11 × 11 = 121, so 121 ÷ 11 must equal 11. This is similar to 144 ÷ 12 = 12.",
+                difficulty: "easy"
+            },
+            {
+                problem: "1.44 ÷ 1.2 = ?",
+                answer: 1.2,
+                explanation: "1.44 divided by 1.2 equals 1.2. Multiply both numbers by 100 to get 144 ÷ 120 = 1.2.",
+                pitfall: "For decimal division, you can multiply both numbers by 100 to eliminate decimals: 1.44 ÷ 1.2 = 144 ÷ 120 = 1.2.",
+                difficulty: "hard"
+            },
+            {
+                problem: "5 ⅓ ÷ 1 ⅓ = ?",
+                answer: 4,
+                explanation: "Convert to improper fractions: 5⅓ = 16/3, 1⅓ = 4/3. Then 16/3 ÷ 4/3 = 16/3 × 3/4 = 48/12 = 4.",
+                pitfall: "When dividing mixed numbers with the same denominator, you can sometimes simplify before converting: (5⅓) ÷ (1⅓) = (16/3) ÷ (4/3) = 16 ÷ 4 = 4.",
+                difficulty: "hard"
+            }
+        ];
+
+        // App state
+        let currentProblemIndex = 0;
+        let correctAnswers = 0;
+        let userAnswers = [];
+        
+        // DOM elements
+        const problemTextElement = document.getElementById('problem-text');
+        const answerInputElement = document.getElementById('answer-input');
+        const submitButton = document.getElementById('submit-btn');
+        const nextButton = document.getElementById('next-btn');
+        const feedbackSection = document.getElementById('feedback-section');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const explanationElement = document.getElementById('explanation');
+        const pitfallElement = document.getElementById('pitfall-text');
+        const questionNumElement = document.getElementById('question-num');
+        const currentQuestionElement = document.getElementById('current-question');
+        const correctCountElement = document.getElementById('correct-count');
+        const scoreElement = document.getElementById('score');
+        const progressBar = document.getElementById('progress-bar');
+        const difficultyElement = document.getElementById('difficulty');
+        const hintButton = document.getElementById('hint-btn');
+        const skipButton = document.getElementById('skip-btn');
+        const showExplanationButton = document.getElementById('show-explanation-btn');
+        
+        // Initialize the app
+        function initApp() {
+            displayProblem();
+            setupEventListeners();
+            updateProgress();
+        }
+        
+        // Display the current problem
+        function displayProblem() {
+            const problem = divisionProblems[currentProblemIndex];
+            problemTextElement.textContent = problem.problem;
+            questionNumElement.textContent = currentProblemIndex + 1;
+            currentQuestionElement.textContent = currentProblemIndex + 1;
+            
+            // Clear input and feedback
+            answerInputElement.value = '';
+            feedbackSection.style.display = 'none';
+            
+            // Set difficulty indicator
+            difficultyElement.textContent = problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1);
+            difficultyElement.className = 'difficulty difficulty-' + problem.difficulty;
+            
+            // Focus on input
+            answerInputElement.focus();
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            submitButton.addEventListener('click', checkAnswer);
+            nextButton.addEventListener('click', nextProblem);
+            answerInputElement.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+            hintButton.addEventListener('click', showHint);
+            skipButton.addEventListener('click', skipProblem);
+            showExplanationButton.addEventListener('click', showDetailedExplanation);
+        }
+        
+        // Check the user's answer
+        function checkAnswer() {
+            const userAnswer = answerInputElement.value.trim();
+            const problem = divisionProblems[currentProblemIndex];
+            
+            if (userAnswer === '') {
+                alert('Please enter an answer before submitting.');
+                return;
+            }
+            
+            // Handle "undefined" answer for division by zero
+            if (problem.answer === undefined && (userAnswer.toLowerCase() === 'undefined' || userAnswer === '')) {
+                handleCorrectAnswer();
+                return;
+            }
+            
+            // Parse user answer
+            const parsedAnswer = parseFloat(userAnswer);
+            const correctAnswer = problem.answer;
+            
+            // Allow for small rounding differences
+            const isCorrect = Math.abs(parsedAnswer - correctAnswer) < 0.0001;
+            
+            if (isCorrect) {
+                handleCorrectAnswer();
+            } else {
+                handleIncorrectAnswer();
+            }
+        }
+        
+        // Handle correct answer
+        function handleCorrectAnswer() {
+            const problem = divisionProblems[currentProblemIndex];
+            
+            correctAnswers++;
+            userAnswers[currentProblemIndex] = { correct: true, answer: problem.answer };
+            
+            feedbackSection.className = 'feedback-section feedback-correct';
+            feedbackTitle.innerHTML = '<i class="fas fa-check-circle"></i> Correct!';
+            feedbackTitle.className = 'feedback-title correct-title';
+            explanationElement.textContent = problem.explanation;
+            pitfallElement.textContent = problem.pitfall;
+            feedbackSection.style.display = 'block';
+            
+            updateStats();
+            updateProgress();
+        }
+        
+        // Handle incorrect answer
+        function handleIncorrectAnswer() {
+            const problem = divisionProblems[currentProblemIndex];
+            
+            userAnswers[currentProblemIndex] = { correct: false, answer: problem.answer };
+            
+            feedbackSection.className = 'feedback-section feedback-incorrect';
+            feedbackTitle.innerHTML = '<i class="fas fa-times-circle"></i> Incorrect';
+            feedbackTitle.className = 'feedback-title incorrect-title';
+            
+            let correctAnswerText = problem.answer;
+            if (problem.answer === undefined) {
+                correctAnswerText = 'undefined (division by zero)';
+            }
+            
+            explanationElement.textContent = `The correct answer is ${correctAnswerText}. ${problem.explanation}`;
+            pitfallElement.textContent = problem.pitfall;
+            feedbackSection.style.display = 'block';
+            
+            updateStats();
+            updateProgress();
+        }
+        
+        // Move to the next problem
+        function nextProblem() {
+            if (currentProblemIndex < divisionProblems.length - 1) {
+                currentProblemIndex++;
+                displayProblem();
+            } else {
+                // End of questions
+                showFinalResults();
+            }
+        }
+        
+        // Show hint for current problem
+        function showHint() {
+            const problem = divisionProblems[currentProblemIndex];
+            let hint = '';
+            
+            switch(problem.difficulty) {
+                case 'easy':
+                    hint = "Try to recall your multiplication facts. What number multiplied by the divisor equals the dividend?";
+                    break;
+                case 'medium':
+                    hint = "For decimal division, try multiplying both numbers by the same power of 10 to eliminate decimals. For fractions, remember to multiply by the reciprocal.";
+                    break;
+                case 'hard':
+                    hint = "For mixed numbers, convert to improper fractions first. For division by zero, remember it's undefined. Check your sign rules for negative numbers.";
+                    break;
+            }
+            
+            alert(`Hint: ${hint}`);
+        }
+        
+        // Skip the current problem
+        function skipProblem() {
+            userAnswers[currentProblemIndex] = { correct: false, skipped: true };
+            
+            if (currentProblemIndex < divisionProblems.length - 1) {
+                currentProblemIndex++;
+                displayProblem();
+            } else {
+                showFinalResults();
+            }
+            
+            updateStats();
+            updateProgress();
+        }
+        
+        // Show detailed explanation
+        function showDetailedExplanation() {
+            const problem = divisionProblems[currentProblemIndex];
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '1000';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.backgroundColor = 'white';
+            modalContent.style.padding = '30px';
+            modalContent.style.borderRadius = '12px';
+            modalContent.style.maxWidth = '600px';
+            modalContent.style.width = '90%';
+            modalContent.style.maxHeight = '80%';
+            modalContent.style.overflowY = 'auto';
+            
+            modalContent.innerHTML = `
+                <h2 style="font-family: 'Poppins', sans-serif; color: #4a6fa5; margin-bottom: 15px;">Detailed Explanation</h2>
+                <div style="margin-bottom: 20px;">
+                    <strong style="font-size: 1.2rem;">Problem: ${problem.problem}</strong>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>Answer:</strong> ${problem.answer === undefined ? 'undefined (division by zero)' : problem.answer}
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>Step-by-step:</strong><br>${problem.explanation}
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <strong>Common Pitfall:</strong><br>${problem.pitfall}
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>Tips:</strong><br>
+                    ${getAdditionalTips(problem)}
+                </div>
+                <button id="close-modal" style="background-color: #4a6fa5; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">Close</button>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Close modal when close button is clicked
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.body.removeChild(modal);
+            });
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+        }
+        
+        // Get additional tips based on problem type
+        function getAdditionalTips(problem) {
+            if (problem.problem.includes('÷ 0')) {
+                return "Division by zero is always undefined. This is because there's no number that when multiplied by 0 gives the dividend.";
+            } else if (problem.problem.includes('.')) {
+                return "For decimal division: 1) Multiply both numbers by the same power of 10 to eliminate decimals. 2) Divide as with whole numbers. 3) Place the decimal point in the quotient.";
+            } else if (problem.problem.includes('/') || problem.problem.includes('½') || problem.problem.includes('⅓') || problem.problem.includes('⅔') || problem.problem.includes('¾')) {
+                return "For fraction division: 1) Convert mixed numbers to improper fractions. 2) Multiply by the reciprocal of the divisor. 3) Simplify the result if possible.";
+            } else if (problem.problem.includes('-')) {
+                return "For division with negative numbers: 1) Positive ÷ positive = positive. 2) Negative ÷ positive = negative. 3) Positive ÷ negative = negative. 4) Negative ÷ negative = positive.";
+            } else {
+                return "For whole number division: 1) Use multiplication facts. 2) Break down large numbers into smaller parts. 3) Check your answer by multiplying the quotient by the divisor.";
+            }
+        }
+        
+        // Update stats display
+        function updateStats() {
+            correctCountElement.textContent = correctAnswers;
+            const score = Math.round((correctAnswers / (currentProblemIndex + 1)) * 100);
+            scoreElement.textContent = score + '%';
+        }
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = ((currentProblemIndex + 1) / divisionProblems.length) * 100;
+            progressBar.style.width = progress + '%';
+        }
+        
+        // Show final results
+        function showFinalResults() {
+            const score = Math.round((correctAnswers / divisionProblems.length) * 100);
+            
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '1000';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.backgroundColor = 'white';
+            modalContent.style.padding = '30px';
+            modalContent.style.borderRadius = '12px';
+            modalContent.style.maxWidth = '600px';
+            modalContent.style.width = '90%';
+            modalContent.style.textAlign = 'center';
+            
+            let message = '';
+            if (score >= 90) {
+                message = 'Excellent! You\'re ready for 7th grade division!';
+            } else if (score >= 70) {
+                message = 'Good job! You have a solid understanding of division.';
+            } else if (score >= 50) {
+                message = 'Not bad! Keep practicing to improve your skills.';
+            } else {
+                message = 'Keep practicing! Review the explanations and try again.';
+            }
+            
+            modalContent.innerHTML = `
+                <h2 style="font-family: 'Poppins', sans-serif; color: #4a6fa5; margin-bottom: 15px;">Practice Complete!</h2>
+                <div style="font-size: 5rem; color: #4a6fa5; margin: 20px 0;">${score}%</div>
+                <p style="font-size: 1.2rem; margin-bottom: 20px;">${message}</p>
+                <p style="margin-bottom: 25px;">You answered ${correctAnswers} out of ${divisionProblems.length} questions correctly.</p>
+                <button id="restart-practice" style="background-color: #4a6fa5; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 10px; font-size: 1rem;">Practice Again</button>
+                <button id="close-results" style="background-color: #f0f0f0; color: #333; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 1rem;">Close</button>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Restart practice
+            document.getElementById('restart-practice').addEventListener('click', function() {
+                currentProblemIndex = 0;
+                correctAnswers = 0;
+                userAnswers = [];
+                displayProblem();
+                updateStats();
+                updateProgress();
+                document.body.removeChild(modal);
+            });
+            
+            // Close results
+            document.getElementById('close-results').addEventListener('click', function() {
+                document.body.removeChild(modal);
+            });
+        }
+        
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

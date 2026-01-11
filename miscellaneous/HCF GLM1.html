@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Practice: H.C.F. & L.C.M. Master</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --border-radius: 12px;
+            --font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Main Container */
+        #app-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            height: 6px;
+            background: #e5e7eb;
+            width: 100%;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 2rem;
+        }
+
+        /* Question Styling */
+        .question-badge {
+            display: inline-block;
+            background: #e0e7ff;
+            color: var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+            color: var(--text-main);
+        }
+
+        /* Input Area */
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: 2px solid #d1d5db;
+            border-radius: var(--border-radius);
+            outline: none;
+            transition: border-color 0.2s;
+            background: #f9fafb;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary-color);
+            background: #fff;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-primary:disabled {
+            background-color: #a5b4fc;
+            cursor: not-allowed;
+        }
+
+        .btn-next {
+            background-color: var(--text-main);
+            color: white;
+            margin-top: 1rem;
+            display: none; /* Hidden by default */
+        }
+
+        .btn-next:hover {
+            background-color: black;
+        }
+
+        /* Feedback Area */
+        .feedback-area {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            display: none; /* Hidden by default */
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .feedback-success {
+            background-color: #d1fae5;
+            border: 1px solid #34d399;
+            color: #065f46;
+        }
+
+        .feedback-error {
+            background-color: #fee2e2;
+            border: 1px solid #f87171;
+            color: #991b1b;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .explanation {
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            white-space: pre-line; /* Preserves line breaks in explanation */
+        }
+
+        /* Result Screen */
+        #result-screen {
+            text-align: center;
+            padding: 3rem 2rem;
+            display: none;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Icon styling */
+        .icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Math Practice: H.C.F. & L.C.M.</h1>
+        <p class="subtitle">Master factors, multiples, and real-world problems</p>
+    </header>
+
+    <main id="app-container">
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+
+        <!-- Quiz Question Area -->
+        <div id="quiz-area" class="content">
+            <div class="question-badge" id="question-category">Calculation</div>
+            <div class="question-text" id="question-text">Loading question...</div>
+            
+            <div class="input-group">
+                <input type="number" id="user-answer" placeholder="Enter your answer here..." autocomplete="off">
+            </div>
+
+            <button id="btn-submit" class="btn btn-primary">Check Answer</button>
+
+            <div id="feedback" class="feedback-area">
+                <div class="feedback-title" id="feedback-title"></div>
+                <div class="explanation" id="explanation-text"></div>
+            </div>
+
+            <button id="btn-next" class="btn btn-next">Next Question &rarr;</button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen">
+            <div class="score-circle">
+                <span id="final-score">0%</span>
+            </div>
+            <h2>Quiz Complete!</h2>
+            <p style="color: var(--text-muted); margin: 1rem 0;">Great job practicing your math skills.</p>
+            <button id="btn-restart" class="btn btn-primary" style="margin-top: 1rem;">Start New Quiz</button>
+        </div>
+    </main>
+
+    <script>
+        // --- Question Data ---
+        // Based on the provided image descriptions involving H.C.F, L.C.M, Tiling, Fencing, and Remainders.
+        const questionsDB = [
+            {
+                id: 1,
+                category: "Basic H.C.F.",
+                text: "Find the Highest Common Factor (H.C.F.) of 36 and 48.",
+                answer: 12,
+                explanation: "Step 1: Prime factorization of 36 = 2 × 2 × 3 × 3.\nStep 2: Prime factorization of 48 = 2 × 2 × 2 × 2 × 3.\nStep 3: The common factors are 2, 2, and 3.\nCalculation: 2 × 2 × 3 = 12."
+            },
+            {
+                id: 2,
+                category: "Application: Tiling",
+                text: "A rectangular room is 15 meters long and 12 meters wide. What is the side length of the largest square tile that can cover the floor exactly without cutting?",
+                answer: 3,
+                explanation: "To fit exactly, the side of the square tile must divide both the length (15) and the width (12). Therefore, we need the H.C.F. of 15 and 12.\nFactors of 15: 1, 3, 5, 15.\nFactors of 12: 1, 2, 3, 4, 6, 12.\nThe greatest common factor is 3 meters."
+            },
+            {
+                id: 3,
+                category: "Application: Plots (Q47)",
+                text: "A rectangular plot measures 168m by 84m. What is the side of the largest square plot that can be measured on this field?",
+                answer: 42,
+                explanation: "We need to find the H.C.F. of the length (168) and the width (84).\n168 = 2 × 2 × 2 × 3 × 7\n84 = 2 × 2 × 3 × 7\nThe common factors are 2 × 2 × 3 × 7 = 42.\nSo, the largest square plot has a side of 42m."
+            },
+            {
+                id: 4,
+                category: "Application: Wood Poles (Q48)",
+                text: "Three wooden poles are 12m, 18m, and 24m long. They are to be cut into pieces of equal length. What is the greatest possible length of each piece?",
+                answer: 6,
+                explanation: "We need the H.C.F. of 12, 18, and 24 to find the largest length that divides all three evenly.\n12 = 2 × 2 × 3\n18 = 2 × 3 × 3\n24 = 2 × 2 × 2 × 3\nThe common factors are 2 and 3.\nCalculation: 2 × 3 = 6 meters."
+            },
+            {
+                id: 5,
+                category: "Application: Fencing (Q49)",
+                text: "A garden is 56m long and 42m wide. Posts are to be placed at equal distances around the edge (including corners). What is the maximum distance between each post?",
+                answer: 14,
+                explanation: "The distance between posts must divide both the length (56) and the width (42) perfectly. We find the H.C.F.\n56 = 2 × 2 × 2 × 7\n42 = 2 × 3 × 7\nCommon factors: 2 × 7 = 14.\nThe maximum distance between posts is 14 meters."
+            },
+            {
+                id: 6,
+                category: "Advanced L.C.M. (Q50)",
+                text: "Find the smallest number which when divided by 20, 25, 35, and 40 leaves a remainder of 14 in each case.",
+                answer: 1386,
+                explanation: "Step 1: Find the L.C.M. of 20, 25, 35, 40.\n20 = 2²×5; 25 = 5²; 35 = 5×7; 40 = 2³×5.\nL.C.M. = 2³ × 5² × 7 = 8 × 25 × 7 = 1400.\nStep 2: The required number is the L.C.M. minus the remainder (since 1400 leaves remainder 0).\nCalculation: 1400 - 14 = 1386."
+            },
+            {
+                id: 7,
+                category: "Basic L.C.M.",
+                text: "Find the Least Common Multiple (L.C.M.) of 8 and 12.",
+                answer: 24,
+                explanation: "Multiples of 8: 8, 16, 24, 32...\nMultiples of 12: 12, 24, 36...\nThe smallest number that appears in both lists is 24."
+            }
+        ];
+
+        // --- State Management ---
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let isAnswered = false;
+
+        // --- DOM Elements ---
+        const dom = {
+            container: document.getElementById('app-container'),
+            quizArea: document.getElementById('quiz-area'),
+            resultScreen: document.getElementById('result-screen'),
+            category: document.getElementById('question-category'),
+            text: document.getElementById('question-text'),
+            input: document.getElementById('user-answer'),
+            btnSubmit: document.getElementById('btn-submit'),
+            btnNext: document.getElementById('btn-next'),
+            btnRestart: document.getElementById('btn-restart'),
+            feedback: document.getElementById('feedback'),
+            feedbackTitle: document.getElementById('feedback-title'),
+            explanation: document.getElementById('explanation-text'),
+            progressBar: document.getElementById('progress-bar'),
+            finalScore: document.getElementById('final-score')
+        };
+
+        // --- Logic Functions ---
+
+        // Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function initQuiz() {
+            // Reset state
+            currentQuestions = shuffleArray(questionsDB);
+            currentIndex = 0;
+            score = 0;
+            isAnswered = false;
+            
+            // Reset UI
+            dom.quizArea.classList.remove('hidden');
+            dom.resultScreen.style.display = 'none';
+            dom.input.value = '';
+            dom.input.disabled = false;
+            dom.btnSubmit.disabled = false;
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnswered = false;
+            const q = currentQuestions[currentIndex];
+            
+            // Update UI
+            dom.category.textContent = q.category;
+            dom.text.textContent = `${currentIndex + 1}. ${q.text}`;
+            dom.input.value = '';
+            dom.input.focus();
+            
+            // Reset feedback buttons
+            dom.feedback.style.display = 'none';
+            dom.feedback.className = 'feedback-area'; // remove success/error classes
+            dom.btnSubmit.style.display = 'flex';
+            dom.btnSubmit.disabled = false;
+            dom.input.disabled = false;
+            dom.btnNext.style.display = 'none';
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const percent = ((currentIndex) / currentQuestions.length) * 100;
+            dom.progressBar.style.width = `${percent}%`;
+        }
+
+        function checkAnswer() {
+            if (isAnswered) return;
+            
+            const userVal = parseFloat(dom.input.value);
+            const currentQ = currentQuestions[currentIndex];
+            
+            if (isNaN(userVal)) {
+                // Simple visual shake for invalid input
+                dom.input.style.borderColor = '#ef4444';
+                setTimeout(() => dom.input.style.borderColor = '#d1d5db', 500);
+                return;
+            }
+
+            isAnswered = true;
+            const isCorrect = userVal === currentQ.answer;
+
+            // Lock input
+            dom.input.disabled = true;
+            dom.btnSubmit.style.display = 'none';
+
+            // Show Feedback
+            dom.feedback.style.display = 'block';
+            
+            if (isCorrect) {
+                score++;
+                dom.feedback.classList.add('feedback-success');
+                dom.feedbackTitle.innerHTML = `<svg class="icon" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Correct!`;
+                dom.explanation.innerHTML = `<strong>Great job!</strong><br><br>${currentQ.explanation}`;
+            } else {
+                dom.feedback.classList.add('feedback-error');
+                dom.feedbackTitle.innerHTML = `<svg class="icon" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg> Incorrect`;
+                dom.explanation.innerHTML = `<strong>The correct answer is ${currentQ.answer}.</strong><br><br>${currentQ.explanation}`;
+            }
+
+            // Show Next Button
+            dom.btnNext.style.display = 'flex';
+            dom.input.focus(); // Keep focus accessible but disabled
+            
+            updateProgress(); // Update to reflect completion of this step mentally (optional, strictly we update on next)
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            dom.quizArea.classList.add('hidden');
+            dom.resultScreen.style.display = 'block';
+            dom.progressBar.style.width = '100%';
+            
+            const percentage = Math.round((score / currentQuestions.length) * 100);
+            dom.finalScore.textContent = `${percentage}%`;
+            
+            // Add visual flair based on score
+            if(percentage === 100) {
+                dom.finalScore.style.background = "#10b981"; // Green
+            } else if (percentage >= 50) {
+                dom.finalScore.style.background = "#4f46e5"; // Blue
+            } else {
+                dom.finalScore.style.background = "#ef4444"; // Red
+            }
+        }
+
+        // --- Event Listeners ---
+
+        dom.btnSubmit.addEventListener('click', checkAnswer);
+        
+        dom.input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (!isAnswered) {
+                    checkAnswer();
+                } else {
+                    nextQuestion();
+                }
+            }
+        });
+
+        dom.btnNext.addEventListener('click', nextQuestion);
+        dom.btnRestart.addEventListener('click', initQuiz);
+
+        // --- Start App ---
+        initQuiz();
+
+    </script>
+</body>
+</html>

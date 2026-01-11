@@ -1,0 +1,1147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>H.C.F. (GCD) Practice — One Question at a Time</title>
+  <style>
+    :root{
+      --bg0:#0b1020;
+      --bg1:#121a33;
+      --card:#0f1730cc;
+      --stroke:#2a3563;
+      --text:#e8ecff;
+      --muted:#b9c2ffcc;
+      --good:#2dd4bf;
+      --bad:#fb7185;
+      --warn:#fbbf24;
+      --accent:#8b5cf6;
+      --accent2:#38bdf8;
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1100px 700px at 15% 20%, rgba(139,92,246,.35), transparent 55%),
+        radial-gradient(900px 600px at 80% 30%, rgba(56,189,248,.30), transparent 55%),
+        radial-gradient(900px 700px at 55% 90%, rgba(45,212,191,.18), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .app{
+      width:min(980px, 100%);
+      display:grid;
+      grid-template-columns: 1.25fr .9fr;
+      gap:18px;
+    }
+
+    @media (max-width: 940px){
+      .app{grid-template-columns: 1fr; }
+    }
+
+    .panel{
+      background: linear-gradient(180deg, rgba(15,23,48,.92), rgba(10,16,36,.88));
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .header{
+      padding:18px 18px 14px;
+      border-bottom:1px solid rgba(42,53,99,.65);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+    }
+    .title{
+      display:flex; align-items:center; gap:12px;
+      font-weight:800;
+      letter-spacing:.2px;
+      font-size:18px;
+      margin:0 0 8px;
+    }
+    .badge{
+      width:34px; height:34px; border-radius:12px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), rgba(255,255,255,0) 55%),
+                  linear-gradient(135deg, rgba(139,92,246,.95), rgba(56,189,248,.9));
+      display:grid; place-items:center;
+      box-shadow: 0 10px 30px rgba(139,92,246,.25);
+      border:1px solid rgba(255,255,255,.16);
+      flex:0 0 auto;
+    }
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+      line-height:1.35;
+      font-size:13.5px;
+    }
+
+    .metaRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+
+    .chipRow{display:flex; gap:10px; flex-wrap:wrap;}
+    .chip{
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      font-size:12.5px;
+    }
+    .chip b{color:var(--text); font-weight:750}
+
+    .progressWrap{
+      display:flex; align-items:center; gap:10px;
+      min-width: 250px;
+      flex:1;
+      justify-content:flex-end;
+    }
+    .progress{
+      width:min(320px, 100%);
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(139,92,246,.95), rgba(56,189,248,.92));
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+    .progressText{
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .body{
+      padding:18px;
+    }
+
+    .qNum{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      color: var(--muted);
+      letter-spacing:.25px;
+      margin-bottom:10px;
+    }
+    .qNum .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: rgba(56,189,248,.85);
+      box-shadow: 0 0 0 3px rgba(56,189,248,.18);
+    }
+
+    .question{
+      font-size:20px;
+      font-weight:750;
+      margin:0 0 12px;
+      line-height:1.25;
+    }
+    .hint{
+      margin:0 0 16px;
+      color: var(--muted);
+      font-size:13.5px;
+      line-height:1.45;
+    }
+
+    .form{
+      display:grid;
+      gap:12px;
+    }
+
+    .field{
+      display:grid;
+      gap:7px;
+    }
+    label{
+      font-size:12.5px;
+      color: var(--muted);
+    }
+    input{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      outline:none;
+      font-size:15px;
+      font-variant-numeric: tabular-nums;
+    }
+    input::placeholder{color: rgba(185,194,255,.55)}
+    input:focus{
+      border-color: rgba(56,189,248,.55);
+      box-shadow: 0 0 0 4px rgba(56,189,248,.18);
+    }
+
+    .btnRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:4px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius: 14px;
+      padding:12px 14px;
+      font-weight:750;
+      color: #061022;
+      background: linear-gradient(135deg, rgba(56,189,248,.95), rgba(139,92,246,.9));
+      cursor:pointer;
+      box-shadow: 0 14px 30px rgba(56,189,248,.12);
+      transition: transform .08s ease, filter .2s ease, opacity .2s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    button:hover{filter: brightness(1.03)}
+    button:active{transform: translateY(1px)}
+    button.secondary{
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:none;
+    }
+    button:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .feedback{
+      margin-top:14px;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      overflow:hidden;
+      display:none;
+    }
+    .feedback.show{display:block}
+    .feedbackTop{
+      padding:12px 12px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .status{
+      display:flex; align-items:center; gap:10px;
+      font-weight:850;
+    }
+    .pill{
+      width:11px;height:11px;border-radius:50%;
+      background: var(--warn);
+      box-shadow: 0 0 0 4px rgba(251,191,36,.18);
+      margin-top:2px;
+      flex:0 0 auto;
+    }
+    .status.good .pill{background: var(--good); box-shadow: 0 0 0 4px rgba(45,212,191,.18)}
+    .status.bad  .pill{background: var(--bad);  box-shadow: 0 0 0 4px rgba(251,113,133,.18)}
+    .statusText{
+      line-height:1.25;
+      font-size:14px;
+    }
+    .correctAnswer{
+      font-family: var(--mono);
+      font-size:12.5px;
+      color: var(--muted);
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      padding:7px 9px;
+      border-radius: 12px;
+      white-space:nowrap;
+      height:fit-content;
+    }
+    .feedbackBody{
+      padding:12px 12px 14px;
+      display:grid;
+      gap:12px;
+    }
+    .sectionTitle{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      color: rgba(185,194,255,.75);
+      margin:0;
+    }
+    .explain, .pitfalls{
+      margin:0;
+      color: var(--text);
+      line-height:1.5;
+      font-size:13.5px;
+      white-space:pre-wrap;
+    }
+    .pitfalls{
+      color: rgba(232,236,255,.92);
+    }
+    .noteBox{
+      border-left:3px solid rgba(251,191,36,.75);
+      background: rgba(251,191,36,.08);
+      border-radius: 14px;
+      padding:10px 10px;
+      border-top:1px solid rgba(255,255,255,.10);
+      border-right:1px solid rgba(255,255,255,.10);
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+
+    .side{
+      padding:18px;
+      display:grid;
+      gap:14px;
+    }
+    .cardSmall{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius: var(--radius);
+      padding:14px;
+    }
+    .smallTitle{
+      margin:0 0 10px;
+      font-weight:850;
+      font-size:14px;
+      letter-spacing:.2px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .smallTitle span{color: var(--muted); font-weight:700; font-size:12px}
+    .list{
+      margin:0;
+      padding-left:18px;
+      color: var(--muted);
+      line-height:1.55;
+      font-size:13.2px;
+    }
+    .kbd{
+      font-family: var(--mono);
+      font-size:12px;
+      padding:2px 7px;
+      border-radius: 10px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+    }
+
+    .footer{
+      padding:14px 18px;
+      border-top:1px solid rgba(42,53,99,.65);
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,.04));
+      color: rgba(185,194,255,.75);
+      font-size:12.5px;
+      line-height:1.45;
+    }
+    .footer b{color: var(--text)}
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!-- MAIN -->
+    <section class="panel">
+      <div class="header">
+        <h1 class="title">
+          <span class="badge">∴</span>
+          H.C.F. Practice (Highest Common Factor / GCD)
+        </h1>
+        <p class="subtitle">
+          One question at a time, instant feedback, and a worked explanation + common pitfalls.
+          Answers are checked numerically (you may type units, they’ll be ignored).
+        </p>
+
+        <div class="metaRow">
+          <div class="chipRow">
+            <div class="chip">Question <b id="qIndex">1</b>/<b id="qTotal">40</b></div>
+            <div class="chip">Score <b id="score">0</b></div>
+            <div class="chip">Correct (first try) <b id="firstTry">0</b></div>
+          </div>
+          <div class="progressWrap">
+            <div class="progress" aria-label="Progress">
+              <div class="bar" id="bar"></div>
+            </div>
+            <div class="progressText" id="progressText">0%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="body">
+        <div class="qNum"><span class="dot"></span><span id="qidText">#11</span></div>
+        <h2 class="question" id="questionText">Loading…</h2>
+        <p class="hint" id="questionHint"></p>
+
+        <form class="form" id="form" autocomplete="off">
+          <div id="fields"></div>
+
+          <div class="btnRow">
+            <button type="submit" id="submitBtn">Submit Answer ⟶</button>
+            <button type="button" class="secondary" id="skipBtn" title="Reveal answer and move on (no score)">
+              Skip
+            </button>
+            <button type="button" class="secondary" id="restartBtn" title="Restart from question 1">
+              Restart
+            </button>
+          </div>
+        </form>
+
+        <div class="feedback" id="feedback">
+          <div class="feedbackTop">
+            <div class="status" id="status">
+              <span class="pill"></span>
+              <div class="statusText" id="statusText">…</div>
+            </div>
+            <div class="correctAnswer" id="correctAnswer"></div>
+          </div>
+          <div class="feedbackBody">
+            <div>
+              <p class="sectionTitle">Explanation</p>
+              <p class="explain" id="explain"></p>
+            </div>
+            <div class="noteBox">
+              <p class="sectionTitle">Common pitfalls</p>
+              <p class="pitfalls" id="pitfalls"></p>
+            </div>
+            <div class="btnRow">
+              <button type="button" id="nextBtn" disabled>Next Question ⟶</button>
+              <button type="button" class="secondary" id="showWorkBtn">Show/Hide quick method</button>
+            </div>
+            <div id="quickMethod" style="display:none;">
+              <p class="sectionTitle">Quick method (Euclid)</p>
+              <p class="explain" id="euclid"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <b>Tip:</b> For multi-part questions, fill every field. Units are optional (e.g., “6 cm” is accepted as 6).
+        Use <span class="kbd">Enter</span> to submit.
+      </div>
+    </section>
+
+    <!-- SIDE -->
+    <aside class="panel">
+      <div class="side">
+        <div class="cardSmall">
+          <div class="smallTitle">What you’re practicing <span>H.C.F. / GCD</span></div>
+          <ul class="list">
+            <li><b>H.C.F.</b> (highest common factor) = largest integer dividing <b>all</b> given numbers exactly.</li>
+            <li>For tiling/fencing “largest equal size”, the size is usually the <b>gcd</b> of the relevant lengths.</li>
+            <li>For “same remainder r”, subtract r first: divisor must divide each <b>(number − r)</b>.</li>
+          </ul>
+        </div>
+
+        <div class="cardSmall">
+          <div class="smallTitle">Golden rule <span>Don’t mix up with L.C.M.</span></div>
+          <ul class="list">
+            <li><b>H.C.F.</b> divides all numbers.</li>
+            <li><b>L.C.M.</b> is a multiple of all numbers.</li>
+            <li>If your “answer” is larger than one of the numbers, it can’t be the H.C.F.</li>
+          </ul>
+        </div>
+
+        <div class="cardSmall">
+          <div class="smallTitle">Keyboard shortcuts <span>Speed</span></div>
+          <ul class="list">
+            <li><span class="kbd">Enter</span> submits.</li>
+            <li>After feedback, <span class="kbd">Next</span> advances.</li>
+            <li><span class="kbd">Skip</span> reveals and moves on (no score).</li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+<script>
+    // ---------- Helpers ----------
+    const gcd2 = (a,b) => {
+      a = Math.abs(a); b = Math.abs(b);
+      while (b !== 0){ const t = a % b; a = b; b = t; }
+      return a;
+    };
+    const gcdList = (arr) => arr.reduce((g,x)=>gcd2(g,x));
+
+    // Extract first number from a string like "18", "18 cm", "£0.18", "18p"
+    const firstNumber = (s) => {
+      if (s == null) return null;
+      const m = String(s).replace(/,/g,'').match(/-?\d+(\.\d+)?/);
+      if (!m) return null;
+      const n = Number(m[0]);
+      return Number.isFinite(n) ? n : null;
+    };
+
+    const formatAnswer = (parts) => parts.map(p => `${p.label}: ${p.display}`).join("  |  ");
+
+    const euclidTrace = (a,b) => {
+      a = Math.abs(a); b = Math.abs(b);
+      const lines = [];
+      while (b !== 0){
+        const q = Math.floor(a / b);
+        const r = a % b;
+        lines.push(`${a} = ${b} × ${q} + ${r}`);
+        a = b; b = r;
+      }
+      lines.push(`So gcd = ${a}.`);
+      return lines.join("\n");
+    };
+
+    // ---------- Question bank (from the attached images) ----------
+    // Total: 40 questions (#11–#50)
+    const Q = [
+      // 11–40: "Find the H.C.F. of ..."
+      { id: 11, prompt: "Find the H.C.F. of 9, 15 and 24.", inputs:[{label:"H.C.F.", ans:3, display:"3"}],
+        explain:
+`Prime factors:
+9 = 3²
+15 = 3 × 5
+24 = 2³ × 3
+The only factor common to all three is 3, so H.C.F. = 3.`,
+        pitfalls:`H.C.F. must divide every number. If it does not divide one of them exactly, it is wrong.\nDon't confuse with L.C.M. (which is typically larger).`,
+        euclid:`Use Euclid on pairs: gcd(9,15)=3, then gcd(3,24)=3.`
+      },
+      { id: 12, prompt: "Find the H.C.F. of 18, 24 and 32.", inputs:[{label:"H.C.F.", ans:2, display:"2"}],
+        explain:
+`Prime factors:
+18 = 2 × 3²
+24 = 2³ × 3
+32 = 2⁵
+Only 2 is common to all three → H.C.F. = 2.`,
+        pitfalls:`If any number is odd, 2 cannot be in the H.C.F. Here all are even, but higher powers of 2 fail because 18 has only one 2.`,
+        euclid:`gcd(18,24)=6, then gcd(6,32)=2.`
+      },
+      { id: 13, prompt: "Find the H.C.F. of 12, 30 and 42.", inputs:[{label:"H.C.F.", ans:6, display:"6"}],
+        explain:
+`Prime factors:
+12 = 2² × 3
+30 = 2 × 3 × 5
+42 = 2 × 3 × 7
+Common part is 2 × 3 = 6 → H.C.F. = 6.`,
+        pitfalls:`Don't include factors that are not shared by all numbers (e.g., 5 or 7).`,
+        euclid:`gcd(12,30)=6, then gcd(6,42)=6.`
+      },
+      { id: 14, prompt: "Find the H.C.F. of 24, 40 and 64.", inputs:[{label:"H.C.F.", ans:8, display:"8"}],
+        explain:
+`Prime factors:
+24 = 2³ × 3
+40 = 2³ × 5
+64 = 2⁶
+Common is 2³ = 8 → H.C.F. = 8.`,
+        pitfalls:`The H.C.F. uses the smallest power of each prime common to all numbers (here power of 2 is min(3,3,6)=3).`,
+        euclid:`gcd(24,40)=8, then gcd(8,64)=8.`
+      },
+      { id: 15, prompt: "Find the H.C.F. of 54 and 126.", inputs:[{label:"H.C.F.", ans:18, display:"18"}],
+        explain:
+`Prime factors:
+54 = 2 × 3³
+126 = 2 × 3² × 7
+Common = 2 × 3² = 18 → H.C.F. = 18.`,
+        pitfalls:`A common error is to take 3³ from 54; but 126 only has 3² so you must take the smaller exponent.`,
+        euclid:`\n${euclidTrace(126,54)}`
+      },
+      { id: 16, prompt: "Find the H.C.F. of 84 and 140.", inputs:[{label:"H.C.F.", ans:28, display:"28"}],
+        explain:
+`Prime factors:
+84 = 2² × 3 × 7
+140 = 2² × 5 × 7
+Common = 2² × 7 = 28 → H.C.F. = 28.`,
+        pitfalls:`Make sure the result divides both numbers: 84 ÷ 28 = 3, 140 ÷ 28 = 5.`,
+        euclid:`\n${euclidTrace(140,84)}`
+      },
+      { id: 17, prompt: "Find the H.C.F. of 30, 45 and 75.", inputs:[{label:"H.C.F.", ans:15, display:"15"}],
+        explain:
+`Prime factors:
+30 = 2 × 3 × 5
+45 = 3² × 5
+75 = 3 × 5²
+Common = 3 × 5 = 15 → H.C.F. = 15.`,
+        pitfalls:`Don't include 2 (it's not in 45 or 75). Don't use 3² or 5² because not all have those powers.`,
+        euclid:`gcd(30,45)=15, then gcd(15,75)=15.`
+      },
+      { id: 18, prompt: "Find the H.C.F. of 35, 50 and 65.", inputs:[{label:"H.C.F.", ans:5, display:"5"}],
+        explain:
+`Prime factors:
+35 = 5 × 7
+50 = 2 × 5²
+65 = 5 × 13
+Only 5 is common → H.C.F. = 5.`,
+        pitfalls:`Because 50 has 5², some mistakenly pick 25. But 35 and 65 are not divisible by 25.`,
+        euclid:`gcd(35,50)=5, then gcd(5,65)=5.`
+      },
+      { id: 19, prompt: "Find the H.C.F. of 42, 70 and 56.", inputs:[{label:"H.C.F.", ans:14, display:"14"}],
+        explain:
+`Prime factors:
+42 = 2 × 3 × 7
+70 = 2 × 5 × 7
+56 = 2³ × 7
+Common = 2 × 7 = 14 → H.C.F. = 14.`,
+        pitfalls:`3 and 5 are not shared. Power of 2 is limited by 42 and 70 (only one 2 each).`,
+        euclid:`gcd(42,70)=14, then gcd(14,56)=14.`
+      },
+      { id: 20, prompt: "Find the H.C.F. of 48, 120 and 72.", inputs:[{label:"H.C.F.", ans:24, display:"24"}],
+        explain:
+`Prime factors:
+48 = 2⁴ × 3
+120 = 2³ × 3 × 5
+72 = 2³ × 3²
+Common = 2³ × 3 = 24 → H.C.F. = 24.`,
+        pitfalls:`Don't include 5 (only in 120). Don't use 2⁴ (120 has only 2³).`,
+        euclid:`gcd(48,120)=24, then gcd(24,72)=24.`
+      },
+      { id: 21, prompt: "Find the H.C.F. of 36, 72 and 63.", inputs:[{label:"H.C.F.", ans:9, display:"9"}],
+        explain:
+`Prime factors:
+36 = 2² × 3²
+72 = 2³ × 3²
+63 = 3² × 7
+Common = 3² = 9 → H.C.F. = 9.`,
+        pitfalls:`Because 36 and 72 are even, people sometimes keep a factor 2 — but 63 is odd, so 2 cannot be common.`,
+        euclid:`gcd(36,72)=36, then gcd(36,63)=9.`
+      },
+      { id: 22, prompt: "Find the H.C.F. of 63, 42, 105 and 21.", inputs:[{label:"H.C.F.", ans:21, display:"21"}],
+        explain:
+`All numbers are divisible by 21:
+63 = 3×21, 42 = 2×21, 105 = 5×21, 21 = 1×21.
+No number larger than 21 can divide 21 itself, so H.C.F. = 21.`,
+        pitfalls:`Always check the smallest number: the H.C.F. cannot exceed it.`,
+        euclid:`Pairwise: gcd(63,42)=21; gcd(21,105)=21; gcd(21,21)=21.`
+      },
+      { id: 23, prompt: "Find the H.C.F. of 42, 66, 24 and 78.", inputs:[{label:"H.C.F.", ans:6, display:"6"}],
+        explain:
+`Prime factors:
+42 = 2 × 3 × 7
+66 = 2 × 3 × 11
+24 = 2³ × 3
+78 = 2 × 3 × 13
+Common = 2 × 3 = 6 → H.C.F. = 6.`,
+        pitfalls:`Don't forget to include every number; adding one extra number can reduce the H.C.F. dramatically.`,
+        euclid:`gcd(42,66)=6; gcd(6,24)=6; gcd(6,78)=6.`
+      },
+      { id: 24, prompt: "Find the H.C.F. of 45, 105 and 60.", inputs:[{label:"H.C.F.", ans:15, display:"15"}],
+        explain:
+`Prime factors:
+45 = 3² × 5
+105 = 3 × 5 × 7
+60 = 2² × 3 × 5
+Common = 3 × 5 = 15 → H.C.F. = 15.`,
+        pitfalls:`If you include 3², 105 won't be divisible by 9. If you include 2, 45 won't be even.`,
+        euclid:`gcd(45,105)=15, then gcd(15,60)=15.`
+      },
+      { id: 25, prompt: "Find the H.C.F. of 72, 108 and 54.", inputs:[{label:"H.C.F.", ans:18, display:"18"}],
+        explain:
+`Prime factors:
+72 = 2³ × 3²
+108 = 2² × 3³
+54 = 2 × 3³
+Common = 2¹ × 3² = 18 → H.C.F. = 18.`,
+        pitfalls:`Use the smallest exponent of each prime across ALL numbers (2: min(3,2,1)=1; 3: min(2,3,3)=2).`,
+        euclid:`gcd(72,108)=36, then gcd(36,54)=18.`
+      },
+      { id: 26, prompt: "Find the H.C.F. of 56, 84 and 105.", inputs:[{label:"H.C.F.", ans:7, display:"7"}],
+        explain:
+`Prime factors:
+56 = 2³ × 7
+84 = 2² × 3 × 7
+105 = 3 × 5 × 7
+Only 7 is common → H.C.F. = 7.`,
+        pitfalls:`Even though 56 and 84 share 28, 105 is not divisible by 28, so H.C.F. collapses to 7.`,
+        euclid:`gcd(56,84)=28, then gcd(28,105)=7.`
+      },
+      { id: 27, prompt: "Find the H.C.F. of 84, 108 and 60.", inputs:[{label:"H.C.F.", ans:12, display:"12"}],
+        explain:
+`Prime factors:
+84 = 2² × 3 × 7
+108 = 2² × 3³
+60 = 2² × 3 × 5
+Common = 2² × 3 = 12 → H.C.F. = 12.`,
+        pitfalls:`Don't include 7 or 5. Don't use 3³ because 84 and 60 have only one 3.`,
+        euclid:`gcd(84,108)=12, then gcd(12,60)=12.`
+      },
+      { id: 28, prompt: "Find the H.C.F. of 112, 48 and 80.", inputs:[{label:"H.C.F.", ans:16, display:"16"}],
+        explain:
+`Prime factors:
+112 = 2⁴ × 7
+48 = 2⁴ × 3
+80 = 2⁴ × 5
+Common = 2⁴ = 16 → H.C.F. = 16.`,
+        pitfalls:`Because all are multiples of 16, that's a good candidate — but always verify the next multiple (32) fails since 48 is not divisible by 32.`,
+        euclid:`gcd(112,48)=16, then gcd(16,80)=16.`
+      },
+      { id: 29, prompt: "Find the H.C.F. of 144 and 198.", inputs:[{label:"H.C.F.", ans:18, display:"18"}],
+        explain:
+`Prime factors:
+144 = 2⁴ × 3²
+198 = 2 × 3² × 11
+Common = 2 × 3² = 18 → H.C.F. = 18.`,
+        pitfalls:`If you take 2², 198 is not divisible by 4. Always limit by the smaller exponent.`,
+        euclid:`\n${euclidTrace(198,144)}`
+      },
+      { id: 30, prompt: "Find the H.C.F. of 216 and 168.", inputs:[{label:"H.C.F.", ans:24, display:"24"}],
+        explain:
+`Prime factors:
+216 = 2³ × 3³
+168 = 2³ × 3 × 7
+Common = 2³ × 3 = 24 → H.C.F. = 24.`,
+        pitfalls:`Don't include 3³ because 168 has only one factor of 3.`,
+        euclid:`\n${euclidTrace(216,168)}`
+      },
+      { id: 31, prompt: "Find the H.C.F. of 112, 154 and 70.", inputs:[{label:"H.C.F.", ans:14, display:"14"}],
+        explain:
+`Prime factors:
+112 = 2⁴ × 7
+154 = 2 × 7 × 11
+70 = 2 × 5 × 7
+Common = 2 × 7 = 14 → H.C.F. = 14.`,
+        pitfalls:`A quick sanity check: 14 divides 112 (8), 154 (11), and 70 (5).`,
+        euclid:`gcd(112,154)=14, then gcd(14,70)=14.`
+      },
+      { id: 32, prompt: "Find the H.C.F. of 108, 72, 180 and 288.", inputs:[{label:"H.C.F.", ans:36, display:"36"}],
+        explain:
+`Prime factors:
+108 = 2² × 3³
+72  = 2³ × 3²
+180 = 2² × 3² × 5
+288 = 2⁵ × 3²
+Common = 2² × 3² = 36 → H.C.F. = 36.`,
+        pitfalls:`Including 5 would fail for 108/72/288. Also watch exponents: 3 is limited to power 2 because 72/180/288 only have 3².`,
+        euclid:`gcd(108,72)=36; gcd(36,180)=36; gcd(36,288)=36.`
+      },
+      { id: 33, prompt: "Find the H.C.F. of 189, 81, 270 and 108.", inputs:[{label:"H.C.F.", ans:27, display:"27"}],
+        explain:
+`Prime factors:
+189 = 3³ × 7
+81  = 3⁴
+270 = 2 × 3³ × 5
+108 = 2² × 3³
+Common = 3³ = 27 → H.C.F. = 27.`,
+        pitfalls:`Because 81 is 3⁴, people sometimes pick 81— but 189 is not divisible by 81. H.C.F. uses the smallest shared exponent.`,
+        euclid:`gcd(189,81)=27; gcd(27,270)=27; gcd(27,108)=27.`
+      },
+      { id: 34, prompt: "Find the H.C.F. of 160, 96 and 224.", inputs:[{label:"H.C.F.", ans:32, display:"32"}],
+        explain:
+`Prime factors:
+160 = 2⁵ × 5
+96  = 2⁵ × 3
+224 = 2⁵ × 7
+Common = 2⁵ = 32 → H.C.F. = 32.`,
+        pitfalls:`All three share 32, but 64 fails because 96 is not divisible by 64.`,
+        euclid:`gcd(160,96)=32, then gcd(32,224)=32.`
+      },
+      { id: 35, prompt: "Find the H.C.F. of 144, 216 and 360.", inputs:[{label:"H.C.F.", ans:72, display:"72"}],
+        explain:
+`Prime factors:
+144 = 2⁴ × 3²
+216 = 2³ × 3³
+360 = 2³ × 3² × 5
+Common = 2³ × 3² = 72 → H.C.F. = 72.`,
+        pitfalls:`Don't include 5. Exponent of 2 is limited to 3 (because 216 and 360 have 2³).`,
+        euclid:`gcd(144,216)=72, then gcd(72,360)=72.`
+      },
+      { id: 36, prompt: "Find the H.C.F. of 280, 105 and 175.", inputs:[{label:"H.C.F.", ans:35, display:"35"}],
+        explain:
+`Prime factors:
+280 = 2³ × 5 × 7
+105 = 3 × 5 × 7
+175 = 5² × 7
+Common = 5 × 7 = 35 → H.C.F. = 35.`,
+        pitfalls:`It's easy to lose the 7 if you only compare 280 and 175 first; make sure it divides 105 too.`,
+        euclid:`gcd(280,105)=35, then gcd(35,175)=35.`
+      },
+      { id: 37, prompt: "Find the H.C.F. of 228, 156, 132 and 204.", inputs:[{label:"H.C.F.", ans:12, display:"12"}],
+        explain:
+`Prime factors (enough to see common part):
+228 = 2² × 3 × 19
+156 = 2² × 3 × 13
+132 = 2² × 3 × 11
+204 = 2² × 3 × 17
+Common = 2² × 3 = 12 → H.C.F. = 12.`,
+        pitfalls:`All numbers share 12 but not 24 (since 132 is not divisible by 24). Always test the next candidate multiple.`,
+        euclid:`gcd(228,156)=12; gcd(12,132)=12; gcd(12,204)=12.`
+      },
+      { id: 38, prompt: "Find the H.C.F. of 126, 234, 198 and 90.", inputs:[{label:"H.C.F.", ans:18, display:"18"}],
+        explain:
+`Prime factors:
+126 = 2 × 3² × 7
+234 = 2 × 3² × 13
+198 = 2 × 3² × 11
+90  = 2 × 3² × 5
+Common = 2 × 3² = 18 → H.C.F. = 18.`,
+        pitfalls:`Because 90 is smaller, it limits the H.C.F. (it only contains 3², not 3³).`,
+        euclid:`gcd(126,234)=18; gcd(18,198)=18; gcd(18,90)=18.`
+      },
+      { id: 39, prompt: "Find the H.C.F. of 252, 567 and 378.", inputs:[{label:"H.C.F.", ans:63, display:"63"}],
+        explain:
+`Prime factors:
+252 = 2² × 3² × 7
+567 = 3⁴ × 7
+378 = 2 × 3³ × 7
+Common = 3² × 7 = 63 → H.C.F. = 63.`,
+        pitfalls:`Do not include a factor 2 because 567 is odd. For 3's power, take the minimum (2) across the three.`,
+        euclid:`gcd(252,567)=63, then gcd(63,378)=63.`
+      },
+      { id: 40, prompt: "Find the H.C.F. of 324, 432 and 540.", inputs:[{label:"H.C.F.", ans:108, display:"108"}],
+        explain:
+`Prime factors:
+324 = 2² × 3⁴
+432 = 2⁴ × 3³
+540 = 2² × 3³ × 5
+Common = 2² × 3³ = 108 → H.C.F. = 108.`,
+        pitfalls:`The factor 5 is not common. Exponent check matters: 3-power is limited to 3 because 432 and 540 have 3³.`,
+        euclid:`gcd(324,432)=108, then gcd(108,540)=108.`
+      },
+
+      // 41–46: word problems (HCF contexts)
+      { id: 41, prompt: "Equal squares, as large as possible, are ruled off on a rectangular board measuring 54 cm by 78 cm. Find the size of the squares. How many squares are there?",
+        hint:"Largest square side = H.C.F. of the side lengths. Number of squares = (54/side) × (78/side).",
+        inputs:[
+          {label:"Side length of each square (cm)", ans:6, display:"6 cm"},
+          {label:"Number of squares", ans:117, display:"117"}
+        ],
+        explain:
+`To tile a 54 cm × 78 cm rectangle with equal squares (no cutting), the square side must divide BOTH 54 and 78.
+So side = gcd(54,78) = 6 cm.
+
+Count:
+54/6 = 9 squares along one side
+78/6 = 13 squares along the other side
+Total = 9 × 13 = 117 squares.`,
+        pitfalls:`Using L.C.M. is the wrong direction here: you want the largest square that fits exactly, which is a common divisor.\nFor the count, divide first, then multiply (don't multiply lengths and then divide by 6).`,
+        euclid:`\n${euclidTrace(78,54)}`
+      },
+      { id: 42, prompt: "Square tiles are used to cover a floor measuring 16 ft 6 in by 12 ft 9 in. If the tiles are all alike, and only whole ones are used, what is the greatest size they can be? How many tiles are there?",
+        hint:"Convert to a single unit first (inches works well), take H.C.F., then compute the grid count.",
+        inputs:[
+          {label:"Tile side length (inches)", ans:9, display:"9 in"},
+          {label:"Number of tiles", ans:374, display:"374"}
+        ],
+        explain:
+`Convert to inches:
+16 ft 6 in = 16×12 + 6 = 198 in
+12 ft 9 in = 12×12 + 9 = 153 in
+
+Largest tile side = gcd(198,153) = 9 in.
+
+Count:
+198/9 = 22 tiles along the length
+153/9 = 17 tiles along the width
+Total = 22 × 17 = 374 tiles.`,
+        pitfalls:`Mixing feet and inches is the commonest error. Convert BOTH lengths to the same unit before any gcd.\nAfter finding tile side, don't forget BOTH directions for the count.`,
+        euclid:`\n${euclidTrace(198,153)}`
+      },
+      { id: 43, prompt: "Find the greatest mass that can be taken an exact number of times from 360 g, 504 g and 672 g.",
+        inputs:[{label:"Greatest mass (g)", ans:24, display:"24 g"}],
+        explain:
+`"Taken an exact number of times" means the mass must divide each total exactly.
+So compute gcd(360,504,672) = 24 g.
+
+Check:
+360/24=15, 504/24=21, 672/24=28 (all integers).`,
+        pitfalls:`If you compute gcd of only two numbers and forget the third, you may get a value that fails the remaining one.`,
+        euclid:`gcd(360,504)=72; gcd(72,672)=24.`
+      },
+      { id: 44, prompt: "A rectangular field measures 308 m by 228 m and needs fencing. If the posts are placed along its sides at equal distances apart, and the posts are as far apart as possible, what is the distance between them?",
+        inputs:[{label:"Distance between posts (m)", ans:4, display:"4 m"}],
+        explain:
+`Equal spacing around the rectangle means the spacing must divide both side lengths exactly.
+So spacing = gcd(308,228) = 4 m.
+
+This gives maximal spacing without "drift" at corners.`,
+        pitfalls:`The distance must fit both side lengths exactly. If you only check one side, the corner alignment fails.`,
+        euclid:`\n${euclidTrace(308,228)}`
+      },
+      { id: 45, prompt: "Find the greatest number which when divided into 179 and 234 will leave a remainder of 3 in each case.",
+        inputs:[{label:"Greatest divisor", ans:11, display:"11"}],
+        explain:
+`If a divisor d leaves remainder 3, then:
+179 = d×k + 3  ⇒ d divides (179−3)=176
+234 = d×m + 3  ⇒ d divides (234−3)=231
+
+So d = gcd(176,231) = 11.`,
+        pitfalls:`Do NOT take gcd(179,234). You must subtract the common remainder first.\nAlso check that the remainder is smaller than the divisor (3 < 11 is OK).`,
+        euclid:`\n${euclidTrace(231,176)}`
+      },
+      { id: 46, prompt: "Find the greatest sum of money that is exactly contained in £1·62, £2·52 and £3·42.",
+        hint:"Convert to pence, take H.C.F., then convert back if you want.",
+        inputs:[{label:"Greatest sum (£ or p)", ans:18, display:"18 p ( £0.18 )"}],
+        explain:
+`Work in pence to avoid decimals:
+£1.62 = 162 p
+£2.52 = 252 p
+£3.42 = 342 p
+
+H.C.F. = gcd(162,252,342) = 18 p.
+So the greatest sum is 18 p = £0.18.`,
+        pitfalls:`Rounding decimals breaks exact divisibility. Convert to the smallest currency unit first (pence/cents).`,
+        euclid:`gcd(162,252)=18; gcd(18,342)=18.`
+      },
+
+      // 47–50: page titled "Factors. Easy H.C.F. and L.C.M."
+      { id: 47, prompt: "A rectangular piece of ground measuring 486 m by 360 m is marked off exactly into equal square plots. Find the maximum area of a plot in square metres.",
+        hint:"Largest square side = gcd(486,360). Area = side².",
+        inputs:[{label:"Maximum area (m²)", ans:324, display:"324 m²"}],
+        explain:
+`To make equal square plots with no leftover strips, the square side must divide both 486 and 360.
+So side = gcd(486,360) = 18 m.
+
+Maximum area = 18² = 324 m².`,
+        pitfalls:`Don't take gcd and forget to square it: the question asks for AREA, not side length.\nAlso, the side must divide BOTH dimensions exactly.`,
+        euclid:`\n${euclidTrace(486,360)}`
+      },
+      { id: 48, prompt: "Four wooden rods with lengths of 140 cm, 238 cm, 168 cm and 210 cm are cut up into pieces which are all of the same length. Find the greatest length possible for these pieces, if no wood is left over.",
+        inputs:[{label:"Piece length (cm)", ans:14, display:"14 cm"}],
+        explain:
+`"No wood left over" means the piece length must divide every rod length.
+So piece length = gcd(140,238,168,210) = 14 cm.
+
+Check:
+140/14=10, 238/14=17, 168/14=12, 210/14=15.`,
+        pitfalls:`If you only compare the "nice" lengths (like 140,168,210) you might get 14 or 14×something; but 238 is the constraint that prevents larger answers.`,
+        euclid:`gcd(140,238)=14; gcd(14,168)=14; gcd(14,210)=14.`
+      },
+      { id: 49, prompt: "Hurdles are used to fence in a rectangular piece of land measuring 393 m by 339 m. If the hurdles are all alike, and do not overlap, find their maximum length.",
+        inputs:[{label:"Maximum hurdle length (m)", ans:3, display:"3 m"}],
+        explain:
+`To fit exactly along each side with identical hurdles (no overlap), the hurdle length must divide both 393 and 339.
+So maximum length = gcd(393,339) = 3 m.`,
+        pitfalls:`A common mistake is using the perimeter; but the hurdle length must fit EACH side length exactly, so use gcd of the side lengths.`,
+        euclid:`\n${euclidTrace(393,339)}`
+      },
+      { id: 50, prompt: "Find the greatest number which when divided into 1 250 and 1 000 leaves remainders of 26 and 28 respectively.",
+        inputs:[{label:"Greatest divisor", ans:36, display:"36"}],
+        explain:
+`Same idea as the "same remainder" problem:
+If d leaves remainder 26 on 1250, then d divides 1250−26 = 1224.
+If d leaves remainder 28 on 1000, then d divides 1000−28 = 972.
+
+So d = gcd(1224,972) = 36.`,
+        pitfalls:`Don't take gcd(1250,1000). Subtract the given remainders first.\nAlso check remainder < divisor: 26 < 36 and 28 < 36 (valid).`,
+        euclid:`\n${euclidTrace(1224,972)}`
+      }
+    ];
+
+    // Ensure total shown is correct even if edited later
+    const total = Q.length;
+
+    // ---------- State ----------
+    let idx = 0;
+    let score = 0;
+    let firstTryCorrect = 0;
+    let attemptsThisQ = 0;
+    let locked = false;
+
+    // ---------- DOM ----------
+    const qIndexEl = document.getElementById("qIndex");
+    const qTotalEl = document.getElementById("qTotal");
+    const scoreEl = document.getElementById("score");
+    const firstTryEl = document.getElementById("firstTry");
+    const barEl = document.getElementById("bar");
+    const progressTextEl = document.getElementById("progressText");
+
+    const qidTextEl = document.getElementById("qidText");
+    const questionTextEl = document.getElementById("questionText");
+    const questionHintEl = document.getElementById("questionHint");
+
+    const fieldsEl = document.getElementById("fields");
+    const formEl = document.getElementById("form");
+    const submitBtn = document.getElementById("submitBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const skipBtn = document.getElementById("skipBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const feedbackEl = document.getElementById("feedback");
+    const statusEl = document.getElementById("status");
+    const statusTextEl = document.getElementById("statusText");
+    const correctAnswerEl = document.getElementById("correctAnswer");
+    const explainEl = document.getElementById("explain");
+    const pitfallsEl = document.getElementById("pitfalls");
+    const euclidEl = document.getElementById("euclid");
+    const showWorkBtn = document.getElementById("showWorkBtn");
+    const quickMethodEl = document.getElementById("quickMethod");
+
+    qTotalEl.textContent = total;
+
+    // ---------- Render ----------
+    function setProgress(){
+      qIndexEl.textContent = (idx+1);
+      scoreEl.textContent = score;
+      firstTryEl.textContent = firstTryCorrect;
+      const pct = Math.round(((idx) / total) * 100);
+      barEl.style.width = `${pct}%`;
+      progressTextEl.textContent = `${pct}%`;
+    }
+
+    function renderQuestion(){
+      const q = Q[idx];
+      attemptsThisQ = 0;
+      locked = false;
+
+      // text
+      qidTextEl.textContent = `#${q.id}`;
+      questionTextEl.textContent = q.prompt;
+      questionHintEl.textContent = q.hint || "Type a number. (Units are optional.)";
+
+      // fields
+      fieldsEl.innerHTML = "";
+      q.inputs.forEach((inp, i) => {
+        const wrap = document.createElement("div");
+        wrap.className = "field";
+        const lab = document.createElement("label");
+        lab.textContent = inp.label;
+        const input = document.createElement("input");
+        input.type = "text";
+        input.inputMode = "numeric";
+        input.placeholder = "e.g., " + inp.display;
+        input.dataset.index = i;
+        input.setAttribute("aria-label", inp.label);
+        wrap.appendChild(lab);
+        wrap.appendChild(input);
+        fieldsEl.appendChild(wrap);
+      });
+
+      // feedback reset
+      feedbackEl.classList.remove("show");
+      statusEl.classList.remove("good","bad");
+      statusTextEl.textContent = "";
+      correctAnswerEl.textContent = "";
+      explainEl.textContent = "";
+      pitfallsEl.textContent = "";
+      euclidEl.textContent = "";
+      nextBtn.disabled = true;
+      submitBtn.disabled = false;
+      skipBtn.disabled = false;
+
+      quickMethodEl.style.display = "none";
+
+      setProgress();
+
+      // focus first field
+      const first = fieldsEl.querySelector("input");
+      if (first) first.focus();
+    }
+
+    function currentCorrectAnswerText(){
+      const q = Q[idx];
+      return formatAnswer(q.inputs.map(x => ({label: x.label, display: x.display})));
+    }
+
+    function evaluate(){
+      const q = Q[idx];
+      const inputs = Array.from(fieldsEl.querySelectorAll("input"));
+      const results = inputs.map((el, i) => {
+        const expected = q.inputs[i].ans;
+        const got = firstNumber(el.value);
+        return { ok: (got !== null && Number(got) === Number(expected)), got };
+      });
+      const allOk = results.every(r => r.ok);
+      return { allOk, results };
+    }
+
+    function showFeedback(isCorrect){
+      const q = Q[idx];
+      feedbackEl.classList.add("show");
+      correctAnswerEl.textContent = currentCorrectAnswerText();
+      explainEl.textContent = q.explain;
+      pitfallsEl.textContent = q.pitfalls;
+      euclidEl.textContent = q.euclid || "Use Euclid's algorithm pairwise until you reach a remainder of 0.";
+
+      if (isCorrect){
+        statusEl.classList.add("good");
+        statusEl.classList.remove("bad");
+        statusTextEl.textContent = "Correct.";
+      } else {
+        statusEl.classList.add("bad");
+        statusEl.classList.remove("good");
+        statusTextEl.textContent = "Incorrect.";
+      }
+      nextBtn.disabled = false;
+    }
+
+    // ---------- Events ----------
+    formEl.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (locked) return;
+
+      attemptsThisQ += 1;
+
+      const { allOk } = evaluate();
+      showFeedback(allOk);
+
+      // scoring
+      if (allOk){
+        if (attemptsThisQ === 1){
+          score += 1;
+          firstTryCorrect += 1;
+        }
+        locked = true;
+        submitBtn.disabled = true;
+        skipBtn.disabled = true;
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      idx += 1;
+      if (idx >= total){
+        // End screen
+        barEl.style.width = "100%";
+        progressTextEl.textContent = "100%";
+        questionTextEl.textContent = "Finished 🎉";
+        questionHintEl.textContent = `Final score: ${score}/${total} (first-try correct: ${firstTryCorrect}). Press Restart to try again.`;
+        fieldsEl.innerHTML = "";
+        feedbackEl.classList.remove("show");
+        submitBtn.disabled = true;
+        skipBtn.disabled = true;
+        nextBtn.disabled = true;
+        qidTextEl.textContent = "#—";
+        qIndexEl.textContent = total;
+        return;
+      }
+      renderQuestion();
+    });
+
+    skipBtn.addEventListener("click", () => {
+      if (locked) return;
+      // reveal answer + explanation, but don't award points
+      showFeedback(false);
+      locked = true;
+      submitBtn.disabled = true;
+      skipBtn.disabled = true;
+    });
+
+    restartBtn.addEventListener("click", () => {
+      idx = 0;
+      score = 0;
+      firstTryCorrect = 0;
+      renderQuestion();
+    });
+
+    showWorkBtn.addEventListener("click", () => {
+      quickMethodEl.style.display = (quickMethodEl.style.display === "none") ? "block" : "none";
+    });
+
+    // ---------- Init ----------
+    renderQuestion();
+  </script>
+</body>
+</html>

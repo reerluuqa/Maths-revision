@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H.C.F. Practice Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .progress-bar-container {
+            flex: 1;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            color: #212529;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .skip-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .skip-btn:hover {
+            background: #5a6268;
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+        }
+
+        .feedback-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .feedback.correct .feedback-title {
+            color: #155724;
+        }
+
+        .feedback.incorrect .feedback-title {
+            color: #721c24;
+        }
+
+        .feedback-content {
+            line-height: 1.8;
+            color: #212529;
+        }
+
+        .explanation-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(0,0,0,0.1);
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .pitfalls {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .pitfalls-title {
+            font-weight: 700;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .next-btn {
+            background: #28a745;
+            color: white;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .next-btn:hover {
+            background: #218838;
+        }
+
+        .completion-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .completion-screen.show {
+            display: block;
+        }
+
+        .completion-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .score {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 50px;
+            margin-top: 30px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📐 H.C.F. Practice Quiz</h1>
+            <p>Master finding the Highest Common Factor!</p>
+        </div>
+
+        <div class="progress">
+            <span class="progress-text">Question <span id="current">1</span> of <span id="total">20</span></span>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <span class="progress-text">Score: <span id="score">0</span></span>
+        </div>
+
+        <div id="quizContent">
+            <div class="question-card">
+                <div class="question-number">Question <span id="qNum">1</span></div>
+                <div class="question-text" id="questionText">Loading question...</div>
+                <input type="text" class="answer-input" id="answerInput" placeholder="Enter your answer">
+            </div>
+
+            <div class="button-group">
+                <button class="submit-btn" id="submitBtn">Submit Answer</button>
+                <button class="skip-btn" id="skipBtn">Skip</button>
+            </div>
+
+            <div class="feedback" id="feedback">
+                <div class="feedback-title" id="feedbackTitle"></div>
+                <div class="feedback-content" id="feedbackContent"></div>
+                <button class="next-btn" id="nextBtn">Next Question →</button>
+            </div>
+        </div>
+
+        <div class="completion-screen" id="completionScreen">
+            <div class="completion-icon">🎉</div>
+            <h2>Quiz Complete!</h2>
+            <div class="score" id="finalScore"></div>
+            <p>Great work on practicing H.C.F. problems!</p>
+            <button class="restart-btn" id="restartBtn">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Find the H.C.F. of 9, 15 and 24",
+                a: "3",
+                explanation: "Prime factorization:<br>9 = 3²<br>15 = 3 × 5<br>24 = 2³ × 3<br><br>The only common factor is 3, so H.C.F. = 3",
+                pitfalls: "Don't confuse H.C.F. with L.C.M. The H.C.F. is the largest number that divides ALL given numbers, not the smallest common multiple."
+            },
+            {
+                q: "Find the H.C.F. of 18, 24 and 32",
+                a: "2",
+                explanation: "Prime factorization:<br>18 = 2 × 3²<br>24 = 2³ × 3<br>32 = 2⁵<br><br>The only common prime factor is 2¹, so H.C.F. = 2",
+                pitfalls: "Make sure to find the LOWEST power of common factors. Here, 2 appears in all three, but only to the power of 1 in 18."
+            },
+            {
+                q: "Find the H.C.F. of 12, 30 and 42",
+                a: "6",
+                explanation: "Prime factorization:<br>12 = 2² × 3<br>30 = 2 × 3 × 5<br>42 = 2 × 3 × 7<br><br>Common factors: 2¹ × 3¹ = 6",
+                pitfalls: "Don't forget to multiply all common prime factors together. Both 2 AND 3 are common, so H.C.F. = 2 × 3 = 6."
+            },
+            {
+                q: "Find the H.C.F. of 24, 40 and 64",
+                a: "8",
+                explanation: "Prime factorization:<br>24 = 2³ × 3<br>40 = 2³ × 5<br>64 = 2⁶<br><br>Common factor: 2³ = 8",
+                pitfalls: "All three numbers share factor 2, but to different powers. Take the SMALLEST power: 2³ = 8."
+            },
+            {
+                q: "Find the H.C.F. of 54 and 126",
+                a: "18",
+                explanation: "Prime factorization:<br>54 = 2 × 3³<br>126 = 2 × 3² × 7<br><br>Common factors: 2¹ × 3² = 2 × 9 = 18",
+                pitfalls: "When finding common prime factors, use the LOWEST power. Here 3 appears as 3³ and 3², so use 3²."
+            },
+            {
+                q: "Find the H.C.F. of 84 and 140",
+                a: "28",
+                explanation: "Prime factorization:<br>84 = 2² × 3 × 7<br>140 = 2² × 5 × 7<br><br>Common factors: 2² × 7 = 4 × 7 = 28",
+                pitfalls: "Both 2² and 7 are common factors. Remember to multiply them: 4 × 7 = 28, not just 7."
+            },
+            {
+                q: "Find the H.C.F. of 30, 45 and 75",
+                a: "15",
+                explanation: "Prime factorization:<br>30 = 2 × 3 × 5<br>45 = 3² × 5<br>75 = 3 × 5²<br><br>Common factors: 3¹ × 5¹ = 15",
+                pitfalls: "All three share 3 and 5, but to different powers. Use the smallest power of each: 3¹ × 5¹ = 15."
+            },
+            {
+                q: "Find the H.C.F. of 35, 50 and 65",
+                a: "5",
+                explanation: "Prime factorization:<br>35 = 5 × 7<br>50 = 2 × 5²<br>65 = 5 × 13<br><br>Common factor: 5¹ = 5",
+                pitfalls: "The only factor common to all three is 5. Don't include 2, 7, or 13 as they don't appear in all numbers."
+            },
+            {
+                q: "Find the H.C.F. of 42, 70 and 56",
+                a: "14",
+                explanation: "Prime factorization:<br>42 = 2 × 3 × 7<br>70 = 2 × 5 × 7<br>56 = 2³ × 7<br><br>Common factors: 2¹ × 7 = 14",
+                pitfalls: "Even though 56 has 2³, we can only use 2¹ since that's the minimum power across all three numbers."
+            },
+            {
+                q: "Find the H.C.F. of 48, 120 and 72",
+                a: "24",
+                explanation: "Prime factorization:<br>48 = 2⁴ × 3<br>120 = 2³ × 3 × 5<br>72 = 2³ × 3²<br><br>Common factors: 2³ × 3¹ = 8 × 3 = 24",
+                pitfalls: "Both 2 and 3 are common. For 2, the minimum power is 3 (from 120 and 72). For 3, it's 1 (from 48 and 120)."
+            },
+            {
+                q: "Find the H.C.F. of 36, 72 and 63",
+                a: "9",
+                explanation: "Prime factorization:<br>36 = 2² × 3²<br>72 = 2³ × 3²<br>63 = 3² × 7<br><br>Common factor: 3² = 9",
+                pitfalls: "63 has no factor of 2, so 2 is NOT common to all. Only 3² is common: H.C.F. = 9."
+            },
+            {
+                q: "Find the H.C.F. of 63, 42, 105 and 21",
+                a: "21",
+                explanation: "Prime factorization:<br>63 = 3² × 7<br>42 = 2 × 3 × 7<br>105 = 3 × 5 × 7<br>21 = 3 × 7<br><br>Common factors: 3¹ × 7 = 21",
+                pitfalls: "With four numbers, ensure all share the factors. Only 3 and 7 appear in all four. Use minimum powers: 3¹ × 7¹ = 21."
+            },
+            {
+                q: "Find the H.C.F. of 42, 66, 24 and 78",
+                a: "6",
+                explanation: "Prime factorization:<br>42 = 2 × 3 × 7<br>66 = 2 × 3 × 11<br>24 = 2³ × 3<br>78 = 2 × 3 × 13<br><br>Common factors: 2¹ × 3¹ = 6",
+                pitfalls: "Only 2 and 3 appear in all four numbers. Even though they appear to higher powers in 24, we use the minimum."
+            },
+            {
+                q: "Find the H.C.F. of 45, 105 and 60",
+                a: "15",
+                explanation: "Prime factorization:<br>45 = 3² × 5<br>105 = 3 × 5 × 7<br>60 = 2² × 3 × 5<br><br>Common factors: 3¹ × 5¹ = 15",
+                pitfalls: "All three share 3 and 5. For 3: minimum power is 1 (from 105 and 60). For 5: minimum power is 1 in all."
+            },
+            {
+                q: "Find the H.C.F. of 72, 108 and 54",
+                a: "18",
+                explanation: "Prime factorization:<br>72 = 2³ × 3²<br>108 = 2² × 3³<br>54 = 2 × 3³<br><br>Common factors: 2¹ × 3² = 2 × 9 = 18",
+                pitfalls: "For factor 2: minimum power is 1 (from 54). For factor 3: minimum power is 2 (from 72). So 2¹ × 3² = 18."
+            },
+            {
+                q: "Find the H.C.F. of 56, 84 and 105",
+                a: "7",
+                explanation: "Prime factorization:<br>56 = 2³ × 7<br>84 = 2² × 3 × 7<br>105 = 3 × 5 × 7<br><br>Common factor: 7",
+                pitfalls: "105 has no factor of 2, so only 7 is common to all three. Don't include factors that aren't in every number."
+            },
+            {
+                q: "Find the H.C.F. of 84, 108 and 60",
+                a: "12",
+                explanation: "Prime factorization:<br>84 = 2² × 3 × 7<br>108 = 2² × 3³<br>60 = 2² × 3 × 5<br><br>Common factors: 2² × 3¹ = 4 × 3 = 12",
+                pitfalls: "Both 2 and 3 are common. For 2: all have at least 2². For 3: minimum is 3¹ (from 84 and 60). Result: 4 × 3 = 12."
+            },
+            {
+                q: "Find the H.C.F. of 112, 48 and 80",
+                a: "16",
+                explanation: "Prime factorization:<br>112 = 2⁴ × 7<br>48 = 2⁴ × 3<br>80 = 2⁴ × 5<br><br>Common factor: 2⁴ = 16",
+                pitfalls: "All three have exactly 2⁴ as their highest power of 2. No other prime factor is common to all, so H.C.F. = 16."
+            },
+            {
+                q: "Find the H.C.F. of 144 and 198",
+                a: "18",
+                explanation: "Prime factorization:<br>144 = 2⁴ × 3²<br>198 = 2 × 3² × 11<br><br>Common factors: 2¹ × 3² = 2 × 9 = 18",
+                pitfalls: "For factor 2: minimum is 2¹ (from 198). For factor 3: minimum is 3² (both have it). So 2 × 9 = 18."
+            },
+            {
+                q: "Find the H.C.F. of 216 and 168",
+                a: "24",
+                explanation: "Prime factorization:<br>216 = 2³ × 3³<br>168 = 2³ × 3 × 7<br><br>Common factors: 2³ × 3¹ = 8 × 3 = 24",
+                pitfalls: "Both have 2³, but for 3, the minimum is 3¹ (from 168). So 8 × 3 = 24."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        // DOM elements
+        const questionText = document.getElementById('questionText');
+        const answerInput = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const feedback = document.getElementById('feedback');
+        const feedbackTitle = document.getElementById('feedbackTitle');
+        const feedbackContent = document.getElementById('feedbackContent');
+        const currentSpan = document.getElementById('current');
+        const totalSpan = document.getElementById('total');
+        const scoreSpan = document.getElementById('score');
+        const qNumSpan = document.getElementById('qNum');
+        const progressBar = document.getElementById('progressBar');
+        const quizContent = document.getElementById('quizContent');
+        const completionScreen = document.getElementById('completionScreen');
+        const finalScore = document.getElementById('finalScore');
+        const restartBtn = document.getElementById('restartBtn');
+
+        // Initialize quiz
+        function init() {
+            totalSpan.textContent = questions.length;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const q = questions[currentQuestion];
+            
+            questionText.textContent = q.q;
+            qNumSpan.textContent = currentQuestion + 1;
+            currentSpan.textContent = currentQuestion + 1;
+            
+            answerInput.value = '';
+            answerInput.disabled = false;
+            answerInput.focus();
+            
+            submitBtn.disabled = false;
+            skipBtn.style.display = 'block';
+            feedback.classList.remove('show', 'correct', 'incorrect');
+            
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuestion) / questions.length) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        function checkAnswer() {
+            if (answered) return;
+            
+            answered = true;
+            const userAnswer = answerInput.value.trim();
+            const q = questions[currentQuestion];
+            const isCorrect = userAnswer === q.a;
+            
+            if (isCorrect) {
+                score++;
+                scoreSpan.textContent = score;
+            }
+            
+            answerInput.disabled = true;
+            submitBtn.disabled = true;
+            skipBtn.style.display = 'none';
+            
+            showFeedback(isCorrect, q);
+        }
+
+        function showFeedback(isCorrect, q) {
+            feedback.classList.remove('correct', 'incorrect');
+            feedback.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+            
+            feedbackTitle.textContent = isCorrect ? '✓ Correct!' : '✗ Incorrect';
+            
+            let content = '';
+            if (!isCorrect) {
+                content += `<p><strong>The correct answer is: ${q.a}</strong></p><br>`;
+            }
+            
+            content += `
+                <div class="explanation-section">
+                    <div class="explanation-title">📚 Explanation:</div>
+                    <p>${q.explanation}</p>
+                </div>
+                <div class="pitfalls">
+                    <div class="pitfalls-title">⚠️ Common Pitfall:</div>
+                    <p>${q.pitfalls}</p>
+                </div>
+            `;
+            
+            feedbackContent.innerHTML = content;
+        }
+
+        function skipQuestion() {
+            if (answered) return;
+            
+            answered = true;
+            const q = questions[currentQuestion];
+            
+            answerInput.disabled = true;
+            submitBtn.disabled = true;
+            skipBtn.style.display = 'none';
+            
+            showFeedback(false, q);
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion >= questions.length) {
+                showCompletion();
+            } else {
+                loadQuestion();
+            }
+        }
+
+        function showCompletion() {
+            quizContent.style.display = 'none';
+            completionScreen.classList.add('show');
+            finalScore.textContent = `${score} / ${questions.length}`;
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            let message = '';
+            if (percentage >= 90) message = '🌟 Outstanding!';
+            else if (percentage >= 70) message = '👍 Great job!';
+            else if (percentage >= 50) message = '📈 Good effort!';
+            else message = '💪 Keep practicing!';
+            
+            finalScore.textContent += ` (${percentage}%) ${message}`;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            scoreSpan.textContent = 0;
+            
+            completionScreen.classList.remove('show');
+            quizContent.style.display = 'block';
+            
+            loadQuestion();
+        }
+
+        // Event listeners
+        submitBtn.addEventListener('click', checkAnswer);
+        skipBtn.addEventListener('click', skipQuestion);
+        nextBtn.addEventListener('click', nextQuestion);
+        restartBtn.addEventListener('click', restartQuiz);
+
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !answered) {
+                checkAnswer();
+            }
+        });
+
+        // Start the quiz
+        init();
+    </script>
+</body>
+</html>

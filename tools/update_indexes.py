@@ -24,6 +24,11 @@ CATEGORIES = [
         "description": "Times tables, factors, and sharing.",
     },
     {
+        "slug": "general-arithmetic-topic",
+        "title": "General Arithmetic Topic",
+        "description": "Mixed arithmetic practice and reviews.",
+    },
+    {
         "slug": "percentage",
         "title": "Percentage",
         "description": "Percent change, discounts, and rates.",
@@ -76,7 +81,7 @@ def build_page(title: str, description: str, items: list[Path]) -> str:
             label = title_from_filename(path.name)
             cards.append(
                 f"""
-      <a class=\"page-card\" href=\"{path.name}\">
+      <a class=\"page-card\" href=\"{path.name}\" target=\"_blank\" rel=\"noopener\">
         <strong>{label}</strong>
         <small>{path.name}</small>
       </a>"""
@@ -106,11 +111,16 @@ def build_page(title: str, description: str, items: list[Path]) -> str:
 </head>
 <body>
   <main class=\"container\">
-    <div class=\"breadcrumb\">
-      <a href=\"../index.html\">Home</a> / {title}
+    <div class=\"category-header\">
+      <a class=\"back-link\" href=\"../index.html\" aria-label=\"Back to home\">&larr;</a>
+      <div>
+        <div class=\"breadcrumb\">
+          <a href=\"../index.html\">Home</a> / {title}
+        </div>
+        <h1 class=\"category-title\">{title}</h1>
+        <p class=\"category-desc\">{description}</p>
+      </div>
     </div>
-    <h1 class=\"category-title\">{title}</h1>
-    <p class=\"category-desc\">{description}</p>
 
     <section class=\"page-grid\">{grid}
     </section>

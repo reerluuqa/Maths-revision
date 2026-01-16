@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Divisibility & Primes — Exercise 1b</title>
+  <style>
+    :root{
+      --bg1:#fff3e6;
+      --bg2:#eef7ff;
+      --card:#ffffffcc;
+      --ink:#17212a;
+      --muted:#52606d;
+      --brand:#2b6cb0;
+      --brand2:#7c3aed;
+      --good:#0f766e;
+      --bad:#b42318;
+      --warn:#b45309;
+      --border:#e6e8ec;
+      --shadow: 0 18px 50px rgba(17, 24, 39, .10);
+      --radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      color:var(--ink);
+      font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1000px 500px at 10% 10%, #ffe7d1 0%, transparent 60%),
+        radial-gradient(900px 500px at 90% 20%, #dbeafe 0%, transparent 55%),
+        radial-gradient(900px 600px at 60% 100%, #ede9fe 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .app{
+      width:min(980px, 100%);
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border:1px solid rgba(255,255,255,.6);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    header{
+      padding:22px 24px 14px 24px;
+      border-bottom:1px solid var(--border);
+      background: linear-gradient(90deg, rgba(43,108,176,.10), rgba(124,58,237,.08));
+    }
+
+    .titleRow{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    h1{
+      margin:0;
+      font-size: clamp(20px, 2.2vw, 28px);
+      letter-spacing:-0.02em;
+    }
+
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      max-width: 62ch;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--border);
+      color:var(--muted);
+      font-weight:600;
+      white-space:nowrap;
+    }
+
+    .chip b{ color:var(--ink); }
+
+    .progressWrap{
+      margin-top:14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .bar{
+      flex:1;
+      height:10px;
+      background: #ffffff;
+      border:1px solid var(--border);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--brand), var(--brand2));
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+    .pText{
+      color:var(--muted);
+      font-weight:700;
+      font-size:13px;
+      min-width: 92px;
+      text-align:right;
+    }
+
+    main{
+      padding:22px 24px 24px 24px;
+      display:grid;
+      gap:18px;
+    }
+
+    .card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding:18px;
+    }
+
+    .qTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .qLabel{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:8px 12px;
+      background: linear-gradient(90deg, rgba(43,108,176,.12), rgba(124,58,237,.10));
+      border:1px solid rgba(43,108,176,.18);
+      border-radius:999px;
+      font-weight:800;
+      letter-spacing:-0.01em;
+    }
+
+    .rule{
+      color:var(--muted);
+      font-size:14px;
+      max-width: 70ch;
+    }
+
+    .prompt{
+      margin:8px 0 0;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+    }
+
+    .nums{
+      margin:12px 0 0;
+      padding:12px 14px;
+      background: #f8fafc;
+      border:1px dashed #cbd5e1;
+      border-radius:14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      color:#0f172a;
+    }
+
+    .hint{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .controls{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+
+    label{
+      font-weight:800;
+      margin-bottom:6px;
+      display:block;
+    }
+
+    textarea, input[type="text"]{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      outline:none;
+      font-size:16px;
+      background:#ffffff;
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+
+    textarea{ min-height: 84px; resize: vertical; }
+
+    textarea:focus, input[type="text"]:focus{
+      border-color: rgba(43,108,176,.55);
+      box-shadow: 0 0 0 4px rgba(43,108,176,.15);
+    }
+
+    .btnRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    button{
+      border:0;
+      cursor:pointer;
+      padding:12px 14px;
+      border-radius:14px;
+      font-weight:900;
+      letter-spacing:-0.01em;
+      transition: transform .06s ease, filter .15s ease, opacity .15s ease;
+      user-select:none;
+    }
+    button:active{ transform: translateY(1px); }
+
+    .primary{
+      background: linear-gradient(90deg, var(--brand), var(--brand2));
+      color:#fff;
+    }
+    .ghost{
+      background:#fff;
+      border:1px solid var(--border);
+      color:var(--ink);
+    }
+    .primary[disabled], .ghost[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
+    .feedback{
+      border-radius: 16px;
+      padding:14px;
+      border: 1px solid var(--border);
+      background:#f8fafc;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+
+    .fbHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .badge{
+      font-weight:900;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#fff;
+    }
+    .badge.good{ color:var(--good); border-color: rgba(15,118,110,.25); background: rgba(15,118,110,.08); }
+    .badge.bad{ color:var(--bad); border-color: rgba(180,35,24,.25); background: rgba(180,35,24,.08); }
+    .badge.warn{ color:var(--warn); border-color: rgba(180,83,9,.25); background: rgba(180,83,9,.08); }
+
+    .fbBody{
+      color:var(--ink);
+    }
+    .fbBody p{ margin:8px 0; }
+    .fbBody ul{ margin:8px 0 0; padding-left: 18px; }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    }
+
+    footer{
+      padding:14px 24px 18px 24px;
+      border-top:1px solid var(--border);
+      color:var(--muted);
+      font-size:13px;
+      background: rgba(255,255,255,.55);
+    }
+
+    .small{
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    @media (min-width: 820px){
+      .controls{
+        grid-template-columns: 1.2fr .8fr;
+        align-items:start;
+      }
+      .controls .right{
+        padding-left:10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="Divisibility and primes practice">
+    <header>
+      <div class="titleRow">
+        <div>
+          <h1>Exercise 1b — Divisibility & Prime Numbers</h1>
+          <p class="subtitle">
+            One question at a time. Enter your answer, get immediate feedback, see the correct working, then move on.
+          </p>
+        </div>
+        <div class="chip" aria-live="polite">
+          <span>Score:</span> <b id="score">0</b> <span class="small">/</span> <b id="total">7</b>
+        </div>
+      </div>
+
+      <div class="progressWrap" aria-label="Progress">
+        <div class="bar" aria-hidden="true"><div id="barFill"></div></div>
+        <div class="pText" id="progressText">1 / 7</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="card" id="questionCard">
+        <div class="qTop">
+          <div class="qLabel" id="qLabel">Question 1</div>
+          <div class="rule" id="ruleText"></div>
+        </div>
+
+        <div class="prompt" id="promptText"></div>
+        <div class="nums" id="numsText"></div>
+        <div class="hint" id="hintText"></div>
+
+        <div class="controls">
+          <div class="left">
+            <label for="answerBox" id="answerLabel">Your answer</label>
+            <textarea id="answerBox" placeholder="Type numbers separated by commas or spaces. Example: 92, 2756"></textarea>
+            <div class="small" style="margin-top:8px;">
+              Tip: order doesn’t matter. Duplicates are ignored.
+            </div>
+            <div class="btnRow" style="margin-top:12px;">
+              <button class="primary" id="checkBtn">Check</button>
+              <button class="ghost" id="nextBtn" disabled>Next</button>
+              <button class="ghost" id="restartBtn" title="Start again">Restart</button>
+            </div>
+          </div>
+          <div class="right">
+            <div class="feedback" id="feedbackBox" aria-live="polite">
+              <div class="fbHead">
+                <div class="badge" id="badge">—</div>
+                <div class="small" id="fbMeta"></div>
+              </div>
+              <div class="fbBody" id="fbBody"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Divisibility rules used: last digit (2,5,10), last 2 digits (4), last 3 digits (8), digit sum (3,9), alternating sums (11).
+    </footer>
+  </div>
+
+<script>
+(function(){
+  // ---------- Helpers ----------
+  const uniq = (arr) => Array.from(new Set(arr));
+  const sortNum = (a,b) => a-b;
+
+  function parseNumberList(text){
+    // Accept commas / spaces / newlines. Keep only valid integers.
+    const raw = text
+      .replace(/[;|]/g, ",")
+      .split(/[\s,]+/)
+      .map(s => s.trim())
+      .filter(Boolean);
+
+    const nums = [];
+    const invalid = [];
+    for(const token of raw){
+      // allow leading +/-
+      if(!/^[-+]?\d+$/.test(token)){
+        invalid.push(token);
+        continue;
+      }
+      const n = Number(token);
+      if(Number.isNaN(n) || !Number.isFinite(n)) invalid.push(token);
+      else nums.push(n);
+    }
+    return { nums: uniq(nums), invalid };
+  }
+
+  function formatList(arr){
+    if(!arr || arr.length===0) return "∅";
+    return arr.slice().sort(sortNum).join(", ");
+  }
+
+  function inGivenListOnly(userArr, givenArr){
+    const given = new Set(givenArr);
+    return userArr.filter(x => !given.has(x));
+  }
+
+  function diffSets(userArr, correctArr){
+    const u = new Set(userArr);
+    const c = new Set(correctArr);
+    const missing = correctArr.filter(x => !u.has(x));
+    const extra = userArr.filter(x => !c.has(x));
+    return { missing, extra };
+  }
+
+  function digitSum(n){
+    return String(Math.abs(n)).split("").reduce((a,ch)=>a+Number(ch),0);
+  }
+
+  function isPrime(n){
+    if(n < 2) return false;
+    if(n % 2 === 0) return n === 2;
+    if(n % 3 === 0) return n === 3;
+    const r = Math.floor(Math.sqrt(n));
+    for(let f = 5; f <= r; f += 6){
+      if(n % f === 0 || n % (f+2) === 0) return false;
+    }
+    return true;
+  }
+
+  function altSum11(n){
+    const s = String(Math.abs(n));
+    // 1st, 3rd, 5th... means positions counted from LEFT in the book text.
+    // We'll implement that convention: index 0 = 1st digit, index 1 = 2nd digit, etc.
+    let odd=0, even=0;
+    for(let i=0;i<s.length;i++){
+      const d = Number(s[i]);
+      if(i%2===0) odd += d; else even += d;
+    }
+    const diff = odd - even;
+    const mod = ((diff % 11) + 11) % 11;
+    return { odd, even, diff, divisible: mod===0, mod };
+  }
+
+  function last2(n){ return Math.abs(n) % 100; }
+  function last3(n){ return Math.abs(n) % 1000; }
+
+  // ---------- Question bank (from the photo) ----------
+  const questions = [
+    {
+      id: 1,
+      label: "Ditto 4",
+      ruleTitle: "Divisible by 4",
+      ruleText: "A number is divisible by 4 if the number formed by the last 2 digits is divisible by 4.",
+      prompt: "Write down those of the following numbers which are exactly divisible by 4.",
+      list: [92, 138, 547, 1926, 2756, 9428, 10782, 56016],
+      correct: [92, 2756, 9428, 56016],
+      explain: function(){
+        return `
+          <p><b>Method:</b> check only the last 2 digits.</p>
+          <ul>
+            <li>92 → 92 ÷ 4 = 23 ✅</li>
+            <li>2756 → last 2 digits 56; 56 ÷ 4 = 14 ✅</li>
+            <li>9428 → last 2 digits 28; 28 ÷ 4 = 7 ✅</li>
+            <li>56016 → last 2 digits 16; 16 ÷ 4 = 4 ✅</li>
+          </ul>
+        `;
+      }
+    },
+    {
+      id: 2,
+      label: "Ditto 3",
+      ruleTitle: "Divisible by 3",
+      ruleText: "A number is divisible by 3 if the sum of its digits is a multiple of 3.",
+      prompt: "Write down those of the following numbers which are exactly divisible by 3.",
+      list: [184, 267, 534, 917, 1287, 3506, 10523, 28104],
+      correct: [267, 534, 1287, 28104],
+      explain: function(){
+        return `
+          <p><b>Method:</b> add digits; the total must be a multiple of 3.</p>
+          <ul>
+            <li>267 → 2+6+7=15 ✅</li>
+            <li>534 → 5+3+4=12 ✅</li>
+            <li>1287 → 1+2+8+7=18 ✅</li>
+            <li>28104 → 2+8+1+0+4=15 ✅</li>
+          </ul>
+        `;
+      }
+    },
+    {
+      id: 3,
+      label: "Ditto 8",
+      ruleTitle: "Divisible by 8",
+      ruleText: "A number is divisible by 8 if the number formed by the last 3 digits is divisible by 8.",
+      prompt: "Write down those of the following numbers which are exactly divisible by 8.",
+      list: [1756, 3042, 2872, 19176, 48225, 307138, 172744, 563362],
+      correct: [2872, 19176, 172744],
+      explain: function(){
+        return `
+          <p><b>Method:</b> check only the last 3 digits.</p>
+          <ul>
+            <li>2872 → last 3 digits 872; 872 ÷ 8 = 109 ✅</li>
+            <li>19176 → last 3 digits 176; 176 ÷ 8 = 22 ✅</li>
+            <li>172744 → last 3 digits 744; 744 ÷ 8 = 93 ✅</li>
+          </ul>
+          <p class="small">Example of a near-miss: 1756 has last 3 digits 756; 756 ÷ 8 = 94 remainder 4 ❌</p>
+        `;
+      }
+    },
+    {
+      id: 4,
+      label: "Ditto 9",
+      ruleTitle: "Divisible by 9",
+      ruleText: "A number is divisible by 9 if the sum of its digits is a multiple of 9.",
+      prompt: "Write down those of the following numbers which are exactly divisible by 9.",
+      list: [253, 579, 736, 2331, 5675, 17326, 35406, 52866],
+      correct: [2331, 35406, 52866],
+      explain: function(){
+        return `
+          <p><b>Method:</b> add digits; the total must be 9, 18, 27, ...</p>
+          <ul>
+            <li>2331 → 2+3+3+1=9 ✅</li>
+            <li>35406 → 3+5+4+0+6=18 ✅</li>
+            <li>52866 → 5+2+8+6+6=27 ✅</li>
+          </ul>
+        `;
+      }
+    },
+    {
+      id: 5,
+      label: "Ditto 11",
+      ruleTitle: "Divisible by 11",
+      ruleText: "A number is divisible by 11 if the sum of the 1st, 3rd, 5th… digits and the sum of the 2nd, 4th, 6th… digits are equal or differ by a multiple of 11.",
+      prompt: "Write down those of the following numbers which are exactly divisible by 11.",
+      list: [3465, 47206, 80536, 247071, 309082, 562379, 22919281],
+      correct: [3465, 247071, 22919281],
+      explain: function(){
+        const mk = (n) => {
+          const a = altSum11(n);
+          const s = String(n);
+          return `<li><span class="mono">${s}</span>: (odd positions) ${a.odd}, (even positions) ${a.even}, difference ${a.diff}. ${a.divisible ? "✅ divisible" : "❌ not divisible"}</li>`;
+        };
+        return `
+          <p><b>Method:</b> add alternating digits (from the left), then take the difference; it must be 0, ±11, ±22, …</p>
+          <ul>
+            ${mk(3465)}
+            ${mk(47206)}
+            ${mk(80536)}
+            ${mk(247071)}
+            ${mk(309082)}
+            ${mk(562379)}
+            ${mk(22919281)}
+          </ul>
+          <p class="small">Divisible ones are those where the difference is a multiple of 11.</p>
+        `;
+      }
+    },
+    {
+      id: 6,
+      label: "Primes",
+      ruleTitle: "Prime numbers",
+      ruleText: "A prime number has exactly two positive divisors: 1 and itself. To test primality, check divisibility by primes up to √n.",
+      prompt: "Write down all the prime numbers between 60 and 80.",
+      list: null,
+      correct: [61, 67, 71, 73, 79],
+      inputPlaceholder: "Example: 61, 67, 71, 73, 79",
+      explain: function(){
+        return `
+          <p><b>Answer:</b> 61, 67, 71, 73, 79.</p>
+          <p><b>Reasoning (quick tests):</b> exclude evens and multiples of 5. Then test divisibility by 3 and 7 (since √80 &lt; 9).</p>
+          <ul>
+            <li>61: not divisible by 2,3,5,7 ✅</li>
+            <li>67: not divisible by 2,3,5,7 ✅</li>
+            <li>71: not divisible by 2,3,5,7 ✅</li>
+            <li>73: not divisible by 2,3,5,7 ✅</li>
+            <li>79: not divisible by 2,3,5,7 ✅</li>
+          </ul>
+        `;
+      }
+    },
+    {
+      id: 7,
+      label: "Ditto 5, 8 and 9",
+      ruleTitle: "Divisible by 5, 8 and 9",
+      ruleText: "To be divisible by all three numbers, a number must be divisible by their LCM: lcm(5,8,9)=360.",
+      prompt: "Write down those of the following numbers which are exactly divisible by all three of the numbers 5, 8 and 9.",
+      list: [3825, 3960, 5720, 91848, 51840, 87360],
+      correct: [3960, 51840],
+      explain: function(){
+        return `
+          <p><b>Method:</b> you can test 5, 8, and 9 separately, or use <b>LCM = 360</b> and check divisibility by 360.</p>
+          <ul>
+            <li>3960: ends 0 → divisible by 5; last 3 digits 960 divisible by 8; digit sum 3+9+6+0=18 divisible by 9 ✅</li>
+            <li>51840: ends 0 → divisible by 5; last 3 digits 840 divisible by 8; digit sum 5+1+8+4+0=18 divisible by 9 ✅</li>
+          </ul>
+          <p class="small">Example of failure: 3825 is divisible by 5 and 9 (3+8+2+5=18), but last 3 digits 825 is not divisible by 8.</p>
+        `;
+      }
+    }
+  ];
+
+  // ---------- State ----------
+  let idx = 0;
+  let score = 0;
+  let answered = false;
+
+  // ---------- Elements ----------
+  const totalEl = document.getElementById("total");
+  const scoreEl = document.getElementById("score");
+  const qLabel = document.getElementById("qLabel");
+  const ruleText = document.getElementById("ruleText");
+  const promptText = document.getElementById("promptText");
+  const numsText = document.getElementById("numsText");
+  const hintText = document.getElementById("hintText");
+  const answerBox = document.getElementById("answerBox");
+  const answerLabel = document.getElementById("answerLabel");
+  const checkBtn = document.getElementById("checkBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const restartBtn = document.getElementById("restartBtn");
+
+  const feedbackBox = document.getElementById("feedbackBox");
+  const badge = document.getElementById("badge");
+  const fbMeta = document.getElementById("fbMeta");
+  const fbBody = document.getElementById("fbBody");
+
+  const barFill = document.getElementById("barFill");
+  const progressText = document.getElementById("progressText");
+
+  totalEl.textContent = String(questions.length);
+
+  // ---------- Render ----------
+  function render(){
+    const q = questions[idx];
+    answered = false;
+
+    qLabel.textContent = `Question ${idx+1} · ${q.label}`;
+    ruleText.innerHTML = `<b>${q.ruleTitle}:</b> ${q.ruleText}`;
+    promptText.textContent = q.prompt;
+
+    if(q.list){
+      numsText.style.display = "block";
+      numsText.textContent = q.list.join(", ");
+      hintText.textContent = "Enter exactly the numbers (from the list) that satisfy the condition.";
+      answerLabel.textContent = "Your answer (numbers from the list)";
+      answerBox.placeholder = q.inputPlaceholder || "Type numbers separated by commas or spaces. Example: 92, 2756";
+    }else{
+      numsText.style.display = "none";
+      hintText.textContent = "Enter the prime numbers in the interval. Commas or spaces are fine.";
+      answerLabel.textContent = "Your answer (list the primes)";
+      answerBox.placeholder = q.inputPlaceholder || "Type numbers separated by commas or spaces.";
+    }
+
+    answerBox.value = "";
+    feedbackBox.classList.remove("show");
+    badge.className = "badge";
+    badge.textContent = "—";
+    fbMeta.textContent = "";
+    fbBody.innerHTML = "";
+
+    nextBtn.disabled = true;
+    checkBtn.disabled = false;
+
+    const pct = Math.round(((idx) / (questions.length)) * 100);
+    barFill.style.width = `${pct}%`;
+    progressText.textContent = `${idx+1} / ${questions.length}`;
+
+    // focus for flow
+    setTimeout(()=>answerBox.focus(), 0);
+  }
+
+  // ---------- Feedback ----------
+  function showFeedback(kind, title, meta, html){
+    feedbackBox.classList.add("show");
+    badge.textContent = title;
+    badge.className = `badge ${kind}`;
+    fbMeta.textContent = meta || "";
+    fbBody.innerHTML = html;
+  }
+
+  function check(){
+    if(answered) return;
+    const q = questions[idx];
+
+    const { nums: userNumsRaw, invalid } = parseNumberList(answerBox.value);
+
+    // If question provides a list, only allow those numbers (extras flagged clearly).
+    const userNums = userNumsRaw.slice().sort(sortNum);
+    const correct = q.correct.slice().sort(sortNum);
+
+    const invalidMsg = invalid.length
+      ? `<p><b>Non-numeric entries ignored:</b> <span class="mono">${invalid.join(", ")}</span></p>`
+      : "";
+
+    let extrasOutside = [];
+    if(q.list){
+      extrasOutside = inGivenListOnly(userNums, q.list);
+    }
+
+    // Compare to correct set
+    const { missing, extra } = diffSets(userNums, correct);
+    const isPerfect = missing.length===0 && extra.length===0 && extrasOutside.length===0;
+
+    if(isPerfect){
+      score += 1;
+      scoreEl.textContent = String(score);
+
+      showFeedback(
+        "good",
+        "Correct",
+        `+1 point`,
+        `
+          ${invalidMsg}
+          <p><b>You selected exactly the right numbers:</b> <span class="mono">${formatList(correct)}</span></p>
+          ${q.explain()}
+        `
+      );
+    }else{
+      // Build targeted error messaging
+      const parts = [];
+
+      if(invalidMsg) parts.push(invalidMsg);
+
+      if(q.list && extrasOutside.length){
+        parts.push(`<p><b>Numbers not in the given list (ignore these):</b> <span class="mono">${formatList(extrasOutside)}</span></p>`);
+      }
+
+      if(missing.length){
+        parts.push(`<p><b>You missed:</b> <span class="mono">${formatList(missing)}</span></p>`);
+      }
+      if(extra.length){
+        parts.push(`<p><b>You included incorrectly:</b> <span class="mono">${formatList(extra)}</span></p>`);
+      }
+
+      // If user gave nothing meaningful
+      if(userNums.length===0 && invalid.length===0){
+        parts.push(`<p><b>No numbers entered.</b> You still get the full worked answer below.</p>`);
+      }
+
+      parts.push(`<p><b>Correct answer:</b> <span class="mono">${formatList(correct)}</span></p>`);
+      parts.push(q.explain());
+
+      showFeedback(
+        (invalid.length || extrasOutside.length) ? "warn" : "bad",
+        "Not quite",
+        `Fix: compare your selection to the correct set`,
+        parts.join("")
+      );
+    }
+
+    answered = true;
+    nextBtn.disabled = false;
+    checkBtn.disabled = true;
+
+    // progress bar updates after answering
+    const pct = Math.round(((idx+1) / (questions.length)) * 100);
+    barFill.style.width = `${pct}%`;
+  }
+
+  function next(){
+    if(!answered) return;
+    if(idx < questions.length - 1){
+      idx += 1;
+      render();
+    }else{
+      // Finish screen
+      const pct = Math.round((score / questions.length) * 100);
+      qLabel.textContent = `Finished`;
+      ruleText.innerHTML = `<b>Result:</b> ${score} / ${questions.length} (${pct}%)`;
+      promptText.textContent = "You’ve completed Exercise 1b.";
+      numsText.style.display = "none";
+      hintText.textContent = "Restart to practise again (answers will be reshown with full explanations).";
+
+      answerLabel.textContent = "Summary";
+      answerBox.value = "";
+      answerBox.placeholder = "";
+      answerBox.disabled = true;
+
+      checkBtn.disabled = true;
+      nextBtn.disabled = true;
+
+      showFeedback(
+        "good",
+        "Complete",
+        `Score: ${score} / ${questions.length}`,
+        `
+          <p><b>What you practised:</b> divisibility by 4, 3, 8, 9, 11; primes in an interval; and combined divisibility via LCM.</p>
+          <p>Restart any time to repeat with the same question set.</p>
+        `
+      );
+    }
+  }
+
+  function restart(){
+    idx = 0;
+    score = 0;
+    scoreEl.textContent = "0";
+    answerBox.disabled = false;
+    render();
+  }
+
+  // ---------- Events ----------
+  checkBtn.addEventListener("click", check);
+  nextBtn.addEventListener("click", next);
+  restartBtn.addEventListener("click", restart);
+
+  // Enter-to-check (Ctrl+Enter for textarea)
+  answerBox.addEventListener("keydown", (e) => {
+    if((e.ctrlKey || e.metaKey) && e.key === "Enter"){
+      e.preventDefault();
+      if(!answered) check();
+      else next();
+    }
+  });
+
+  // ---------- Init ----------
+  render();
+})();
+</script>
+</body>
+</html>

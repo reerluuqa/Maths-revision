@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divisibility Rules: Exercise 1b</title>
+    <style>
+        :root {
+            /* Color Palette inspired by classic academic textbooks */
+            --primary-color: #2c3e50; /* Dark Blue/Slate */
+            --accent-color: #c0392b;  /* Textbook Red/Maroon */
+            --success-color: #27ae60; /* Green */
+            --warning-color: #f39c12; /* Orange */
+            --bg-color: #fcfbf7;      /* Off-white/Cream paper look */
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #bdc3c7;
+            --font-serif: 'Georgia', 'Times New Roman', serif;
+            --font-sans: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        /* --- Main Layout --- */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem 1rem;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .container {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-top: 5px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        /* --- Progress Bar --- */
+        .progress-container {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            flex-grow: 1;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* --- Question Area --- */
+        .question-text {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .input-area {
+            margin-bottom: 2rem;
+        }
+
+        /* --- Inputs & Buttons --- */
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn:hover {
+            background-color: #34495e;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-family: var(--font-serif);
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Checkbox Group Styling */
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .checkbox-item input {
+            margin-right: 1rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: var(--primary-color);
+        }
+
+        .checkbox-item label {
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* --- Feedback Section --- */
+        .feedback {
+            display: none; /* Hidden by default */
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 6px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .feedback.visible {
+            display: block;
+        }
+
+        .feedback.correct {
+            background-color: rgba(39, 174, 96, 0.1);
+            border-left: 5px solid var(--success-color);
+        }
+
+        .feedback.incorrect {
+            background-color: rgba(192, 57, 43, 0.1);
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: block;
+            font-size: 1.2rem;
+        }
+
+        .correct .feedback-title { color: var(--success-color); }
+        .incorrect .feedback-title { color: var(--accent-color); }
+
+        .explanation {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .correct-answer-text {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* --- Rules Modal/Sheet --- */
+        .rules-trigger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 100;
+            border: none;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2rem;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #999;
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .rule-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .rule-number {
+            font-weight: bold;
+            color: var(--accent-color);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        /* --- Completion Screen --- */
+        .completion-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            margin: 0 auto 2rem;
+            font-family: var(--font-serif);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .rules-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 1.5rem; }
+            .container { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Divisibility Rules</h1>
+        <div class="subtitle">Exercise 1b - New General Mathematics Practice</div>
+    </header>
+
+    <main>
+        <div class="container" id="quiz-container">
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <span id="progress-text">Question 1 of 7</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Question Content -->
+            <div id="question-wrapper">
+                <h2 class="question-text" id="question-text">Loading...</h2>
+                
+                <div class="input-area" id="input-area">
+                    <!-- Dynamic Inputs will be injected here -->
+                </div>
+
+                <button class="btn" id="submit-btn" onclick="app.checkAnswer()">Submit Answer</button>
+
+                <!-- Feedback Section -->
+                <div class="feedback" id="feedback-box">
+                    <span class="feedback-title" id="feedback-title"></span>
+                    <p class="explanation" id="feedback-explanation"></p>
+                    <div id="correct-answer-display"></div>
+                    <br>
+                    <button class="btn" id="next-btn" onclick="app.nextQuestion()">Next Question &rarr;</button>
+                </div>
+            </div>
+
+            <!-- Completion Screen -->
+            <div class="completion-screen" id="completion-screen">
+                <div class="score-circle" id="final-score">0/7</div>
+                <h2>Exercise Complete!</h2>
+                <p style="margin: 1rem 0;">You have finished Exercise 1b. Review the rules if you missed any questions.</p>
+                <button class="btn" onclick="location.reload()">Restart Exercise</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Help Button -->
+    <button class="rules-trigger" onclick="app.toggleRules()" title="View Divisibility Rules">?</button>
+
+    <!-- Rules Modal -->
+    <div class="modal-overlay" id="rules-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="app.toggleRules()">&times;</button>
+            <h2 style="font-family: var(--font-serif); margin-bottom: 1rem;">Divisibility Rules</h2>
+            
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <span class="rule-number">Divisible by 2</span>
+                    If the last digit is even (0, 2, 4, 6, 8).
+                </div>
+                <div class="rule-card">
+                    <span class="rule-number">Divisible by 4</span>
+                    If the number formed by the last two digits is divisible by 4.
+                </div>
+                <div class="rule-card">
+                    <span class="rule-number">Divisible by 5</span>
+                    If the last digit is 0 or 5.
+                </div>
+                <div class="rule-card">
+                    <span class="rule-number">Divisible by 8</span>
+                    If the number formed by the last three digits is divisible by 8.
+                </div>
+                <div class="rule-card">
+                    <span class="rule-number">Divisible by 3 & 9</span>
+                    If the sum of the digits is divisible by 3 (or 9).
+                </div>
+                <div class="rule-card">
+                    <span class="rule-number">Divisible by 10</span>
+                    If the last digit is 0.
+                </div>
+                <div class="rule-card" style="grid-column: span 2;">
+                    <span class="rule-number">Divisible by 11</span>
+                    Find the sum of digits in odd positions and the sum of digits in even positions. If the difference is 0 or divisible by 11, the number is divisible by 11.
+                    <br><em>e.g., 294708480: Odd Sum=26, Even Sum=15, Diff=11.</em>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Application Logic
+         * Handles state, question rendering, validation, and feedback.
+         */
+        const app = (() => {
+            // Data based on IMG_4582.jpeg content
+            const questions = [
+                {
+                    id: 1,
+                    text: "Test the number <strong>23 640</strong> for divisibility. Select all that apply.",
+                    type: "multi-check",
+                    options: [
+                        { label: "Divisible by 4", value: "4", correct: true },
+                        { label: "Divisible by 8", value: "8", correct: true },
+                        { label: "Divisible by 9", value: "9", correct: false }
+                    ],
+                    explanation: "<strong>Analysis of 23 640:</strong><ul><li>By 4: Last two digits are 40. 40 is divisible by 4. (Yes)</li><li>By 8: Last three digits are 640. 640 ÷ 8 = 80. (Yes)</li><li>By 9: Sum of digits = 2+3+6+4+0 = 15. 15 is not divisible by 9. (No)</li></ul>"
+                },
+                {
+                    id: 2,
+                    text: "Is the number <strong>6 422 416</strong> divisible by 11?",
+                    type: "radio",
+                    options: [
+                        { label: "Yes", value: "yes", correct: true },
+                        { label: "No", value: "no", correct: false }
+                    ],
+                    explanation: "<strong>Rule for 11:</strong> Calculate (Sum of odd places) - (Sum of even places).<br>Odd positions sum: 6 + 2 + 4 + 6 = 18.<br>Even positions sum: 4 + 2 + 1 = 7.<br>Difference: 18 - 7 = 11.<br>Since 11 is divisible by 11, the number is divisible by 11."
+                },
+                {
+                    id: 3,
+                    text: "Write down the prime numbers between 60 and 80.",
+                    type: "text",
+                    correctValues: ["61, 67, 71, 73, 79", "61 67 71 73 79", "61,67,71,73,79"], // flexible matching
+                    strictAnswer: "61, 67, 71, 73, 79",
+                    explanation: "A prime number is only divisible by 1 and itself.<br>Checking numbers 60-80:<br>61 (Prime), 62 (Even), 63 (9x7), 64 (Even), 65 (Ends in 5), 66 (Even), <strong>67 (Prime)</strong>, 68 (Even), 69 (3x23), 70 (Even), <strong>71 (Prime)</strong>, 72 (Even), <strong>73 (Prime)</strong>, 74 (Even), 75 (Ends in 5), 76 (Even), 77 (7x11), 78 (Even), <strong>79 (Prime)</strong>."
+                },
+                {
+                    id: 4,
+                    text: "Find the <strong>smallest number</strong> which is divisible by 5, 8, and 9.",
+                    type: "text",
+                    correctValues: ["360", "360.0"],
+                    strictAnswer: "360",
+                    explanation: "We need the Lowest Common Multiple (LCM) of 5, 8, and 9.<br>5 is prime.<br>8 = 2 × 2 × 2.<br>9 = 3 × 3.<br>LCM = 5 × 8 × 9 = 360."
+                },
+                {
+                    id: 5,
+                    text: "Test the number <strong>219 336</strong> for divisibility. Select all that apply.",
+                    type: "multi-check",
+                    options: [
+                        { label: "Divisible by 4", value: "4", correct: true },
+                        { label: "Divisible by 8", value: "8", correct: true },
+                        { label: "Divisible by 9", value: "9", correct: false },
+                        { label: "Divisible by 11", value: "11", correct: false }
+                    ],
+                    explanation: "<strong>Analysis of 219 336:</strong><ul><li>By 4: Last two digits are 36. Divisible by 4. (Yes)</li><li>By 8: Last three digits are 336. 336 ÷ 8 = 42. (Yes)</li><li>By 9: Sum of digits = 2+1+9+3+3+6 = 24. 24 not divisible by 9. (No)</li><li>By 11: Odd Sum(6+3+6=15) - Even Sum(1+9+3=13) = 2. 2 not divisible by 11. (No)</li></ul>"
+                },
+                {
+                    id: 6,
+                    text: "Find the <strong>largest number</strong> less than 5000 which is divisible by 5, 8, and 9.",
+                    type: "text",
+                    correctValues: ["4680", "4680.0"],
+                    strictAnswer: "4680",
+                    explanation: "The LCM of 5, 8, and 9 is 360.<br>We need the largest multiple of 360 less than 5000.<br>5000 ÷ 360 ≈ 13.88.<br>The largest integer multiplier is 13.<br>360 × 13 = 4680."
+                },
+                {
+                    id: 7,
+                    text: "Find the <strong>smallest number</strong> greater than 5000 which is divisible by 5, 8, and 9.",
+                    type: "text",
+                    correctValues: ["5040", "5040.0"],
+                    strictAnswer: "5040",
+                    explanation: "The LCM of 5, 8, and 9 is 360.<br>We previously found 360 × 13 = 4680 (too small).<br>The next multiple is 360 × 14.<br>360 × 14 = 5040."
+                }
+            ];
+
+            let currentState = {
+                currentIndex: 0,
+                score: 0,
+                isAnswered: false
+            };
+
+            // DOM Elements
+            const ui = {
+                questionText: document.getElementById('question-text'),
+                inputArea: document.getElementById('input-area'),
+                submitBtn: document.getElementById('submit-btn'),
+                feedbackBox: document.getElementById('feedback-box'),
+                feedbackTitle: document.getElementById('feedback-title'),
+                feedbackExp: document.getElementById('feedback-explanation'),
+                correctAnswerDisplay: document.getElementById('correct-answer-display'),
+                nextBtn: document.getElementById('next-btn'),
+                progressText: document.getElementById('progress-text'),
+                progressFill: document.getElementById('progress-fill'),
+                questionWrapper: document.getElementById('question-wrapper'),
+                completionScreen: document.getElementById('completion-screen'),
+                finalScore: document.getElementById('final-score'),
+                rulesModal: document.getElementById('rules-modal')
+            };
+
+            // Initialize
+            function init() {
+                renderQuestion(currentState.currentIndex);
+                updateProgress();
+            }
+
+            // Render specific question
+            function renderQuestion(index) {
+                const q = questions[index];
+                ui.questionText.innerHTML = q.text;
+                ui.inputArea.innerHTML = ''; // Clear previous inputs
+                ui.feedbackBox.className = 'feedback'; // Hide feedback
+                ui.submitBtn.style.display = 'inline-block';
+                ui.submitBtn.disabled = false;
+                currentState.isAnswered = false;
+
+                if (q.type === 'text') {
+                    ui.inputArea.innerHTML = `<input type="text" class="text-input" id="user-answer" placeholder="Type your answer here..." autocomplete="off">`;
+                } else if (q.type === 'radio') {
+                    let html = '<div class="checkbox-group">';
+                    q.options.forEach((opt, i) => {
+                        html += `
+                            <label class="checkbox-item">
+                                <input type="radio" name="option_group" value="${i}">
+                                <span>${opt.label}</span>
+                            </label>
+                        `;
+                    });
+                    html += '</div>';
+                    ui.inputArea.innerHTML = html;
+                } else if (q.type === 'multi-check') {
+                    let html = '<div class="checkbox-group">';
+                    q.options.forEach((opt, i) => {
+                        html += `
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="option_group" value="${i}">
+                                <span>${opt.label}</span>
+                            </label>
+                        `;
+                    });
+                    html += '</div>';
+                    ui.inputArea.innerHTML = html;
+                }
+            }
+
+            // Check Answer Logic
+            function checkAnswer() {
+                if (currentState.isAnswered) return;
+                
+                const q = questions[currentState.currentIndex];
+                let isCorrect = false;
+                let userValue = null;
+
+                if (q.type === 'text') {
+                    const input = document.getElementById('user-answer');
+                    const val = input.value.trim();
+                    // Check if value is in the list of accepted answers
+                    isCorrect = q.correctValues.map(v => v.toLowerCase()).includes(val.toLowerCase());
+                    userValue = val;
+                } 
+                else if (q.type === 'radio') {
+                    const selected = document.querySelector('input[name="option_group"]:checked');
+                    if (selected) {
+                        const selectedIndex = parseInt(selected.value);
+                        isCorrect = q.options[selectedIndex].correct;
+                        userValue = q.options[selectedIndex].label;
+                    } else {
+                        // User didn't select anything
+                        alert("Please select an option."); // Fallback, though button should ideally be disabled or validated nicely
+                        return;
+                    }
+                } 
+                else if (q.type === 'multi-check') {
+                    const checked = document.querySelectorAll('input[name="option_group"]:checked');
+                    if (checked.length === 0) {
+                        alert("Please select at least one option.");
+                        return;
+                    }
+
+                    const selectedIndices = Array.from(checked).map(cb => parseInt(cb.value));
+                    const correctIndices = q.options
+                        .map((opt, idx) => opt.correct ? idx : -1)
+                        .filter(idx => idx !== -1);
+                    
+                    // Compare arrays (sort to be safe)
+                    selectedIndices.sort();
+                    correctIndices.sort();
+                    
+                    const selectedStr = selectedIndices.join(',');
+                    const correctStr = correctIndices.join(',');
+
+                    isCorrect = selectedStr === correctStr;
+                    
+                    // If incorrect, prepare a string of what they got wrong
+                    if(!isCorrect) {
+                        const userChoices = selectedIndices.map(i => q.options[i].label).join(', ');
+                        userValue = userChoices || "None";
+                    }
+                }
+
+                // Process Result
+                currentState.isAnswered = true;
+                ui.submitBtn.style.display = 'none';
+                
+                showFeedback(isCorrect, q, userValue);
+            }
+
+            function showFeedback(isCorrect, questionData, userVal) {
+                ui.feedbackBox.classList.add('visible');
+                
+                if (isCorrect) {
+                    currentState.score++;
+                    ui.feedbackBox.classList.add('correct');
+                    ui.feedbackTitle.textContent = "Correct! Well done.";
+                    ui.correctAnswerDisplay.innerHTML = "";
+                } else {
+                    ui.feedbackBox.classList.add('incorrect');
+                    ui.feedbackTitle.textContent = "Incorrect";
+                    
+                    // Construct helpful error message
+                    let correctAnsText = "";
+                    if (questionData.type === 'text') {
+                        correctAnsText = `The correct answer is <strong>${questionData.strictAnswer}</strong>.`;
+                    } else if (questionData.type === 'radio') {
+                        const correctOpt = questionData.options.find(o => o.correct);
+                        correctAnsText = `The correct answer is <strong>${correctOpt.label}</strong>.`;
+                    } else if (questionData.type === 'multi-check') {
+                        const correctOpts = questionData.options.filter(o => o.correct).map(o => o.label.split(" ")[2]); // Get just number
+                        correctAnsText = `The correct numbers are: <strong>${correctOpts.join(", ")}</strong>.`;
+                    }
+
+                    ui.correctAnswerDisplay.innerHTML = `<p class="correct-answer-text">${correctAnsText}</p>`;
+                }
+
+                ui.feedbackExp.innerHTML = questionData.explanation;
+            }
+
+            function nextQuestion() {
+                currentState.currentIndex++;
+                updateProgress();
+
+                if (currentState.currentIndex < questions.length) {
+                    renderQuestion(currentState.currentIndex);
+                } else {
+                    showCompletion();
+                }
+            }
+
+            function updateProgress() {
+                const pct = ((currentState.currentIndex) / questions.length) * 100;
+                ui.progressFill.style.width = `${pct}%`;
+                ui.progressText.textContent = `Question ${currentState.currentIndex + 1} of ${questions.length}`;
+            }
+
+            function showCompletion() {
+                ui.questionWrapper.style.display = 'none';
+                ui.progressText.parentElement.style.display = 'none';
+                ui.completionScreen.style.display = 'block';
+                ui.finalScore.textContent = `${currentState.score}/${questions.length}`;
+            }
+
+            function toggleRules() {
+                ui.rulesModal.classList.toggle('active');
+            }
+
+            // Close modal when clicking outside
+            ui.rulesModal.addEventListener('click', (e) => {
+                if (e.target === ui.rulesModal) {
+                    toggleRules();
+                }
+            });
+
+            return {
+                init,
+                checkAnswer,
+                nextQuestion,
+                toggleRules
+            };
+
+        })();
+
+        // Start the app
+        document.addEventListener('DOMContentLoaded', app.init);
+
+    </script>
+</body>
+</html>

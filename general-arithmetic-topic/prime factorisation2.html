@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Factorization Practice</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:wght@400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8e8e8 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #1a1a1a;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f2a6d 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-family: 'Crimson Text', serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
+        .progress-bar {
+            background: #e5e7eb;
+            height: 6px;
+            position: relative;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #059669 0%, #10b981 100%);
+            height: 100%;
+            transition: width 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        
+        .progress-text {
+            text-align: center;
+            padding: 12px;
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .question-card {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .question-card.active {
+            border-color: #1e3a8a;
+            background: #f0f7ff;
+        }
+        
+        .question-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .question-number {
+            background: #1e3a8a;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+        
+        .problem-statement {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .difficulty-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 12px;
+        }
+        
+        .difficulty-easy {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .difficulty-medium {
+            background: #fed7aa;
+            color: #92400e;
+        }
+        
+        .difficulty-hard {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .input-section {
+            margin-top: 30px;
+        }
+        
+        .input-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .input-hint {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 1rem;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .btn-primary {
+            background: #1e3a8a;
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #0f2a6d;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        .feedback-card {
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            animation: slideIn 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .feedback-card.show {
+            display: block;
+        }
+        
+        .feedback-correct {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+        }
+        
+        .feedback-incorrect {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+        }
+        
+        .feedback-header {
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feedback-correct .feedback-header {
+            color: #065f46;
+        }
+        
+        .feedback-incorrect .feedback-header {
+            color: #991b1b;
+        }
+        
+        .correct-answer {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #065f46;
+            margin: 12px 0;
+        }
+        
+        .explanation {
+            font-size: 0.875rem;
+            color: #4b5563;
+            line-height: 1.6;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .navigation-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 30px;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #d1d5db;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: #1e3a8a;
+            transform: scale(1.2);
+        }
+        
+        .dot.completed {
+            background: #10b981;
+        }
+        
+        .final-score {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .score-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #065f46;
+            margin-bottom: 12px;
+        }
+        
+        .score-details {
+            font-size: 1.125rem;
+            color: #374151;
+            margin-bottom: 24px;
+        }
+        
+        .restart-btn {
+            background: #065f46;
+            color: white;
+            padding: 14px 32px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .restart-btn:hover {
+            background: #064e3b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(6, 95, 70, 0.3);
+        }
+        
+        @media (max-width: 640px) {
+            .content {
+                padding: 24px;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            .problem-statement {
+                font-size: 1.125rem;
+            }
+            
+            button {
+                padding: 10px 20px;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Prime Factorization Practice</h1>
+            <p class="subtitle">Mathematical Skills Development Series</p>
+        </header>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">Question 1 of 5</div>
+        
+        <div class="content">
+            <div class="question-card active" id="questionCard">
+                <div class="question-title">
+                    <span class="question-number" id="questionNumber">1</span>
+                    <span id="questionTitleText">Find the Prime Factors</span>
+                </div>
+                
+                <div class="problem-statement" id="problemStatement">
+                    <!-- Dynamic content -->
+                </div>
+                
+                <span class="difficulty-badge" id="difficultyBadge">Medium</span>
+                
+                <div class="input-section">
+                    <label class="input-label" for="answerInput">Your Answer</label>
+                    <p class="input-hint">Enter prime factors using exponents (e.g., 2³ × 3² × 5) or as a product (e.g., 2×2×2×3×3×5)</p>
+                    <input type="text" id="answerInput" placeholder="Enter your answer here..." autocomplete="off">
+                    
+                    <div class="button-group">
+                        <button class="btn-primary" id="submitBtn" onclick="checkAnswer()">Check Answer</button>
+                        <button class="btn-secondary" id="hintBtn" onclick="showHint()">Get Hint</button>
+                    </div>
+                    
+                    <div class="feedback-card" id="feedbackCard">
+                        <div class="feedback-header" id="feedbackHeader">
+                            <!-- Dynamic content -->
+                        </div>
+                        <div id="feedbackContent">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                    
+                    <button class="btn-primary" id="nextBtn" style="display: none; margin-top: 20px;" onclick="nextQuestion()">Next Question</button>
+                </div>
+            </div>
+            
+            <div class="navigation-dots" id="navigationDots">
+                <!-- Dynamic dots -->
+            </div>
+            
+            <div class="final-score" id="finalScore">
+                <div class="score-title">Practice Complete!</div>
+                <div class="score-details" id="scoreDetails"></div>
+                <button class="restart-btn" onclick="restartQuiz()">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                number: 772,
+                difficulty: 'easy',
+                correctAnswer: '2² × 193',
+                factorization: '772 = 2 × 2 × 193',
+                explanation: '772 is even, so divide by 2: 772 ÷ 2 = 386. 386 is also even: 386 ÷ 2 = 193. 193 is a prime number (no factors other than 1 and itself). Therefore: 772 = 2 × 2 × 193 = 2² × 193.',
+                hint: 'Start by checking if the number is even. If it is, divide by 2 repeatedly until you get an odd number.'
+            },
+            {
+                number: 1512,
+                difficulty: 'medium',
+                correctAnswer: '2³ × 3³ × 7',
+                factorization: '1512 = 2 × 2 × 2 × 3 × 3 × 3 × 7',
+                explanation: '1512 is even: 1512 ÷ 2 = 756. 756 ÷ 2 = 378. 378 ÷ 2 = 189. Now 189 = 3 × 63. 63 = 3 × 21. 21 = 3 × 7. So we have: 1512 = 2³ × 3³ × 7.',
+                hint: 'Divide by 2 three times first, then work on the remaining odd number by testing small primes like 3, 5, 7...'
+            },
+            {
+                number: 2520,
+                difficulty: 'medium',
+                correctAnswer: '2³ × 3² × 5 × 7',
+                factorization: '2520 = 2 × 2 × 2 × 3 × 3 × 5 × 7',
+                explanation: '2520 ÷ 2 = 1260; ÷ 2 = 630; ÷ 2 = 315. 315 ends in 5, so ÷ 5 = 63. 63 = 7 × 9 = 7 × 3². Therefore: 2520 = 2³ × 3² × 5 × 7.',
+                hint: 'This number is divisible by many small primes. Try dividing by 2 repeatedly, then look for factors of 5, 7, and 3.'
+            },
+            {
+                number: 17325,
+                difficulty: 'hard',
+                correctAnswer: '3² × 5² × 7 × 11',
+                factorization: '17325 = 3 × 3 × 5 × 5 × 7 × 11',
+                explanation: '17325 ends in 5: ÷ 5 = 3465. 3465 ÷ 5 = 693. 693 = 3 × 231 = 3 × 3 × 77 = 3² × 7 × 11. Therefore: 17325 = 3² × 5² × 7 × 11.',
+                hint: 'Since it ends in 5, start by dividing by 5. Watch out - you can divide by 5 twice!'
+            },
+            {
+                number: 56006,
+                difficulty: 'hard',
+                correctAnswer: '2 × 41 × 683',
+                factorization: '56006 = 2 × 41 × 683',
+                explanation: '56006 is even: ÷ 2 = 28003. Testing primes: 28003 ÷ 41 = 683 exactly. 683 is prime (testing primes up to √683 ≈ 26). Thus: 56006 = 2 × 41 × 683.',
+                hint: 'After dividing by 2, you\'ll need to test for prime factors. Try dividing by primes like 3, 7, 11, 13, 17, 19, 23, 29, 31...'
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let attempts = 0;
+        let answered = new Array(questions.length).fill(false);
+
+        function init() {
+            renderNavigationDots();
+            loadQuestion();
+            updateProgress();
+        }
+
+        function renderNavigationDots() {
+            const dotsContainer = document.getElementById('navigationDots');
+            dotsContainer.innerHTML = '';
+            questions.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (index === 0) dot.classList.add('active');
+                dot.id = `dot-${index}`;
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            const isAnswered = answered[currentQuestionIndex];
+            
+            document.getElementById('questionNumber').textContent = currentQuestionIndex + 1;
+            document.getElementById('problemStatement').innerHTML = 
+                `Find the prime factors of <strong style="font-size: 1.5rem; color: #1e3a8a;">${question.number}</strong>`;
+            
+            const difficultyBadge = document.getElementById('difficultyBadge');
+            difficultyBadge.textContent = question.difficulty;
+            difficultyBadge.className = 'difficulty-badge';
+            if (question.difficulty === 'easy') {
+                difficultyBadge.classList.add('difficulty-easy');
+            } else if (question.difficulty === 'medium') {
+                difficultyBadge.classList.add('difficulty-medium');
+            } else {
+                difficultyBadge.classList.add('difficulty-hard');
+            }
+            
+            // Reset UI
+            document.getElementById('answerInput').value = '';
+            document.getElementById('feedbackCard').classList.remove('show');
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('hintBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            // Update navigation dots
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.remove('active', 'completed');
+                if (index === currentQuestionIndex) {
+                    dot.classList.add('active');
+                } else if (answered[index]) {
+                    dot.classList.add('completed');
+                }
+            });
+        }
+
+        function showHint() {
+            const question = questions[currentQuestionIndex];
+            const feedbackCard = document.getElementById('feedbackCard');
+            const feedbackHeader = document.getElementById('feedbackHeader');
+            const feedbackContent = document.getElementById('feedbackContent');
+            
+            feedbackCard.classList.remove('feedback-correct', 'feedback-incorrect');
+            feedbackCard.classList.add('show');
+            
+            feedbackHeader.innerHTML = `
+                <span style="font-size: 1.5rem;">💡</span>
+                Hint for Question ${currentQuestionIndex + 1}
+            `;
+            
+            feedbackContent.innerHTML = `
+                <p>${question.hint}</p>
+            `;
+        }
+
+        function checkAnswer() {
+            const userInput = document.getElementById('answerInput').value.trim();
+            if (!userInput) {
+                alert('Please enter an answer before checking!');
+                return;
+            }
+            
+            attempts++;
+            const question = questions[currentQuestionIndex];
+            const isCorrect = verifyAnswer(userInput, question.number);
+            
+            const feedbackCard = document.getElementById('feedbackCard');
+            const feedbackHeader = document.getElementById('feedbackHeader');
+            const feedbackContent = document.getElementById('feedbackContent');
+            
+            feedbackCard.classList.add('show');
+            
+            if (isCorrect) {
+                score++;
+                answered[currentQuestionIndex] = true;
+                feedbackCard.classList.remove('feedback-incorrect');
+                feedbackCard.classList.add('feedback-correct');
+                
+                feedbackHeader.innerHTML = `
+                    <span style="font-size: 1.5rem;">✓</span>
+                    Correct! Well done!
+                `;
+                
+                feedbackContent.innerHTML = `
+                    <p class="correct-answer">Answer: ${question.correctAnswer}</p>
+                    <p class="explanation">
+                        <strong>Explanation:</strong> ${question.explanation}
+                    </p>
+                `;
+                
+                document.getElementById('submitBtn').style.display = 'none';
+                document.getElementById('hintBtn').style.display = 'none';
+                document.getElementById('submitBtn').disabled = true;
+                document.getElementById('nextBtn').style.display = 'block';
+            } else {
+                feedbackCard.classList.remove('feedback-correct');
+                feedbackCard.classList.add('feedback-incorrect');
+                
+                feedbackHeader.innerHTML = `
+                    <span style="font-size: 1.5rem;">✗</span>
+                    Not quite right. Let's review this.
+                `;
+                
+                feedbackContent.innerHTML = `
+                    <p class="correct-answer">Correct Answer: ${question.correctAnswer}</p>
+                    <p class="explanation">
+                        <strong>Explanation:</strong> ${question.explanation}
+                    </p>
+                    <p style="margin-top: 12px; font-style: italic; color: #6b7280;">
+                        Your answer: "${userInput}" was not equivalent to the correct prime factorization.
+                    </p>
+                `;
+                
+                document.getElementById('submitBtn').style.display = 'none';
+                document.getElementById('hintBtn').style.display = 'none';
+                document.getElementById('submitBtn').disabled = true;
+                document.getElementById('nextBtn').style.display = 'block';
+            }
+            
+            updateProgress();
+        }
+
+        function verifyAnswer(userInput, number) {
+            const question = questions[currentQuestionIndex];
+            const normalizedInput = normalizeInput(userInput);
+            const correctAnswer = normalizeInput(question.correctAnswer);
+            
+            // Check if input matches correct answer format
+            return normalizedInput === correctAnswer;
+        }
+
+        function normalizeInput(input) {
+            // Handle various input formats and normalize to standard form
+            let normalized = input.toLowerCase()
+                .replace(/\s+/g, '') // Remove all spaces
+                .replace(/×/g, '*') // Replace multiplication symbol
+                .replace(/x/g, '*') // Replace lowercase x
+                .replace(/·/g, '*'); // Replace dot
+            
+            // Handle exponent formats: 2^3, 2**3, 2³
+            normalized = normalized.replace(/(\d+)\^(\d+)/g, '$1^$2');
+            normalized = normalized.replace(/(\d+)\*\*(\d+)/g, '$1^$2');
+            normalized = normalized.replace(/(\d+)²/g, '$1^2');
+            normalized = normalized.replace(/(\d+)³/g, '$1^3');
+            
+            // Sort factors for consistent comparison
+            const factors = normalized.split('*');
+            const parsedFactors = [];
+            
+            factors.forEach(factor => {
+                if (factor.includes('^')) {
+                    const [base, exp] = factor.split('^');
+                    parsedFactors.push({ base: parseInt(base), exp: parseInt(exp) });
+                } else {
+                    const base = parseInt(factor);
+                    if (!isNaN(base)) {
+                        parsedFactors.push({ base, exp: 1 });
+                    }
+                }
+            });
+            
+            // Combine like factors
+            const combined = {};
+            parsedFactors.forEach(({ base, exp }) => {
+                if (combined[base]) {
+                    combined[base] += exp;
+                } else {
+                    combined[base] = exp;
+                }
+            });
+            
+            // Sort by base and format
+            const sortedBases = Object.keys(combined).sort((a, b) => a - b);
+            return sortedBases.map(base => {
+                const exp = combined[base];
+                return exp === 1 ? base : `${base}^${exp}`;
+            }).join('*');
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestionIndex / questions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = 
+                `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        }
+
+        function showFinalScore() {
+            document.getElementById('questionCard').style.display = 'none';
+            document.getElementById('navigationDots').style.display = 'none';
+            document.getElementById('progressText').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            const accuracy = attempts > 0 ? Math.round((score / attempts) * 100) : 0;
+            
+            document.getElementById('finalScore').style.display = 'block';
+            document.getElementById('scoreDetails').innerHTML = `
+                You got <strong>${score} out of ${questions.length}</strong> questions correct.<br>
+                That's <strong>${percentage}%</strong> overall!<br>
+                Accuracy rate: <strong>${accuracy}%</strong> (${score}/${attempts} attempts)
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            attempts = 0;
+            answered = new Array(questions.length).fill(false);
+            
+            document.getElementById('questionCard').style.display = 'block';
+            document.getElementById('navigationDots').style.display = 'flex';
+            document.getElementById('progressText').style.display = 'block';
+            document.querySelector('.progress-bar').style.display = 'block';
+            document.getElementById('finalScore').style.display = 'none';
+            
+            init();
+        }
+
+        // Initialize the app
+        init();
+        
+        // Allow Enter key to submit answer
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !document.getElementById('submitBtn').disabled) {
+                checkAnswer();
+            }
+        });
+    </script>
+</body>
+</html>

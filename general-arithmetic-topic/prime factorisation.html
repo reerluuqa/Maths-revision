@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Factors Quiz - New General Mathematics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Merriweather', serif;
+            background-color: #f5f1e8;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            background-image: radial-gradient(#d0c7b0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border: 1px solid #d4c9b1;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #8b4513;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .header .subtitle {
+            color: #8b4513;
+            font-size: 1.2rem;
+            font-style: italic;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+        
+        .authors {
+            position: absolute;
+            right: 0;
+            top: 10px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+        
+        .quiz-area {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .question-container {
+            background-color: #f9f7f1;
+            border-radius: 5px;
+            padding: 25px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .question-number {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600;
+            color: #3498db;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .difficulty {
+            font-size: 0.9rem;
+            padding: 3px 10px;
+            border-radius: 15px;
+            background-color: #e8f4fc;
+            color: #2980b9;
+        }
+        
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: #2c3e50;
+        }
+        
+        .input-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input {
+            padding: 12px 15px;
+            border: 2px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-family: 'Source Sans Pro', sans-serif;
+            flex: 1;
+            min-width: 250px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        button {
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .feedback-area {
+            padding: 20px;
+            border-radius: 5px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .correct {
+            background-color: #d5edda;
+            border-left: 5px solid #28a745;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+        }
+        
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600;
+        }
+        
+        .feedback-icon {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .answer-explanation {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+        
+        .next-btn {
+            background-color: #27ae60;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .next-btn:hover {
+            background-color: #219653;
+        }
+        
+        .progress-container {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+        
+        .progress-text {
+            font-family: 'Source Sans Pro', sans-serif;
+            margin-bottom: 10px;
+            color: #7f8c8d;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+        
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            flex: 1;
+            margin: 0 5px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .instructions {
+            background-color: #f0f7ff;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 0.95rem;
+            border-left: 4px solid #3498db;
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-family: 'Merriweather', serif;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .input-area {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            input {
+                min-width: 100%;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="authors">J.B. Channon, A. McLeish Smith, H.C. Head</div>
+            <h1>New General Mathematics</h1>
+            <div class="subtitle">Prime Factors Quiz</div>
+        </div>
+        
+        <div class="instructions">
+            <h3>Instructions</h3>
+            <ul>
+                <li>Find the prime factors for each number shown</li>
+                <li>Enter your answer in the format: 2 × 3 × 5 (using the multiplication symbol ×)</li>
+                <li>Factors should be in ascending order</li>
+                <li>Click "Check Answer" to see if you're correct</li>
+                <li>You can use "Show Answer" if you need help</li>
+            </ul>
+        </div>
+        
+        <div class="quiz-area">
+            <div class="question-container">
+                <div class="question-number">
+                    <span>Question <span id="current-question">1</span> of <span id="total-questions">16</span></span>
+                    <span class="difficulty" id="difficulty">Easy</span>
+                </div>
+                
+                <div class="question-text" id="question-text">
+                    Find the prime factors of <span id="number-to-factor">18</span>
+                </div>
+                
+                <div class="input-area">
+                    <div class="input-label">Your Answer:</div>
+                    <input type="text" id="user-answer" placeholder="e.g., 2 × 3 × 3">
+                    <button id="check-btn">Check Answer</button>
+                    <button id="show-answer-btn" style="background-color: #95a5a6;">Show Answer</button>
+                </div>
+                
+                <div class="feedback-area" id="feedback-area">
+                    <div class="feedback-header">
+                        <span class="feedback-icon" id="feedback-icon"></span>
+                        <span id="feedback-text"></span>
+                    </div>
+                    <div class="answer-explanation" id="answer-explanation"></div>
+                    <button class="next-btn" id="next-btn">Next Question</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-text">
+                <span>Progress</span>
+                <span id="progress-percent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correct Answers</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrect Answers</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="remaining-count">16</div>
+                <div class="stat-label">Questions Remaining</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Question data from the image
+        const questions = [
+            { number: 8, value: 18, difficulty: "Easy", factors: [2, 3, 3] },
+            { number: 12, value: 84, difficulty: "Easy", factors: [2, 2, 3, 7] },
+            { number: 13, value: 108, difficulty: "Medium", factors: [2, 2, 3, 3, 3] },
+            { number: 14, value: 136, difficulty: "Medium", factors: [2, 2, 2, 17] },
+            { number: 15, value: 256, difficulty: "Medium", factors: [2, 2, 2, 2, 2, 2, 2, 2] },
+            { number: 19, value: 441, difficulty: "Medium", factors: [3, 3, 7, 7] },
+            { number: 23, value: 1322, difficulty: "Hard", factors: [2, 661] },
+            { number: 27, value: 2772, difficulty: "Hard", factors: [2, 2, 3, 3, 7, 11] },
+            { number: 30, value: 33660, difficulty: "Hard", factors: [2, 2, 3, 3, 5, 11, 17] },
+            { number: 29, value: 17325, difficulty: "Hard", factors: [3, 3, 5, 5, 7, 11] },
+            { number: 28, value: 6006, difficulty: "Hard", factors: [2, 3, 7, 11, 13] },
+            { number: 24, value: 1512, difficulty: "Medium", factors: [2, 2, 2, 3, 3, 3, 7] },
+            { number: 21, value: 875, difficulty: "Medium", factors: [5, 5, 5, 7] },
+            { number: 20, value: 405, difficulty: "Medium", factors: [3, 3, 3, 3, 5] },
+            { number: 17, value: 105, difficulty: "Easy", factors: [3, 5, 7] },
+            { number: 16, value: 288, difficulty: "Medium", factors: [2, 2, 2, 2, 2, 3, 3] }
+        ];
+
+        // App state
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        
+        // DOM elements
+        const questionNumberElement = document.getElementById('current-question');
+        const totalQuestionsElement = document.getElementById('total-questions');
+        const difficultyElement = document.getElementById('difficulty');
+        const questionTextElement = document.getElementById('question-text');
+        const numberToFactorElement = document.getElementById('number-to-factor');
+        const userAnswerInput = document.getElementById('user-answer');
+        const checkButton = document.getElementById('check-btn');
+        const showAnswerButton = document.getElementById('show-answer-btn');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackText = document.getElementById('feedback-text');
+        const answerExplanation = document.getElementById('answer-explanation');
+        const nextButton = document.getElementById('next-btn');
+        const progressFill = document.getElementById('progress-fill');
+        const progressPercent = document.getElementById('progress-percent');
+        const correctCountElement = document.getElementById('correct-count');
+        const incorrectCountElement = document.getElementById('incorrect-count');
+        const remainingCountElement = document.getElementById('remaining-count');
+        
+        // Initialize the app
+        function init() {
+            totalQuestionsElement.textContent = questions.length;
+            updateStats();
+            loadQuestion(currentQuestionIndex);
+            
+            // Add event listeners
+            checkButton.addEventListener('click', checkAnswer);
+            showAnswerButton.addEventListener('click', showAnswer);
+            nextButton.addEventListener('click', nextQuestion);
+            userAnswerInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        }
+        
+        // Load a question by index
+        function loadQuestion(index) {
+            const question = questions[index];
+            
+            questionNumberElement.textContent = question.number;
+            numberToFactorElement.textContent = question.value;
+            difficultyElement.textContent = question.difficulty;
+            
+            // Update difficulty color
+            if (question.difficulty === "Easy") {
+                difficultyElement.style.backgroundColor = "#e8f6ef";
+                difficultyElement.style.color = "#27ae60";
+            } else if (question.difficulty === "Medium") {
+                difficultyElement.style.backgroundColor = "#fff9e6";
+                difficultyElement.style.color = "#f39c12";
+            } else {
+                difficultyElement.style.backgroundColor = "#fdedec";
+                difficultyElement.style.color = "#e74c3c";
+            }
+            
+            // Reset UI state
+            userAnswerInput.value = '';
+            feedbackArea.style.display = 'none';
+            nextButton.style.display = 'none';
+            userAnswerInput.focus();
+            
+            // Update progress
+            const progress = ((index + 1) / questions.length) * 100;
+            progressFill.style.width = `${progress}%`;
+            progressPercent.textContent = `${Math.round(progress)}%`;
+        }
+        
+        // Check the user's answer
+        function checkAnswer() {
+            const userAnswer = userAnswerInput.value.trim();
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            if (!userAnswer) {
+                alert("Please enter an answer before checking.");
+                return;
+            }
+            
+            // Normalize the user's answer
+            const normalizedUserAnswer = userAnswer
+                .replace(/x/gi, '×')  // Replace x with multiplication symbol
+                .replace(/\*/g, '×')   // Replace * with multiplication symbol
+                .replace(/\s+/g, ' ')  // Normalize whitespace
+                .trim();
+            
+            // Create the correct answer string
+            const correctAnswerString = currentQuestion.factors.join(' × ');
+            
+            // Check if answer is correct
+            const isCorrect = normalizedUserAnswer === correctAnswerString;
+            
+            // Show feedback
+            showFeedback(isCorrect, correctAnswerString);
+            
+            // Update stats
+            if (isCorrect) {
+                correctAnswers++;
+            } else {
+                incorrectAnswers++;
+            }
+            updateStats();
+        }
+        
+        // Show the correct answer
+        function showAnswer() {
+            const currentQuestion = questions[currentQuestionIndex];
+            const correctAnswerString = currentQuestion.factors.join(' × ');
+            
+            showFeedback(false, correctAnswerString, true);
+        }
+        
+        // Display feedback to the user
+        function showFeedback(isCorrect, correctAnswer, isShowAnswer = false) {
+            if (isCorrect) {
+                feedbackArea.className = 'feedback-area correct';
+                feedbackIcon.textContent = '✓';
+                feedbackText.textContent = 'Correct! Well done.';
+            } else {
+                feedbackArea.className = 'feedback-area incorrect';
+                feedbackIcon.textContent = '✗';
+                if (isShowAnswer) {
+                    feedbackText.textContent = 'Here is the correct answer:';
+                } else {
+                    feedbackText.textContent = 'Not quite right. Here is the correct answer:';
+                }
+            }
+            
+            // Generate explanation
+            const currentQuestion = questions[currentQuestionIndex];
+            let explanation = `<p><strong>Prime factors of ${currentQuestion.value}:</strong> ${correctAnswer}</p>`;
+            
+            // Add factorization steps based on the number
+            explanation += generateFactorizationSteps(currentQuestion.value, currentQuestion.factors);
+            
+            answerExplanation.innerHTML = explanation;
+            
+            // Show feedback area and next button
+            feedbackArea.style.display = 'block';
+            nextButton.style.display = 'block';
+        }
+        
+        // Generate factorization steps for explanation
+        function generateFactorizationSteps(number, factors) {
+            let steps = '<p><strong>Factorization steps:</strong></p><ol>';
+            let currentNumber = number;
+            
+            for (let i = 0; i < factors.length; i++) {
+                const factor = factors[i];
+                const nextNumber = currentNumber / factor;
+                
+                steps += `<li>${currentNumber} ÷ ${factor} = ${nextNumber}</li>`;
+                currentNumber = nextNumber;
+            }
+            
+            steps += '</ol>';
+            steps += `<p>So ${number} = ${factors.join(' × ')}</p>`;
+            
+            return steps;
+        }
+        
+        // Move to the next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                // Quiz completed
+                questionTextElement.textContent = "Quiz Completed!";
+                numberToFactorElement.textContent = "";
+                userAnswerInput.style.display = 'none';
+                checkButton.style.display = 'none';
+                showAnswerButton.style.display = 'none';
+                feedbackArea.style.display = 'none';
+                nextButton.style.display = 'none';
+                
+                // Show completion message
+                const completionMessage = document.createElement('div');
+                completionMessage.className = 'feedback-area correct';
+                completionMessage.innerHTML = `
+                    <div class="feedback-header">
+                        <span class="feedback-icon">🏆</span>
+                        <span>Quiz Completed!</span>
+                    </div>
+                    <div class="answer-explanation">
+                        <p>You have completed all questions in the quiz.</p>
+                        <p>Your final score: <strong>${correctAnswers} out of ${questions.length}</strong></p>
+                        <p>${getPerformanceMessage(correctAnswers, questions.length)}</p>
+                        <button id="restart-btn" style="margin-top: 15px; background-color: #e67e22;">Restart Quiz</button>
+                    </div>
+                `;
+                
+                document.querySelector('.quiz-area').appendChild(completionMessage);
+                
+                // Add restart button event listener
+                document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+            }
+        }
+        
+        // Get a performance message based on score
+        function getPerformanceMessage(correct, total) {
+            const percentage = (correct / total) * 100;
+            
+            if (percentage >= 90) {
+                return "Excellent work! You have a strong understanding of prime factorization.";
+            } else if (percentage >= 70) {
+                return "Good job! You understand prime factorization well.";
+            } else if (percentage >= 50) {
+                return "Not bad! With more practice, you'll master prime factorization.";
+            } else {
+                return "Keep practicing! Review the factorization steps to improve.";
+            }
+        }
+        
+        // Restart the quiz
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            
+            // Reset UI
+            userAnswerInput.style.display = '';
+            checkButton.style.display = '';
+            showAnswerButton.style.display = '';
+            feedbackArea.style.display = 'none';
+            nextButton.style.display = 'none';
+            
+            // Remove completion message
+            const completionMessage = document.querySelector('.quiz-area .feedback-area.correct');
+            if (completionMessage) {
+                completionMessage.remove();
+            }
+            
+            updateStats();
+            loadQuestion(currentQuestionIndex);
+        }
+        
+        // Update the statistics display
+        function updateStats() {
+            correctCountElement.textContent = correctAnswers;
+            incorrectCountElement.textContent = incorrectAnswers;
+            remainingCountElement.textContent = questions.length - currentQuestionIndex;
+        }
+        
+        // Initialize the app when the page loads
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

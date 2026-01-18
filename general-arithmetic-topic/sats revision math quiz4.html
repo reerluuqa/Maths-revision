@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Revision Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 100, 0.08);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .quiz-container {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+        }
+        
+        .question-card {
+            background-color: #f8faff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #4361ee;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-number {
+            background-color: #4361ee;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .answer-section {
+            margin-top: 20px;
+        }
+        
+        input, select {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 300px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #4361ee;
+            outline: none;
+        }
+        
+        .card-images {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            width: 60px;
+            height: 80px;
+            background-color: #3a0ca3;
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .button {
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .button:hover {
+            background-color: #3a0ca3;
+            transform: translateY(-2px);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .button-secondary {
+            background-color: #eef2ff;
+            color: #4361ee;
+        }
+        
+        .button-secondary:hover {
+            background-color: #e0e7ff;
+        }
+        
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .correct {
+            background-color: #e7f7ef;
+            border-left: 5px solid #4cc9a0;
+        }
+        
+        .incorrect {
+            background-color: #fde8e8;
+            border-left: 5px solid #f87171;
+        }
+        
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feedback-content {
+            margin-top: 10px;
+        }
+        
+        .results-container {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #3a0ca3;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .hint {
+            background-color: #eef2ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .hint-title {
+            font-weight: bold;
+            color: #4361ee;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .show-hint {
+            background-color: transparent;
+            color: #4361ee;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 5px 0;
+            margin-top: 10px;
+        }
+        
+        .show-hint:hover {
+            text-decoration: underline;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: #eef2ff;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4361ee, #3a0ca3);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #4361ee;
+        }
+        
+        .quiz-complete-message {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .answer-highlight {
+            background-color: #e7f7ef;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .quiz-container {
+                padding: 20px;
+            }
+            
+            .question-card {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Maths Revision Quiz</h1>
+            <p class="subtitle">Practice these 8 problems to prepare for your upcoming exam. Work through one question at a time with detailed feedback.</p>
+        </header>
+        
+        <div class="quiz-container" id="quiz-container">
+            <!-- Progress bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 12.5%;"></div>
+            </div>
+            <div class="progress-text" id="progress-text">Question 1 of 8</div>
+            
+            <!-- Question will be dynamically inserted here -->
+            <div id="question-container"></div>
+            
+            <!-- Controls -->
+            <div class="controls" id="controls">
+                <button class="button button-secondary" id="prev-button" style="display: none;">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <div>
+                    <button class="button button-secondary" id="hint-button">
+                        <i class="fas fa-lightbulb"></i> Show Hint
+                    </button>
+                    <button class="button" id="check-button">
+                        <i class="fas fa-check"></i> Check Answer
+                    </button>
+                </div>
+                <button class="button" id="next-button">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="results-container" id="results-container">
+            <h2><i class="fas fa-trophy"></i> Quiz Complete!</h2>
+            <div class="score-display" id="score-display">0/8</div>
+            <p class="quiz-complete-message" id="result-message"></p>
+            <button class="button" id="restart-button"><i class="fas fa-redo"></i> Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                id: 1,
+                question: "Frank has these digit cards: 8, 2, 6, 4. He uses three of the cards to make a three-digit number. Each card can be used only once. Frank puts the 8 in the tens place. Write the lowest three-digit number that Frank could make.",
+                type: "number",
+                answer: "284",
+                explanation: "Since 8 must be in the tens place, we need to find the smallest possible number. The hundreds digit should be the smallest available digit (2, 4, or 6). The smallest is 2. The units digit should be the next smallest available digit after choosing the hundreds (4 or 6). The smallest is 4. So the number is 2 (hundreds), 8 (tens), 4 (units) = 284. Remember: 284 is smaller than 286 because 4 < 6.",
+                hint: "The 8 is fixed in the tens place. To make the smallest number, put the smallest remaining digit (2) in the hundreds place, and the next smallest (4) in the units place."
+            },
+            {
+                id: 2,
+                question: "The temperature in a freezer is -30°C. The temperature increases by 12°C. What is the new temperature?",
+                type: "number",
+                answer: "-18",
+                explanation: "Starting at -30°C and increasing by 12°C means we add 12 to -30. -30 + 12 = -18. So the new temperature is -18°C. Visualize a number line: from -30, move 12 steps to the right to reach -18.",
+                hint: "When adding a positive number to a negative number, you're moving up the number line. -30 + 10 = -20, then add 2 more to get -18."
+            },
+            {
+                id: 3,
+                question: "Kathryn buys milk (£1.10) and apple juice (£1.75) from a shop. She pays with a £10 note. How much change does Kathryn get?",
+                type: "number",
+                answer: "7.15",
+                explanation: "First, add the cost of milk and apple juice: £1.10 + £1.75 = £2.85. Then subtract from £10: £10.00 - £2.85 = £7.15. So Kathryn gets £7.15 change. You can check: £2.85 + £7.15 = £10.00.",
+                hint: "Add the two prices together first, then subtract the total from £10. Remember to line up the decimal points when adding."
+            },
+            {
+                id: 4,
+                question: "The numbers in this sequence increase by the same amount each time. Write the two missing numbers: -16, __, -4, 2, __, 14",
+                type: "sequence",
+                answer: "-10,8",
+                explanation: "First, find the difference between -4 and 2, which is 6. Since the sequence increases by the same amount, the common difference is 6. So: -16 + 6 = -10 (first missing number), and 2 + 6 = 8 (second missing number). Check: -10 + 6 = -4 (correct), 8 + 6 = 14 (correct). The complete sequence is -16, -10, -4, 2, 8, 14.",
+                hint: "Find the difference between two known consecutive numbers (like -4 and 2, which have a difference of 6). That difference is constant throughout the sequence."
+            },
+            {
+                id: 5,
+                question: "The diameter of Venus is 12,104 kilometres. What is this diameter to the nearest ten kilometres?",
+                type: "number",
+                answer: "12100",
+                explanation: "To round to the nearest ten, look at the units digit (4). Since 4 is less than 5, we round down. So 12,104 becomes 12,100 km. The tens digit is 0, the hundreds digit is 1, and the thousands digit is 2, so it's 12,100 when rounded to the nearest ten.",
+                hint: "When rounding to the nearest ten, look at the units digit. If it's 0-4, round down (keep the tens digit the same). If it's 5-9, round up (increase the tens digit by 1)."
+            },
+            {
+                id: 6,
+                question: "Alixe buys 1 litre of apple juice for £1.15. She pays with a £5 note. How much change does Alixe get?",
+                type: "number",
+                answer: "3.85",
+                explanation: "Subtract the cost from £5: £5.00 - £1.15 = £3.85. So Alixe gets £3.85 change. You can calculate this as £5 - £1 = £4, then £4 - £0.15 = £3.85.",
+                hint: "£5 - £1.15 can be calculated by subtracting £1 first, then subtracting the remaining 15p. £5 - £1 = £4, then £4 - £0.15 = £3.85."
+            },
+            {
+                id: 7,
+                question: "Noor thinks of a number. She says: 'I multiply by 3, I add 12, I divide by 2, My answer is 15.' What number did Noor think of?",
+                type: "number",
+                answer: "6",
+                explanation: "Work backwards from the answer 15. The last step was 'divide by 2' to get 15, so before dividing it was 15 × 2 = 30. Before that, 'add 12' gave 30, so before adding it was 30 - 12 = 18. The first step was 'multiply by 3' to get 18, so the original number was 18 ÷ 3 = 6. Check: 6 × 3 = 18, 18 + 12 = 30, 30 ÷ 2 = 15.",
+                hint: "Work backwards from the answer, reversing each operation: instead of dividing by 2, multiply by 2; instead of adding 12, subtract 12; instead of multiplying by 3, divide by 3."
+            },
+            {
+                id: 8,
+                question: "A box holds 20 packets of envelopes. Each packet holds 35 envelopes. How many envelopes does the box hold?",
+                type: "number",
+                answer: "700",
+                explanation: "Multiply the number of packets by envelopes per packet: 20 × 35 = 700 envelopes. You can calculate this as 20 × 30 = 600 and 20 × 5 = 100, then 600 + 100 = 700. Alternatively, 2 × 35 = 70, so 20 × 35 = 10 × 70 = 700.",
+                hint: "This is a multiplication problem: total envelopes = number of packets × envelopes per packet = 20 × 35."
+            }
+        ];
+
+        // Initialize the quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            const quizContainer = document.getElementById('quiz-container');
+            const questionContainer = document.getElementById('question-container');
+            const resultsContainer = document.getElementById('results-container');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            const scoreDisplay = document.getElementById('score-display');
+            const resultMessage = document.getElementById('result-message');
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+            const hintButton = document.getElementById('hint-button');
+            const checkButton = document.getElementById('check-button');
+            const restartButton = document.getElementById('restart-button');
+            
+            let currentQuestionIndex = 0;
+            let userAnswers = new Array(quizData.length).fill('');
+            let userCorrect = new Array(quizData.length).fill(false);
+            let score = 0;
+            
+            // Load the first question
+            loadQuestion(currentQuestionIndex);
+            
+            // Load question function
+            function loadQuestion(index) {
+                const question = quizData[index];
+                
+                // Update progress
+                progressFill.style.width = `${((index + 1) / quizData.length) * 100}%`;
+                progressText.textContent = `Question ${index + 1} of ${quizData.length}`;
+                
+                // Show/hide navigation buttons
+                prevButton.style.display = index === 0 ? 'none' : 'inline-flex';
+                nextButton.textContent = index === quizData.length - 1 ? 'Finish' : 'Next';
+                
+                // Create question HTML
+                let inputField = '';
+                if (question.type === 'sequence') {
+                    inputField = `
+                        <div class="answer-section">
+                            <p>Enter the two missing numbers separated by a comma:</p>
+                            <input type="text" id="answer-input" placeholder="e.g., -10,8" value="${userAnswers[index] || ''}">
+                            <p style="font-size: 0.9rem; margin-top: 5px; color: #666;">Format: first number, second number</p>
+                        </div>
+                    `;
+                } else {
+                    inputField = `
+                        <div class="answer-section">
+                            ${question.id === 1 ? '<div class="card-images"><div class="card">8</div><div class="card">2</div><div class="card">6</div><div class="card">4</div></div>' : ''}
+                            <input type="${question.type === 'number' ? 'number' : 'text'}" id="answer-input" placeholder="Enter your answer" value="${userAnswers[index] || ''}">
+                        </div>
+                    `;
+                }
+                
+                questionContainer.innerHTML = `
+                    <div class="question-card">
+                        <div class="question-header">
+                            <div class="question-number">${question.id}</div>
+                            ${userCorrect[index] ? '<i class="fas fa-check-circle" style="color: #4cc9a0; font-size: 1.5rem;"></i>' : ''}
+                        </div>
+                        <div class="question-text">${question.question}</div>
+                        ${inputField}
+                        <div class="hint" id="hint-container">
+                            <div class="hint-title"><i class="fas fa-lightbulb"></i> Hint</div>
+                            ${question.hint}
+                        </div>
+                        <div class="feedback" id="feedback-container" style="display: none;">
+                            <div class="feedback-title"></div>
+                            <div class="feedback-content"></div>
+                        </div>
+                    </div>
+                `;
+                
+                // Hide hint initially
+                document.getElementById('hint-container').style.display = 'none';
+                
+                // Focus on input
+                document.getElementById('answer-input')?.focus();
+            }
+            
+            // Check answer function
+            function checkAnswer() {
+                const question = quizData[currentQuestionIndex];
+                const input = document.getElementById('answer-input');
+                const answer = input.value.trim();
+                const feedbackContainer = document.getElementById('feedback-container');
+                const feedbackTitle = feedbackContainer.querySelector('.feedback-title');
+                const feedbackContent = feedbackContainer.querySelector('.feedback-content');
+                
+                // Store user's answer
+                userAnswers[currentQuestionIndex] = answer;
+                
+                let isCorrect = false;
+                
+                if (question.type === 'sequence') {
+                    // For sequence questions, accept with or without space after comma
+                    const normalizedAnswer = answer.replace(/\s*,\s*/g, ',');
+                    isCorrect = normalizedAnswer === question.answer;
+                } else {
+                    isCorrect = answer === question.answer.toString();
+                }
+                
+                // Update correctness array
+                userCorrect[currentQuestionIndex] = isCorrect;
+                
+                // Update score
+                score = userCorrect.filter(correct => correct).length;
+                
+                // Show feedback
+                if (isCorrect) {
+                    feedbackContainer.className = 'feedback correct';
+                    feedbackTitle.innerHTML = `<i class="fas fa-check-circle"></i> Correct!`;
+                    feedbackContent.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+                } else {
+                    feedbackContainer.className = 'feedback incorrect';
+                    feedbackTitle.innerHTML = `<i class="fas fa-times-circle"></i> Not quite right`;
+                    feedbackContent.innerHTML = `
+                        <p><strong>Your answer:</strong> ${answer || '(no answer)'}</p>
+                        <p><strong>Correct answer:</strong> <span class="answer-highlight">${question.answer}</span></p>
+                        <p><strong>Explanation:</strong> ${question.explanation}</p>
+                    `;
+                }
+                
+                feedbackContainer.style.display = 'block';
+                feedbackContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
+                // Update the checkmark in the question header
+                const questionHeader = document.querySelector('.question-header');
+                if (questionHeader) {
+                    if (isCorrect) {
+                        if (!questionHeader.querySelector('.fa-check-circle')) {
+                            questionHeader.innerHTML += '<i class="fas fa-check-circle" style="color: #4cc9a0; font-size: 1.5rem;"></i>';
+                        }
+                    } else {
+                        const checkIcon = questionHeader.querySelector('.fa-check-circle');
+                        if (checkIcon) {
+                            checkIcon.remove();
+                        }
+                    }
+                }
+                
+                return isCorrect;
+            }
+            
+            // Event listeners
+            prevButton.addEventListener('click', function() {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    loadQuestion(currentQuestionIndex);
+                }
+            });
+            
+            nextButton.addEventListener('click', function() {
+                // Check if we're on the last question
+                if (currentQuestionIndex === quizData.length - 1) {
+                    // Finish the quiz
+                    finishQuiz();
+                } else {
+                    // Move to next question
+                    currentQuestionIndex++;
+                    loadQuestion(currentQuestionIndex);
+                }
+            });
+            
+            hintButton.addEventListener('click', function() {
+                const hintContainer = document.getElementById('hint-container');
+                if (hintContainer.style.display === 'none' || hintContainer.style.display === '') {
+                    hintContainer.style.display = 'block';
+                    hintButton.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Hint';
+                } else {
+                    hintContainer.style.display = 'none';
+                    hintButton.innerHTML = '<i class="fas fa-lightbulb"></i> Show Hint';
+                }
+                hintContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+            
+            checkButton.addEventListener('click', function() {
+                checkAnswer();
+            });
+            
+            // Allow Enter key to check answer
+            document.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    const focusedElement = document.activeElement;
+                    if (focusedElement && focusedElement.id === 'answer-input') {
+                        checkAnswer();
+                    }
+                }
+            });
+            
+            restartButton.addEventListener('click', function() {
+                // Reset quiz
+                currentQuestionIndex = 0;
+                userAnswers = new Array(quizData.length).fill('');
+                userCorrect = new Array(quizData.length).fill(false);
+                score = 0;
+                
+                // Show quiz container, hide results
+                quizContainer.style.display = 'block';
+                resultsContainer.style.display = 'none';
+                
+                // Load first question
+                loadQuestion(currentQuestionIndex);
+            });
+            
+            // Finish quiz function
+            function finishQuiz() {
+                // Calculate final score
+                score = userCorrect.filter(correct => correct).length;
+                
+                // Update results display
+                scoreDisplay.textContent = `${score}/${quizData.length}`;
+                
+                // Add encouraging message
+                if (score === quizData.length) {
+                    resultMessage.textContent = "Perfect score! You're ready for the exam!";
+                    resultMessage.style.color = "#4cc9a0";
+                } else if (score >= quizData.length * 0.7) {
+                    resultMessage.textContent = "Well done! Good understanding but review the incorrect answers.";
+                    resultMessage.style.color = "#4361ee";
+                } else if (score >= quizData.length * 0.5) {
+                    resultMessage.textContent = "Keep practicing! Review the feedback for each question.";
+                    resultMessage.style.color = "#f8961e";
+                } else {
+                    resultMessage.textContent = "Take time to study the feedback and try again.";
+                    resultMessage.style.color = "#f87171";
+                }
+                
+                // Show results, hide quiz
+                quizContainer.style.display = 'none';
+                resultsContainer.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

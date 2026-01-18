@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAT Maths Revision Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            padding: 20px 30px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .progress-bar {
+            background: #e5e7eb;
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #10B981, #06B6D4);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 6px;
+        }
+
+        .quiz-content {
+            padding: 30px;
+        }
+
+        .question-card {
+            background: #f9fafb;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #4F46E5;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: #4F46E5;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 15px;
+        }
+
+        .question-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .question-text {
+            font-size: 1.15em;
+            line-height: 1.7;
+            color: #4b5563;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .input-field {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .input-field:disabled {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            color: white;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            box-shadow: 0 5px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            display: none;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .next-btn:hover:not(:disabled) {
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .feedback-section {
+            display: none;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 12px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-correct {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #10B981;
+        }
+
+        .feedback-incorrect {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #EF4444;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .feedback-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            font-size: 1.4em;
+        }
+
+        .feedback-correct .feedback-title {
+            color: #065f46;
+        }
+
+        .feedback-incorrect .feedback-title {
+            color: #991b1b;
+        }
+
+        .your-answer {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+
+        .feedback-correct .your-answer {
+            background: rgba(16, 185, 129, 0.2);
+            color: #065f46;
+        }
+
+        .feedback-incorrect .your-answer {
+            background: rgba(239, 68, 68, 0.2);
+            color: #991b1b;
+        }
+
+        .correct-answer-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4F46E5;
+        }
+
+        .correct-answer-box strong {
+            color: #4F46E5;
+            font-size: 1.3em;
+        }
+
+        .solution-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .solution-title {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #1f2937;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .solution-title::before {
+            content: "📝";
+            margin-right: 10px;
+        }
+
+        .solution-step {
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .solution-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .tip-title {
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .tip-title::before {
+            content: "💡";
+            margin-right: 8px;
+        }
+
+        .tip-text {
+            color: #78350f;
+            line-height: 1.5;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 50px 30px;
+        }
+
+        .results-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .results-title {
+            font-size: 2em;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 4em;
+            font-weight: 700;
+            margin: 30px 0;
+            background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-bar {
+            background: #e5e7eb;
+            height: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 400px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        .feedback-message {
+            font-size: 1.3em;
+            color: #4b5563;
+            margin: 30px 0;
+            line-height: 1.6;
+        }
+
+        .results-breakdown {
+            background: #f9fafb;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .breakdown-title {
+            font-weight: 700;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .reset-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .start-screen {
+            text-align: center;
+            padding: 50px 30px;
+        }
+
+        .start-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .start-title {
+            font-size: 1.8em;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        .start-description {
+            color: #6b7280;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .start-info {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .info-item::before {
+            content: "✓";
+            background: #10B981;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 0.8em;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 12px;
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .input-field {
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 SAT Maths Revision Quiz</h1>
+            <p>Practice arithmetic & problem solving questions</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div class="start-screen" id="startScreen">
+            <div class="start-icon">🎯</div>
+            <div class="start-title">Ready to Practice?</div>
+            <div class="start-description">
+                Test your maths skills with these SAT-style questions. 
+                Take your time and read each question carefully!
+            </div>
+            <div class="start-info">
+                <div class="info-item">6 questions covering arithmetic & problem solving</div>
+                <div class="info-item">One question at a time</div>
+                <div class="info-item">Detailed feedback after each answer</div>
+                <div class="info-item">Tips to help you improve</div>
+            </div>
+            <button class="start-btn" id="startBtn">Start Quiz</button>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-text">
+                <span id="progressLabel">Question 1 of 6</span>
+                <span id="scoreLabel">Score: 0</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Quiz Content -->
+        <div class="quiz-content" id="quizContent" style="display: none;">
+            <div class="question-card" id="questionCard">
+                <div class="question-header">
+                    <div class="question-number" id="questionNumber">1</div>
+                    <div class="question-title" id="questionTitle">Loading...</div>
+                </div>
+                <div class="question-text" id="questionText">Loading question...</div>
+                <div class="input-group">
+                    <input type="number" class="input-field" id="answerInput" placeholder="Enter your answer">
+                    <button class="btn submit-btn" id="submitBtn">Check Answer</button>
+                </div>
+                <div class="feedback-section" id="feedbackSection"></div>
+                <button class="btn next-btn" id="nextBtn">Next Question →</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-icon" id="resultsIcon">🎉</div>
+            <div class="results-title">Quiz Complete!</div>
+            <div class="score-display" id="scoreDisplay">0/6</div>
+            <div class="score-bar">
+                <div class="score-fill" id="scoreFill"></div>
+            </div>
+            <div class="feedback-message" id="feedbackMessage"></div>
+            <div class="results-breakdown" id="resultsBreakdown">
+                <div class="breakdown-title">📊 Question Breakdown</div>
+                <div id="breakdownList"></div>
+            </div>
+            <button class="reset-btn" id="resetBtn">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data with corrected answers and detailed solutions
+        const questions = [
+            {
+                id: 1,
+                title: "Balloon Packets",
+                text: "There are 5 balloons in a packet. There are 18 packets in a box. Kofi needs 65 balloons. How many packets does he need to buy?",
+                answer: 13,
+                acceptableAnswers: [13],
+                solution: [
+                    "We need to find how many packets give us at least 65 balloons",
+                    "Each packet contains 5 balloons",
+                    "Divide: 65 ÷ 5 = 13 packets exactly",
+                    "Check: 13 × 5 = 65 balloons ✓"
+                ],
+                tip: "When dividing to find 'how many groups', if the answer is exact, that's your answer. If there's a remainder and you need 'at least' that many, round UP!"
+            },
+            {
+                id: 2,
+                title: "Plant Trays",
+                text: "A garden centre sells plants in trays of 20. David wants 240 plants for his garden. How many trays does he need to buy?",
+                answer: 12,
+                acceptableAnswers: [12],
+                solution: [
+                    "We need to find how many trays of 20 make 240",
+                    "Each tray holds 20 plants",
+                    "Divide: 240 ÷ 20 = 12 trays",
+                    "Check: 12 × 20 = 240 plants ✓"
+                ],
+                tip: "When dividing by 20, you can divide by 10 first (get 24), then divide by 2 (get 12). Breaking down division makes it easier!"
+            },
+            {
+                id: 3,
+                title: "Paper Sheets",
+                text: "A pack of paper has 150 sheets. 4 children each take 7 sheets. How many sheets of paper are left in the pack?",
+                answer: 122,
+                acceptableAnswers: [122],
+                solution: [
+                    "First find total sheets taken: 4 children × 7 sheets = 28 sheets",
+                    "Start with 150 sheets in the pack",
+                    "Subtract sheets taken: 150 - 28 = 122 sheets",
+                    "Check: 122 + 28 = 150 ✓"
+                ],
+                tip: "This is a two-step problem. Always identify: (1) What calculation do I need first? (2) What do I do with that result? Read carefully to spot multi-step questions!"
+            },
+            {
+                id: 4,
+                title: "Trading Cards",
+                text: "Kate's favourite cards are sold in packs of 6. Altogether she has 30 cards. How many packs did she buy?",
+                answer: 5,
+                acceptableAnswers: [5],
+                solution: [
+                    "We need to find how many packs of 6 make 30",
+                    "Each pack contains 6 cards",
+                    "Divide: 30 ÷ 6 = 5 packs",
+                    "Check: 5 × 6 = 30 cards ✓"
+                ],
+                tip: "Division finds 'how many groups'. If you know your times tables, think: '? × 6 = 30' — the answer is 5!"
+            },
+            {
+                id: 5,
+                title: "Toy Car Inventory",
+                text: "A shop had 15,250 toy cars in stock at the start of June. During June, 9,473 toy cars were sold. How many toy cars were left in the shop at the end of June?",
+                answer: 5777,
+                acceptableAnswers: [5777],
+                solution: [
+                    "Starting stock: 15,250 toy cars",
+                    "Cars sold: 9,473 toy cars",
+                    "Subtract to find remaining: 15,250 - 9,473",
+                    "Work through columns: 15,250 - 9,473 = 5,777 toy cars",
+                    "Check: 5,777 + 9,473 = 15,250 ✓"
+                ],
+                tip: "For large subtractions, line up the digits carefully by place value. You may need to 'borrow' (regroup) from the next column when a digit is too small to subtract from."
+            },
+            {
+                id: 6,
+                title: "Plastic Cups",
+                text: "Plastic cups are sold in packs of 8. Amit needs 27 cups for a party. He buys 3 packs. How many extra cups will he have after the party?",
+                answer: -3,
+                acceptableAnswers: [-3, 0],
+                specialHandling: true,
+                solution: [
+                    "First find total cups bought: 3 packs × 8 cups = 24 cups",
+                    "Amit needs 27 cups but only has 24 cups",
+                    "Calculate difference: 24 - 27 = -3",
+                    "This means Amit is 3 cups SHORT — he doesn't have enough!",
+                    "He should buy 4 packs (32 cups) to have 5 extra cups"
+                ],
+                tip: "Always check if the answer makes sense! Here, 3 packs only give 24 cups, but 27 are needed. The question is a bit tricky — Amit hasn't bought enough! In real life, he'd need 4 packs."
+            }
+        ];
+
+        // Quiz state
+        let currentQuestion = 0;
+        let score = 0;
+        let answers = [];
+        let quizStarted = false;
+
+        // DOM elements
+        const startScreen = document.getElementById('startScreen');
+        const startBtn = document.getElementById('startBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressLabel = document.getElementById('progressLabel');
+        const scoreLabel = document.getElementById('scoreLabel');
+        const progressFill = document.getElementById('progressFill');
+        const quizContent = document.getElementById('quizContent');
+        const questionNumber = document.getElementById('questionNumber');
+        const questionTitle = document.getElementById('questionTitle');
+        const questionText = document.getElementById('questionText');
+        const answerInput = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const feedbackSection = document.getElementById('feedbackSection');
+        const nextBtn = document.getElementById('nextBtn');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const resultsIcon = document.getElementById('resultsIcon');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const scoreFill = document.getElementById('scoreFill');
+        const feedbackMessage = document.getElementById('feedbackMessage');
+        const breakdownList = document.getElementById('breakdownList');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // Event listeners
+        startBtn.addEventListener('click', startQuiz);
+        submitBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', nextQuestion);
+        resetBtn.addEventListener('click', resetQuiz);
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !submitBtn.disabled) {
+                checkAnswer();
+            }
+        });
+
+        function startQuiz() {
+            quizStarted = true;
+            startScreen.style.display = 'none';
+            progressContainer.style.display = 'block';
+            quizContent.style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            
+            questionNumber.textContent = q.id;
+            questionTitle.textContent = q.title;
+            questionText.textContent = q.text;
+            answerInput.value = '';
+            answerInput.disabled = false;
+            answerInput.focus();
+            submitBtn.disabled = false;
+            submitBtn.style.display = 'inline-block';
+            feedbackSection.style.display = 'none';
+            nextBtn.style.display = 'none';
+            
+            progressLabel.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            scoreLabel.textContent = `Score: ${score}`;
+            progressFill.style.width = `${(currentQuestion / questions.length) * 100}%`;
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(answerInput.value);
+            const q = questions[currentQuestion];
+            
+            if (isNaN(userAnswer)) {
+                answerInput.style.borderColor = '#EF4444';
+                answerInput.placeholder = 'Please enter a number!';
+                setTimeout(() => {
+                    answerInput.style.borderColor = '#d1d5db';
+                    answerInput.placeholder = 'Enter your answer';
+                }, 2000);
+                return;
+            }
+
+            const isCorrect = q.acceptableAnswers.includes(userAnswer);
+            
+            // Store answer
+            answers.push({
+                question: q.id,
+                title: q.title,
+                userAnswer: userAnswer,
+                correctAnswer: q.answer,
+                isCorrect: isCorrect
+            });
+
+            if (isCorrect) {
+                score++;
+                scoreLabel.textContent = `Score: ${score}`;
+            }
+
+            // Disable input and submit button
+            answerInput.disabled = true;
+            submitBtn.disabled = true;
+            submitBtn.style.display = 'none';
+
+            // Show feedback
+            showFeedback(q, userAnswer, isCorrect);
+        }
+
+        function showFeedback(question, userAnswer, isCorrect) {
+            feedbackSection.className = `feedback-section ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+            
+            let feedbackHTML = `
+                <div class="feedback-header">
+                    <span class="feedback-icon">${isCorrect ? '✅' : '❌'}</span>
+                    <span class="feedback-title">${isCorrect ? 'Correct! Well done!' : 'Not quite right'}</span>
+                </div>
+                <div class="your-answer">
+                    Your answer: <strong>${userAnswer}</strong>
+                </div>
+            `;
+
+            if (!isCorrect) {
+                feedbackHTML += `
+                    <div class="correct-answer-box">
+                        The correct answer is: <strong>${question.answer}</strong>
+                    </div>
+                `;
+            }
+
+            feedbackHTML += `
+                <div class="solution-section">
+                    <div class="solution-title">Step-by-Step Solution</div>
+                    ${question.solution.map((step, index) => `
+                        <div class="solution-step">
+                            <div class="step-number">${index + 1}</div>
+                            <div class="step-text">${step}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="tip-box">
+                    <div class="tip-title">Helpful Tip</div>
+                    <div class="tip-text">${question.tip}</div>
+                </div>
+            `;
+
+            feedbackSection.innerHTML = feedbackHTML;
+            feedbackSection.style.display = 'block';
+            
+            // Show next button
+            if (currentQuestion < questions.length - 1) {
+                nextBtn.textContent = 'Next Question →';
+            } else {
+                nextBtn.textContent = 'See Results →';
+            }
+            nextBtn.style.display = 'block';
+            
+            // Scroll to feedback
+            feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion >= questions.length) {
+                showResults();
+            } else {
+                loadQuestion();
+                // Scroll to top of question
+                document.querySelector('.question-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function showResults() {
+            progressContainer.style.display = 'none';
+            quizContent.style.display = 'none';
+            resultsScreen.style.display = 'block';
+
+            const percentage = (score / questions.length) * 100;
+            
+            scoreDisplay.textContent = `${score}/${questions.length}`;
+            
+            // Animate score bar
+            setTimeout(() => {
+                scoreFill.style.width = `${percentage}%`;
+                if (percentage >= 80) {
+                    scoreFill.style.background = 'linear-gradient(90deg, #10B981, #059669)';
+                } else if (percentage >= 50) {
+                    scoreFill.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+                } else {
+                    scoreFill.style.background = 'linear-gradient(90deg, #EF4444, #DC2626)';
+                }
+            }, 100);
+
+            // Set icon and message based on score
+            if (percentage === 100) {
+                resultsIcon.textContent = '🏆';
+                feedbackMessage.textContent = "Perfect score! Outstanding work — you're SAT ready! Keep up the excellent work!";
+            } else if (percentage >= 80) {
+                resultsIcon.textContent = '🌟';
+                feedbackMessage.textContent = "Great job! You've got a strong understanding. Just a little more practice on the tricky ones!";
+            } else if (percentage >= 60) {
+                resultsIcon.textContent = '👍';
+                feedbackMessage.textContent = "Good effort! Review the solutions for the questions you missed and try again.";
+            } else if (percentage >= 40) {
+                resultsIcon.textContent = '📚';
+                feedbackMessage.textContent = "Keep practicing! Focus on understanding the step-by-step solutions. You'll improve with practice!";
+            } else {
+                resultsIcon.textContent = '💪';
+                feedbackMessage.textContent = "Don't give up! Read through each solution carefully and try the quiz again. Practice makes perfect!";
+            }
+
+            // Show breakdown
+            breakdownList.innerHTML = answers.map(a => `
+                <div class="breakdown-item">
+                    <span>Q${a.question}: ${a.title}</span>
+                    <span>${a.isCorrect ? '✅ Correct' : `❌ Your answer: ${a.userAnswer} (Correct: ${a.correctAnswer})`}</span>
+                </div>
+            `).join('');
+        }
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answers = [];
+            
+            resultsScreen.style.display = 'none';
+            progressContainer.style.display = 'block';
+            quizContent.style.display = 'block';
+            scoreFill.style.width = '0%';
+            
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>

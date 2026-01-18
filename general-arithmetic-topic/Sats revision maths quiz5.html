@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Revision Quiz (Questions 13–16)</title>
+  <style>
+    :root{
+      --bg0:#0b1020;
+      --bg1:#0f1733;
+      --card:#121b3e;
+      --card2:#0f1733;
+      --text:#eaf0ff;
+      --muted:#aeb9e6;
+      --accent:#7c5cff;
+      --accent2:#24d3ee;
+      --good:#34d399;
+      --bad:#fb7185;
+      --warn:#fbbf24;
+      --line:rgba(255,255,255,.10);
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 15% 10%, rgba(124,92,255,.25), transparent 55%),
+        radial-gradient(900px 700px at 85% 30%, rgba(36,211,238,.22), transparent 55%),
+        radial-gradient(900px 700px at 55% 95%, rgba(52,211,153,.12), transparent 50%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      min-height:100vh;
+    }
+
+    .wrap{max-width:1050px;margin:0 auto;padding:28px 18px 40px}
+    header{
+      display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+      gap:14px;margin-bottom:18px
+    }
+    .title{
+      display:flex;flex-direction:column;gap:6px
+    }
+    h1{margin:0;font-size:22px;letter-spacing:.2px}
+    .subtitle{color:var(--muted);font-size:13px;line-height:1.35}
+    .pillrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      padding:8px 10px;border-radius:999px;
+      font-size:12px;color:var(--muted);
+      display:flex;gap:8px;align-items:center;
+    }
+    .dot{width:9px;height:9px;border-radius:99px;background:var(--accent2);box-shadow:0 0 0 3px rgba(36,211,238,.15)}
+    .btn{
+      border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(135deg, rgba(124,92,255,.95), rgba(36,211,238,.75));
+      color:#06101f;
+      font-weight:700;
+      padding:10px 14px;border-radius:12px;
+      cursor:pointer;
+      box-shadow: 0 12px 30px rgba(124,92,255,.18);
+      transition: transform .06s ease, filter .15s ease;
+      user-select:none;
+    }
+    .btn:hover{filter:saturate(1.1) brightness(1.02)}
+    .btn:active{transform:translateY(1px)}
+    .btn.secondary{
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      box-shadow:none;
+    }
+
+    .progress{
+      margin:18px 0 8px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      border-radius:999px;
+      overflow:hidden;
+      height:12px;
+      position:relative;
+    }
+    .progress > .bar{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+    .progresslabel{
+      display:flex;justify-content:space-between;color:var(--muted);
+      font-size:12px;margin-bottom:14px
+    }
+
+    .grid{display:grid;grid-template-columns:1fr;gap:14px}
+    @media (min-width: 980px){
+      .grid{grid-template-columns: 1.15fr .85fr}
+      .side{position:sticky;top:18px;height:fit-content}
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .card h2{margin:0 0 10px;font-size:16px}
+    .card p{margin:8px 0;color:var(--muted);font-size:13px;line-height:1.45}
+
+    .q{
+      padding:14px;
+      background:rgba(10,16,34,.55);
+      border:1px solid var(--line);
+      border-radius:16px;
+      margin-bottom:12px;
+    }
+    .qhead{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
+      margin-bottom:10px
+    }
+    .qtitle{display:flex;flex-direction:column;gap:6px}
+    .qid{
+      font-family:var(--mono);
+      font-size:12px;color:rgba(255,255,255,.70);
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      padding:5px 8px;border-radius:999px;
+      width:fit-content;
+    }
+    .prompt{
+      font-size:14px;color:var(--text);line-height:1.35;margin:0
+    }
+    .meta{
+      display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end
+    }
+    .tag{
+      font-size:12px;color:var(--muted);
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      padding:5px 8px;border-radius:999px;
+    }
+
+    .work{
+      display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px
+    }
+    @media(min-width:720px){ .work{grid-template-columns:1fr 1fr} }
+
+    .diagram{
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:14px;
+      padding:12px;
+      background:rgba(255,255,255,.02);
+      min-height:78px;
+    }
+    .diagram .cap{color:var(--muted);font-size:12px;margin-bottom:8px}
+
+    /* Pool diagram */
+    .pool{
+      width:100%;max-width:340px;aspect-ratio: 25 / 10;
+      border-radius:12px;
+      background:linear-gradient(135deg, rgba(36,211,238,.22), rgba(124,92,255,.14));
+      border:1px solid rgba(36,211,238,.25);
+      position:relative;
+      overflow:hidden;
+    }
+    .pool:before{
+      content:"";
+      position:absolute;inset:-40%;
+      background:
+        radial-gradient(circle at 30% 40%, rgba(255,255,255,.20), transparent 55%),
+        radial-gradient(circle at 70% 60%, rgba(255,255,255,.14), transparent 60%);
+      transform:rotate(10deg);
+    }
+    .poollabel{
+      display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;color:var(--muted);font-size:12px
+    }
+    .kpi{
+      display:flex;gap:8px;align-items:center;
+      padding:6px 8px;border-radius:12px;border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      width:fit-content;
+    }
+    .kpi b{color:var(--text)}
+
+    /* Savings table */
+    table{
+      width:100%;border-collapse:separate;border-spacing:0;
+      overflow:hidden;border-radius:14px;border:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+      font-size:13px
+    }
+    th,td{padding:8px 8px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08)}
+    th{color:rgba(255,255,255,.82);background:rgba(255,255,255,.04);font-weight:700}
+    tr:last-child td{border-bottom:none}
+    .small{font-size:12px;color:var(--muted)}
+
+    /* Input + feedback */
+    .ansrow{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px
+    }
+    input[type="text"], input[type="number"]{
+      width:min(280px, 100%);
+      padding:10px 12px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(5,10,20,.55);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    input[type="text"]::placeholder, input[type="number"]::placeholder{color:rgba(255,255,255,.35)}
+    .unit{color:var(--muted);font-size:13px}
+
+    .result{
+      margin-top:10px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      padding:12px;
+      display:none;
+    }
+    .result.show{display:block}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;font-weight:800;
+      border:1px solid rgba(255,255,255,.16);
+      font-size:12px;
+    }
+    .badge.good{background:rgba(52,211,153,.12);color:#bff6df;border-color:rgba(52,211,153,.25)}
+    .badge.bad{background:rgba(251,113,133,.10);color:#ffd0d8;border-color:rgba(251,113,133,.25)}
+    .badge.warn{background:rgba(251,191,36,.10);color:#ffe7a6;border-color:rgba(251,191,36,.25)}
+    .explain{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;line-height:1.48;
+      white-space:pre-wrap;
+    }
+    .answerline{
+      margin-top:10px;
+      font-family:var(--mono);
+      font-size:13px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+    }
+    .answerline b{color:var(--text)}
+    .footerrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+
+    .scorebox{
+      display:flex;flex-direction:column;gap:8px;
+      padding:14px;border-radius:18px;border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      margin-top:10px
+    }
+    .score{
+      font-size:28px;font-weight:900;letter-spacing:.2px
+    }
+    .score small{font-size:12px;color:var(--muted);font-weight:600}
+    .hint{
+      font-size:12px;color:var(--muted);line-height:1.45
+    }
+    .divider{height:1px;background:var(--line);margin:10px 0}
+    .list{margin:0;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.55}
+    .list li{margin:6px 0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>Revision Quiz: Questions 13–16</h1>
+        <div class="subtitle">Interactive practice based on the attached paper. Enter answers, then check for worked solutions and feedback.</div>
+      </div>
+      <div class="pillrow">
+        <div class="pill"><span class="dot"></span>Auto-marking + full method</div>
+        <button class="btn secondary" id="btnReset" type="button">Reset</button>
+        <button class="btn" id="btnMarkAll" type="button">Check all</button>
+      </div>
+    </header>
+
+    <div class="progress" aria-label="progress">
+      <div class="bar" id="bar"></div>
+    </div>
+    <div class="progresslabel">
+      <div id="progressText">0 / 7 checked</div>
+      <div id="scoreText">Score: 0 / 7</div>
+    </div>
+
+    <div class="grid">
+      <main id="quiz" class="card" aria-label="quiz">
+        <h2>Questions</h2>
+        <p>Type your answer in each box. Units are shown where relevant. When you check, you’ll get the correct answer plus a step-by-step method.</p>
+
+        <!-- Q13 -->
+        <section class="q" data-qid="Q13" data-answer="5" data-tol="0">
+          <div class="qhead">
+            <div class="qtitle">
+              <div class="qid">Q13</div>
+              <p class="prompt">
+                A rectangular swimming pool is <b>25 m</b> long and <b>10 m</b> wide.
+                David swims <b>5 lengths</b>. Rosie swims <b>12 widths</b>.
+                <br/>How much further does David swim than Rosie?
+              </p>
+            </div>
+            <div class="meta">
+              <span class="tag">Distance</span>
+              <span class="tag">Multiplication</span>
+              <span class="tag">Difference</span>
+            </div>
+          </div>
+
+          <div class="work">
+            <div class="diagram">
+              <div class="cap">Pool sketch</div>
+              <div class="pool" aria-hidden="true"></div>
+              <div class="poollabel">
+                <div class="kpi"><span>Length:</span> <b>25 m</b></div>
+                <div class="kpi"><span>Width:</span> <b>10 m</b></div>
+              </div>
+            </div>
+            <div class="diagram">
+              <div class="cap">Answer</div>
+              <div class="ansrow">
+                <input inputmode="numeric" type="number" step="1" placeholder="Your answer" class="answerInput" />
+                <span class="unit">m</span>
+                <button class="btn secondary btnCheck" type="button">Check</button>
+              </div>
+              <div class="result">
+                <div class="badge"></div>
+                <div class="answerline"></div>
+                <div class="explain"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q14a -->
+        <section class="q" data-qid="Q14a" data-answer="6" data-tol="0">
+          <div class="qhead">
+            <div class="qtitle">
+              <div class="qid">Q14 (a)</div>
+              <p class="prompt">
+                Seb saved up for a skateboard costing <b>£40</b>.
+                The table shows how much he saved each week:
+                <br/><b>£5, £4, £2, £4, £3, £4, £6, £4, £3, £5</b> (weeks 1 to 10).
+                <br/>In which week did Seb reach <b>half</b> the amount he needed?
+              </p>
+            </div>
+            <div class="meta">
+              <span class="tag">Cumulative totals</span>
+              <span class="tag">Half of £40</span>
+            </div>
+          </div>
+
+          <div class="work">
+            <div class="diagram">
+              <div class="cap">Weekly savings</div>
+              <table aria-label="weekly savings table">
+                <thead>
+                  <tr>
+                    <th>Week</th>
+                    <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>Saved (£)</th>
+                    <td>5</td><td>4</td><td>2</td><td>4</td><td>3</td><td>4</td><td>6</td><td>4</td><td>3</td><td>5</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="small" style="margin-top:8px">Half of £40 is £20, so you’re looking for the first week where the running total is ≥ £20.</div>
+            </div>
+
+            <div class="diagram">
+              <div class="cap">Answer</div>
+              <div class="ansrow">
+                <input inputmode="numeric" type="number" step="1" placeholder="Week number" class="answerInput" />
+                <span class="unit">week</span>
+                <button class="btn secondary btnCheck" type="button">Check</button>
+              </div>
+              <div class="result">
+                <div class="badge"></div>
+                <div class="answerline"></div>
+                <div class="explain"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q14b -->
+        <section class="q" data-qid="Q14b" data-answer="8" data-tol="0">
+          <div class="qhead">
+            <div class="qtitle">
+              <div class="qid">Q14 (b)</div>
+              <p class="prompt">
+                If Seb had saved an extra <b>£1 each week</b>, in which week would he have reached his target of <b>£40</b>?
+              </p>
+            </div>
+            <div class="meta">
+              <span class="tag">Cumulative totals</span>
+              <span class="tag">Adjusting data</span>
+            </div>
+          </div>
+
+          <div class="work">
+            <div class="diagram">
+              <div class="cap">Idea</div>
+              <p class="small" style="margin:0">
+                Add £1 to each weekly amount, then form a running total until you first reach ≥ £40.
+              </p>
+              <div class="divider"></div>
+              <p class="small" style="margin:0">
+                New weekly list becomes: <span style="font-family:var(--mono)">6, 5, 3, 5, 4, 5, 7, 5, 4, 6</span>.
+              </p>
+            </div>
+
+            <div class="diagram">
+              <div class="cap">Answer</div>
+              <div class="ansrow">
+                <input inputmode="numeric" type="number" step="1" placeholder="Week number" class="answerInput" />
+                <span class="unit">week</span>
+                <button class="btn secondary btnCheck" type="button">Check</button>
+              </div>
+              <div class="result">
+                <div class="badge"></div>
+                <div class="answerline"></div>
+                <div class="explain"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q15a -->
+        <section class="q" data-qid="Q15a" data-answer="24" data-tol="0">
+          <div class="qhead">
+            <div class="qtitle">
+              <div class="qid">Q15 (a)</div>
+              <p class="prompt">
+                Martin has bricks that are <b>12 cm</b> long, <b>6 cm</b> high, and <b>6 cm</b> deep.
+                He builds the shown tower using <b>five bricks</b>.
+                <br/>How tall is the tower?
+              </p>
+            </div>
+            <div class="meta">
+              <span class="tag">3D orientation</span>
+              <span class="tag">Heights add</span>
+            </div>
+          </div>
+
+          <div class="work">
+            <div class="diagram">
+              <div class="cap">Key observation</div>
+              <ul class="list">
+                <li>Horizontal bricks contribute their <b>height = 6 cm</b>.</li>
+                <li>The two “upright” bricks are rotated so their <b>length (12 cm)</b> is vertical.</li>
+                <li>The middle horizontal brick sits across the upright bricks but does <b>not</b> increase the overall height beyond the uprights.</li>
+              </ul>
+            </div>
+
+            <div class="diagram">
+              <div class="cap">Answer</div>
+              <div class="ansrow">
+                <input inputmode="numeric" type="number" step="1" placeholder="Your answer" class="answerInput" />
+                <span class="unit">cm</span>
+                <button class="btn secondary btnCheck" type="button">Check</button>
+              </div>
+              <div class="result">
+                <div class="badge"></div>
+                <div class="answerline"></div>
+                <div class="explain"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q15b -->
+        <section class="q" data-qid="Q15b" data-answer="11" data-tol="0">
+          <div class="qhead">
+            <div class="qtitle">
+              <div class="qid">Q15 (b)</div>
+              <p class="prompt">
+                Each brick is <b>12 cm</b> long. Martin makes a line of bricks <b>132 cm</b> long.
+                <br/>How many bricks does he use?
+              </p>
+            </div>
+            <div class="meta">
+              <span class="tag">Division</span>
+              <span class="tag">132 ÷ 12</span>
+            </div>
+          </div>
+
+          <div class="work">
+            <div class="diagram">
+              <div class="cap">Tip</div>
+              <p class="small" style="margin:0">
+                A “line” implies the bricks are end-to-end, so total length = (number of bricks) × 12 cm.
+              </p>
+            </div>
+
+            <div class="diagram">
+              <div class="cap">Answer</div>
+              <div class="ansrow">
+                <input inputmode="numeric" type="number" step="1" placeholder="Number of bricks" class="answerInput" />
+                <button class="btn secondary btnCheck" type="button">Check</button>
+              </div>
+              <div class="result">
+                <div class="badge"></div>
+                <div class="answerline"></div>
+                <div class="explain"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q16a -->
+        <section class="q" data-qid="Q16a" data-answer="43" data-tol="0">
+          <div class="qhead">
+            <div class="qtitle">
+              <div class="qid">Q16 (a)</div>
+              <p class="prompt">
+                Seb has a box of <b>120</b> cubes. He uses some cubes to build a tower.
+                <b>77</b> cubes are left over.
+                <br/>How many cubes has he used?
+              </p>
+            </div>
+            <div class="meta">
+              <span class="tag">Subtraction</span>
+              <span class="tag">Part–whole</span>
+            </div>
+          </div>
+
+          <div class="work">
+            <div class="diagram">
+              <div class="cap">Model</div>
+              <p class="small" style="margin:0">
+                Total = used + left over, so used = total − left over.
+              </p>
+            </div>
+
+            <div class="diagram">
+              <div class="cap">Answer</div>
+              <div class="ansrow">
+                <input inputmode="numeric" type="number" step="1" placeholder="Cubes used" class="answerInput" />
+                <button class="btn secondary btnCheck" type="button">Check</button>
+              </div>
+              <div class="result">
+                <div class="badge"></div>
+                <div class="answerline"></div>
+                <div class="explain"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q16b -->
+        <section class="q" data-qid="Q16b" data-answer="24" data-tol="0">
+          <div class="qhead">
+            <div class="qtitle">
+              <div class="qid">Q16 (b)</div>
+              <p class="prompt">
+                Seb has <b>77</b> cubes left over. He builds two more towers:
+                one uses <b>18</b> cubes and the other uses <b>35</b> cubes.
+                <br/>How many of his 77 cubes has he got left now?
+              </p>
+            </div>
+            <div class="meta">
+              <span class="tag">Two-step</span>
+              <span class="tag">18 + 35 then subtract</span>
+            </div>
+          </div>
+
+          <div class="work">
+            <div class="diagram">
+              <div class="cap">Plan</div>
+              <ol class="list">
+                <li>Add cubes used in the two new towers.</li>
+                <li>Subtract that total from 77.</li>
+              </ol>
+            </div>
+
+            <div class="diagram">
+              <div class="cap">Answer</div>
+              <div class="ansrow">
+                <input inputmode="numeric" type="number" step="1" placeholder="Cubes left" class="answerInput" />
+                <button class="btn secondary btnCheck" type="button">Check</button>
+              </div>
+              <div class="result">
+                <div class="badge"></div>
+                <div class="answerline"></div>
+                <div class="explain"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <aside class="card side" aria-label="summary">
+        <h2>Score & Strategy</h2>
+        <p>Mark as you go, or check everything at once. Explanations highlight the common exam traps.</p>
+
+        <div class="scorebox">
+          <div class="score" id="bigScore">0 <small>/ 7</small></div>
+          <div class="hint" id="bigHint">
+            Aim for (1) correct operation, (2) correct unit, (3) correct interpretation of the diagram/table.
+          </div>
+          <div class="divider"></div>
+          <div class="hint">
+            <b>Common pitfalls</b>
+            <ul class="list">
+              <li>Mixing up length vs width (Q13).</li>
+              <li>Using single-week values instead of a running total (Q14).</li>
+              <li>Adding all bricks’ heights even when some are “in the middle” (Q15a).</li>
+              <li>Forgetting to add 18 and 35 before subtracting from 77 (Q16b).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footerrow">
+          <button class="btn secondary" id="btnReveal" type="button">Reveal all answers</button>
+          <button class="btn secondary" id="btnHide" type="button">Hide feedback</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const EXPLAINS = {
+      Q13: [
+        "Work it out like this:",
+        "• One pool length = 25 m, so David swims 5 × 25 = 125 m.",
+        "• One pool width = 10 m, so Rosie swims 12 × 10 = 120 m.",
+        "• Difference = 125 − 120 = 5 m.",
+        "",
+        "Why this works:",
+        "You convert ‘lengths’ and ‘widths’ into metres using multiplication, then compare using subtraction."
+      ].join("\n"),
+
+      Q14a: [
+        "Step-by-step running total (target = half of £40 = £20):",
+        "Week 1: 5  → total 5",
+        "Week 2: +4 → total 9",
+        "Week 3: +2 → total 11",
+        "Week 4: +4 → total 15",
+        "Week 5: +3 → total 18",
+        "Week 6: +4 → total 22  ✅ first time reaching/exceeding £20",
+        "",
+        "Answer is week 6 because the running total first becomes ≥ £20 in week 6."
+      ].join("\n"),
+
+      Q14b: [
+        "Add £1 each week, then form a running total until you first reach £40.",
+        "New weekly amounts: 6, 5, 3, 5, 4, 5, 7, 5, 4, 6",
+        "",
+        "Running total:",
+        "Week 1: 6  → 6",
+        "Week 2: +5 → 11",
+        "Week 3: +3 → 14",
+        "Week 4: +5 → 19",
+        "Week 5: +4 → 23",
+        "Week 6: +5 → 28",
+        "Week 7: +7 → 35",
+        "Week 8: +5 → 40 ✅ first time reaching £40",
+        "",
+        "So he would hit the £40 target in week 8."
+      ].join("\n"),
+
+      Q15a: [
+        "Interpret the tower using brick dimensions 12 (long) × 6 (high) × 6 (deep):",
+        "• The bottom brick is horizontal → contributes 6 cm in height.",
+        "• The two central bricks are upright (rotated) → their 12 cm side is vertical, so the vertical span between bottom and top bricks is 12 cm.",
+        "• The top brick is horizontal → contributes another 6 cm.",
+        "• The middle horizontal brick sits across the upright bricks but does not increase the overall height beyond the uprights.",
+        "",
+        "Total height = 6 + 12 + 6 = 24 cm."
+      ].join("\n"),
+
+      Q15b: [
+        "A straight line of bricks means end-to-end lengths add.",
+        "Total length = (number of bricks) × 12 cm.",
+        "So number of bricks = 132 ÷ 12 = 11.",
+        "",
+        "Check: 11 × 12 = 132 ✅"
+      ].join("\n"),
+
+      Q16a: [
+        "Total cubes = used + left over.",
+        "So used = 120 − 77 = 43.",
+        "",
+        "Check: 43 used + 77 left = 120 total ✅"
+      ].join("\n"),
+
+      Q16b: [
+        "He starts this part with 77 cubes left over.",
+        "Two new towers use 18 and 35 cubes:",
+        "• Total used now = 18 + 35 = 53.",
+        "• Remaining = 77 − 53 = 24.",
+        "",
+        "So he has 24 cubes left."
+      ].join("\n"),
+    };
+
+    const quizEl = document.getElementById("quiz");
+    const btnMarkAll = document.getElementById("btnMarkAll");
+    const btnReset = document.getElementById("btnReset");
+    const btnReveal = document.getElementById("btnReveal");
+    const btnHide = document.getElementById("btnHide");
+    const bar = document.getElementById("bar");
+    const progressText = document.getElementById("progressText");
+    const scoreText = document.getElementById("scoreText");
+    const bigScore = document.getElementById("bigScore");
+
+    const questions = Array.from(document.querySelectorAll(".q"));
+
+    function normNum(v){
+      if (v === null || v === undefined) return NaN;
+      const s = String(v).trim().replace(/,/g,"");
+      if (s === "") return NaN;
+      return Number(s);
+    }
+
+    function markQuestion(q, revealEvenIfBlank=false){
+      const ans = Number(q.dataset.answer);
+      const tol = Number(q.dataset.tol || 0);
+      const qid = q.dataset.qid;
+
+      const input = q.querySelector(".answerInput");
+      const res = q.querySelector(".result");
+      const badge = q.querySelector(".badge");
+      const answerline = q.querySelector(".answerline");
+      const explain = q.querySelector(".explain");
+
+      const user = normNum(input.value);
+
+      // If blank and not forced reveal: show a gentle nudge, do not score
+      if (Number.isNaN(user) && !revealEvenIfBlank){
+        res.classList.add("show");
+        badge.className = "badge warn";
+        badge.textContent = "Not marked (blank)";
+        answerline.innerHTML = `<b>Correct answer:</b> ${ans}`;
+        explain.textContent = EXPLAINS[qid] || "Method not available.";
+        q.dataset.checked = "1";
+        q.dataset.correct = "0";
+        return {checked:true, correct:false, scored:false};
+      }
+
+      const correct = !Number.isNaN(user) && (Math.abs(user - ans) <= tol);
+
+      res.classList.add("show");
+      badge.className = "badge " + (correct ? "good" : "bad");
+      badge.textContent = correct ? "Correct" : "Incorrect";
+      answerline.innerHTML = `<b>Correct answer:</b> ${ans} &nbsp;&nbsp; <span style="color:rgba(255,255,255,.55)">|</span> &nbsp;&nbsp; <b>Your answer:</b> ${Number.isNaN(user) ? "—" : user}`;
+      explain.textContent = EXPLAINS[qid] || "Method not available.";
+
+      q.dataset.checked = "1";
+      q.dataset.correct = correct ? "1" : "0";
+      return {checked:true, correct, scored:true};
+    }
+
+    function updateTotals(){
+      let checked = 0;
+      let score = 0;
+      questions.forEach(q=>{
+        if (q.dataset.checked === "1") checked++;
+        if (q.dataset.correct === "1") score++;
+      });
+      progressText.textContent = `${checked} / ${questions.length} checked`;
+      scoreText.textContent = `Score: ${score} / ${questions.length}`;
+      bigScore.innerHTML = `${score} <small>/ ${questions.length}</small>`;
+      bar.style.width = `${(checked / questions.length) * 100}%`;
+    }
+
+    // Per-question check buttons
+    document.querySelectorAll(".btnCheck").forEach(btn=>{
+      btn.addEventListener("click", e=>{
+        const q = e.target.closest(".q");
+        markQuestion(q);
+        updateTotals();
+      });
+    });
+
+    // Check all
+    btnMarkAll.addEventListener("click", ()=>{
+      questions.forEach(q=> markQuestion(q));
+      updateTotals();
+    });
+
+    // Reveal all answers (even if blank)
+    btnReveal.addEventListener("click", ()=>{
+      questions.forEach(q=> markQuestion(q, true));
+      updateTotals();
+    });
+
+    // Hide feedback
+    btnHide.addEventListener("click", ()=>{
+      document.querySelectorAll(".result").forEach(r=> r.classList.remove("show"));
+    });
+
+    // Reset
+    btnReset.addEventListener("click", ()=>{
+      questions.forEach(q=>{
+        q.dataset.checked = "0";
+        q.dataset.correct = "0";
+        const input = q.querySelector(".answerInput");
+        input.value = "";
+        q.querySelector(".result").classList.remove("show");
+      });
+      updateTotals();
+    });
+
+    // Init
+    updateTotals();
+  </script>
+</body>
+</html>

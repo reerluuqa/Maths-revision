@@ -1,0 +1,592 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAT Maths Revision Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            background: #e5e7eb;
+            height: 8px;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #10B981, #06B6D4);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .quiz-content {
+            padding: 30px;
+        }
+
+        /* Helper class to hide questions */
+        .hidden {
+            display: none !important;
+        }
+
+        .question-card {
+            background: #f9fafb;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4F46E5;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: #4F46E5;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .question-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #4b5563;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Container for buttons */
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .submit-btn, .next-btn {
+            background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%); /* Green for next */
+            display: none; /* Hidden by default */
+        }
+
+        .submit-btn:hover, .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .feedback-section {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-correct {
+            background: #d1fae5;
+            border-left: 5px solid #10B981;
+        }
+
+        .feedback-incorrect {
+            background: #fee2e2;
+            border-left: 5px solid #EF4444;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .feedback-correct .feedback-title {
+            color: #065f46;
+        }
+
+        .feedback-incorrect .feedback-title {
+            color: #991b1b;
+        }
+
+        .solution-steps {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .solution-step {
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .solution-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            background: #4F46E5;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 10px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .score-display {
+            font-size: 3em;
+            font-weight: 700;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .feedback-message {
+            font-size: 1.2em;
+            color: #4b5563;
+            margin-bottom: 30px;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 SAT Maths Revision Quiz</h1>
+            <p>Practice arithmetic & problem solving questions</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="quiz-content" id="quizContent">
+            <!-- Question 1 -->
+            <div class="question-card" data-question="1">
+                <div class="question-header">
+                    <div class="question-number">1</div>
+                    <div class="question-title">Balloon Packets</div>
+                </div>
+                <div class="question-text">
+                    There are 5 balloons in a packet. There are 18 packets in a box. 
+                    Khalid needs 65 balloons. How many packets does he need to buy?
+                </div>
+                <input type="number" class="input-field" id="answer1" placeholder="Enter your answer">
+                <div class="btn-container">
+                    <button class="submit-btn" onclick="checkAnswer(1, 13)">Check Answer</button>
+                    <button class="next-btn" onclick="nextQuestion(1)">Next Question ➜</button>
+                </div>
+                <div class="feedback-section" id="feedback1"></div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-card hidden" data-question="2">
+                <div class="question-header">
+                    <div class="question-number">2</div>
+                    <div class="question-title">Plant Trays</div>
+                </div>
+                <div class="question-text">
+                    A garden center sells plants in trays of 20. 
+                    Muhammad wants 240 plants for his garden. 
+                    How many trays does he need to buy?
+                </div>
+                <input type="number" class="input-field" id="answer2" placeholder="Enter your answer">
+                <div class="btn-container">
+                    <button class="submit-btn" onclick="checkAnswer(2, 12)">Check Answer</button>
+                    <button class="next-btn" onclick="nextQuestion(2)">Next Question ➜</button>
+                </div>
+                <div class="feedback-section" id="feedback2"></div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question-card hidden" data-question="3">
+                <div class="question-header">
+                    <div class="question-number">3</div>
+                    <div class="question-title">Paper Sheets</div>
+                </div>
+                <div class="question-text">
+                    A pack of paper has 150 sheets. 
+                    4 children each take 7 sheets. 
+                    How many sheets of paper are left in the pack?
+                </div>
+                <input type="number" class="input-field" id="answer3" placeholder="Enter your answer">
+                <div class="btn-container">
+                    <button class="submit-btn" onclick="checkAnswer(3, 122)">Check Answer</button>
+                    <button class="next-btn" onclick="nextQuestion(3)">Next Question ➜</button>
+                </div>
+                <div class="feedback-section" id="feedback3"></div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question-card hidden" data-question="4">
+                <div class="question-header">
+                    <div class="question-number">4</div>
+                    <div class="question-title">Trading Cards</div>
+                </div>
+                <div class="question-text">
+                    Hinda's favorite cards are sold in packs of 6. 
+                    Altogether she has 30 cards. 
+                    How many packs did she buy?
+                </div>
+                <input type="number" class="input-field" id="answer4" placeholder="Enter your answer">
+                <div class="btn-container">
+                    <button class="submit-btn" onclick="checkAnswer(4, 5)">Check Answer</button>
+                    <button class="next-btn" onclick="nextQuestion(4)">Next Question ➜</button>
+                </div>
+                <div class="feedback-section" id="feedback4"></div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question-card hidden" data-question="5">
+                <div class="question-header">
+                    <div class="question-number">5</div>
+                    <div class="question-title">Toy Car Inventory</div>
+                </div>
+                <div class="question-text">
+                    A shop had 15,250 toy cars in stock at the start of June. 
+                    During June, 9,473 toy cars were sold. 
+                    How many toy cars were left in the shop at the end of June?
+                </div>
+                <input type="number" class="input-field" id="answer5" placeholder="Enter your answer">
+                <div class="btn-container">
+                    <button class="submit-btn" onclick="checkAnswer(5, 5777)">Check Answer</button>
+                    <button class="next-btn" onclick="nextQuestion(5)">Next Question ➜</button>
+                </div>
+                <div class="feedback-section" id="feedback5"></div>
+            </div>
+
+            <!-- Question 6 (Corrected) -->
+            <div class="question-card hidden" data-question="6">
+                <div class="question-header">
+                    <div class="question-number">6</div>
+                    <div class="question-title">Plastic Cups</div>
+                </div>
+                <div class="question-text">
+                    Plastic cups are sold in packs of 8. 
+                    Maysa needs 27 cups for a party. 
+                    She buys <strong>4 packs</strong>. How many cups will she have <strong>left over</strong>?
+                </div>
+                <input type="number" class="input-field" id="answer6" placeholder="Enter your answer">
+                <div class="btn-container">
+                    <button class="submit-btn" onclick="checkAnswer(6, 5)">Check Answer</button>
+                    <button class="next-btn" onclick="nextQuestion(6)">See Results ➜</button>
+                </div>
+                <div class="feedback-section" id="feedback6"></div>
+            </div>
+        </div>
+
+        <div class="results-screen" id="resultsScreen">
+            <h2>Quiz Complete! 🎉</h2>
+            <div class="score-display" id="scoreDisplay">0/6</div>
+            <div class="feedback-message" id="feedbackMessage"></div>
+            <button class="reset-btn" onclick="resetQuiz()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let answeredQuestions = 0;
+        const totalQuestions = 6;
+
+        // Detailed solutions for each question
+        const solutions = {
+            1: [
+                "Step 1: Identify what we need to find - number of packets for 65 balloons.",
+                "Step 2: Note that each packet contains 5 balloons.",
+                "Step 3: Divide total balloons needed by balloons per packet: 65 ÷ 5 = 13.",
+                "Step 4: Check: 13 packets × 5 balloons = 65 balloons. ✓"
+            ],
+            2: [
+                "Step 1: Identify what we need - number of trays for 240 plants.",
+                "Step 2: Note that each tray has 20 plants.",
+                "Step 3: Divide total plants needed by plants per tray: 240 ÷ 20 = 12.",
+                "Step 4: Check: 12 trays × 20 plants = 240 plants. ✓"
+            ],
+            3: [
+                "Step 1: Calculate total sheets taken: 4 children × 7 sheets each = 28 sheets.",
+                "Step 2: Subtract from original amount: 150 - 28 = 122 sheets.",
+                "Step 3: Check: 150 - 28 = 122. ✓"
+            ],
+            4: [
+                "Step 1: Identify what we need - number of packs for 30 cards.",
+                "Step 2: Note that each pack contains 6 cards.",
+                "Step 3: Divide total cards by cards per pack: 30 ÷ 6 = 5.",
+                "Step 4: Check: 5 packs × 6 cards = 30 cards. ✓"
+            ],
+            5: [
+                "Step 1: Identify starting amount: 15,250 toy cars.",
+                "Step 2: Identify amount sold: 9,473 toy cars.",
+                "Step 3: Subtract: 15,250 - 9,473 = 5,777.",
+                "Step 4: Check by addition: 5,777 + 9,473 = 15,250. ✓"
+            ],
+            6: [
+                "Step 1: Calculate total cups bought: 4 packs × 8 cups = 32 cups.",
+                "Step 2: Calculate leftovers: Total cups (32) - Cups needed (27).",
+                "Step 3: 32 - 27 = 5.",
+                "Step 4: Maysa has 5 cups left over."
+            ]
+        };
+
+        function checkAnswer(questionNum, correctAnswer) {
+            const inputElement = document.getElementById(`answer${questionNum}`);
+            const userAnswer = parseInt(inputElement.value);
+            const feedbackDiv = document.getElementById(`feedback${questionNum}`);
+            const questionCard = document.querySelector(`[data-question="${questionNum}"]`);
+            
+            // Validate input
+            if (isNaN(userAnswer)) {
+                alert("Please enter a number before checking.");
+                return;
+            }
+
+            // Mark as answered if not already
+            if (!questionCard.classList.contains('answered')) {
+                answeredQuestions++;
+                questionCard.classList.add('answered');
+            }
+
+            const isCorrect = userAnswer === correctAnswer;
+            
+            if (isCorrect && !questionCard.classList.contains('correct')) {
+                questionCard.classList.add('correct');
+                score++;
+            } else if (!isCorrect) {
+                questionCard.classList.add('incorrect');
+            }
+
+            // Generate HTML for solution steps
+            const solutionHTML = solutions[questionNum].map((step, index) => `
+                <div class="solution-step">
+                    <div class="step-number">${index + 1}</div>
+                    <div>${step}</div>
+                </div>
+            `).join('');
+
+            // Show feedback
+            feedbackDiv.innerHTML = isCorrect ? `
+                <div class="feedback-correct">
+                    <div class="feedback-title">✅ Excellent!</div>
+                    <p>That's the correct answer! Here's how to work it out:</p>
+                    <div class="solution-steps">
+                        ${solutionHTML}
+                    </div>
+                </div>
+            ` : `
+                <div class="feedback-incorrect">
+                    <div class="feedback-title">❌ Try Again!</div>
+                    <p>The correct answer is <strong>${correctAnswer}</strong>. Review the solution below carefully:</p>
+                    <div class="solution-steps">
+                        ${solutionHTML}
+                    </div>
+                </div>
+            `;
+
+            feedbackDiv.style.display = 'block';
+            updateProgress();
+
+            // UI Changes: Disable input, Hide Check button, Show Next button
+            inputElement.disabled = true;
+            questionCard.querySelector('.submit-btn').style.display = 'none';
+            questionCard.querySelector('.next-btn').style.display = 'inline-block';
+        }
+
+        function nextQuestion(currentNum) {
+            const currentCard = document.querySelector(`[data-question="${currentNum}"]`);
+            const nextCard = document.querySelector(`[data-question="${currentNum + 1}"]`);
+            
+            currentCard.classList.add('hidden');
+
+            if (nextCard) {
+                nextCard.classList.remove('hidden');
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showResults() {
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+            document.getElementById('scoreDisplay').textContent = `${score}/${totalQuestions}`;
+
+            let message = '';
+            // FIX: Escaped the single quote in "you're"
+            if (score === totalQuestions) {
+                message = '🏆 Perfect score! Outstanding work - you\'re SAT ready!';
+            } else if (score >= totalQuestions * 0.8) {
+                message = '🌟 Great job! Just a little more practice needed.';
+            } else if (score >= totalQuestions * 0.6) {
+                message = '👍 Good effort! Review the solutions and try again.';
+            } else {
+                message = '📖 Keep practicing! Focus on understanding the steps in each solution.';
+            }
+            document.getElementById('feedbackMessage').textContent = message;
+        }
+
+        function resetQuiz() {
+            score = 0;
+            answeredQuestions = 0;
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('quizContent').style.display = 'block';
+            
+            // Reset all questions
+            for (let i = 1; i <= totalQuestions; i++) {
+                const input = document.getElementById(`answer${i}`);
+                const feedback = document.getElementById(`feedback${i}`);
+                const card = document.querySelector(`[data-question="${i}"]`);
+                
+                input.value = '';
+                input.disabled = false;
+                feedback.style.display = 'none';
+                
+                card.classList.remove('answered', 'correct', 'incorrect');
+                card.querySelector('.submit-btn').style.display = 'inline-block';
+                card.querySelector('.next-btn').style.display = 'none';
+                
+                // Hide all questions except the first one
+                if (i === 1) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Revision Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 100, 0.08);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .quiz-container {
+            padding: 30px;
+        }
+        
+        .question-card {
+            background-color: #f8faff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #4361ee;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 100, 0.1);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-number {
+            background-color: #4361ee;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .answer-section {
+            margin-top: 20px;
+        }
+        
+        input, select {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 300px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #4361ee;
+            outline: none;
+        }
+        
+        .card-images {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            width: 60px;
+            height: 80px;
+            background-color: #3a0ca3;
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .button {
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 15px;
+        }
+        
+        .button:hover {
+            background-color: #3a0ca3;
+            transform: translateY(-2px);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            display: none;
+        }
+        
+        .correct {
+            background-color: #e7f7ef;
+            border-left: 5px solid #4cc9a0;
+        }
+        
+        .incorrect {
+            background-color: #fde8e8;
+            border-left: 5px solid #f87171;
+        }
+        
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feedback-content {
+            margin-top: 10px;
+        }
+        
+        .results-container {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+        
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #3a0ca3;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .hint {
+            background-color: #eef2ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            display: none;
+        }
+        
+        .hint-title {
+            font-weight: bold;
+            color: #4361ee;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .show-hint {
+            background-color: transparent;
+            color: #4361ee;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 5px 0;
+            margin-top: 10px;
+        }
+        
+        .show-hint:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .quiz-container {
+                padding: 20px;
+            }
+            
+            .question-card {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Maths Revision Quiz</h1>
+            <p class="subtitle">Practice these 8 problems to prepare for your upcoming exam. Each question includes detailed feedback to help you learn.</p>
+        </header>
+        
+        <div class="quiz-container" id="quiz-container">
+            <!-- Questions will be dynamically inserted here -->
+        </div>
+        
+        <div class="results-container" id="results-container">
+            <h2>Quiz Complete!</h2>
+            <p>You scored:</p>
+            <div class="score-display" id="score-display">0/8</div>
+            <p id="result-message"></p>
+            <button class="button" id="restart-button"><i class="fas fa-redo"></i> Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                id: 1,
+                question: "Frank has these digit cards: 8, 2, 6, 4. He uses three of the cards to make a three-digit number. Each card can be used only once. Frank puts the 8 in the tens place. Write the lowest three-digit number that Frank could make.",
+                type: "number",
+                answer: "286",
+                explanation: "Since 8 must be in the tens place, we need to find the smallest possible number. The hundreds digit should be the smallest available digit (2 or 4 or 6). The smallest is 2. The units digit should be the next smallest available digit (4 or 6). The smallest is 6. So the number is 2 (hundreds), 8 (tens), 6 (units) = 286.",
+                hint: "Remember that 8 must be in the tens place. To get the smallest number, put the smallest available digit in the hundreds place, and the next smallest in the units place."
+            },
+            {
+                id: 2,
+                question: "The temperature in a freezer is -30°C. The temperature increases by 12°C. What is the new temperature?",
+                type: "number",
+                answer: "-18",
+                explanation: "Starting at -30°C and increasing by 12°C means we add 12 to -30. -30 + 12 = -18. So the new temperature is -18°C.",
+                hint: "When adding a positive number to a negative number, you're moving up the number line. Think: -30 + 10 = -20, then add 2 more to get -18."
+            },
+            {
+                id: 3,
+                question: "Kathryn buys milk (£1.10) and apple juice (£1.75) from a shop. She pays with a £10 note. How much change does Kathryn get?",
+                type: "number",
+                answer: "7.15",
+                explanation: "First, add the cost of milk and apple juice: £1.10 + £1.75 = £2.85. Then subtract from £10: £10 - £2.85 = £7.15. So Kathryn gets £7.15 change.",
+                hint: "Add the two prices together first, then subtract the total from £10. Remember to line up the decimal points when adding."
+            },
+            {
+                id: 4,
+                question: "The numbers in this sequence increase by the same amount each time. Write the missing numbers: -16, __, -4, 2, __, 14",
+                type: "sequence",
+                answer1: "-10",
+                answer2: "8",
+                explanation: "First, find the difference between -4 and 2, which is 6. Since the sequence increases by the same amount, the common difference is 6. So: -16 + 6 = -10 (first missing number), and 2 + 6 = 8 (second missing number), and 8 + 6 = 14 (which matches the last number). The complete sequence is -16, -10, -4, 2, 8, 14.",
+                hint: "Find the difference between two known consecutive numbers (like -4 and 2). That difference is constant throughout the sequence."
+            },
+            {
+                id: 5,
+                question: "The diameter of Venus is 12,104 kilometres. What is this diameter to the nearest ten kilometres?",
+                type: "number",
+                answer: "12100",
+                explanation: "To round to the nearest ten, look at the units digit (4). Since 4 is less than 5, we round down. So 12,104 becomes 12,100 km.",
+                hint: "When rounding to the nearest ten, look at the units digit. If it's 0-4, round down. If it's 5-9, round up."
+            },
+            {
+                id: 6,
+                question: "Alixe buys 1 litre of apple juice for £1.15. She pays with a £5 note. How much change does Alixe get?",
+                type: "number",
+                answer: "3.85",
+                explanation: "Subtract the cost from £5: £5 - £1.15 = £3.85. So Alixe gets £3.85 change.",
+                hint: "£5 - £1.15 can be calculated as £5 - £1 = £4, then £4 - £0.15 = £3.85."
+            },
+            {
+                id: 7,
+                question: "Noor thinks of a number. She says: 'I multiply by 3, I add 12, I divide by 2, My answer is 15.' What number did Noor think of?",
+                type: "number",
+                answer: "6",
+                explanation: "Work backwards from the answer 15. The last step was 'divide by 2' to get 15, so before dividing it was 15 × 2 = 30. Before that, 'add 12' gave 30, so before adding it was 30 - 12 = 18. The first step was 'multiply by 3' to get 18, so the original number was 18 ÷ 3 = 6.",
+                hint: "Work backwards from the answer, reversing each operation: instead of dividing by 2, multiply by 2; instead of adding 12, subtract 12; instead of multiplying by 3, divide by 3."
+            },
+            {
+                id: 8,
+                question: "A box holds 20 packets of envelopes. Each packet holds 35 envelopes. How many envelopes does the box hold?",
+                type: "number",
+                answer: "700",
+                explanation: "Multiply the number of packets by envelopes per packet: 20 × 35 = 700 envelopes. Alternatively, 20 × 35 = 20 × 30 + 20 × 5 = 600 + 100 = 700.",
+                hint: "This is a multiplication problem: total envelopes = number of packets × envelopes per packet."
+            }
+        ];
+
+        // Initialize the quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            const quizContainer = document.getElementById('quiz-container');
+            const resultsContainer = document.getElementById('results-container');
+            const scoreDisplay = document.getElementById('score-display');
+            const resultMessage = document.getElementById('result-message');
+            const restartButton = document.getElementById('restart-button');
+            
+            let userAnswers = new Array(quizData.length).fill('');
+            let score = 0;
+            
+            // Render all questions
+            quizData.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${index}`;
+                
+                let inputField = '';
+                if (question.type === 'sequence') {
+                    inputField = `
+                        <div class="answer-section">
+                            <p>First missing number:</p>
+                            <input type="number" id="input-${index}-1" placeholder="Enter first number" data-question-id="${index}" data-part="1">
+                            <p style="margin-top: 15px;">Second missing number:</p>
+                            <input type="number" id="input-${index}-2" placeholder="Enter second number" data-question-id="${index}" data-part="2">
+                        </div>
+                    `;
+                } else {
+                    inputField = `
+                        <div class="answer-section">
+                            ${question.id === 1 ? '<div class="card-images"><div class="card">8</div><div class="card">2</div><div class="card">6</div><div class="card">4</div></div>' : ''}
+                            <input type="${question.type === 'number' ? 'number' : 'text'}" id="input-${index}" placeholder="Enter your answer" data-question-id="${index}">
+                        </div>
+                    `;
+                }
+                
+                questionCard.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-number">${question.id}</div>
+                    </div>
+                    <div class="question-text">${question.question}</div>
+                    ${inputField}
+                    <button class="button check-answer" data-question-id="${index}"><i class="fas fa-check"></i> Check Answer</button>
+                    <button class="show-hint" data-question-id="${index}"><i class="fas fa-lightbulb"></i> Show Hint</button>
+                    <div class="hint" id="hint-${index}">
+                        <div class="hint-title"><i class="fas fa-lightbulb"></i> Hint</div>
+                        ${question.hint}
+                    </div>
+                    <div class="feedback" id="feedback-${index}">
+                        <div class="feedback-title"></div>
+                        <div class="feedback-content"></div>
+                    </div>
+                `;
+                
+                quizContainer.appendChild(questionCard);
+            });
+            
+            // Add submit button
+            const submitContainer = document.createElement('div');
+            submitContainer.className = 'controls';
+            submitContainer.innerHTML = `
+                <button class="button" id="submit-quiz"><i class="fas fa-paper-plane"></i> Submit All Answers</button>
+                <button class="button" id="show-all-hints"><i class="fas fa-lightbulb"></i> Show All Hints</button>
+            `;
+            quizContainer.appendChild(submitContainer);
+            
+            // Add event listeners for checking answers
+            document.querySelectorAll('.check-answer').forEach(button => {
+                button.addEventListener('click', function() {
+                    const questionId = parseInt(this.getAttribute('data-question-id'));
+                    checkAnswer(questionId);
+                });
+            });
+            
+            // Add event listeners for showing hints
+            document.querySelectorAll('.show-hint').forEach(button => {
+                button.addEventListener('click', function() {
+                    const questionId = parseInt(this.getAttribute('data-question-id'));
+                    const hintElement = document.getElementById(`hint-${questionId}`);
+                    hintElement.style.display = 'block';
+                    this.style.display = 'none';
+                });
+            });
+            
+            // Submit quiz button
+            document.getElementById('submit-quiz').addEventListener('click', function() {
+                // Check all answers
+                for (let i = 0; i < quizData.length; i++) {
+                    checkAnswer(i);
+                }
+                
+                // Calculate score
+                score = 0;
+                quizData.forEach((question, index) => {
+                    if (question.type === 'sequence') {
+                        if (userAnswers[index].answer1 === question.answer1 && 
+                            userAnswers[index].answer2 === question.answer2) {
+                            score++;
+                        }
+                    } else {
+                        if (userAnswers[index] === question.answer) {
+                            score++;
+                        }
+                    }
+                });
+                
+                // Show results
+                quizContainer.style.display = 'none';
+                resultsContainer.style.display = 'block';
+                scoreDisplay.textContent = `${score}/${quizData.length}`;
+                
+                // Add encouraging message
+                if (score === quizData.length) {
+                    resultMessage.textContent = "Perfect score! You're ready for the exam!";
+                    resultMessage.style.color = "#4cc9a0";
+                } else if (score >= quizData.length * 0.7) {
+                    resultMessage.textContent = "Well done! Good understanding but review the incorrect answers.";
+                    resultMessage.style.color = "#4361ee";
+                } else if (score >= quizData.length * 0.5) {
+                    resultMessage.textContent = "Keep practicing! Review the feedback for each question.";
+                    resultMessage.style.color = "#f8961e";
+                } else {
+                    resultMessage.textContent = "Take time to study the feedback and try again.";
+                    resultMessage.style.color = "#f87171";
+                }
+            });
+            
+            // Show all hints button
+            document.getElementById('show-all-hints').addEventListener('click', function() {
+                document.querySelectorAll('.hint').forEach(hint => {
+                    hint.style.display = 'block';
+                });
+                document.querySelectorAll('.show-hint').forEach(button => {
+                    button.style.display = 'none';
+                });
+            });
+            
+            // Restart quiz button
+            restartButton.addEventListener('click', function() {
+                // Reset all answers and feedback
+                userAnswers = new Array(quizData.length).fill('');
+                quizContainer.style.display = 'block';
+                resultsContainer.style.display = 'none';
+                
+                // Clear all inputs
+                document.querySelectorAll('input').forEach(input => {
+                    input.value = '';
+                });
+                
+                // Hide all feedback and hints
+                document.querySelectorAll('.feedback').forEach(feedback => {
+                    feedback.style.display = 'none';
+                });
+                
+                document.querySelectorAll('.hint').forEach(hint => {
+                    hint.style.display = 'none';
+                });
+                
+                document.querySelectorAll('.show-hint').forEach(button => {
+                    button.style.display = 'block';
+                });
+            });
+            
+            // Check answer function
+            function checkAnswer(questionId) {
+                const question = quizData[questionId];
+                const feedbackElement = document.getElementById(`feedback-${questionId}`);
+                const feedbackTitle = feedbackElement.querySelector('.feedback-title');
+                const feedbackContent = feedbackElement.querySelector('.feedback-content');
+                
+                let isCorrect = false;
+                
+                if (question.type === 'sequence') {
+                    const answer1 = document.getElementById(`input-${questionId}-1`).value.trim();
+                    const answer2 = document.getElementById(`input-${questionId}-2`).value.trim();
+                    
+                    userAnswers[questionId] = { answer1, answer2 };
+                    
+                    if (answer1 === question.answer1 && answer2 === question.answer2) {
+                        isCorrect = true;
+                    }
+                } else {
+                    const answer = document.getElementById(`input-${questionId}`).value.trim();
+                    userAnswers[questionId] = answer;
+                    
+                    if (answer === question.answer.toString()) {
+                        isCorrect = true;
+                    }
+                }
+                
+                // Show feedback
+                if (isCorrect) {
+                    feedbackElement.className = 'feedback correct';
+                    feedbackTitle.innerHTML = `<i class="fas fa-check-circle"></i> Correct!`;
+                } else {
+                    feedbackElement.className = 'feedback incorrect';
+                    feedbackTitle.innerHTML = `<i class="fas fa-times-circle"></i> Not quite right`;
+                }
+                
+                feedbackContent.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+                feedbackElement.style.display = 'block';
+                
+                // Scroll feedback into view
+                feedbackElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
+                return isCorrect;
+            }
+            
+            // Allow Enter key to check answer
+            document.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    const focusedElement = document.activeElement;
+                    if (focusedElement && focusedElement.tagName === 'INPUT') {
+                        const questionId = parseInt(focusedElement.getAttribute('data-question-id'));
+                        if (!isNaN(questionId)) {
+                            checkAnswer(questionId);
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

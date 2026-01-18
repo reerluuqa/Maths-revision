@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra Word Problem Challenge</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --background: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-secondary: #6b7280;
+            --success-bg: #d1fae5;
+            --success-text: #065f46;
+            --error-bg: #fee2e2;
+            --error-text: #991b1b;
+            --accent: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header & Progress */
+        .header {
+            padding: 20px 30px;
+            background: var(--primary);
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            background-color: rgba(255, 255, 255, 0.3);
+            height: 8px;
+            border-radius: 4px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 30px;
+            flex-grow: 1;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        /* Feedback Section */
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.4s ease;
+        }
+
+        .feedback.correct {
+            background-color: var(--success-bg);
+            border-left: 5px solid var(--success-text);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--error-bg);
+            border-left: 5px solid var(--error-text);
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .correct .feedback-title { color: var(--success-text); }
+        .incorrect .feedback-title { color: var(--error-text); }
+
+        .explanation {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-main);
+            margin-top: 10px;
+            background: rgba(255,255,255,0.5);
+            padding: 10px;
+            border-radius: 6px;
+        }
+        
+        .math-step {
+            display: block;
+            margin: 5px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 600;
+        }
+
+        /* Footer / Actions */
+        .footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Summary Screen */
+        .summary {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        .summary h2 { color: var(--primary); margin-bottom: 15px; }
+        .summary p { color: var(--text-secondary); margin-bottom: 25px; }
+        .restart-btn { background-color: var(--text-main); }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header" id="header">
+        <h1>Algebraic Word Problems</h1>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <!-- Quiz Content -->
+    <div class="content" id="quizContent">
+        <div class="question-text" id="questionText">
+            <!-- Question injected here -->
+        </div>
+
+        <div class="input-group">
+            <label for="userAnswer" id="inputLabel">Enter your answer (if multiple, separate with space or comma):</label>
+            <input type="text" id="userAnswer" placeholder="e.g. 12" autocomplete="off">
+        </div>
+
+        <div class="feedback" id="feedbackArea">
+            <div class="feedback-title" id="feedbackTitle"></div>
+            <div id="feedbackMessage"></div>
+            <div class="explanation" id="explanationText"></div>
+        </div>
+    </div>
+
+    <!-- Summary Content (Hidden initially) -->
+    <div class="summary" id="summaryContent">
+        <h2>Quiz Completed!</h2>
+        <p>You scored <strong id="finalScore">0</strong> out of <strong id="totalQuestions">0</strong>.</p>
+        <button class="restart-btn" onclick="location.reload()">Try Again</button>
+    </div>
+
+    <div class="footer" id="footer">
+        <button id="actionBtn">Check Answer</button>
+    </div>
+</div>
+
+<script>
+    // Data Structure
+    const questions = [
+        {
+            id: 1,
+            text: "Find the number such that when it is doubled and 11 added, the result is 27.",
+            answers: [8],
+            explanation: "Let the number be x.<br><span class='math-step'>2x + 11 = 27</span>Subtract 11 from both sides:<br><span class='math-step'>2x = 16</span>Divide by 2:<br><span class='math-step'>x = 8</span>"
+        },
+        {
+            id: 2,
+            text: "When a number is added to another which is 4 times as big, the result is 30. Find the first number.",
+            answers: [6],
+            explanation: "Let the first number be x. The second number is 4x.<br><span class='math-step'>x + 4x = 30</span>Combine like terms:<br><span class='math-step'>5x = 30</span>Divide by 5:<br><span class='math-step'>x = 6</span>"
+        },
+        {
+            id: 3,
+            text: "Two numbers differ by 5, and their sum is 19. Find the two numbers.",
+            answers: [7, 12],
+            explanation: "Let the numbers be x and y. <br><span class='math-step'>1) x + y = 19</span><span class='math-step'>2) x - y = 5</span>Add equations (1) and (2):<br><span class='math-step'>2x = 24 → x = 12</span>Substitute x back into (1):<br><span class='math-step'>12 + y = 19 → y = 7</span>"
+        },
+        {
+            id: 4,
+            text: "One boy has 7 marbles less than another, and they have 29 between them. How many has each?",
+            answers: [11, 18],
+            explanation: "Let one boy have x marbles. The other has x + 7.<br><span class='math-step'>x + (x + 7) = 29</span><span class='math-step'>2x + 7 = 29</span>Subtract 7:<br><span class='math-step'>2x = 22</span>Divide by 2:<br><span class='math-step'>x = 11</span>The other boy has 11 + 7 = 18."
+        },
+        {
+            id: 5,
+            text: "Ann and Susan share 21p so that Susan has twice as much as Ann. Find their shares.",
+            answers: [7, 14],
+            explanation: "Let Ann have x. Susan has 2x.<br><span class='math-step'>x + 2x = 21</span><span class='math-step'>3x = 21</span><span class='math-step'>x = 7</span>Ann has 7p, Susan has 14p."
+        },
+        {
+            id: 6,
+            text: "Tom needs 15 runs to complete his century, and he has scored 5 times as many runs as John. What is John’s score?",
+            answers: [17],
+            explanation: "A century is 100 runs. Tom needs 15 more, so Tom has scored:<br><span class='math-step'>100 - 15 = 85</span>Tom = 5 × John<br><span class='math-step'>85 = 5J</span>Divide by 5:<br><span class='math-step'>J = 17</span>"
+        },
+        {
+            id: 7,
+            text: "Find the number such that when it is doubled and 4 added, the result is the same as when it is trebled and 9 subtracted.",
+            answers: [13],
+            explanation: "Let the number be x.<br><span class='math-step'>2x + 4 = 3x - 9</span>Subtract 2x from both sides:<br><span class='math-step'>4 = x - 9</span>Add 9 to both sides:<br><span class='math-step'>13 = x</span>"
+        },
+        {
+            id: 8,
+            text: "When a certain number is multiplied by 6 and 9 subtracted, the result is the same as when it is multiplied by 4 and 11 added. Find the number.",
+            answers: [10],
+            explanation: "Let the number be x.<br><span class='math-step'>6x - 9 = 4x + 11</span>Subtract 4x from both sides:<br><span class='math-step'>2x - 9 = 11</span>Add 9 to both sides:<br><span class='math-step'>2x = 20</span>Divide by 2:<br><span class='math-step'>x = 10</span>"
+        }
+    ];
+
+    // State Variables
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let isQuestionActive = true; // true = waiting for submit, false = waiting for next
+
+    // DOM Elements
+    const questionTextEl = document.getElementById('questionText');
+    const userAnswerEl = document.getElementById('userAnswer');
+    const actionBtnEl = document.getElementById('actionBtn');
+    const feedbackAreaEl = document.getElementById('feedbackArea');
+    const feedbackTitleEl = document.getElementById('feedbackTitle');
+    const feedbackMessageEl = document.getElementById('feedbackMessage');
+    const explanationTextEl = document.getElementById('explanationText');
+    const progressBarEl = document.getElementById('progressBar');
+    const quizContentEl = document.getElementById('quizContent');
+    const summaryContentEl = document.getElementById('summaryContent');
+    const footerEl = document.getElementById('footer');
+
+    // Init
+    function init() {
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const q = questions[currentQuestionIndex];
+        
+        // Reset UI
+        questionTextEl.textContent = q.text;
+        userAnswerEl.value = '';
+        userAnswerEl.disabled = false;
+        userAnswerEl.focus();
+        feedbackAreaEl.style.display = 'none';
+        feedbackAreaEl.className = 'feedback'; // remove correct/incorrect classes
+        
+        // Update Action Button
+        actionBtnEl.textContent = "Check Answer";
+        isQuestionActive = true;
+
+        // Update Progress
+        const progressPercent = (currentQuestionIndex / questions.length) * 100;
+        progressBarEl.style.width = `${progressPercent}%`;
+    }
+
+    function extractNumbers(str) {
+        // Regex to find integers or floats in a string
+        const matches = str.match(/-?\d+(\.\d+)?/g);
+        if (!matches) return [];
+        return matches.map(Number).sort((a, b) => a - b);
+    }
+
+    function handleAction() {
+        if (isQuestionActive) {
+            checkAnswer();
+        } else {
+            nextQuestion();
+        }
+    }
+
+    function checkAnswer() {
+        const userStr = userAnswerEl.value;
+        if (!userStr.trim()) return; // Don't submit empty
+
+        const currentQ = questions[currentQuestionIndex];
+        const userNums = extractNumbers(userStr);
+        const correctNums = [...currentQ.answers].sort((a, b) => a - b);
+
+        // Validation Logic
+        let isCorrect = false;
+        
+        if (userNums.length === correctNums.length) {
+            isCorrect = userNums.every((val, index) => val === correctNums[index]);
+        }
+
+        // Lock Input
+        userAnswerEl.disabled = true;
+
+        // Show Feedback
+        feedbackAreaEl.style.display = 'block';
+        explanationTextEl.innerHTML = `<strong>Solution:</strong><br>${currentQ.explanation}`;
+
+        if (isCorrect) {
+            score++;
+            feedbackAreaEl.classList.add('correct');
+            feedbackTitleEl.innerHTML = "<span>✓</span> Correct!";
+            feedbackMessageEl.textContent = "Great job! Your algebraic reasoning is spot on.";
+        } else {
+            feedbackAreaEl.classList.add('incorrect');
+            feedbackTitleEl.innerHTML = "<span>✕</span> Incorrect";
+            feedbackMessageEl.innerHTML = `The correct answer was <strong>${correctNums.join(correctNums.length > 1 ? " and " : "")}</strong>.`;
+        }
+
+        // Change Button
+        actionBtnEl.textContent = currentQuestionIndex === questions.length - 1 ? "Finish Quiz" : "Next Question";
+        isQuestionActive = false;
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            renderQuestion();
+        } else {
+            showSummary();
+        }
+    }
+
+    function showSummary() {
+        quizContentEl.style.display = 'none';
+        footerEl.style.display = 'none';
+        document.getElementById('header').style.display = 'none'; // Optional: hide header
+        summaryContentEl.style.display = 'block';
+        
+        document.getElementById('finalScore').textContent = score;
+        document.getElementById('totalQuestions').textContent = questions.length;
+    }
+
+    // Event Listeners
+    actionBtnEl.addEventListener('click', handleAction);
+    
+    // Allow pressing Enter to submit
+    userAnswerEl.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            handleAction();
+        }
+    });
+
+    // Start
+    init();
+
+</script>
+
+</body>
+</html>

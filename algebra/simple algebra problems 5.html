@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Problem Solver</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #5c6bc0 0%, #7e57c2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            height: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #4fc3f7, #00e676);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .question-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #7e57c2;
+        }
+
+        .question-number {
+            color: #7e57c2;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            color: #333;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #7e57c2;
+            box-shadow: 0 0 0 4px rgba(126, 87, 194, 0.1);
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7e57c2 0%, #5c6bc0 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(126, 87, 194, 0.4);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #00c853 0%, #00e676 100%);
+            color: white;
+            display: none;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 200, 83, 0.4);
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 15px;
+            display: none;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 5px solid #4caf50;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-left: 5px solid #f44336;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .feedback-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
+
+        .correct .feedback-icon {
+            background: #4caf50;
+            color: white;
+        }
+
+        .incorrect .feedback-icon {
+            background: #f44336;
+            color: white;
+        }
+
+        .feedback-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .correct .feedback-title {
+            color: #2e7d32;
+        }
+
+        .incorrect .feedback-title {
+            color: #c62828;
+        }
+
+        .answer-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .answer-box h4 {
+            color: #7e57c2;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .answer-box .answer-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .explanation {
+            margin-top: 15px;
+        }
+
+        .explanation h4 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .explanation p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .explanation .step {
+            background: rgba(126, 87, 194, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-family: 'Courier New', monospace;
+            color: #5c6bc0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .completion {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .completion-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .completion h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .completion p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #7e57c2;
+            margin: 20px 0;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #7e57c2 0%, #5c6bc0 100%);
+            color: white;
+            margin-top: 20px;
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 8px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📐 Algebra Word Problems</h1>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Question 1 of 6</div>
+        </div>
+
+        <div class="content" id="content">
+            <!-- Content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                question: "A man walks for 3 hours at a certain speed, and then cycles at 3 times that speed for 2 hours. He goes 49½ km altogether. Find the speed at which he walks.",
+                answer: 5.5,
+                acceptedAnswers: [5.5, 5.50, "5.5", "5½", "5 1/2", "11/2"],
+                unit: "km/h",
+                hint: "Let x = walking speed. Then cycling speed = 3x",
+                explanation: `
+                    <p>Let's call the walking speed <strong>x km/h</strong>.</p>
+                    <div class="step">Walking speed = x km/h</div>
+                    <div class="step">Cycling speed = 3x km/h (3 times walking speed)</div>
+                    <p>Now we can write an equation for the total distance:</p>
+                    <div class="step">Distance walking = speed × time = 3x km</div>
+                    <div class="step">Distance cycling = speed × time = 3x × 2 = 6x km</div>
+                    <div class="step">Total distance: 3x + 6x = 49.5</div>
+                    <div class="step">9x = 49.5</div>
+                    <div class="step">x = 49.5 ÷ 9 = 5.5 km/h</div>
+                `
+            },
+            {
+                id: 2,
+                question: "Find the number such that when it is added to two-thirds of itself, the result is 70.",
+                answer: 42,
+                acceptedAnswers: [42, "42"],
+                unit: "",
+                hint: "Let the number be x. Then x + (2/3)x = 70",
+                explanation: `
+                    <p>Let the number be <strong>x</strong>.</p>
+                    <div class="step">The number + two-thirds of itself = 70</div>
+                    <div class="step">x + (2/3)x = 70</div>
+                    <p>Combine like terms by finding a common denominator:</p>
+                    <div class="step">(3/3)x + (2/3)x = 70</div>
+                    <div class="step">(5/3)x = 70</div>
+                    <p>Multiply both sides by 3/5:</p>
+                    <div class="step">x = 70 × (3/5) = 210/5 = 42</div>
+                    <p>Check: 42 + (2/3 × 42) = 42 + 28 = 70 ✓</p>
+                `
+            },
+            {
+                id: 3,
+                question: "Find the number such that when ⅓ of it is added to 10, the result is the same as when ¼ of it is added to 13.",
+                answer: 36,
+                acceptedAnswers: [36, "36"],
+                unit: "",
+                hint: "Set up an equation: (1/3)x + 10 = (1/4)x + 13",
+                explanation: `
+                    <p>Let the number be <strong>x</strong>.</p>
+                    <div class="step">⅓ of it + 10 = ¼ of it + 13</div>
+                    <div class="step">(1/3)x + 10 = (1/4)x + 13</div>
+                    <p>Subtract (1/4)x from both sides:</p>
+                    <div class="step">(1/3)x - (1/4)x + 10 = 13</div>
+                    <p>Find common denominator (12) for the fractions:</p>
+                    <div class="step">(4/12)x - (3/12)x = 13 - 10</div>
+                    <div class="step">(1/12)x = 3</div>
+                    <p>Multiply both sides by 12:</p>
+                    <div class="step">x = 36</div>
+                    <p>Check: (1/3 × 36) + 10 = 12 + 10 = 22 ✓</p>
+                    <p>Check: (1/4 × 36) + 13 = 9 + 13 = 22 ✓</p>
+                `
+            },
+            {
+                id: 4,
+                question: "A sum of £1.21 is made up of fivepenny pieces and pennies, there being six times as many pennies as there are fivepenny pieces. Find the number of fivepenny pieces.",
+                answer: 11,
+                acceptedAnswers: [11, "11"],
+                unit: "fivepenny pieces",
+                hint: "Let x = number of fivepenny pieces. Then pennies = 6x. Total value in pence = 121",
+                explanation: `
+                    <p>Let <strong>x</strong> = number of fivepenny pieces.</p>
+                    <div class="step">Number of pennies = 6x (six times as many)</div>
+                    <p>Convert £1.21 to pence: £1.21 = 121 pence</p>
+                    <div class="step">Value of fivepenny pieces = 5x pence</div>
+                    <div class="step">Value of pennies = 1 × 6x = 6x pence</div>
+                    <p>Total value equation:</p>
+                    <div class="step">5x + 6x = 121</div>
+                    <div class="step">11x = 121</div>
+                    <div class="step">x = 11</div>
+                    <p>Check: 11 fivepenny pieces = 55p</p>
+                    <p>Check: 66 pennies = 66p</p>
+                    <p>Total: 55p + 66p = 121p = £1.21 ✓</p>
+                `
+            },
+            {
+                id: 5,
+                question: "A cash-box contains twopenny pieces and fivepenny pieces only, there being twice as many twopenny pieces as there are fivepenny pieces. If the total amount of money is £2.43, find how many coins there are altogether.",
+                answer: 81,
+                acceptedAnswers: [81, "81"],
+                unit: "coins",
+                hint: "Let x = number of fivepenny pieces. Then twopenny pieces = 2x. Find x first, then total coins = x + 2x",
+                explanation: `
+                    <p>Let <strong>x</strong> = number of fivepenny pieces.</p>
+                    <div class="step">Number of twopenny pieces = 2x (twice as many)</div>
+                    <p>Convert £2.43 to pence: £2.43 = 243 pence</p>
+                    <div class="step">Value of fivepenny pieces = 5x pence</div>
+                    <div class="step">Value of twopenny pieces = 2 × 2x = 4x pence</div>
+                    <p>Total value equation:</p>
+                    <div class="step">5x + 4x = 243</div>
+                    <div class="step">9x = 243</div>
+                    <div class="step">x = 27 (fivepenny pieces)</div>
+                    <p>Number of twopenny pieces = 2 × 27 = 54</p>
+                    <div class="step">Total coins = 27 + 54 = 81</div>
+                    <p>Check: (27 × 5p) + (54 × 2p) = 135p + 108p = 243p = £2.43 ✓</p>
+                `
+            },
+            {
+                id: 6,
+                question: "Some litre and half-litre bottles are filled with milk, there being twice as many litres as half-litres. If the total amount of milk is 47½ litres, how many half-litre bottles are there?",
+                answer: 19,
+                acceptedAnswers: [19, "19"],
+                unit: "half-litre bottles",
+                hint: "Let x = number of half-litre bottles. Then litre bottles = 2x. Total milk = 0.5x + 1(2x) = 47.5",
+                explanation: `
+                    <p>Let <strong>x</strong> = number of half-litre bottles.</p>
+                    <div class="step">Number of litre bottles = 2x (twice as many)</div>
+                    <p>Calculate total milk:</p>
+                    <div class="step">Milk in half-litre bottles = 0.5x litres</div>
+                    <div class="step">Milk in litre bottles = 1 × 2x = 2x litres</div>
+                    <p>Total milk equation:</p>
+                    <div class="step">0.5x + 2x = 47.5</div>
+                    <div class="step">2.5x = 47.5</div>
+                    <div class="step">x = 47.5 ÷ 2.5 = 19</div>
+                    <p>So there are <strong>19 half-litre bottles</strong>.</p>
+                    <p>Check: Litre bottles = 2 × 19 = 38</p>
+                    <p>Total milk: (19 × 0.5) + (38 × 1) = 9.5 + 38 = 47.5 litres ✓</p>
+                `
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            const content = document.getElementById('content');
+            
+            content.innerHTML = `
+                <div class="question-card">
+                    <div class="question-number">Question ${q.id} of ${questions.length}</div>
+                    <div class="question-text">${q.question}</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="answer">Your Answer:</label>
+                    <input type="text" id="answer" placeholder="Enter your answer here..." autocomplete="off">
+                    <div class="hint">💡 Hint: ${q.hint}</div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="submitBtn" onclick="checkAnswer()">Submit Answer</button>
+                    <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+            `;
+
+            updateProgress();
+            
+            // Focus on input
+            setTimeout(() => {
+                document.getElementById('answer').focus();
+            }, 100);
+
+            // Allow Enter key to submit
+            document.getElementById('answer').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    if (!answered) {
+                        checkAnswer();
+                    } else {
+                        nextQuestion();
+                    }
+                }
+            });
+        }
+
+        function checkAnswer() {
+            if (answered) return;
+            
+            const q = questions[currentQuestion];
+            const userAnswer = document.getElementById('answer').value.trim();
+            const feedback = document.getElementById('feedback');
+            const submitBtn = document.getElementById('submitBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (userAnswer === '') {
+                alert('Please enter an answer!');
+                return;
+            }
+
+            answered = true;
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'inline-block';
+
+            // Check if answer is correct
+            const numericAnswer = parseFloat(userAnswer.replace('½', '.5').replace(',', '.'));
+            const isCorrect = q.acceptedAnswers.some(a => {
+                if (typeof a === 'number') {
+                    return Math.abs(numericAnswer - a) < 0.01;
+                }
+                return userAnswer.toLowerCase() === a.toLowerCase();
+            });
+
+            if (isCorrect) {
+                score++;
+                feedback.className = 'feedback correct';
+                feedback.innerHTML = `
+                    <div class="feedback-header">
+                        <div class="feedback-icon">✓</div>
+                        <div class="feedback-title">Excellent! That's correct!</div>
+                    </div>
+                    <div class="answer-box">
+                        <h4>Correct Answer</h4>
+                        <div class="answer-value">${q.answer} ${q.unit}</div>
+                    </div>
+                    <div class="explanation">
+                        <h4>📝 Solution Explained:</h4>
+                        ${q.explanation}
+                    </div>
+                `;
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.innerHTML = `
+                    <div class="feedback-header">
+                        <div class="feedback-icon">✗</div>
+                        <div class="feedback-title">Not quite right</div>
+                    </div>
+                    <p style="color: #666; margin-bottom: 15px;">You answered: <strong>${userAnswer}</strong></p>
+                    <div class="answer-box">
+                        <h4>Correct Answer</h4>
+                        <div class="answer-value">${q.answer} ${q.unit}</div>
+                    </div>
+                    <div class="explanation">
+                        <h4>📝 Here's how to solve it:</h4>
+                        ${q.explanation}
+                    </div>
+                `;
+            }
+
+            feedback.style.display = 'block';
+            
+            // Update button text for last question
+            if (currentQuestion === questions.length - 1) {
+                nextBtn.textContent = 'See Results →';
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            answered = false;
+
+            if (currentQuestion >= questions.length) {
+                showResults();
+            } else {
+                renderQuestion();
+            }
+        }
+
+        function showResults() {
+            const content = document.getElementById('content');
+            const percentage = Math.round((score / questions.length) * 100);
+            
+            let message, emoji;
+            if (percentage === 100) {
+                message = "Perfect score! You're a math genius!";
+                emoji = "🏆";
+            } else if (percentage >= 80) {
+                message = "Excellent work! You've mastered these problems!";
+                emoji = "🌟";
+            } else if (percentage >= 60) {
+                message = "Good job! Keep practicing!";
+                emoji = "👍";
+            } else if (percentage >= 40) {
+                message = "Nice effort! Review the solutions and try again!";
+                emoji = "📚";
+            } else {
+                message = "Don't give up! Practice makes perfect!";
+                emoji = "💪";
+            }
+
+            content.innerHTML = `
+                <div class="completion">
+                    <div class="completion-icon">${emoji}</div>
+                    <h2>Quiz Complete!</h2>
+                    <p>${message}</p>
+                    <div class="score">${score} / ${questions.length}</div>
+                    <p>You got ${percentage}% correct</p>
+                    <button class="btn btn-restart" onclick="restartQuiz()">Try Again</button>
+                </div>
+            `;
+
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('progressText').textContent = 'Completed!';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answered = false;
+            renderQuestion();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+        }
+
+        // Initialize the quiz
+        renderQuestion();
+    </script>
+</body>
+</html>

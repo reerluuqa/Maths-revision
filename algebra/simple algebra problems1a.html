@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra Mastery Quiz</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #ec4899;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-light: #6b7280;
+            --success: #10b981;
+            --error: #ef4444;
+            --success-bg: #d1fae5;
+            --error-bg: #fee2e2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            margin-top: 10px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .label-x {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        input[type="number"] {
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            width: 120px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+            font-family: inherit;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            flex-grow: 1;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-next {
+            background: var(--text-main);
+            color: white;
+            width: 100%;
+            margin-top: 20px;
+            display: none; /* Hidden by default */
+        }
+
+        .feedback-area {
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.4s ease;
+        }
+
+        .feedback-area.correct {
+            background-color: var(--success-bg);
+            border: 1px solid var(--success);
+            color: #064e3b;
+        }
+
+        .feedback-area.incorrect {
+            background-color: var(--error-bg);
+            border: 1px solid var(--error);
+            color: #7f1d1d;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .explanation {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 10px;
+            background: rgba(255,255,255,0.6);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .explanation strong {
+            color: var(--text-main);
+        }
+
+        .math-step {
+            display: block;
+            margin-bottom: 5px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 auto 20px auto;
+        }
+
+        .btn-restart {
+            background: var(--secondary);
+            color: white;
+            margin-top: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Utility */
+        .hidden { display: none !important; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Linear Equations Challenge</h1>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </header>
+
+    <div class="content" id="quiz-view">
+        <div class="question-box">
+            <p class="question-text" id="question-text">Loading question...</p>
+        </div>
+
+        <div class="input-group">
+            <span class="label-x">x = </span>
+            <input type="number" id="user-input" placeholder="?" autocomplete="off">
+            <button class="btn-submit" id="submit-btn">Check Answer</button>
+        </div>
+
+        <div id="feedback-area" class="feedback-area">
+            <div class="feedback-title" id="feedback-title"></div>
+            <div class="explanation" id="feedback-explanation"></div>
+        </div>
+
+        <button class="btn-next" id="next-btn">Next Question →</button>
+    </div>
+
+    <!-- Results View -->
+    <div class="results-screen" id="results-view">
+        <div class="score-circle" id="final-score">0/0</div>
+        <h2>Quiz Completed!</h2>
+        <p style="margin-top: 10px; color: var(--text-light);">You've practiced setting up and solving linear equations.</p>
+        <button class="btn-restart" onclick="restartQuiz()">Try Again</button>
+    </div>
+</div>
+
+<script>
+    // Data Structure for Questions
+    const questions = [
+        {
+            text: "When x is added to a number which exceeds x by 5, the result is 19. Find x.",
+            answer: 7,
+            explanation: `
+                <span class="math-step">1. "A number which exceeds x by 5" is (x + 5).</span>
+                <span class="math-step">2. Add x to that number: x + (x + 5) = 19</span>
+                <span class="math-step">3. Combine like terms: 2x + 5 = 19</span>
+                <span class="math-step">4. Subtract 5 from both sides: 2x = 14</span>
+                <span class="math-step">5. Divide by 2: x = 7</span>
+            `
+        },
+        {
+            text: "One boy has x marbles, and another boy has 7 less. Together they have 29 marbles. Find x.",
+            answer: 18,
+            explanation: `
+                <span class="math-step">1. First boy = x. Second boy = (x - 7).</span>
+                <span class="math-step">2. Together: x + (x - 7) = 29</span>
+                <span class="math-step">3. Combine terms: 2x - 7 = 29</span>
+                <span class="math-step">4. Add 7 to both sides: 2x = 36</span>
+                <span class="math-step">5. Divide by 2: x = 18</span>
+            `
+        },
+        {
+            text: "Ann has x pence, Susan has twice as much, and between them they have a total of 21p. Find x.",
+            answer: 7,
+            explanation: `
+                <span class="math-step">1. Ann = x. Susan = 2x.</span>
+                <span class="math-step">2. Total: x + 2x = 21</span>
+                <span class="math-step">3. Combine terms: 3x = 21</span>
+                <span class="math-step">4. Divide by 3: x = 7</span>
+            `
+        },
+        {
+            text: "Five times x is 15 less than 100. Find x.",
+            answer: 17,
+            explanation: `
+                <span class="math-step">1. "Five times x" is 5x.</span>
+                <span class="math-step">2. "15 less than 100" is 100 - 15.</span>
+                <span class="math-step">3. Equation: 5x = 100 - 15</span>
+                <span class="math-step">4. Simplify: 5x = 85</span>
+                <span class="math-step">5. Divide by 5: x = 17</span>
+            `
+        },
+        {
+            text: "When x is doubled and 4 added, the result is the same as when x is trebled and 9 subtracted. Find x.",
+            answer: 13,
+            explanation: `
+                <span class="math-step">1. Doubled plus 4: 2x + 4</span>
+                <span class="math-step">2. Trebled minus 9: 3x - 9</span>
+                <span class="math-step">3. Set equal: 2x + 4 = 3x - 9</span>
+                <span class="math-step">4. Subtract 2x from both sides: 4 = x - 9</span>
+                <span class="math-step">5. Add 9 to both sides: 13 = x</span>
+            `
+        },
+        {
+            text: "When x is multiplied by 6 and 9 subtracted, the result is the same as when x is multiplied by 4 and 11 added. Find x.",
+            answer: 10,
+            explanation: `
+                <span class="math-step">1. Left side: 6x - 9</span>
+                <span class="math-step">2. Right side: 4x + 11</span>
+                <span class="math-step">3. Equation: 6x - 9 = 4x + 11</span>
+                <span class="math-step">4. Subtract 4x from both sides: 2x - 9 = 11</span>
+                <span class="math-step">5. Add 9 to both sides: 2x = 20</span>
+                <span class="math-step">6. Divide by 2: x = 10</span>
+            `
+        },
+        {
+            text: "A rectangle which measures x metres by 3x metres has a perimeter of 32 metres. Find x.",
+            answer: 4,
+            explanation: `
+                <span class="math-step">1. Perimeter P = 2(length + width).</span>
+                <span class="math-step">2. Equation: 2(3x + x) = 32</span>
+                <span class="math-step">3. Simplify inside bracket: 2(4x) = 32</span>
+                <span class="math-step">4. Multiply: 8x = 32</span>
+                <span class="math-step">5. Divide by 8: x = 4</span>
+            `
+        },
+        {
+            text: "A rectangle which is 3 metres longer than it is wide has a width of x metres and a perimeter of 26 metres. Find x.",
+            answer: 5,
+            explanation: `
+                <span class="math-step">1. Width = x. Length = x + 3.</span>
+                <span class="math-step">2. Perimeter: 2(Width + Length) = 26</span>
+                <span class="math-step">3. Substitute: 2(x + x + 3) = 26</span>
+                <span class="math-step">4. Simplify: 2(2x + 3) = 26</span>
+                <span class="math-step">5. Divide by 2: 2x + 3 = 13</span>
+                <span class="math-step">6. Subtract 3: 2x = 10 &rarr; x = 5</span>
+            `
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    // DOM Elements
+    const quizView = document.getElementById('quiz-view');
+    const resultsView = document.getElementById('results-view');
+    const questionText = document.getElementById('question-text');
+    const userInput = document.getElementById('user-input');
+    const submitBtn = document.getElementById('submit-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const feedbackArea = document.getElementById('feedback-area');
+    const feedbackTitle = document.getElementById('feedback-title');
+    const feedbackExplanation = document.getElementById('feedback-explanation');
+    const progressFill = document.getElementById('progress-fill');
+    const finalScore = document.getElementById('final-score');
+
+    function loadQuestion() {
+        const q = questions[currentQuestionIndex];
+        
+        // Reset UI
+        questionText.textContent = q.text;
+        userInput.value = '';
+        userInput.disabled = false;
+        userInput.focus();
+        
+        feedbackArea.style.display = 'none';
+        feedbackArea.classList.remove('correct', 'incorrect');
+        
+        submitBtn.style.display = 'block';
+        nextBtn.style.display = 'none';
+        
+        // Update Progress
+        const progress = ((currentQuestionIndex) / questions.length) * 100;
+        progressFill.style.width = `${progress}%`;
+    }
+
+    function checkAnswer() {
+        const userValue = parseFloat(userInput.value);
+        const q = questions[currentQuestionIndex];
+        
+        if (isNaN(userValue)) {
+            alert("Please enter a number.");
+            return;
+        }
+
+        userInput.disabled = true;
+        submitBtn.style.display = 'none';
+        feedbackArea.style.display = 'block';
+
+        if (userValue === q.answer) {
+            score++;
+            handleCorrect(q);
+        } else {
+            handleIncorrect(q, userValue);
+        }
+
+        nextBtn.style.display = 'block';
+        
+        // Update progress bar to reflect completion of this step
+        const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+        progressFill.style.width = `${progress}%`;
+    }
+
+    function handleCorrect(q) {
+        feedbackArea.classList.add('correct');
+        feedbackTitle.innerHTML = '✅ Correct!';
+        feedbackExplanation.innerHTML = `
+            Well done! Here is the breakdown:<br>
+            ${q.explanation}
+        `;
+    }
+
+    function handleIncorrect(q, userValue) {
+        feedbackArea.classList.add('incorrect');
+        feedbackTitle.innerHTML = '❌ Incorrect';
+        feedbackExplanation.innerHTML = `
+            You answered <strong>${userValue}</strong>, but the correct answer is <strong>${q.answer}</strong>.<br><br>
+            <strong>Here is how to solve it:</strong><br>
+            ${q.explanation}
+        `;
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizView.style.display = 'none';
+        resultsView.style.display = 'block';
+        finalScore.textContent = `${score}/${questions.length}`;
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        resultsView.style.display = 'none';
+        quizView.style.display = 'block';
+        loadQuestion();
+    }
+
+    // Event Listeners
+    submitBtn.addEventListener('click', checkAnswer);
+    nextBtn.addEventListener('click', nextQuestion);
+    
+    // Allow "Enter" key to submit
+    userInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter' && !userInput.disabled) {
+            checkAnswer();
+        }
+    });
+
+    // Initialize
+    loadQuestion();
+
+</script>
+
+</body>
+</html>

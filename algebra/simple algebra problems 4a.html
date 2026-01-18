@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra & Arithmetic Word Problems</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338ca;
+            --bg: #F3F4F6;
+            --card-bg: #ffffff;
+            --text-main: #1F2937;
+            --text-secondary: #4B5563;
+            --success: #10B981;
+            --success-bg: #D1FAE5;
+            --error: #EF4444;
+            --error-bg: #FEE2E2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header & Progress */
+        header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #E5E7EB;
+            background-color: #fafafa;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #E5E7EB;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-counter {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        /* content Area */
+        .content {
+            padding: 30px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background-color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        /* Feedback Section */
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--success-bg);
+            border: 1px solid var(--success);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--error-bg);
+            border: 1px solid var(--error);
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .correct .feedback-title { color: var(--success); }
+        .incorrect .feedback-title { color: var(--error); }
+
+        .explanation {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            white-space: pre-wrap; /* Keeps line breaks */
+        }
+
+        .explanation strong {
+            color: var(--text-main);
+        }
+
+        .next-btn {
+            margin-top: 15px;
+            background-color: var(--text-main);
+        }
+
+        .next-btn:hover {
+            background-color: black;
+        }
+
+        /* Result Screen */
+        .result-screen {
+            text-align: center;
+            padding: 40px 20px;
+            display: none;
+        }
+
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 auto 20px auto;
+        }
+        
+        .restart-btn {
+            margin-top: 20px;
+            width: auto;
+        }
+
+        /* Utility for math formatting */
+        .math-step {
+            display: block;
+            margin-bottom: 5px;
+            font-family: monospace;
+            background: rgba(255,255,255,0.5);
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header id="app-header">
+        <h1>Math Practice</h1>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="question-counter" id="question-counter">Question 1 of 9</div>
+    </header>
+
+    <div class="content" id="quiz-area">
+        <div class="question-text" id="question-text">
+            <!-- Question inject here -->
+        </div>
+
+        <div class="input-group">
+            <label for="user-answer" id="input-label">Your Answer:</label>
+            <input type="text" id="user-answer" placeholder="Type your answer here..." autocomplete="off">
+        </div>
+
+        <button id="submit-btn">Submit Answer</button>
+
+        <div class="feedback" id="feedback-area">
+            <div class="feedback-title" id="feedback-title"></div>
+            <div class="explanation" id="explanation-text"></div>
+            <button class="next-btn" id="next-btn">Next Question →</button>
+        </div>
+    </div>
+
+    <div class="result-screen" id="result-screen">
+        <div class="score-circle" id="final-score"></div>
+        <h2>Practice Complete!</h2>
+        <p style="margin-top: 10px; color: var(--text-secondary);">You have reviewed all the problems.</p>
+        <button class="restart-btn" onclick="location.reload()">Try Again</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            id: 1,
+            text: "Mary is saving up to buy a book costing £1. Three times as much as she has now would be 8p more than she needs. How much has she now (in pence)?",
+            placeholder: "e.g. 36",
+            // Logic: 3x = 100 + 8 -> 3x = 108 -> x = 36
+            validate: (input) => checkNumbers(input, [36]),
+            explanation: `<strong>Correct Answer: 36p</strong>\n\n1. Let <em>x</em> be the amount she has now (in pence).\n2. The book costs £1, which is 100p.\n3. "Three times as much as she has now" is <em>3x</em>.\n4. "8p more than she needs" is <em>100 + 8 = 108</em>.\n5. Equation: <span class="math-step">3x = 108</span>\n6. Divide by 3: <span class="math-step">x = 36</span>.`
+        },
+        {
+            id: 2,
+            text: "Find four consecutive numbers whose sum is 78.",
+            placeholder: "e.g. 10, 11, 12, 13",
+            // Logic: n + n+1 + n+2 + n+3 = 78 -> 4n + 6 = 78 -> 4n = 72 -> n = 18
+            validate: (input) => checkNumbers(input, [18, 19, 20, 21]),
+            explanation: `<strong>Correct Answer: 18, 19, 20, 21</strong>\n\n1. Let the first number be <em>n</em>.\n2. The numbers are <em>n, n+1, n+2, n+3</em>.\n3. Sum: <span class="math-step">4n + 6 = 78</span>\n4. Subtract 6: <span class="math-step">4n = 72</span>\n5. Divide by 4: <span class="math-step">n = 18</span>.\n6. The numbers are 18, 19, 20, 21.`
+        },
+        {
+            id: 3,
+            text: "Find three consecutive even numbers whose sum is 84.",
+            placeholder: "e.g. 20, 22, 24",
+            // Logic: n + n+2 + n+4 = 84 -> 3n + 6 = 84 -> 3n = 78 -> n = 26
+            validate: (input) => checkNumbers(input, [26, 28, 30]),
+            explanation: `<strong>Correct Answer: 26, 28, 30</strong>\n\n1. Let the first even number be <em>n</em>.\n2. Consecutive even numbers increase by 2: <em>n, n+2, n+4</em>.\n3. Sum: <span class="math-step">3n + 6 = 84</span>\n4. Subtract 6: <span class="math-step">3n = 78</span>\n5. Divide by 3: <span class="math-step">n = 26</span>.\n6. The numbers are 26, 28, 30.`
+        },
+        {
+            id: 4,
+            text: "Jack has four times as many sweets as John, but if he were to give 21 to John they would have equal numbers. How many has each?",
+            placeholder: "Enter John's amount then Jack's",
+            // Logic: Jack=4x, John=x. 4x-21 = x+21 -> 3x = 42 -> x=14. Jack=56
+            validate: (input) => checkNumbers(input, [14, 56]),
+            explanation: `<strong>Correct Answer: John has 14, Jack has 56</strong>\n\n1. Let John have <em>x</em> sweets. Jack has <em>4x</em>.\n2. Jack gives 21 to John: Jack has <em>4x - 21</em>, John has <em>x + 21</em>.\n3. They are now equal: <span class="math-step">4x - 21 = x + 21</span>\n4. Subtract x from both sides: <span class="math-step">3x - 21 = 21</span>\n5. Add 21 to both sides: <span class="math-step">3x = 42</span>\n6. <em>x = 14</em> (John). Jack is 4 × 14 = 56.`
+        },
+        {
+            id: 5,
+            text: "A lady is three times as old as her daughter, and 6 years ago the sum of their ages was 36. Find their present ages.",
+            placeholder: "Enter daughter's age then lady's age",
+            // Logic: D=x, L=3x. (x-6) + (3x-6) = 36 -> 4x - 12 = 36 -> 4x = 48 -> x = 12. L=36
+            validate: (input) => checkNumbers(input, [12, 36]),
+            explanation: `<strong>Correct Answer: Daughter is 12, Lady is 36</strong>\n\n1. Daughter = <em>x</em>, Lady = <em>3x</em>.\n2. 6 years ago: Daughter = <em>x-6</em>, Lady = <em>3x-6</em>.\n3. Sum was 36: <span class="math-step">(x - 6) + (3x - 6) = 36</span>\n4. Simplify: <span class="math-step">4x - 12 = 36</span>\n5. Add 12: <span class="math-step">4x = 48</span>\n6. <em>x = 12</em>. Lady is 3 × 12 = 36.`
+        },
+        {
+            id: 6,
+            text: "A man was 27 years old when his son was born, and now he is four times as old as his son. Find the son’s age.",
+            placeholder: "Enter the son's age",
+            // Logic: Son=x, Man=x+27. x+27 = 4x -> 27 = 3x -> x=9
+            validate: (input) => checkNumbers(input, [9]),
+            explanation: `<strong>Correct Answer: 9</strong>\n\n1. Let Son's age = <em>x</em>.\n2. Since the man was 27 when son was born, Man's age = <em>x + 27</em>.\n3. Man is 4 times as old as son: <span class="math-step">x + 27 = 4x</span>\n4. Subtract x from both sides: <span class="math-step">27 = 3x</span>\n5. Divide by 3: <span class="math-step">x = 9</span>.`
+        },
+        {
+            id: 7,
+            text: "Four times a certain number is as much less than 60 as seven times the number is greater than 61. Find the number.",
+            placeholder: "Enter the number",
+            // Logic: 60 - 4x = 7x - 61 -> 121 = 11x -> x = 11
+            validate: (input) => checkNumbers(input, [11]),
+            explanation: `<strong>Correct Answer: 11</strong>\n\n1. Let the number be <em>x</em>.\n2. "4 times the number less than 60": <span class="math-step">60 - 4x</span>\n3. "7 times the number greater than 61": <span class="math-step">7x - 61</span>\n4. Equate them: <span class="math-step">60 - 4x = 7x - 61</span>\n5. Add 4x and Add 61 to sides: <span class="math-step">121 = 11x</span>\n6. Divide by 11: <span class="math-step">x = 11</span>.`
+        },
+        {
+            id: 8,
+            text: "How do Mary and Molly share 80p if Mary receives 43p less than twice what Molly receives?",
+            placeholder: "Enter Molly's amount, then Mary's",
+            // Logic: Molly=m, Mary=2m-43. m + 2m-43 = 80 -> 3m = 123 -> m=41. Mary=39.
+            validate: (input) => checkNumbers(input, [41, 39]),
+            explanation: `<strong>Correct Answer: Molly: 41p, Mary: 39p</strong>\n\n1. Let Molly receive <em>m</em>.\n2. Mary receives <em>2m - 43</em>.\n3. Total is 80: <span class="math-step">m + (2m - 43) = 80</span>\n4. Simplify: <span class="math-step">3m - 43 = 80</span>\n5. Add 43: <span class="math-step">3m = 123</span>\n6. <em>m = 41</em>. Mary gets 2(41) - 43 = 39.`
+        },
+        {
+            id: 9,
+            text: "A man walked for 2 hours at 6 km/h and then cycled for a certain time at 16 km/h. If he went 36 km altogether, for how long did he cycle (in hours)?",
+            placeholder: "e.g. 1.5",
+            // Logic: Walk Dist = 12. Remaining = 24. Time = 24/16 = 1.5
+            validate: (input) => checkNumbers(input, [1.5]) || checkNumbers(input, [1, 30]), // Allow 1.5 or 1 30 (for 1h 30m)
+            explanation: `<strong>Correct Answer: 1.5 hours (or 1 hour 30 minutes)</strong>\n\n1. Walking distance: <span class="math-step">2 hours × 6 km/h = 12 km</span>\n2. Total distance is 36 km.\n3. Cycling distance: <span class="math-step">36 - 12 = 24 km</span>\n4. Cycling Speed = 16 km/h.\n5. Time = Distance / Speed: <span class="math-step">24 / 16 = 1.5 hours</span>.`
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    // DOM Elements
+    const questionText = document.getElementById('question-text');
+    const inputLabel = document.getElementById('input-label');
+    const inputField = document.getElementById('user-answer');
+    const submitBtn = document.getElementById('submit-btn');
+    const feedbackArea = document.getElementById('feedback-area');
+    const feedbackTitle = document.getElementById('feedback-title');
+    const explanationText = document.getElementById('explanation-text');
+    const nextBtn = document.getElementById('next-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const questionCounter = document.getElementById('question-counter');
+    const quizArea = document.getElementById('quiz-area');
+    const resultScreen = document.getElementById('result-screen');
+    const finalScore = document.getElementById('final-score');
+    const appHeader = document.getElementById('app-header');
+
+    // Utility: Extract numbers from string and compare
+    function checkNumbers(input, requiredNumbers) {
+        // Regex to find integers and floats (e.g. 1.5)
+        const matches = input.match(/(\d+(\.\d+)?)/g);
+        
+        if (!matches) return false;
+        
+        const userNumbers = matches.map(Number);
+        
+        // Sort both arrays to ensure order doesn't fail the test (unless specific logic requires it, 
+        // but for these set questions, finding the right set of numbers is usually sufficient evidence of work)
+        const sortedRequired = [...requiredNumbers].sort((a,b) => a-b);
+        const sortedUser = [...userNumbers].sort((a,b) => a-b);
+
+        // Check length
+        if (sortedRequired.length !== sortedUser.length) return false;
+
+        // Check values
+        for (let i = 0; i < sortedRequired.length; i++) {
+            if (sortedRequired[i] !== sortedUser[i]) return false;
+        }
+        return true;
+    }
+
+    function loadQuestion() {
+        const q = questions[currentQuestionIndex];
+        
+        // Reset UI
+        questionText.textContent = q.text;
+        inputField.value = "";
+        inputField.placeholder = q.placeholder;
+        inputField.disabled = false;
+        inputField.focus();
+        submitBtn.disabled = false;
+        submitBtn.style.display = 'block';
+        feedbackArea.style.display = 'none';
+        feedbackArea.className = 'feedback'; // remove correct/incorrect classes
+        
+        // Update Progress
+        const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
+        progressBar.style.width = `${progressPercent}%`;
+        questionCounter.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+    }
+
+    function handleAnswer() {
+        const userInput = inputField.value;
+        if (!userInput.trim()) return; // Don't submit empty
+
+        const q = questions[currentQuestionIndex];
+        const isCorrect = q.validate(userInput);
+
+        // UI Updates for Feedback
+        inputField.disabled = true;
+        submitBtn.style.display = 'none';
+        feedbackArea.style.display = 'block';
+
+        if (isCorrect) {
+            score++;
+            feedbackArea.classList.add('correct');
+            feedbackTitle.innerHTML = '<span>✓</span> Correct!';
+        } else {
+            feedbackArea.classList.add('incorrect');
+            feedbackTitle.innerHTML = '<span>✕</span> Incorrect';
+        }
+
+        explanationText.innerHTML = q.explanation;
+        
+        // Update progress bar to include current step completion visually
+        const progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+        progressBar.style.width = `${progressPercent}%`;
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showFinalResults();
+        }
+    }
+
+    function showFinalResults() {
+        quizArea.style.display = 'none';
+        appHeader.style.display = 'none'; // Optional: hide header for cleaner result screen
+        resultScreen.style.display = 'block';
+        finalScore.textContent = `${score}/${questions.length}`;
+    }
+
+    // Event Listeners
+    submitBtn.addEventListener('click', handleAnswer);
+    
+    inputField.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            if (feedbackArea.style.display === 'block') {
+                nextQuestion();
+            } else {
+                handleAnswer();
+            }
+        }
+    });
+
+    nextBtn.addEventListener('click', nextQuestion);
+
+    // Initial Load
+    loadQuestion();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Problem Solver - Educational Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            height: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .question-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .question-number {
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            color: #2d3436;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .input-section label {
+            display: block;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .input-section input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 3px solid #dfe6e9;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-section input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            display: none;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(56, 239, 125, 0.4);
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-left: 5px solid #00b894;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            border-left: 5px solid #e17055;
+        }
+
+        .feedback-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feedback-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .feedback.correct .feedback-title {
+            color: #00b894;
+        }
+
+        .feedback.incorrect .feedback-title {
+            color: #e17055;
+        }
+
+        .correct-answer {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+            color: #2d3436;
+        }
+
+        .explanation {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .explanation h4 {
+            color: #6c5ce7;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .explanation p {
+            color: #2d3436;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .completion {
+            text-align: center;
+            display: none;
+        }
+
+        .completion-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .completion h2 {
+            color: #2d3436;
+            margin-bottom: 15px;
+        }
+
+        .score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.4);
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: #636e72;
+            margin-top: 8px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧮 Math Problem Solver</h1>
+            <p>Solve word problems step by step</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Question 1 of 9</div>
+        </div>
+
+        <div class="content">
+            <div id="quizSection">
+                <div class="question-card">
+                    <span class="question-number" id="questionNumber">Question 1</span>
+                    <p class="question-text" id="questionText"></p>
+                </div>
+
+                <div class="input-section">
+                    <label id="inputLabel">Your Answer:</label>
+                    <input type="text" id="answerInput" placeholder="Enter your answer here...">
+                    <p class="hint" id="inputHint"></p>
+                </div>
+
+                <button class="btn btn-primary" id="submitBtn" onclick="checkAnswer()">Submit Answer</button>
+                <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+
+                <div class="feedback" id="feedback">
+                    <div class="feedback-icon" id="feedbackIcon"></div>
+                    <div class="feedback-title" id="feedbackTitle"></div>
+                    <div class="correct-answer" id="correctAnswer"></div>
+                    <div class="explanation">
+                        <h4>📝 Step-by-Step Solution:</h4>
+                        <p id="explanationText"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="completion" id="completionSection">
+                <div class="completion-icon">🎉</div>
+                <h2>Congratulations!</h2>
+                <p>You've completed all the problems!</p>
+                <div class="score" id="finalScore"></div>
+                <button class="btn btn-restart" onclick="restartQuiz()">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Mary is saving up to buy a book costing £1. Three times as much as she has now would be 8p more than she needs. How much has she now?",
+                answer: "36",
+                answerDisplay: "36p",
+                hint: "Enter the amount in pence (just the number)",
+                label: "Amount Mary has (in pence):",
+                explanation: "Let's call what Mary has now 'x' pence.<br><br>The book costs £1 = 100p.<br><br>Three times what she has = 3x<br>This is 8p more than she needs, so: 3x = 100 + 8 = 108<br><br>Solving: x = 108 ÷ 3 = 36<br><br>Therefore, Mary has <strong>36p</strong>.<br><br>Check: 3 × 36 = 108, which is indeed 8p more than £1 (100p). ✓"
+            },
+            {
+                question: "Find four consecutive numbers whose sum is 78.",
+                answer: "18, 19, 20, 21",
+                alternativeAnswers: ["18,19,20,21", "18 19 20 21"],
+                hint: "Enter all four numbers separated by commas (e.g., 1, 2, 3, 4)",
+                label: "The four consecutive numbers:",
+                explanation: "Let the four consecutive numbers be: n, n+1, n+2, n+3<br><br>Their sum: n + (n+1) + (n+2) + (n+3) = 78<br><br>Simplify: 4n + 6 = 78<br><br>Solve: 4n = 72<br>n = 18<br><br>Therefore, the four numbers are: <strong>18, 19, 20, 21</strong><br><br>Check: 18 + 19 + 20 + 21 = 78 ✓"
+            },
+            {
+                question: "Find three consecutive even numbers whose sum is 84.",
+                answer: "26, 28, 30",
+                alternativeAnswers: ["26,28,30", "26 28 30"],
+                hint: "Enter all three even numbers separated by commas",
+                label: "The three consecutive even numbers:",
+                explanation: "Let the three consecutive even numbers be: n, n+2, n+4<br><br>Their sum: n + (n+2) + (n+4) = 84<br><br>Simplify: 3n + 6 = 84<br><br>Solve: 3n = 78<br>n = 26<br><br>Therefore, the three numbers are: <strong>26, 28, 30</strong><br><br>Check: 26 + 28 + 30 = 84 ✓"
+            },
+            {
+                question: "Jack has four times as many sweets as John, but if he were to give 21 to John they would have equal numbers. How many has each?",
+                answer: "Jack: 56, John: 14",
+                alternativeAnswers: ["56, 14", "56,14", "jack 56 john 14", "56 and 14"],
+                hint: "Enter as 'Jack: X, John: Y' or just 'X, Y'",
+                label: "Number of sweets (Jack and John):",
+                explanation: "Let John have 'x' sweets. Then Jack has '4x' sweets.<br><br>If Jack gives 21 to John:<br>• Jack would have: 4x - 21<br>• John would have: x + 21<br><br>They would be equal: 4x - 21 = x + 21<br><br>Solve: 4x - x = 21 + 21<br>3x = 42<br>x = 14<br><br>So John has 14 sweets, and Jack has 4 × 14 = 56 sweets.<br><br><strong>Jack: 56, John: 14</strong><br><br>Check: 56 - 21 = 35, and 14 + 21 = 35 ✓"
+            },
+            {
+                question: "A lady is three times as old as her daughter, and 6 years ago the sum of their ages was 36. Find their present ages.",
+                answer: "Mother: 36, Daughter: 12",
+                alternativeAnswers: ["36, 12", "36,12", "36 and 12", "mother 36 daughter 12"],
+                hint: "Enter as 'Mother: X, Daughter: Y' or just 'X, Y'",
+                label: "Present ages (Mother and Daughter):",
+                explanation: "Let the daughter's present age be 'x'. Then the mother's age is '3x'.<br><br>6 years ago:<br>• Daughter was: x - 6<br>• Mother was: 3x - 6<br><br>Sum of ages 6 years ago = 36:<br>(x - 6) + (3x - 6) = 36<br><br>Simplify: 4x - 12 = 36<br>4x = 48<br>x = 12<br><br>Daughter is 12, Mother is 3 × 12 = 36<br><br><strong>Mother: 36 years, Daughter: 12 years</strong><br><br>Check: 6 years ago they were 6 and 30. Sum: 6 + 30 = 36 ✓"
+            },
+            {
+                question: "A man was 27 years old when his son was born, and now he is four times as old as his son. Find the son's age.",
+                answer: "9",
+                hint: "Enter the son's current age",
+                label: "Son's current age (in years):",
+                explanation: "Let the son's current age be 'x' years.<br><br>The man was 27 when his son was born, so the man is always 27 years older than his son.<br><br>Man's current age = x + 27<br><br>The man is now four times as old as his son:<br>x + 27 = 4x<br><br>Solve: 27 = 4x - x<br>27 = 3x<br>x = 9<br><br>The son is <strong>9 years old</strong>.<br><br>Check: Son is 9, Father is 9 + 27 = 36. And 36 = 4 × 9 ✓"
+            },
+            {
+                question: "Four times a certain number is as much less than 60 as seven times the number is greater than 61. Find the number.",
+                answer: "11",
+                hint: "Enter the number",
+                label: "The number:",
+                explanation: "Let the number be 'x'.<br><br>• Four times the number less than 60: 60 - 4x<br>• Seven times the number greater than 61: 7x - 61<br><br>These are equal:<br>60 - 4x = 7x - 61<br><br>Solve: 60 + 61 = 7x + 4x<br>121 = 11x<br>x = 11<br><br>The number is <strong>11</strong>.<br><br>Check:<br>• 4 × 11 = 44, which is 16 less than 60<br>• 7 × 11 = 77, which is 16 more than 61 ✓"
+            },
+            {
+                question: "How do Mary and Molly share 80p if Mary receives 43p less than twice what Molly receives?",
+                answer: "Mary: 39, Molly: 41",
+                alternativeAnswers: ["39, 41", "39,41", "mary 39 molly 41", "39 and 41"],
+                hint: "Enter as 'Mary: X, Molly: Y' or just 'X, Y'",
+                label: "Amount each receives (in pence):",
+                explanation: "Let Molly receive 'x' pence.<br><br>Mary receives 43p less than twice Molly's share:<br>Mary = 2x - 43<br><br>Total = 80p:<br>x + (2x - 43) = 80<br><br>Simplify: 3x - 43 = 80<br>3x = 123<br>x = 41<br><br>Molly gets 41p, Mary gets 2(41) - 43 = 82 - 43 = 39p<br><br><strong>Mary: 39p, Molly: 41p</strong><br><br>Check: 39 + 41 = 80 ✓<br>Twice Molly's (82) minus 43 = 39 ✓"
+            },
+            {
+                question: "A man walked for 2 hours at 6 km/h and then cycled for a certain time at 16 km/h. If he went 36 km altogether, for how long did he cycle?",
+                answer: "1.5",
+                alternativeAnswers: ["1.5 hours", "1.5 hour", "1 hour 30 minutes", "1h 30min", "90 minutes", "3/2"],
+                hint: "Enter the time in hours (e.g., 1.5 or 1.5 hours)",
+                label: "Cycling time (in hours):",
+                explanation: "Distance walked = Speed × Time = 6 km/h × 2 hours = 12 km<br><br>Total distance = 36 km<br>Distance cycled = 36 - 12 = 24 km<br><br>Let cycling time be 't' hours.<br>Distance cycled = Speed × Time<br>24 = 16 × t<br><br>Solve: t = 24 ÷ 16 = 1.5 hours<br><br>He cycled for <strong>1.5 hours (1 hour 30 minutes)</strong><br><br>Check: Walking: 2 × 6 = 12 km<br>Cycling: 1.5 × 16 = 24 km<br>Total: 12 + 24 = 36 km ✓"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function init() {
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('inputLabel').textContent = q.label;
+            document.getElementById('inputHint').textContent = q.hint;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').disabled = false;
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+            
+            updateProgress();
+            
+            document.getElementById('answerInput').focus();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+        }
+
+        function normalizeAnswer(answer) {
+            return answer.toLowerCase()
+                .replace(/\s+/g, '')
+                .replace(/p$/g, '')
+                .replace(/hours?$/g, '')
+                .replace(/minutes?$/g, '')
+                .replace(/years?$/g, '')
+                .replace(/mother:|daughter:|mary:|molly:|jack:|john:/gi, '')
+                .trim();
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answerInput').value.trim();
+            const q = questions[currentQuestion];
+            
+            if (!userAnswer) {
+                alert('Please enter an answer!');
+                return;
+            }
+
+            const normalizedUser = normalizeAnswer(userAnswer);
+            const normalizedCorrect = normalizeAnswer(q.answer);
+            
+            let isCorrect = normalizedUser === normalizedCorrect;
+            
+            // Check alternative answers
+            if (!isCorrect && q.alternativeAnswers) {
+                for (let alt of q.alternativeAnswers) {
+                    if (normalizeAnswer(alt) === normalizedUser) {
+                        isCorrect = true;
+                        break;
+                    }
+                }
+            }
+
+            const feedback = document.getElementById('feedback');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const correctAnswer = document.getElementById('correctAnswer');
+            const explanationText = document.getElementById('explanationText');
+
+            feedback.style.display = 'block';
+            document.getElementById('answerInput').disabled = true;
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+
+            if (isCorrect) {
+                score++;
+                feedback.className = 'feedback correct';
+                feedbackIcon.textContent = '🎉';
+                feedbackTitle.textContent = 'Excellent! Correct Answer!';
+                correctAnswer.innerHTML = `✓ Your answer: <strong>${userAnswer}</strong>`;
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedbackIcon.textContent = '💡';
+                feedbackTitle.textContent = 'Not quite right, but let\'s learn!';
+                correctAnswer.innerHTML = `Your answer: ${userAnswer}<br>✓ Correct answer: <strong>${q.answerDisplay || q.answer}</strong>`;
+            }
+
+            explanationText.innerHTML = q.explanation;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion >= questions.length) {
+                showCompletion();
+            } else {
+                loadQuestion();
+            }
+        }
+
+        function showCompletion() {
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('completionSection').style.display = 'block';
+            document.getElementById('finalScore').textContent = `Your Score: ${score} / ${questions.length}`;
+            
+            const progress = 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = 'Completed!';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quizSection').style.display = 'block';
+            document.getElementById('completionSection').style.display = 'none';
+            loadQuestion();
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (document.getElementById('submitBtn').style.display !== 'none') {
+                    checkAnswer();
+                } else {
+                    nextQuestion();
+                }
+            }
+        });
+
+        // Initialize the quiz
+        init();
+    </script>
+</body>
+</html>

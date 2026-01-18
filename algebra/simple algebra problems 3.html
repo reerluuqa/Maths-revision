@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra & Word Problems Challenge</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #5a52d5;
+            --success: #00b894;
+            --error: #ff7675;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --text-light: #636e72;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #dfe6e9;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="text"] {
+            padding: 15px;
+            font-size: 1rem;
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            width: 100%;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background-color: var(--primary);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Feedback Section */
+        .feedback-section {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.4s ease;
+        }
+
+        .feedback-section.correct {
+            background-color: rgba(0, 184, 148, 0.1);
+            border: 1px solid var(--success);
+        }
+
+        .feedback-section.incorrect {
+            background-color: rgba(255, 118, 117, 0.1);
+            border: 1px solid var(--error);
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .correct .feedback-title { color: var(--success); }
+        .incorrect .feedback-title { color: var(--error); }
+
+        .explanation {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            white-space: pre-wrap; /* Preserves formatting */
+        }
+
+        .math-step {
+            display: block;
+            margin: 5px 0;
+            font-family: 'Courier New', monospace;
+            background: rgba(255,255,255,0.5);
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        #next-btn {
+            background-color: var(--text-main);
+            width: 100%;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* End Screen */
+        .end-screen {
+            text-align: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container" id="app-container">
+        <header>
+            <h1>Math Challenge</h1>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <p style="margin-top: 10px; font-size: 0.9rem; color: #888;">Question <span id="q-current">1</span> of <span id="q-total">11</span></p>
+        </header>
+
+        <!-- Quiz Area -->
+        <div id="quiz-area">
+            <div class="question-box">
+                <p class="question-text" id="question-text"></p>
+            </div>
+
+            <div class="input-group" id="input-area">
+                <input type="text" id="user-answer" placeholder="Type your answer here..." autocomplete="off">
+                <button id="submit-btn">Check Answer</button>
+            </div>
+
+            <!-- Feedback Area -->
+            <div id="feedback-area" class="feedback-section">
+                <div class="feedback-title" id="feedback-title"></div>
+                <div class="explanation" id="feedback-explanation"></div>
+                <button id="next-btn">Next Question</button>
+            </div>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen" class="end-screen hidden">
+            <h2>Great Job!</h2>
+            <p style="margin: 20px 0;">You have completed all the algebra word problems.</p>
+            <button onclick="location.reload()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: "Jack and Harry share 102 marbles so that Harry has 5 times as many as Jack. How many does each receive?",
+                // We check for both numbers in the string
+                check: (input) => input.includes('17') && input.includes('85'),
+                explanation: `Let Jack's marbles = x\nThen Harry's marbles = 5x\n\nTotal marbles = 102\nx + 5x = 102\n6x = 102\nx = 17\n\nJack receives 17.\nHarry receives 5 * 17 = 85.`
+            },
+            {
+                text: "When 35 is added to 5 times a certain number the result is 100. Find the number.",
+                check: (input) => input.includes('13'),
+                explanation: `Let the number be x.\n\n5x + 35 = 100\n5x = 100 - 35\n5x = 65\nx = 13\n\nThe number is 13.`
+            },
+            {
+                text: "When a certain number is trebled the result is the same as that of adding 34 to it. Find the number.",
+                check: (input) => input.includes('17'),
+                explanation: `Let the number be x.\n"Trebled" means multiplied by 3.\n\n3x = x + 34\nSubtract x from both sides:\n2x = 34\nx = 17\n\nThe number is 17.`
+            },
+            {
+                text: "When a girl had saved a certain amount of money her mother gave her 84p, and she then had 3 times as much as before. How much had she saved?",
+                check: (input) => input.includes('42'),
+                explanation: `Let original savings = x\nNew total = x + 84\n\nThe problem states the new total is 3 times the original:\nx + 84 = 3x\nSubtract x from both sides:\n84 = 2x\nx = 42\n\nShe had saved 42p.`
+            },
+            {
+                text: "Tom is 3 years older than Dick, and Harry is 5 years younger than Dick. The sum of their ages is 37. Find their ages.",
+                check: (input) => input.includes('16') && input.includes('13') && input.includes('8'),
+                explanation: `Let Dick's age = x\nTom is x + 3\nHarry is x - 5\n\nSum of ages = 37\n(x + 3) + x + (x - 5) = 37\n3x - 2 = 37\n3x = 39\nx = 13 (Dick)\n\nTom = 13 + 3 = 16\nHarry = 13 - 5 = 8.`
+            },
+            {
+                text: "Susan is twice as old as Janet, Pat is 3 years younger than Susan, and the sum of their ages is 32. Find their ages.",
+                check: (input) => input.includes('7') && input.includes('14') && input.includes('11'),
+                explanation: `Let Janet's age = x\nSusan is 2x\nPat is (2x - 3)\n\nSum = 32\nx + 2x + (2x - 3) = 32\n5x - 3 = 32\n5x = 35\nx = 7 (Janet)\n\nSusan = 2 * 7 = 14\nPat = 14 - 3 = 11.`
+            },
+            {
+                text: "Find the number such that when it is multiplied by 3 and 19 added, the result is the same as when it is multiplied by 7 and 17 subtracted.",
+                check: (input) => input.includes('9'),
+                explanation: `Let the number be x.\n\n3x + 19 = 7x - 17\nAdd 17 to both sides:\n3x + 36 = 7x\nSubtract 3x from both sides:\n36 = 4x\nx = 9\n\nThe number is 9.`
+            },
+            {
+                text: "Find the number which is as much less than 54 as it is greater than 8.",
+                check: (input) => input.includes('31'),
+                explanation: `Let the number be x.\n"As much less than 54" means (54 - x)\n"Greater than 8" means (x - 8)\n\n54 - x = x - 8\nAdd x to both sides:\n54 = 2x - 8\nAdd 8 to both sides:\n62 = 2x\nx = 31\n\nThe number is 31.`
+            },
+            {
+                text: "A rectangle is 3 times as long as it is wide, and its perimeter is 56 centimetres. Find its length and width.",
+                check: (input) => input.includes('21') && input.includes('7'),
+                explanation: `Let width = w\nLength = 3w\n\nPerimeter formula: 2(Length + Width)\n56 = 2(3w + w)\n56 = 2(4w)\n56 = 8w\nw = 7\n\nWidth is 7 cm.\nLength is 3 * 7 = 21 cm.`
+            },
+            {
+                text: "How must 147p be shared between John and Richard if Richard receives 19p less than John?",
+                check: (input) => input.includes('83') && input.includes('64'),
+                explanation: `Let John receive = x\nRichard receives = x - 19\n\nTotal = 147\nx + (x - 19) = 147\n2x - 19 = 147\n2x = 166\nx = 83 (John)\n\nRichard = 83 - 19 = 64.\n\nJohn gets 83p, Richard gets 64p.`
+            },
+            {
+                text: "A brick lorry weighs 11 tons 8 cwt when loaded, and the bricks weigh three times as much as the empty lorry. Find the weight of the bricks.",
+                check: (input) => (input.includes('8') && input.includes('11')) || input.includes('171'),
+                explanation: `Note: 1 ton = 20 cwt.\nTotal weight = 11 tons 8 cwt = (11 * 20) + 8 = 228 cwt.\n\nLet empty lorry weight = x\nBricks weight = 3x\n\nTotal = x + 3x = 4x\n4x = 228 cwt\nx = 57 cwt (Empty Lorry)\n\nBricks = 3 * 57 = 171 cwt.\n\nConverting back to tons:\n171 / 20 = 8 with remainder 11.\n\nAnswer: 8 tons 11 cwt (or 171 cwt).`
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        // UI Elements
+        const questionTextEl = document.getElementById('question-text');
+        const userAnswerEl = document.getElementById('user-answer');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackExplanation = document.getElementById('feedback-explanation');
+        const progressBar = document.getElementById('progress-bar');
+        const qCurrentEl = document.getElementById('q-current');
+        const qTotalEl = document.getElementById('q-total');
+        const inputArea = document.getElementById('input-area');
+        const quizArea = document.getElementById('quiz-area');
+        const endScreen = document.getElementById('end-screen');
+
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+            
+            // Reset UI
+            feedbackArea.style.display = 'none';
+            feedbackArea.className = 'feedback-section'; // remove correct/incorrect classes
+            inputArea.style.display = 'flex'; // show input
+            userAnswerEl.value = '';
+            userAnswerEl.focus();
+            
+            // Update Text
+            questionTextEl.textContent = q.text;
+            qCurrentEl.textContent = currentQuestionIndex + 1;
+            qTotalEl.textContent = questions.length;
+            
+            // Update Progress
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function checkAnswer() {
+            const userInput = userAnswerEl.value.trim();
+            if(!userInput) return; // Don't submit empty
+
+            const q = questions[currentQuestionIndex];
+            const isCorrect = q.check(userInput);
+
+            // Hide Input area temporarily to focus on feedback
+            inputArea.style.display = 'none';
+            feedbackArea.style.display = 'block';
+
+            if(isCorrect) {
+                feedbackArea.classList.add('correct');
+                feedbackTitle.textContent = "Correct!";
+            } else {
+                feedbackArea.classList.add('incorrect');
+                feedbackTitle.textContent = "Not quite.";
+            }
+
+            feedbackExplanation.textContent = q.explanation;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if(currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                // End of Quiz
+                progressBar.style.width = '100%';
+                quizArea.classList.add('hidden');
+                endScreen.classList.remove('hidden');
+            }
+        }
+
+        // Event Listeners
+        submitBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', nextQuestion);
+        
+        // Allow "Enter" key to submit
+        userAnswerEl.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // Initialize
+        loadQuestion();
+
+    </script>
+</body>
+</html>

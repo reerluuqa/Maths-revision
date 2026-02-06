@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Practice Questions – Problem Solver</title>
+  <style>
+    :root{
+      --bg1:#4b2cff;
+      --bg2:#8a2be2;
+      --card:#ffffff;
+      --text:#1f2430;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --green:#17b26a;
+      --green2:#20c997;
+      --red:#ef4444;
+      --amber:#f59e0b;
+      --shadow: 0 18px 60px rgba(0,0,0,.18);
+      --radius: 18px;
+      --radius2: 12px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:var(--sans);
+      color:var(--text);
+      background: radial-gradient(1200px 600px at 30% 20%, rgba(255,255,255,.18), transparent 60%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+    }
+
+    .shell{
+      width:min(980px, 96vw);
+    }
+
+    .header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      color:#fff;
+      margin-bottom:16px;
+      padding:6px 10px;
+    }
+    .brand{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+    }
+    .brand .icon{
+      width:34px;height:34px;
+      border-radius:10px;
+      background:rgba(255,255,255,.18);
+      display:grid;
+      place-items:center;
+      font-size:18px;
+      backdrop-filter: blur(10px);
+    }
+    .brand h1{
+      margin:0;
+      font-size:22px;
+      line-height:1.05;
+      letter-spacing:.2px;
+    }
+    .brand p{
+      margin:6px 0 0 0;
+      font-size:13px;
+      opacity:.88;
+    }
+
+    .topmeta{
+      text-align:right;
+      min-width:140px;
+    }
+    .topmeta .pct{
+      font-weight:700;
+      font-size:13px;
+      opacity:.92;
+    }
+
+    .card{
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.32);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .cardTop{
+      padding:18px 20px 8px 20px;
+    }
+
+    .progressRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .progressWrap{
+      flex:1;
+      background: #edf2ff;
+      border: 1px solid rgba(76, 81, 191, .12);
+      height:12px;
+      border-radius:999px;
+      overflow:hidden;
+      position:relative;
+    }
+    .progressBar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--green), var(--green2));
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+
+    .qmeta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:4px;
+      margin-bottom:10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .qtitle{
+      font-weight:800;
+      font-size:16px;
+      color: #2b2f3a;
+      margin:0 0 10px 0;
+    }
+
+    .qbox{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius: var(--radius2);
+      padding:16px 16px;
+    }
+
+    .prompt{
+      margin:0;
+      font-size:16px;
+      line-height:1.45;
+      color:#202534;
+    }
+    .prompt .tag{
+      display:inline-block;
+      font-size:12px;
+      padding:2px 8px;
+      border-radius:999px;
+      margin-right:8px;
+      background:#eef2ff;
+      color:#3b52c4;
+      border:1px solid rgba(59,82,196,.15);
+      vertical-align:middle;
+    }
+
+    .io{
+      padding:16px 20px 18px 20px;
+    }
+
+    label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin:0 0 8px 2px;
+      font-weight:600;
+    }
+
+    .inputRow{
+      display:flex;
+      gap:12px;
+      align-items:stretch;
+      flex-wrap:wrap;
+    }
+
+    input[type="text"]{
+      flex:1;
+      min-width:240px;
+      padding:14px 14px;
+      border-radius:12px;
+      border: 2px solid rgba(113, 50, 255, .35);
+      outline:none;
+      font-size:16px;
+      background:#fff;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    input[type="text"]:focus{
+      border-color: rgba(113, 50, 255, .7);
+      box-shadow: 0 0 0 4px rgba(113, 50, 255, .16);
+    }
+
+    .btnRow{
+      display:flex;
+      gap:12px;
+      margin-top:14px;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border:none;
+      cursor:pointer;
+      border-radius:12px;
+      padding:12px 16px;
+      font-weight:800;
+      font-size:14px;
+      transition: transform .06s ease, filter .15s ease, opacity .15s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    button:active{ transform: translateY(1px); }
+    .primary{
+      background: linear-gradient(90deg, var(--green), var(--green2));
+      color:#fff;
+      min-width:220px;
+      justify-content:center;
+    }
+    .ghost{
+      background: #ffe8e8;
+      color:#b42318;
+      border:1px solid rgba(180,35,24,.18);
+      min-width:160px;
+      justify-content:center;
+    }
+    .secondary{
+      background:#eef2ff;
+      color:#3246c9;
+      border:1px solid rgba(50,70,201,.18);
+    }
+    button[disabled]{
+      opacity:.6;
+      cursor:not-allowed;
+    }
+
+    .feedback{
+      margin-top:16px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#fff;
+      overflow:hidden;
+    }
+    .fbHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 14px;
+      border-bottom:1px solid var(--border);
+      background: #f8fafc;
+      font-weight:800;
+    }
+    .badge{
+      font-size:12px;
+      padding:2px 10px;
+      border-radius:999px;
+      border:1px solid transparent;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .ok{ background:rgba(23,178,106,.12); color:#067647; border-color:rgba(23,178,106,.25); }
+    .no{ background:rgba(239,68,68,.12); color:#b42318; border-color:rgba(239,68,68,.25); }
+    .warn{ background:rgba(245,158,11,.14); color:#92400e; border-color:rgba(245,158,11,.25); }
+
+    .fbBody{
+      padding:14px;
+      line-height:1.5;
+      color:#1f2430;
+      font-size:14px;
+    }
+    .fbBody .mono{
+      font-family:var(--mono);
+      background:#f3f4f6;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 12px;
+      margin:10px 0;
+      white-space:pre-wrap;
+    }
+
+    .bottomStats{
+      display:flex;
+      justify-content:space-around;
+      gap:10px;
+      padding:14px 16px 18px 16px;
+      color:#1f2430;
+      text-align:center;
+    }
+    .stat{
+      flex:1;
+      background: rgba(255,255,255,.65);
+      border:1px solid rgba(255,255,255,.28);
+      border-radius:14px;
+      padding:10px 10px;
+    }
+    .stat .n{
+      font-size:24px;
+      font-weight:900;
+      line-height:1.1;
+    }
+    .stat .lbl{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      margin-top:4px;
+    }
+
+    .tinyRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,255,255,.25);
+      color: rgba(255,255,255,.92);
+      font-weight:800;
+    }
+
+    .kbd{
+      font-family:var(--mono);
+      font-weight:900;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.18);
+      padding:2px 6px;
+      border-radius:8px;
+    }
+
+    @media (max-width:620px){
+      .topmeta{ display:none; }
+      .primary{ min-width: 100%; }
+      .ghost{ min-width: 100%; }
+      input[type="text"]{ min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="header">
+      <div class="brand">
+        <div class="icon">🧮</div>
+        <div>
+          <h1>Practice Questions Problem Solver</h1>
+          <p>Guided practice with instant, detailed feedback (answers revealed after you submit).</p>
+        </div>
+      </div>
+      <div class="topmeta">
+        <div class="pct" id="pctTop">0%</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cardTop">
+        <div class="progressRow">
+          <div class="progressWrap" aria-label="progress bar">
+            <div class="progressBar" id="progressBar"></div>
+          </div>
+          <div class="pct" id="pctInline" style="font-weight:900;color:#2b2f3a;">0%</div>
+        </div>
+
+        <div class="qmeta">
+          <div id="qCount">Question 1 of 1</div>
+          <div id="topicTag">Topic: Mixed</div>
+        </div>
+
+        <div class="qtitle" id="qTitle">Question</div>
+        <div class="qbox">
+          <p class="prompt" id="prompt"></p>
+        </div>
+      </div>
+
+      <div class="io">
+        <label for="answer">Your Answer:</label>
+        <div class="inputRow">
+          <input id="answer" type="text" placeholder="Enter your answer here" autocomplete="off" />
+          <button class="secondary" id="skipBtn" title="Skip this question">Skip</button>
+        </div>
+
+        <div class="btnRow">
+          <button class="primary" id="submitBtn">➤ Submit Answer</button>
+          <button class="ghost" id="hintBtn">💡 Show Hint</button>
+        </div>
+
+        <div id="feedback" class="feedback" style="display:none;">
+          <div class="fbHead">
+            <div id="fbTitle">Feedback</div>
+            <div id="fbBadge" class="badge">—</div>
+          </div>
+          <div class="fbBody" id="fbBody"></div>
+        </div>
+
+        <div class="tinyRow">
+          <div style="color:#fff;">
+            <span class="pill">Shortcuts: <span class="kbd">Enter</span> submit • <span class="kbd">H</span> hint • <span class="kbd">N</span> next</span>
+          </div>
+          <div style="color:rgba(255,255,255,.92); font-weight:800;">
+            Saved progress: <span id="saveState">On</span>
+          </div>
+        </div>
+
+        <div class="bottomStats">
+          <div class="stat">
+            <div class="n" id="correctN">0</div>
+            <div class="lbl">Correct Answers</div>
+          </div>
+          <div class="stat">
+            <div class="n" id="incorrectN">0</div>
+            <div class="lbl">Incorrect Answers</div>
+          </div>
+          <div class="stat">
+            <div class="n" id="hintsN">0</div>
+            <div class="lbl">Hints Used</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/**
+ * App goals:
+ * - Use extracted questions from the provided pages (34–35) + the LCM/GCD-style example screen.
+ * - Give detailed feedback only AFTER user submits.
+ * - UI resembles the attached reference: purple gradient + central card + progress + input + submit + hint.
+ *
+ * Notes on answers:
+ * - Accept flexible formatting: commas/spaces, equals signs, units, mixed numbers, fractions.
+ * - Some “estimate” problems accept a range (rough estimation). We mark as "approx" with tolerance.
+ */
+
+// ---------- Helpers ----------
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+function normText(s){
+  return (s ?? "").toString().trim().toLowerCase();
+}
+
+function stripUnits(s){
+  // Keep digits, dots, slashes, minus, spaces, parentheses, and common separators.
+  return normText(s)
+    .replace(/£/g,'')
+    .replace(/km|m|g|seconds|second|sec|s|people|bags|bag|books|book|cars|car|weeks|week|days|day/gi,'')
+    .replace(/,/g,'')
+    .trim();
+}
+
+function parseNumberLoose(s){
+  // Attempts to parse:
+  // - integer/decimal: 123, 7.85
+  // - fraction: a/b
+  // - mixed number: a b/c
+  // Returns number or NaN.
+  if(!s) return NaN;
+  const t = stripUnits(s);
+
+  // mixed number like "377 6/7" or "377 + 6/7"
+  const mixed = t.match(/^(-?\d+)\s*(?:\+)?\s*(\d+)\s*\/\s*(\d+)$/);
+  if(mixed){
+    const whole = Number(mixed[1]);
+    const num = Number(mixed[2]);
+    const den = Number(mixed[3]);
+    if(den === 0) return NaN;
+    return whole + (whole >= 0 ? (num/den) : -(num/den));
+  }
+
+  // pure fraction
+  const frac = t.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+  if(frac){
+    const num = Number(frac[1]);
+    const den = Number(frac[2]);
+    if(den === 0) return NaN;
+    return num/den;
+  }
+
+  // plain number
+  const n = Number(t);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+function isClose(a, b, tol=1e-9){
+  return Math.abs(a - b) <= tol;
+}
+
+function formatAnswerDisplay(ans){
+  // ans can be string or number
+  return (typeof ans === "number") ? String(ans) : ans;
+}
+
+// ---------- Question bank (extracted + answers + detailed feedback) ----------
+const QUESTIONS = [
+  // From reference screen style (LCM/GCD example)
+  {
+    id: "lcm_6_8_9",
+    title: "Question 1",
+    topic: "LCM",
+    prompt: `Find the smallest mass that can be measured out in equal amounts of <b>6 g</b>, <b>8 g</b>, or <b>9 g</b>.`,
+    hint: `This is asking for the <b>lowest common multiple (LCM)</b> of 6, 8, and 9.`,
+    check: (u) => {
+      const x = parseNumberLoose(u);
+      return Number.isFinite(x) && isClose(x, 72);
+    },
+    solution: `72 g`,
+    feedback: (u) => {
+      return `
+<b>What this is testing:</b> lowest common multiple (LCM).<br><br>
+<b>Method:</b> prime factorisation<br>
+6 = 2 × 3<br>
+8 = 2³<br>
+9 = 3²<br><br>
+Take the <b>highest powers</b> of each prime: 2³ and 3².<br>
+LCM = 2³ × 3² = 8 × 9 = <b>72</b>.<br><br>
+<b>Interpretation:</b> 72 g can be split into 6 g portions (12 portions), 8 g portions (9 portions), or 9 g portions (8 portions) with no remainder.
+`;
+    }
+  },
+
+  // Page 34
+  {
+    id:"1a", title:"Question 1a", topic:"Addition",
+    prompt:`Work out: <b>8475 + 4123</b>`,
+    hint:`Add thousands, hundreds, tens, ones separately (or use column addition).`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 12598),
+    solution:`12598`,
+    feedback:()=>`
+<b>Correct sum:</b> 8475 + 4123 = <b>12598</b><br><br>
+<b>Working:</b><div class="mono">  8475
++ 4123
+------
+ 12598</div>`
+  },
+  {
+    id:"1b", title:"Question 1b", topic:"Addition",
+    prompt:`Work out: <b>1432 + 7384</b>`,
+    hint:`Add 1400+7300 first, then the remaining parts.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 8816),
+    solution:`8816`,
+    feedback:()=>`
+<b>Correct sum:</b> 1432 + 7384 = <b>8816</b><br><br>
+<b>Working:</b><div class="mono">  1432
++ 7384
+------
+  8816</div>`
+  },
+  {
+    id:"1c", title:"Question 1c", topic:"Subtraction",
+    prompt:`Work out: <b>68 754 − 4982</b>`,
+    hint:`Subtract 5000 then add back 18 (because 4982 is 18 less than 5000).`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 63772),
+    solution:`63 772`,
+    feedback:()=>`
+<b>Correct answer:</b> 68,754 − 4,982 = <b>63,772</b><br><br>
+<b>Efficient working:</b><div class="mono">68,754 − 5,000 = 63,754
+But 4,982 is 18 less than 5,000
+So add back 18 → 63,772</div>`
+  },
+  {
+    id:"2", title:"Question 2", topic:"Time",
+    prompt:`Meera can run 800 m in <b>274.93</b> seconds. Emily can run 800 m <b>7.85</b> seconds quicker than Meera.<br><br><b>How fast can Emily run 800 m?</b>`,
+    hint:`“Quicker” means a smaller time: subtract 7.85 from 274.93.`,
+    check:(u)=>{
+      const x = parseNumberLoose(u);
+      return Number.isFinite(x) && isClose(x, 267.08, 1e-6);
+    },
+    solution:`267.08 seconds`,
+    feedback:()=>`
+<b>Key idea:</b> “Quicker” → less time.<br><br>
+Emily’s time = 274.93 − 7.85 = <b>267.08</b> seconds.<br><br>
+<b>Common pitfall:</b> adding instead of subtracting.`
+  },
+  {
+    id:"3a", title:"Question 3a", topic:"Multiplication",
+    prompt:`Work out: <b>614 × 37</b>`,
+    hint:`Use partition: 614×(30+7) = 614×30 + 614×7.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 22718),
+    solution:`22,718`,
+    feedback:()=>`
+<b>Method:</b> distribute (partition)<br>
+614 × 37 = 614×30 + 614×7<br>
+= 18,420 + 4,298 = <b>22,718</b><br><br>
+<div class="mono">614×30 = 18,420
+614×7  = 4,298
+Total  = 22,718</div>`
+  },
+  {
+    id:"3b", title:"Question 3b", topic:"Multiplication",
+    prompt:`Work out: <b>2873 × 15</b>`,
+    hint:`15 = 10 + 5. So 2873×15 = 2873×10 + 2873×5.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 43095),
+    solution:`43,095`,
+    feedback:()=>`
+<b>Method:</b> multiply by 10 and 5<br>
+2873×15 = 2873×10 + 2873×5<br>
+= 28,730 + 14,365 = <b>43,095</b><br><br>
+<div class="mono">2873×10 = 28,730
+2873×5  = 14,365
+Total   = 43,095</div>`
+  },
+  {
+    id:"4", title:"Question 4", topic:"Word problem",
+    prompt:`Monica is a chef. She cooks <b>4302 g</b> of rice every day.<br><br><b>How much rice does she cook in a week?</b>`,
+    hint:`A week has 7 days → multiply 4302 by 7.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 30114),
+    solution:`30,114 g`,
+    feedback:()=>`
+<b>Weekly total:</b> 4302 g/day × 7 days = <b>30,114 g</b><br><br>
+<div class="mono">4302×7 = (4000×7) + (300×7) + (2×7)
+      = 28000 + 2100 + 14
+      = 30114</div>`
+  },
+  {
+    id:"5", title:"Question 5", topic:"Division / grouping",
+    prompt:`<b>1768</b> people are going up a mountain by cable car. Each cable car fits <b>16</b> people.<br><br><b>How many cable cars are needed?</b>`,
+    hint:`Divide 1768 by 16.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 110),
+    solution:`110 cable cars`,
+    feedback:()=>`
+<b>Calculation:</b> 1768 ÷ 16 = <b>110</b><br><br>
+<div class="mono">16×100 = 1600
+1768−1600 = 168
+16×10  = 160
+168−160 = 8
+So 110 remainder 8? Wait:
+Actually 16×110 = 1760
+1768−1760 = 8</div>
+Because there is a remainder of 8 people, you still need another car <b>only if</b> you cannot split people. Here, the question typically expects the exact division result. However 1768 ÷ 16 = 110 remainder 8, so you need <b>111</b> cars if every person must ride.<br><br>
+<b>Important:</b> If the intent is “cars required to carry everyone”, answer is <b>111</b>. If it’s “complete full cars only”, answer is <b>110</b> full cars plus one partially filled car.<br><br>
+<b>I will mark as correct:</b> 111, or “110 remainder 8 / 110 r8 / 110 full + 1 part”.`,
+    // Override check to accept both interpretations robustly:
+    check:(u)=>{
+      const t = normText(u);
+      const n = parseNumberLoose(u);
+      if (Number.isFinite(n) && (isClose(n,111) || isClose(n,110))) return true;
+      if (t.includes("remainder") || t.includes("r")) return true;
+      if (t.includes("110") && (t.includes("8") || t.includes("part"))) return true;
+      return false;
+    },
+    solution:`111 cable cars (or 110 remainder 8)`,
+  },
+  {
+    id:"6a", title:"Question 6a", topic:"Division",
+    prompt:`Calculate <b>2645 ÷ 7</b>. Give your answer as: <b>a number with a remainder</b>.`,
+    hint:`7×300=2100, 7×70=490, 7×7=49. Add to get close to 2645.`,
+    check:(u)=>{
+      const t = normText(u);
+      // accept "377 r6", "377 remainder 6", "377r6"
+      if(/377\s*(r|rem|remainder)\s*6/.test(t)) return true;
+      const n = parseNumberLoose(u);
+      // If user enters 377.857... we consider not correct for this subpart, but accept if they wrote 377 6/7.
+      return false;
+    },
+    solution:`377 remainder 6`,
+    feedback:()=>`
+2645 ÷ 7 = <b>377 remainder 6</b><br><br>
+<div class="mono">7×377 = 2639
+2645−2639 = 6
+So quotient 377, remainder 6</div>`
+  },
+  {
+    id:"6b", title:"Question 6b", topic:"Division",
+    prompt:`Calculate <b>2645 ÷ 7</b>. Give your answer as: <b>a mixed number</b>.`,
+    hint:`Convert remainder to a fraction: remainder/7.`,
+    check:(u)=>{
+      const x = parseNumberLoose(u);
+      return Number.isFinite(x) && isClose(x, 377 + 6/7, 1e-6);
+    },
+    solution:`377 6/7`,
+    feedback:()=>`
+From part (a): 2645 ÷ 7 = 377 remainder 6.<br>
+As a mixed number: <b>377 6/7</b>.<br><br>
+<div class="mono">377 + (6/7)</div>`
+  },
+  {
+    id:"7a", title:"Question 7a", topic:"Place value",
+    prompt:`Work out the missing number: <b>…… × 100 = 3500</b>`,
+    hint:`Divide 3500 by 100.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 35),
+    solution:`35`,
+    feedback:()=>`
+Missing number = 3500 ÷ 100 = <b>35</b><br><br>
+<b>Reason:</b> multiplying by 100 moves digits two places left; dividing by 100 reverses it.`
+  },
+  {
+    id:"7b", title:"Question 7b", topic:"Place value",
+    prompt:`Work out the missing number: <b>0.24 × 10 = ……</b>`,
+    hint:`×10 shifts the decimal one place to the right.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 2.4, 1e-9),
+    solution:`2.4`,
+    feedback:()=>`
+0.24 × 10 = <b>2.4</b><br><br>
+<b>Decimal shift:</b> 0.24 → 2.4`
+  },
+  {
+    id:"7c", title:"Question 7c", topic:"Scaling",
+    prompt:`Work out the missing number: <b>6.74 × …… = 6740</b>`,
+    hint:`Think: 6.74 × 1000 = 6740.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 1000),
+    solution:`1000`,
+    feedback:()=>`
+6.74 × <b>1000</b> = 6740<br><br>
+<b>Reason:</b> ×1000 moves decimal three places right: 6.74 → 6740`
+  },
+  {
+    id:"7d", title:"Question 7d", topic:"Scaling",
+    prompt:`Work out the missing number: <b>…… × 1000 = 59 820</b>`,
+    hint:`Divide 59,820 by 1000.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 59.82, 1e-9),
+    solution:`59.82`,
+    feedback:()=>`
+Missing number = 59,820 ÷ 1000 = <b>59.82</b><br><br>
+<b>Reason:</b> ÷1000 moves decimal three places left.`
+  },
+  {
+    id:"8", title:"Question 8", topic:"Rate",
+    prompt:`Jenny cycled the same distance each day for <b>100</b> days. She cycled <b>6724 km</b> in total.<br><br><b>How far did she cycle each day?</b>`,
+    hint:`Divide total distance by number of days: 6724 ÷ 100.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 67.24, 1e-9),
+    solution:`67.24 km per day`,
+    feedback:()=>`
+Daily distance = 6724 ÷ 100 = <b>67.24</b> km/day<br><br>
+<b>Decimal shift:</b> ÷100 moves the decimal two places left.`
+  },
+  {
+    id:"9a", title:"Question 9a", topic:"Division (decimal)",
+    prompt:`Work out: <b>43.8 ÷ 6</b>`,
+    hint:`Think 42 ÷ 6 = 7, remainder 1.8; then 1.8 ÷ 6 = 0.3.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 7.3, 1e-9),
+    solution:`7.3`,
+    feedback:()=>`
+43.8 ÷ 6 = <b>7.3</b><br><br>
+<div class="mono">6×7 = 42
+43.8−42 = 1.8
+1.8 ÷ 6 = 0.3
+Total = 7 + 0.3 = 7.3</div>`
+  },
+  {
+    id:"9b", title:"Question 9b", topic:"Multiplication (decimal)",
+    prompt:`Work out: <b>2.73 × 9</b>`,
+    hint:`2.73×10 = 27.3, then subtract one 2.73.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 24.57, 1e-9),
+    solution:`24.57`,
+    feedback:()=>`
+2.73 × 9 = <b>24.57</b><br><br>
+<div class="mono">2.73×10 = 27.30
+27.30−2.73 = 24.57</div>`
+  },
+
+  // Page 35
+  {
+    id:"10a", title:"Question 10a", topic:"Order of operations",
+    prompt:`Work out: <b>16 − 4 × 2 + 3</b>`,
+    hint:`Multiply first: 4×2, then do addition/subtraction left-to-right.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 11),
+    solution:`11`,
+    feedback:()=>`
+Apply BIDMAS/PEMDAS: multiply first.<br>
+16 − (4×2) + 3 = 16 − 8 + 3 = 8 + 3 = <b>11</b>`
+  },
+  {
+    id:"10b", title:"Question 10b", topic:"Order of operations",
+    prompt:`Work out: <b>8 × (6 − 1) + 12</b>`,
+    hint:`Do the bracket first: (6−1)=5.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 52),
+    solution:`52`,
+    feedback:()=>`
+Bracket first: (6−1)=5.<br>
+8×5 + 12 = 40 + 12 = <b>52</b>`
+  },
+  {
+    id:"11", title:"Question 11", topic:"Expressions",
+    prompt:`Ursula has <b>12</b> large books and <b>6</b> small books. She wants to divide her books equally between <b>3</b> shelves.<br><br>
+Which of these calculations shows how many books will be on each shelf?<br>
+• 12 + 6 ÷ 3<br>
+• 12 + (6 ÷ 3)<br>
+• (12 + 6) ÷ 3`,
+    hint:`Add total books first, then divide by shelves.`,
+    check:(u)=>{
+      const t = normText(u);
+      // accept option text or "third" or "(12+6)/3"
+      if (t.includes("(12 + 6) ÷ 3") || t.includes("(12+6)/3") || t.includes("(12+6) ÷ 3")) return true;
+      if (t.includes("third") || t.includes("3rd") || t.includes("option 3") || t === "3") return true;
+      return false;
+    },
+    solution:`(12 + 6) ÷ 3`,
+    feedback:()=>`
+Total books = 12 + 6 = 18.<br>
+Divide equally between 3 shelves → 18 ÷ 3 = 6 per shelf.<br><br>
+So the correct expression is <b>(12 + 6) ÷ 3</b>.<br><br>
+<b>Why the others are wrong:</b> they divide only the 6 small books, not the total.`
+  },
+  {
+    id:"12a", title:"Question 12a", topic:"Money / word problem",
+    prompt:`A pack of batteries costs <b>£3.46</b> and a bag of fizzy gums costs <b>£1.50</b>.<br>
+Esteban needs <b>three</b> packs of batteries. He has <b>£15</b> to spend.<br><br>
+He buys the batteries and then spends the rest on fizzy gums.<br><br>
+<b>a) How many bags of fizzy gums does Esteban buy?</b>`,
+    hint:`First find cost of 3 battery packs, subtract from £15, then divide by £1.50.`,
+    check:(u)=> Number.isFinite(parseNumberLoose(u)) && isClose(parseNumberLoose(u), 3),
+    solution:`3 bags`,
+    feedback:()=>`
+Cost of batteries: 3 × £3.46 = £10.38.<br>
+Money left: £15.00 − £10.38 = £4.62.<br>
+Bags of gums: £4.62 ÷ £1.50 = 3.08… so he can buy <b>3</b> whole bags.<br><br>
+<b>Answer:</b> <b>3 bags</b>.`
+  },
+  {
+    id:"12b", title:"Question 12b", topic:"Money / remainder",
+    prompt:`Same scenario as 12.<br><br><b>b) How much money does he have left over?</b>`,
+    hint:`After buying 3 bags (£4.50), subtract from £4.62.`,
+    check:(u)=>{
+      const x = parseNumberLoose(u);
+      return Number.isFinite(x) && isClose(x, 0.12, 1e-9);
+    },
+    solution:`£0.12`,
+    feedback:()=>`
+After batteries he has £4.62.<br>
+He buys 3 bags of gums: 3 × £1.50 = £4.50.<br>
+Leftover: £4.62 − £4.50 = <b>£0.12</b>.`
+  },
+  {
+    id:"13a", title:"Question 13a", topic:"Estimation",
+    prompt:`Estimate: <b>6.4 × 8.2</b>`,
+    hint:`Round to easy numbers (e.g., 6.4≈6 and 8.2≈8, or 6.4≈6.5 and 8.2≈8).`,
+    check:(u)=>{
+      const x = parseNumberLoose(u);
+      // Allow typical estimates: 48, 52, 50-ish
+      return Number.isFinite(x) && (x>=45 && x<=55);
+    },
+    solution:`≈ 50 (reasonable estimates: 48 to 52)`,
+    feedback:(u)=>`
+<b>One good estimate:</b> 6.4×8.2 ≈ 6×8 = <b>48</b>.<br>
+Another: 6.4≈6.5 and 8.2≈8 → 6.5×8 = <b>52</b>.<br><br>
+Exact is 52.48, so estimates around <b>50</b> are sensible.`
+  },
+  {
+    id:"13b", title:"Question 13b", topic:"Estimation",
+    prompt:`Estimate: <b>212 ÷ (4.1 × 5.3)</b>`,
+    hint:`Round: 4.1≈4 and 5.3≈5 → denominator ≈20. Then 212÷20 ≈ 10.6.`,
+    check:(u)=>{
+      const x = parseNumberLoose(u);
+      // Typical estimate ~ 10
+      return Number.isFinite(x) && (x>=8 && x<=13);
+    },
+    solution:`≈ 11 (roughly 10–12)`,
+    feedback:()=>`
+Round: 4.1≈4 and 5.3≈5 → 4×5=20.<br>
+Then 212 ÷ 20 = <b>10.6</b> ≈ <b>11</b>.<br><br>
+If you round 4.1×5.3 ≈ 4×5.5=22, then 212÷22 ≈ 9.6 — still same ballpark (~10).`
+  },
+  {
+    id:"14a", title:"Question 14a", topic:"Multiples",
+    prompt:`List the first 5 multiples of <b>4</b>.`,
+    hint:`Multiply 4 by 1,2,3,4,5.`,
+    check:(u)=>{
+      const t = normText(u).replace(/,/g,' ').replace(/\s+/g,' ').trim();
+      const want = ["4","8","12","16","20"];
+      return want.every(w => t.split(' ').includes(w));
+    },
+    solution:`4, 8, 12, 16, 20`,
+    feedback:()=>`
+First 5 multiples of 4 are: <b>4, 8, 12, 16, 20</b> (4×1 to 4×5).`
+  },
+  {
+    id:"14b", title:"Question 14b", topic:"Multiples",
+    prompt:`List the first 5 multiples of <b>12</b>.`,
+    hint:`Multiply 12 by 1,2,3,4,5.`,
+    check:(u)=>{
+      const t = normText(u).replace(/,/g,' ').replace(/\s+/g,' ').trim();
+      const want = ["12","24","36","48","60"];
+      return want.every(w => t.split(' ').includes(w));
+    },
+    solution:`12, 24, 36, 48, 60`,
+    feedback:()=>`
+First 5 multiples of 12 are: <b>12, 24, 36, 48, 60</b> (12×1 to 12×5).`
+  },
+  {
+    id:"15a", title:"Question 15a", topic:"Common factors",
+    prompt:`Find all the common factors of <b>12</b> and <b>30</b>.`,
+    hint:`List factors of each number, then take the intersection.`,
+    check:(u)=>{
+      const t = normText(u).replace(/,/g,' ').replace(/\s+/g,' ').trim();
+      const want = ["1","2","3","6"];
+      return want.every(w => t.split(' ').includes(w));
+    },
+    solution:`1, 2, 3, 6`,
+    feedback:()=>`
+Factors of 12: 1,2,3,4,6,12<br>
+Factors of 30: 1,2,3,5,6,10,15,30<br>
+Common factors: <b>1, 2, 3, 6</b>`
+  },
+  {
+    id:"15b", title:"Question 15b", topic:"Common factors",
+    prompt:`Find all the common factors of <b>28</b> and <b>49</b>.`,
+    hint:`Prime factors: 28=2²×7, 49=7² → common factors are based on 7.`,
+    check:(u)=>{
+      const t = normText(u).replace(/,/g,' ').replace(/\s+/g,' ').trim();
+      const want = ["1","7"];
+      return want.every(w => t.split(' ').includes(w));
+    },
+    solution:`1, 7`,
+    feedback:()=>`
+28 = 2²×7; factors include 1,2,4,7,14,28<br>
+49 = 7²; factors are 1,7,49<br>
+Common factors: <b>1</b> and <b>7</b>`
+  },
+  {
+    id:"16a", title:"Question 16a", topic:"Prime numbers",
+    prompt:`Find all the prime numbers between <b>18</b> and <b>28</b>.`,
+    hint:`Check 19–27. A prime has no divisors other than 1 and itself.`,
+    check:(u)=>{
+      const t = normText(u).replace(/,/g,' ').replace(/\s+/g,' ').trim();
+      const want = ["19","23"];
+      return want.every(w => t.split(' ').includes(w));
+    },
+    solution:`19, 23`,
+    feedback:()=>`
+Check integers 19–27:<br>
+19 prime ✓<br>
+20 even ✗<br>
+21 divisible by 3 ✗<br>
+22 even ✗<br>
+23 prime ✓<br>
+24 even ✗<br>
+25 divisible by 5 ✗<br>
+26 even ✗<br>
+27 divisible by 3 ✗<br><br>
+So primes are <b>19</b> and <b>23</b>.`
+  },
+  {
+    id:"16b", title:"Question 16b", topic:"Prime numbers",
+    prompt:`Find all the prime numbers between <b>58</b> and <b>68</b>.`,
+    hint:`Check 59–67; eliminate evens and multiples of 3,5,7.`,
+    check:(u)=>{
+      const t = normText(u).replace(/,/g,' ').replace(/\s+/g,' ').trim();
+      const want = ["59","61","67"];
+      return want.every(w => t.split(' ').includes(w));
+    },
+    solution:`59, 61, 67`,
+    feedback:()=>`
+Numbers 59–67:<br>
+59 prime ✓<br>
+60 even ✗<br>
+61 prime ✓<br>
+62 even ✗<br>
+63 divisible by 3 ✗<br>
+64 even ✗<br>
+65 divisible by 5 ✗<br>
+66 even ✗<br>
+67 prime ✓<br><br>
+So primes are <b>59, 61, 67</b>.`
+  },
+  {
+    id:"17", title:"Question 17", topic:"Prime factorisation",
+    prompt:`Which prime numbers multiply together to make <b>18</b>?`,
+    hint:`Prime factorise 18.`,
+    check:(u)=>{
+      const t = normText(u).replace(/×|x|\*/g,' ').replace(/,/g,' ').replace(/\s+/g,' ').trim();
+      // Expect 2 and 3 and 3 (or 2×3²)
+      const parts = t.split(' ');
+      const has2 = parts.includes('2');
+      const threes = parts.filter(x=>x==='3').length;
+      if(has2 && threes>=2) return true;
+      if(t.includes('2') && (t.includes('3^2') || t.includes('3²'))) return true;
+      return false;
+    },
+    solution:`2 × 3 × 3 (i.e., 2 × 3²)`,
+    feedback:()=>`
+Prime factorisation: 18 = 2 × 9 = 2 × 3 × 3 = <b>2 × 3²</b>.<br><br>
+So the primes are <b>2, 3, 3</b>.`
+  },
+  {
+    id:"18", title:"Question 18", topic:"Squares and cubes",
+    prompt:`Gunther is thinking of a <b>square number</b> and a <b>cube number</b>. Together, they add up to <b>24</b>.<br><br><b>Which square and cube numbers is he thinking of?</b>`,
+    hint:`List squares ≤24 (1,4,9,16) and cubes ≤24 (1,8) then find a pair summing to 24.`,
+    check:(u)=>{
+      const t = normText(u).replace(/,/g,' ').replace(/\s+/g,' ').trim();
+      // Expect 16 and 8 (order flexible)
+      return (t.includes('16') && t.includes('8'));
+    },
+    solution:`16 and 8 (16 is a square, 8 is a cube)`,
+    feedback:()=>`
+Squares ≤24: 1, 4, 9, 16<br>
+Cubes ≤24: 1, 8<br><br>
+Try combinations to make 24:<br>
+16 + 8 = <b>24</b> ✓<br><br>
+So the numbers are <b>16</b> (4²) and <b>8</b> (2³).`
+  },
+];
+
+// ---------- State ----------
+const STORAGE_KEY = "practice_solver_v1";
+let state = {
+  idx: 0,
+  correct: 0,
+  incorrect: 0,
+  hints: 0,
+  answered: {}, // id -> {userAnswer, correct, hintUsed}
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const parsed = JSON.parse(raw);
+    if(parsed && typeof parsed === "object"){
+      state = { ...state, ...parsed };
+      // defensive
+      state.idx = clamp(Number(state.idx)||0, 0, QUESTIONS.length-1);
+      state.correct = Number(state.correct)||0;
+      state.incorrect = Number(state.incorrect)||0;
+      state.hints = Number(state.hints)||0;
+      state.answered = parsed.answered && typeof parsed.answered==="object" ? parsed.answered : {};
+    }
+  } catch(e){
+    // ignore
+  }
+}
+
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e){
+    // ignore
+  }
+}
+
+function resetState(){
+  state = { idx:0, correct:0, incorrect:0, hints:0, answered:{} };
+  saveState();
+  render();
+}
+
+// ---------- UI bindings ----------
+const el = (id)=>document.getElementById(id);
+
+const progressBar = el("progressBar");
+const pctTop = el("pctTop");
+const pctInline = el("pctInline");
+const qCount = el("qCount");
+const topicTag = el("topicTag");
+const qTitle = el("qTitle");
+const promptEl = el("prompt");
+const answerEl = el("answer");
+const submitBtn = el("submitBtn");
+const hintBtn = el("hintBtn");
+const skipBtn = el("skipBtn");
+
+const feedbackWrap = el("feedback");
+const fbTitle = el("fbTitle");
+const fbBadge = el("fbBadge");
+const fbBody = el("fbBody");
+
+const correctN = el("correctN");
+const incorrectN = el("incorrectN");
+const hintsN = el("hintsN");
+
+function progressPct(){
+  // progress based on how many questions have been answered (not index)
+  const answeredCount = Object.keys(state.answered).length;
+  return QUESTIONS.length ? Math.round((answeredCount / QUESTIONS.length) * 100) : 0;
+}
+
+function render(){
+  const q = QUESTIONS[state.idx];
+  const answeredCount = Object.keys(state.answered).length;
+
+  qCount.textContent = `Question ${state.idx + 1} of ${QUESTIONS.length}`;
+  topicTag.textContent = `Topic: ${q.topic}`;
+  qTitle.textContent = q.title;
+  promptEl.innerHTML = q.prompt;
+
+  const pct = progressPct();
+  progressBar.style.width = `${pct}%`;
+  pctTop.textContent = `${pct}%`;
+  pctInline.textContent = `${pct}%`;
+
+  correctN.textContent = state.correct;
+  incorrectN.textContent = state.incorrect;
+  hintsN.textContent = state.hints;
+
+  // If already answered, show what happened + disable submit to prevent double counting.
+  const prev = state.answered[q.id];
+  if(prev){
+    answerEl.value = prev.userAnswer ?? "";
+    answerEl.disabled = true;
+    submitBtn.disabled = true;
+    showFeedback(q, prev);
+  }else{
+    answerEl.value = "";
+    answerEl.disabled = false;
+    submitBtn.disabled = false;
+    hideFeedback();
+  }
+
+  // Hint button always allowed (counts once per question)
+  hintBtn.disabled = false;
+
+  // Update submit button label to match reference style
+  submitBtn.textContent = "➤ Submit Answer";
+}
+
+function hideFeedback(){
+  feedbackWrap.style.display = "none";
+  fbBody.innerHTML = "";
+  fbBadge.textContent = "—";
+  fbBadge.className = "badge";
+  fbTitle.textContent = "Feedback";
+}
+
+function showFeedback(q, result){
+  feedbackWrap.style.display = "block";
+  const ok = !!result.correct;
+
+  fbTitle.textContent = ok ? "Correct" : "Not quite";
+  fbBadge.textContent = ok ? "Correct" : "Incorrect";
+  fbBadge.className = "badge " + (ok ? "ok" : "no");
+
+  const userAns = (result.userAnswer ?? "").toString().trim();
+  const ansDisplay = formatAnswerDisplay(q.solution);
+
+  // Detailed feedback: always reveal correct answer + explanation after submit.
+  fbBody.innerHTML = `
+<b>Your answer:</b> <span style="font-family:var(--mono)">${escapeHtml(userAns || "—")}</span><br>
+<b>Expected:</b> <span style="font-family:var(--mono)">${escapeHtml(ansDisplay)}</span>
+${result.hintUsed ? `<br><span class="badge warn" style="margin-top:8px; display:inline-block;">Hint used</span>` : ""}
+<hr style="border:none;border-top:1px solid var(--border); margin:12px 0;">
+${q.feedback(userAns)}
+`;
+}
+
+function escapeHtml(s){
+  return (s ?? "").toString()
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function markAnswered(q, userAnswer, correct, hintUsed){
+  state.answered[q.id] = { userAnswer, correct, hintUsed: !!hintUsed };
+  if(correct) state.correct += 1;
+  else state.incorrect += 1;
+  saveState();
+}
+
+function hintUsedFor(q){
+  return state.answered[q.id]?.hintUsed || state._hinted?.[q.id] || false;
+}
+
+// Track hint usage per question before answering:
+state._hinted = state._hinted || {};
+
+// ---------- Actions ----------
+function submitCurrent(){
+  const q = QUESTIONS[state.idx];
+  if(state.answered[q.id]) return;
+
+  const userAnswer = answerEl.value ?? "";
+  const correct = q.check(userAnswer);
+  const usedHint = !!state._hinted[q.id];
+
+  markAnswered(q, userAnswer, correct, usedHint);
+
+  answerEl.disabled = true;
+  submitBtn.disabled = true;
+  showFeedback(q, state.answered[q.id]);
+  renderStatsOnly();
+}
+
+function renderStatsOnly(){
+  const pct = progressPct();
+  progressBar.style.width = `${pct}%`;
+  pctTop.textContent = `${pct}%`;
+  pctInline.textContent = `${pct}%`;
+  correctN.textContent = state.correct;
+  incorrectN.textContent = state.incorrect;
+  hintsN.textContent = state.hints;
+}
+
+function showHint(){
+  const q = QUESTIONS[state.idx];
+  // count hint only once per question
+  if(!state._hinted[q.id] && !state.answered[q.id]){
+    state._hinted[q.id] = true;
+    state.hints += 1;
+    saveState();
+    renderStatsOnly();
+  }
+
+  feedbackWrap.style.display = "block";
+  fbTitle.textContent = "Hint";
+  fbBadge.textContent = "Hint";
+  fbBadge.className = "badge warn";
+  fbBody.innerHTML = `
+<b>Hint:</b><br>
+${q.hint}
+<hr style="border:none;border-top:1px solid var(--border); margin:12px 0;">
+<b>Note:</b> Submit your answer to see the full worked solution and the correct answer.
+`;
+}
+
+function nextQuestion(){
+  // move to next unanswered if possible, else just next index wrap
+  const start = state.idx;
+  for(let k=1; k<=QUESTIONS.length; k++){
+    const j = (start + k) % QUESTIONS.length;
+    if(!state.answered[QUESTIONS[j].id]){
+      state.idx = j;
+      saveState();
+      render();
+      return;
+    }
+  }
+  // all answered: just move forward
+  state.idx = (state.idx + 1) % QUESTIONS.length;
+  saveState();
+  render();
+}
+
+function skipQuestion(){
+  // skipping should just go to next question, no scoring
+  nextQuestion();
+}
+
+// ---------- Events ----------
+submitBtn.addEventListener("click", submitCurrent);
+hintBtn.addEventListener("click", showHint);
+skipBtn.addEventListener("click", skipQuestion);
+
+answerEl.addEventListener("keydown", (e)=>{
+  if(e.key === "Enter"){
+    e.preventDefault();
+    submitCurrent();
+  }
+});
+
+document.addEventListener("keydown", (e)=>{
+  // avoid capturing when typing in input except for Enter handled above
+  const active = document.activeElement;
+  const typing = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
+
+  if(!typing){
+    if(e.key.toLowerCase() === "h"){
+      e.preventDefault();
+      showHint();
+    }
+    if(e.key.toLowerCase() === "n"){
+      e.preventDefault();
+      nextQuestion();
+    }
+    if(e.key.toLowerCase() === "r"){
+      // optional: reset with r (no UI button to keep it clean)
+      // confirm to prevent accidental wipe
+      const ok = confirm("Reset all progress? This clears saved results.");
+      if(ok) resetState();
+    }
+  }
+});
+
+// ---------- Init ----------
+loadState();
+render();
+</script>
+</body>
+</html>

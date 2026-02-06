@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Practice Quiz – Measure</title>
+  <style>
+    :root{
+      --bg1:#4a00e0;
+      --bg2:#8e2de2;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --ink:#111827;
+      --line:#e5e7eb;
+      --ok:#16a34a;
+      --bad:#ef4444;
+      --btn:#16a34a;
+      --btn2:#ef4444;
+      --shadow: 0 10px 30px rgba(0,0,0,.18);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--ink);
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(255,255,255,.12), transparent 60%),
+                  linear-gradient(135deg,var(--bg1),var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      box-sizing:border-box;
+    }
+    .app{
+      width:min(980px, 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .frame{
+      width:min(880px, 100%);
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:24px;
+      padding:18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.22);
+      backdrop-filter: blur(8px);
+    }
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 16px;
+      border-radius:18px;
+      background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border:1px solid rgba(255,255,255,.14);
+    }
+    .title{
+      display:flex;align-items:flex-start;gap:12px;
+    }
+    .title .icon{
+      width:34px;height:34px;border-radius:10px;
+      background: rgba(255,255,255,.16);
+      display:grid;place-items:center;
+      border:1px solid rgba(255,255,255,.18);
+    }
+    .title h1{
+      font-size:20px;margin:0;color:white;letter-spacing:.2px;
+    }
+    .title .sub{
+      margin:2px 0 0 0;
+      font-size:12px;color:rgba(255,255,255,.80);
+    }
+    .progressWrap{
+      min-width:240px;
+      color:white;
+      display:flex;flex-direction:column;gap:6px;
+      align-items:flex-end;
+    }
+    .progressText{
+      font-size:12px;color:rgba(255,255,255,.85);
+      display:flex;gap:10px;align-items:center;
+    }
+    .bar{
+      width:240px;height:10px;border-radius:999px;
+      background: rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.18);
+      overflow:hidden;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(34,197,94,.95), rgba(34,197,94,.75));
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+
+    .card{
+      margin-top:14px;
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      border:1px solid rgba(0,0,0,.05);
+      overflow:hidden;
+    }
+    .cardInner{
+      padding:18px 18px 14px 18px;
+    }
+    .meta{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .qcount{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+    }
+    .badge{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#f3f4f6;
+      border:1px solid var(--line);
+      color:#374151;
+      font-weight:600;
+    }
+    .qtitle{
+      font-size:16px;
+      margin:0 0 10px 0;
+      font-weight:800;
+      color:#1f2937;
+    }
+    .prompt{
+      border-left:4px solid #a78bfa;
+      padding:10px 12px;
+      border-radius:12px;
+      background: #faf5ff;
+      color:#111827;
+      line-height:1.35;
+      margin-bottom:12px;
+      white-space:pre-wrap;
+    }
+
+    .diagram{
+      margin: 10px 0 12px 0;
+      display:flex;
+      justify-content:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .diagram .panel{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:14px;
+      padding:10px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.08);
+    }
+
+    .answerLabel{
+      font-size:12px;
+      font-weight:700;
+      color: #374151;
+      margin: 0 0 6px 0;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:stretch;
+      flex-wrap:wrap;
+    }
+    input[type="text"], input[type="number"]{
+      flex: 1 1 280px;
+      border:2px solid #c4b5fd;
+      border-radius:12px;
+      padding:12px 12px;
+      font-size:16px;
+      outline:none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    input:focus{
+      border-color:#7c3aed;
+      box-shadow: 0 0 0 4px rgba(124,58,237,.15);
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:12px 14px;
+      font-weight:800;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      transition: transform .04s ease, filter .2s ease, opacity .2s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btnPrimary{
+      background: linear-gradient(90deg, rgba(34,197,94,1), rgba(22,163,74,1));
+      color:white;
+      min-width: 170px;
+      justify-content:center;
+    }
+    .btnHint{
+      background: #fca5a5;
+      color:#7f1d1d;
+      min-width: 140px;
+      justify-content:center;
+    }
+    .btnNext{
+      background: #111827;
+      color:white;
+      min-width: 140px;
+      justify-content:center;
+    }
+    .btnSecondary{
+      background:#f3f4f6;
+      color:#111827;
+      border:1px solid var(--line);
+      min-width: 140px;
+      justify-content:center;
+    }
+    .btn[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+      filter: grayscale(.25);
+    }
+
+    .feedback{
+      margin-top:12px;
+      border-top:1px dashed var(--line);
+      padding-top:12px;
+      display:none;
+      gap:10px;
+      flex-direction:column;
+    }
+    .resultLine{
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+      font-weight:900;
+    }
+    .pill{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:900;
+      border:1px solid;
+    }
+    .pillOk{ background:#dcfce7; color:#14532d; border-color:#86efac; }
+    .pillBad{ background:#fee2e2; color:#7f1d1d; border-color:#fecaca; }
+    .pillInfo{ background:#e0e7ff; color:#1e3a8a; border-color:#c7d2fe; }
+
+    .explain{
+      border:1px solid var(--line);
+      background:#ffffff;
+      border-radius:14px;
+      padding:12px;
+      line-height:1.4;
+      color:#111827;
+    }
+    .explain h3{
+      margin:0 0 8px 0;
+      font-size:13px;
+      color:#374151;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+    .explain .steps{
+      margin:0;
+      padding-left: 18px;
+    }
+    .explain code{
+      font-family:var(--mono);
+      background:#f3f4f6;
+      padding:2px 6px;
+      border-radius:8px;
+      border:1px solid #e5e7eb;
+    }
+
+    .footer{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:14px 16px 16px 16px;
+      border-top:1px solid rgba(0,0,0,.06);
+      background: linear-gradient(180deg, rgba(249,250,251,.7), rgba(249,250,251,1));
+    }
+    .stat{
+      flex:1;
+      text-align:center;
+    }
+    .stat .n{
+      font-size:20px;font-weight:900;color:#111827;
+    }
+    .stat .t{
+      font-size:11px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    }
+    .smallNote{
+      margin-top:10px;
+      font-size:12px;
+      color:rgba(255,255,255,.85);
+      text-align:center;
+    }
+    .kbd{
+      font-family:var(--mono);
+      font-size:12px;
+      padding:2px 6px;
+      border-radius:8px;
+      background: rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.22);
+      color:white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="frame">
+
+      <div class="header">
+        <div class="title">
+          <div class="icon" aria-hidden="true">
+            <!-- calculator icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" stroke="white" stroke-width="1.8"/>
+              <path d="M8 6h8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M8 10h3M13 10h3M8 14h3M13 14h3M8 18h3M13 18h3" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1>Measure Practice Quiz</h1>
+            <div class="sub">Guided practice with step-by-step solutions before advancing</div>
+          </div>
+        </div>
+
+        <div class="progressWrap">
+          <div class="progressText">
+            <span id="qCounter">Question 1 of 14</span>
+            <span id="pct">0%</span>
+          </div>
+          <div class="bar" aria-label="Progress">
+            <div id="barFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" role="region" aria-label="Question card">
+        <div class="cardInner">
+          <div class="meta">
+            <div class="qcount" id="qMeta">Section Five — Measure</div>
+            <div class="badge" id="modeBadge">Free response</div>
+          </div>
+
+          <h2 class="qtitle" id="qTitle">Question</h2>
+          <div class="prompt" id="qPrompt"></div>
+
+          <div class="diagram" id="diagramWrap" aria-label="Diagram area"></div>
+
+          <div class="answerLabel">Your Answer:</div>
+          <div class="row">
+            <input id="answerInput" type="text" inputmode="decimal" autocomplete="off" placeholder="Enter your answer here" />
+            <button class="btn btnPrimary" id="submitBtn">Submit Answer</button>
+            <button class="btn btnHint" id="hintBtn">Show Hint</button>
+            <button class="btn btnNext" id="nextBtn" disabled>Next</button>
+          </div>
+
+          <div class="feedback" id="feedback">
+            <div class="resultLine" id="resultLine"></div>
+            <div class="explain" id="explainBox"></div>
+          </div>
+        </div>
+
+        <div class="footer" aria-label="Stats footer">
+          <div class="stat">
+            <div class="n" id="correctN">0</div>
+            <div class="t">Correct Answers</div>
+          </div>
+          <div class="stat">
+            <div class="n" id="incorrectN">0</div>
+            <div class="t">Incorrect Answers</div>
+          </div>
+          <div class="stat">
+            <div class="n" id="hintsN">0</div>
+            <div class="t">Hints Used</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="smallNote">
+        Keyboard: <span class="kbd">Enter</span> submit • <span class="kbd">N</span> next (after solution shown)
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ---------- Helpers ----------
+    const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+    const nearlyEqual = (a,b,eps=1e-9)=>Math.abs(a-b)<=eps;
+
+    function normalizeNumber(str){
+      // Accepts "£4.64", "4.64", "4,64" -> 4.64
+      if (typeof str !== "string") str = String(str ?? "");
+      str = str.trim();
+      if (!str) return NaN;
+      // strip currency and units
+      str = str.replace(/£/g,"").replace(/cm\^?2|mm\^?2|m\^?2|cm3|cm³|ml|l|litres?|hours?|days?|ounces?|lbs?|lb|km|kilometres?|miles?|p\b/gi,"");
+      str = str.replace(/\s+/g,"");
+      // convert trailing "p" handled by removal above; still handle "79p" type if left
+      // allow comma decimal
+      str = str.replace(",", ".");
+      // if user enters something like "4.64" ok; if "464p" -> 464 (we'll still interpret as numeric)
+      const n = Number(str);
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    function moneyPenceToPounds(p){ return p / 100; }
+
+    function formatAnswer(a, unit){
+      if (a === null || a === undefined) return "";
+      if (typeof a === "string") return a;
+      if (Number.isFinite(a)){
+        // Avoid ugly 141.2000000001
+        const s = (Math.abs(a - Math.round(a)) < 1e-10) ? String(Math.round(a)) : String(Number(a.toFixed(6))).replace(/\.?0+$/,"");
+        return unit ? `${s} ${unit}` : s;
+      }
+      return String(a);
+    }
+
+    // ---------- Simple SVG diagrams ----------
+    function svgPlayground(){
+      // A clear, workbook-style grid + shaded polygon (practice diagram).
+      // Note: The *grading* for this question is set to ungraded (manual),
+      // because image-based geometry can vary with print/crop. The method is shown.
+      const w = 260, h = 190;
+      const cols = 7, rows = 5;
+      const cell = 30;
+      const ox = 10, oy = 10;
+
+      // Example polygon (irregular) within the grid.
+      // Coordinates in grid units -> pixels
+      const pts = [
+        [2,1],[6,1],[6,3],[5,4],[4,4],[4,3],[3,3],[2,4],[1,3],[2,2],[1,1],[2,1]
+      ].map(([x,y])=>[ox + x*cell, oy + (rows - y)*cell]);
+
+      const poly = pts.map(p=>p.join(",")).join(" ");
+
+      let grid = "";
+      for (let c=0;c<=cols;c++){
+        const x = ox + c*cell;
+        grid += `<line x1="${x}" y1="${oy}" x2="${x}" y2="${oy+rows*cell}" stroke="#111827" stroke-width="1" opacity="0.55"/>`;
+      }
+      for (let r=0;r<=rows;r++){
+        const y = oy + r*cell;
+        grid += `<line x1="${ox}" y1="${y}" x2="${ox+cols*cell}" y2="${y}" stroke="#111827" stroke-width="1" opacity="0.55"/>`;
+      }
+
+      return `
+        <div class="panel">
+          <div style="font-weight:800;font-size:12px;color:#374151;margin-bottom:6px;">Playground plan (1 m squares)</div>
+          <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Grid with shaded playground shape">
+            <rect x="${ox}" y="${oy}" width="${cols*cell}" height="${rows*cell}" fill="#fff" stroke="#111827" stroke-width="2"/>
+            ${grid}
+            <polygon points="${poly}" fill="rgba(17,24,39,0.18)" stroke="#111827" stroke-width="3" />
+            <text x="6" y="${oy+rows*cell-5}" font-size="12" fill="#111827" font-family="ui-sans-serif,system-ui">1 m</text>
+          </svg>
+          <div style="font-size:11px;color:#6b7280;margin-top:6px;max-width:260px;">
+            Method: count full squares + combine partial squares to make whole squares.
+          </div>
+        </div>
+      `;
+    }
+
+    function svgCake(){
+      // Scaled drawing of the step-shaped cake from the page:
+      // Top = 20 cm; left drop = 8 cm; left notch = 2 cm; bottom = 16 cm; inner drops = 9 cm.
+      const scale = 8; // px per cm
+      const top = 20*scale, leftH = 8*scale, notch = 2*scale, bottom = 16*scale, lowH = 9*scale;
+
+      // Derive: right notch = 20 - 16 - 2 = 2 cm (symmetric here)
+      const rightNotch = 2*scale;
+
+      // Coordinates
+      const x0=10, y0=10;
+      const p = [
+        [x0, y0],
+        [x0+top, y0],
+        [x0+top, y0+leftH],
+        [x0+top-rightNotch, y0+leftH],
+        [x0+top-rightNotch, y0+leftH+lowH],
+        [x0+notch, y0+leftH+lowH],
+        [x0+notch, y0+leftH],
+        [x0, y0+leftH],
+        [x0, y0]
+      ];
+      const pts = p.map(q=>q.join(",")).join(" ");
+
+      const w = 10 + top + 30, h = 10 + leftH + lowH + 30;
+
+      return `
+        <div class="panel">
+          <div style="font-weight:800;font-size:12px;color:#374151;margin-bottom:6px;">Cake outline (scaled)</div>
+          <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Step-shaped cake with labelled edges">
+            <polygon points="${pts}" fill="rgba(17,24,39,0.05)" stroke="#111827" stroke-width="3"/>
+            <text x="${x0+top/2-16}" y="${y0-2}" font-size="12" fill="#111827" font-weight="800">20 cm</text>
+            <text x="${x0-2}" y="${y0+leftH/2}" font-size="12" fill="#111827" font-weight="800" transform="rotate(-90 ${x0-2} ${y0+leftH/2})">8 cm</text>
+            <text x="${x0+notch/2-10}" y="${y0+leftH+14}" font-size="12" fill="#111827" font-weight="800">2 cm</text>
+            <text x="${x0+notch+bottom/2-16}" y="${y0+leftH+lowH+18}" font-size="12" fill="#111827" font-weight="800">16 cm</text>
+            <text x="${x0+top-rightNotch+14}" y="${y0+leftH+lowH/2}" font-size="12" fill="#111827" font-weight="800" transform="rotate(-90 ${x0+top-rightNotch+14} ${y0+leftH+lowH/2})">9 cm</text>
+          </svg>
+        </div>
+      `;
+    }
+
+    // ---------- Question Bank (extracted from the pages) ----------
+    const questions = [
+      {
+        id: "1a",
+        title: "Convert: 150 mm into centimetres",
+        prompt: "Convert the following:\n\n(a) 150 mm into centimetres",
+        inputHint: "Answer in cm",
+        unit: "cm",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 15),
+        hint: "1 cm = 10 mm. Divide millimetres by 10.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Use <code>1 cm = 10 mm</code>.</li>
+            <li>Convert mm → cm by dividing by 10: <code>150 ÷ 10 = 15</code>.</li>
+            <li><b>Answer:</b> <code>15 cm</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "1b",
+        title: "Convert: 2 cm into millimetres",
+        prompt: "Convert the following:\n\n(b) 2 cm into millimetres",
+        inputHint: "Answer in mm",
+        unit: "mm",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 20),
+        hint: "1 cm = 10 mm. Multiply centimetres by 10.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Use <code>1 cm = 10 mm</code>.</li>
+            <li>Convert cm → mm by multiplying by 10: <code>2 × 10 = 20</code>.</li>
+            <li><b>Answer:</b> <code>20 mm</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "2",
+        title: "Convert pounds to ounces",
+        prompt: "1 lb is equal to 16 ounces.\n\nConvert 3 lbs into ounces.",
+        inputHint: "Answer in ounces",
+        unit: "oz",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 48),
+        hint: "Multiply pounds by 16.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Given <code>1 lb = 16 oz</code>.</li>
+            <li>For <code>3 lb</code>: <code>3 × 16 = 48</code>.</li>
+            <li><b>Answer:</b> <code>48 ounces</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "3a",
+        title: "Miles to kilometres (approx.)",
+        prompt: "5 miles is approximately equal to 8 kilometres.\n\n(a) Convert 25 miles into kilometres.",
+        inputHint: "Answer in km",
+        unit: "km",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 40),
+        hint: "Use the ratio 5 miles → 8 km. Scale up to 25 miles.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Given <code>5 miles ≈ 8 km</code>.</li>
+            <li><code>25 miles</code> is <code>5 × 5 miles</code>.</li>
+            <li>So kilometres are <code>5 × 8 = 40</code>.</li>
+            <li><b>Answer:</b> <code>40 km</code> (approx.).</li>
+          </ol>
+        `
+      },
+      {
+        id: "3b",
+        title: "Kilometres to miles (approx.)",
+        prompt: "5 miles is approximately equal to 8 kilometres.\n\n(b) Convert 96 kilometres into miles.",
+        inputHint: "Answer in miles",
+        unit: "miles",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 60),
+        hint: "If 8 km ≈ 5 miles, then miles ≈ km × (5/8).",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Given <code>8 km ≈ 5 miles</code>.</li>
+            <li>So <code>miles ≈ km × (5/8)</code>.</li>
+            <li><code>96 × (5/8) = (96 ÷ 8) × 5 = 12 × 5 = 60</code>.</li>
+            <li><b>Answer:</b> <code>60 miles</code> (approx.).</li>
+          </ol>
+        `
+      },
+      {
+        id: "4",
+        title: "Milk bottles filled",
+        prompt: "Holly has collected 3.2 litres of milk and pours it into bottles which can hold 400 ml.\n\nHow many milk bottles does she fill?",
+        inputHint: "Number of bottles",
+        unit: "bottles",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 8),
+        hint: "Convert 3.2 L to mL, then divide by 400.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Convert litres to millilitres: <code>1 L = 1000 mL</code>.</li>
+            <li><code>3.2 L = 3.2 × 1000 = 3200 mL</code>.</li>
+            <li>Each bottle holds <code>400 mL</code>, so bottles filled: <code>3200 ÷ 400 = 8</code>.</li>
+            <li><b>Answer:</b> <code>8 bottles</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "5",
+        title: "Height after growth (in cm)",
+        prompt: "At the start of Year 6, Harry was 1.37 m tall. He grew 42 mm over the whole school year.\n\nHow tall was he at the end of Year 6?\nGive your answer in centimetres.",
+        inputHint: "Answer in cm",
+        unit: "cm",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 141.2),
+        hint: "Convert 1.37 m to cm, convert 42 mm to cm, then add.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Convert <code>1.37 m</code> to cm: <code>1 m = 100 cm</code> → <code>1.37 m = 137 cm</code>.</li>
+            <li>Convert <code>42 mm</code> to cm: <code>10 mm = 1 cm</code> → <code>42 mm = 4.2 cm</code>.</li>
+            <li>Add growth: <code>137 + 4.2 = 141.2</code>.</li>
+            <li><b>Answer:</b> <code>141.2 cm</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "6",
+        title: "Hours into days and hours",
+        prompt: "It takes Eiko 84 hours to cycle from Jemmington to Parradale.\n\nHow long is this in days and hours?",
+        inputHint: "Format like: 3 days 12 hours",
+        unit: "",
+        graded: true,
+        check: (raw) => {
+          const s = (raw ?? "").toString().toLowerCase().trim();
+          // Accept flexible formats: "3d 12h", "3 days 12 hours", "3 days,12 hours"
+          const m = s.match(/(\d+)\s*d|\b(\d+)\s*days?/);
+          const n = s.match(/(\d+)\s*h|\b(\d+)\s*hours?/);
+          // Also accept "3 12"
+          const two = s.match(/^\s*(\d+)\s+(\d+)\s*$/);
+          let d=null,h=null;
+          if (m) d = Number(m[1] ?? m[2]);
+          if (n) h = Number(n[1] ?? n[2]);
+          if ((d===null || h===null) && two){
+            d = Number(two[1]); h = Number(two[2]);
+          }
+          return d===3 && h===12;
+        },
+        hint: "24 hours = 1 day. Divide 84 by 24.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Use <code>24 hours = 1 day</code>.</li>
+            <li>Divide: <code>84 ÷ 24 = 3 remainder 12</code> (since <code>24 × 3 = 72</code>).</li>
+            <li>So <code>84 hours = 3 days</code> and <code>12 hours</code>.</li>
+            <li><b>Answer:</b> <code>3 days 12 hours</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "7",
+        title: "Total cost of apps",
+        prompt: "Agatha buys two apps for her mobile phone.\nOne costs £3.85 and the other costs 79p.\n\nHow much does she spend on apps in total?",
+        inputHint: "Answer in £",
+        unit: "£",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 4.64),
+        hint: "Convert 79p to pounds (£0.79), then add.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Convert pence to pounds: <code>79p = £0.79</code>.</li>
+            <li>Add: <code>£3.85 + £0.79 = £4.64</code>.</li>
+            <li><b>Answer:</b> <code>£4.64</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "8",
+        title: "Cost of syrup",
+        prompt: "8 pancakes cost £4.96.\n4 pancakes and syrup cost £2.80.\n\nHow much does syrup cost?",
+        inputHint: "Answer in £",
+        unit: "£",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 0.32),
+        hint: "Find the cost of 4 pancakes first, then subtract from £2.80.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>If <code>8 pancakes cost £4.96</code>, then <code>4 pancakes</code> cost half: <code>£4.96 ÷ 2 = £2.48</code>.</li>
+            <li><code>4 pancakes + syrup = £2.80</code>, so syrup costs: <code>£2.80 − £2.48 = £0.32</code>.</li>
+            <li><b>Answer:</b> <code>£0.32</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "9",
+        title: "Area of the playground (grid)",
+        prompt: "Zinnia makes a plan of her local playground. Here is her plan.\n\nCalculate the area of the playground.",
+        inputHint: "Answer in m²",
+        unit: "m²",
+        graded: false, // manual practice
+        diagram: svgPlayground,
+        check: (_) => true,
+        hint: "Count full 1 m² squares. Combine partial squares (e.g., two halves = one whole).",
+        solutionHTML: `
+          <h3>Worked method (grid area)</h3>
+          <ol class="steps">
+            <li>Each small square is <code>1 m × 1 m</code> so each has area <code>1 m²</code>.</li>
+            <li>Count the <b>full</b> squares completely inside the shaded shape.</li>
+            <li>For squares cut by the boundary, combine fractions:
+              <ul>
+                <li>Two half-squares → one full square (<code>0.5 + 0.5 = 1</code>).</li>
+                <li>Four quarter-squares → one full square.</li>
+              </ul>
+            </li>
+            <li>Add full squares + combined partials to get total area in <code>m²</code>.</li>
+          </ol>
+          <div style="margin-top:8px;font-size:12px;color:#6b7280;">
+            Note: this item is set to <b>practice (ungraded)</b> because image/print variations can shift the exact count.
+          </div>
+        `
+      },
+      {
+        id: "10",
+        title: "Hexagon side length",
+        prompt: "Each side of Bruce’s hexagonal patio is the same length. It has a perimeter of 18 m.\n\nHow long is each side of Bruce’s patio?",
+        inputHint: "Answer in m",
+        unit: "m",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 3),
+        hint: "A hexagon has 6 equal sides. Perimeter ÷ 6.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>A regular hexagon has <code>6</code> equal sides.</li>
+            <li>Perimeter = sum of sides, so side length = <code>18 ÷ 6 = 3</code>.</li>
+            <li><b>Answer:</b> <code>3 m</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "11",
+        title: "Perimeter of the cake",
+        prompt: "Kobe made a cake for his younger brother’s birthday.\n\nWork out the perimeter of his cake.",
+        inputHint: "Answer in cm",
+        unit: "cm",
+        graded: true,
+        diagram: svgCake,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 74),
+        hint: "Walk around the outside edge and add each outer side. The missing right notch is 20−16−2 = 2 cm.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Top length is <code>20 cm</code>.</li>
+            <li>Left outer vertical is <code>8 cm</code>.</li>
+            <li>Left notch (horizontal) is <code>2 cm</code>.</li>
+            <li>Bottom central horizontal is <code>16 cm</code>.</li>
+            <li>Right inner vertical is <code>9 cm</code> (lower drop).</li>
+            <li>The right notch horizontal is missing, but:
+              <br><code>20 = 2 + 16 + (right notch)</code> ⇒ right notch = <code>2 cm</code>.
+            </li>
+            <li>By symmetry of the step level, the right outer vertical is also <code>8 cm</code>, and the left inner vertical is <code>9 cm</code>.</li>
+            <li>Perimeter = <code>20 + 8 + 2 + 9 + 16 + 9 + 2 + 8 = 74</code>.</li>
+            <li><b>Answer:</b> <code>74 cm</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "12a",
+        title: "Area: square (9 cm sides)",
+        prompt: "Calculate the area:\n(a) A square with sides of length 9 cm.",
+        inputHint: "Answer in cm²",
+        unit: "cm²",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 81),
+        hint: "Area of a square = side × side.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Area(square) = <code>side²</code>.</li>
+            <li><code>9² = 9 × 9 = 81</code>.</li>
+            <li><b>Answer:</b> <code>81 cm²</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "12b",
+        title: "Area: rectangle (7 m × 6 m)",
+        prompt: "Calculate the area:\n(b) A rectangle with length 7 m and width 6 m.",
+        inputHint: "Answer in m²",
+        unit: "m²",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 42),
+        hint: "Area = length × width.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Area(rectangle) = <code>length × width</code>.</li>
+            <li><code>7 × 6 = 42</code>.</li>
+            <li><b>Answer:</b> <code>42 m²</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "12c",
+        title: "Area: triangle (base 3 mm, height 8 mm)",
+        prompt: "Calculate the area:\n(c) A triangle with base 3 mm and height 8 mm.",
+        inputHint: "Answer in mm²",
+        unit: "mm²",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 12),
+        hint: "Area(triangle) = ½ × base × height.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Area(triangle) = <code>½ × base × height</code>.</li>
+            <li><code>½ × 3 × 8 = 1.5 × 8 = 12</code>.</li>
+            <li><b>Answer:</b> <code>12 mm²</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "12d",
+        title: "Area: parallelogram (base 4 cm, height 9 cm)",
+        prompt: "Calculate the area:\n(d) A parallelogram with base 4 cm and height 9 cm.",
+        inputHint: "Answer in cm²",
+        unit: "cm²",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 36),
+        hint: "Area(parallelogram) = base × perpendicular height.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Area(parallelogram) = <code>base × height</code>.</li>
+            <li><code>4 × 9 = 36</code>.</li>
+            <li><b>Answer:</b> <code>36 cm²</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "13",
+        title: "Volume of a cuboid",
+        prompt: "A cuboid has a length of 3 cm, a width of 4 cm and a height of 6 cm.\n\nFind the volume of the cuboid.",
+        inputHint: "Answer in cm³",
+        unit: "cm³",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 72),
+        hint: "Volume = length × width × height.",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Volume(cuboid) = <code>length × width × height</code>.</li>
+            <li><code>3 × 4 × 6 = 12 × 6 = 72</code>.</li>
+            <li><b>Answer:</b> <code>72 cm³</code>.</li>
+          </ol>
+        `
+      },
+      {
+        id: "14",
+        title: "Height of a cuboid from volume",
+        prompt: "Michael has a wooden cuboid.\nIt has a length of 5 cm, a width of 2 cm and a volume of 100 cm³.\n\nWhat is the height of his cuboid?",
+        inputHint: "Answer in cm",
+        unit: "cm",
+        graded: true,
+        check: (raw) => nearlyEqual(normalizeNumber(raw), 10),
+        hint: "Height = volume ÷ (length × width).",
+        solutionHTML: `
+          <h3>Worked solution</h3>
+          <ol class="steps">
+            <li>Volume = <code>length × width × height</code>.</li>
+            <li>Rearrange: <code>height = volume ÷ (length × width)</code>.</li>
+            <li><code>length × width = 5 × 2 = 10</code>.</li>
+            <li><code>height = 100 ÷ 10 = 10</code>.</li>
+            <li><b>Answer:</b> <code>10 cm</code>.</li>
+          </ol>
+        `
+      }
+    ];
+
+    // ---------- State ----------
+    let idx = 0;
+    let correct = 0;
+    let incorrect = 0;
+    let hintsUsed = 0;
+    let locked = false; // locked after submit until next
+
+    // ---------- Elements ----------
+    const qCounter = document.getElementById("qCounter");
+    const pct = document.getElementById("pct");
+    const barFill = document.getElementById("barFill");
+    const qTitle = document.getElementById("qTitle");
+    const qPrompt = document.getElementById("qPrompt");
+    const qMeta = document.getElementById("qMeta");
+    const modeBadge = document.getElementById("modeBadge");
+
+    const diagramWrap = document.getElementById("diagramWrap");
+
+    const answerInput = document.getElementById("answerInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const hintBtn = document.getElementById("hintBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    const feedback = document.getElementById("feedback");
+    const resultLine = document.getElementById("resultLine");
+    const explainBox = document.getElementById("explainBox");
+
+    const correctN = document.getElementById("correctN");
+    const incorrectN = document.getElementById("incorrectN");
+    const hintsN = document.getElementById("hintsN");
+
+    // ---------- Render ----------
+    function render(){
+      const q = questions[idx];
+      const total = questions.length;
+
+      qCounter.textContent = `Question ${idx+1} of ${total}`;
+      const p = Math.round((idx/total)*100);
+      pct.textContent = `${p}%`;
+      barFill.style.width = `${clamp((idx/total)*100, 0, 100)}%`;
+
+      qMeta.textContent = "Section Five — Measure";
+      modeBadge.textContent = q.graded ? "Auto-marked" : "Practice (ungraded)";
+      qTitle.textContent = q.title;
+      qPrompt.textContent = q.prompt;
+
+      diagramWrap.innerHTML = "";
+      if (typeof q.diagram === "function"){
+        diagramWrap.innerHTML = q.diagram();
+      }
+
+      answerInput.value = "";
+      answerInput.placeholder = q.inputHint || "Enter your answer here";
+
+      feedback.style.display = "none";
+      resultLine.innerHTML = "";
+      explainBox.innerHTML = "";
+
+      locked = false;
+      nextBtn.disabled = true;
+
+      // final screen handling
+      if (idx === total - 1){
+        nextBtn.textContent = "Finish";
+      } else {
+        nextBtn.textContent = "Next";
+      }
+
+      answerInput.focus();
+    }
+
+    function updateStats(){
+      correctN.textContent = String(correct);
+      incorrectN.textContent = String(incorrect);
+      hintsN.textContent = String(hintsUsed);
+    }
+
+    // ---------- Actions ----------
+    function showHint(){
+      if (locked) return;
+      const q = questions[idx];
+      hintsUsed += 1;
+      updateStats();
+      feedback.style.display = "flex";
+      resultLine.innerHTML = `<span class="pill pillInfo">HINT</span> <span>${q.hint}</span>`;
+      explainBox.innerHTML = `
+        <h3>Hint</h3>
+        <div style="font-size:14px;color:#111827;line-height:1.45;">${q.hint}</div>
+      `;
+    }
+
+    function submit(){
+      if (locked) return;
+
+      const q = questions[idx];
+      const raw = answerInput.value;
+
+      // Require some input for graded items
+      if (q.graded && (!raw || !raw.toString().trim())){
+        feedback.style.display = "flex";
+        resultLine.innerHTML = `<span class="pill pillBad">NEED AN ANSWER</span> <span>Enter a value, then submit.</span>`;
+        explainBox.innerHTML = `
+          <h3>Input required</h3>
+          <div style="font-size:14px;color:#111827;">Type your answer (include units if you want), then click <b>Submit</b>.</div>
+        `;
+        return;
+      }
+
+      let ok = true;
+      if (q.graded){
+        ok = !!q.check(raw);
+        if (ok) correct += 1; else incorrect += 1;
+      }
+
+      updateStats();
+
+      feedback.style.display = "flex";
+      if (!q.graded){
+        resultLine.innerHTML = `<span class="pill pillInfo">PRACTICE</span> <span>Review the worked method below, then continue.</span>`;
+      } else if (ok){
+        resultLine.innerHTML = `<span class="pill pillOk">CORRECT</span> <span>Good. Now review the full working, then continue.</span>`;
+      } else {
+        resultLine.innerHTML = `<span class="pill pillBad">INCORRECT</span> <span>Review the working carefully, then continue.</span>`;
+      }
+
+      explainBox.innerHTML = q.solutionHTML;
+
+      locked = true;
+      nextBtn.disabled = false;
+    }
+
+    function next(){
+      if (!locked) return; // enforce: solution must be shown before advancing
+      if (idx === questions.length - 1){
+        // Finish screen
+        const totalGraded = questions.filter(q=>q.graded).length;
+        const percent = totalGraded ? Math.round((correct/totalGraded)*100) : 0;
+
+        qTitle.textContent = "Completed";
+        qPrompt.textContent =
+          `You have finished the practice set.\n\n` +
+          `Graded score: ${correct}/${totalGraded} (${percent}%).\n` +
+          `Hints used: ${hintsUsed}.`;
+
+        diagramWrap.innerHTML = "";
+        feedback.style.display = "flex";
+        resultLine.innerHTML = `<span class="pill pillInfo">SUMMARY</span> <span>Restart to practice again.</span>`;
+        explainBox.innerHTML = `
+          <h3>Next steps</h3>
+          <ol class="steps">
+            <li>Reattempt incorrect items without hints.</li>
+            <li>For unit conversions: write the base equivalence first (e.g., <code>1 cm = 10 mm</code>).</li>
+            <li>For money: convert everything to the same unit (pence or pounds) before adding/subtracting.</li>
+          </ol>
+          <div style="margin-top:10px;">
+            <button class="btn btnSecondary" id="restartBtn">Restart</button>
+          </div>
+        `;
+        answerInput.disabled = true;
+        submitBtn.disabled = true;
+        hintBtn.disabled = true;
+        nextBtn.disabled = true;
+
+        document.getElementById("restartBtn").addEventListener("click", ()=>{
+          idx = 0; correct = 0; incorrect = 0; hintsUsed = 0;
+          answerInput.disabled = false;
+          submitBtn.disabled = false;
+          hintBtn.disabled = false;
+          updateStats();
+          render();
+        });
+        // Fill progress
+        barFill.style.width = "100%";
+        pct.textContent = "100%";
+        return;
+      }
+
+      idx += 1;
+      render();
+    }
+
+    // ---------- Events ----------
+    submitBtn.addEventListener("click", submit);
+    hintBtn.addEventListener("click", showHint);
+    nextBtn.addEventListener("click", next);
+
+    answerInput.addEventListener("keydown", (e)=>{
+      if (e.key === "Enter"){
+        e.preventDefault();
+        submit();
+      }
+    });
+
+    document.addEventListener("keydown", (e)=>{
+      if ((e.key === "n" || e.key === "N") && !nextBtn.disabled){
+        next();
+      }
+    });
+
+    // ---------- Init ----------
+    updateStats();
+    render();
+  </script>
+</body>
+</html>

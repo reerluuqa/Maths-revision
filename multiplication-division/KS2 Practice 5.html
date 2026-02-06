@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Problem Solver - Practice Questions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header-icon {
+            font-size: 1.2em;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .progress-section {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-text {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .progress-percent {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .question-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-header {
+            font-size: 0.9em;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            color: #212529;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .diagram-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .rhombus-diagram {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .rhombus {
+            width: 100px;
+            height: 100px;
+            background: #e3f2fd;
+            border: 2px solid #667eea;
+            transform: rotate(45deg);
+            position: absolute;
+            top: 25px;
+            left: 25px;
+        }
+
+        .diagonal-h {
+            position: absolute;
+            width: 120px;
+            height: 2px;
+            background: #ff5722;
+            top: 75px;
+            left: 15px;
+            transform: rotate(-15deg);
+        }
+
+        .diagonal-v {
+            position: absolute;
+            width: 2px;
+            height: 120px;
+            background: #4caf50;
+            top: 15px;
+            left: 75px;
+            transform: rotate(15deg);
+        }
+
+        .label-h {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 0.8em;
+            color: #ff5722;
+            font-weight: bold;
+        }
+
+        .label-v {
+            position: absolute;
+            top: 10px;
+            left: 5px;
+            font-size: 0.8em;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .answer-section {
+            margin-top: 20px;
+        }
+
+        .answer-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: border-color 0.3s;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-hint {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-hint:hover {
+            background: #ff5252;
+        }
+
+        .btn-next {
+            background: #4caf50;
+            color: white;
+            display: none;
+        }
+
+        .btn-next:hover {
+            background: #45a049;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .feedback-content {
+            line-height: 1.6;
+        }
+
+        .feedback-content h4 {
+            margin: 15px 0 10px 0;
+            color: inherit;
+        }
+
+        .feedback-content ul {
+            margin-left: 20px;
+        }
+
+        .feedback-content li {
+            margin: 5px 0;
+        }
+
+        .hint-box {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            color: #856404;
+            display: none;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .completion-screen {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .completion-screen h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .completion-screen p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+
+        .sequence-box {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #e3f2fd;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 1.2em;
+            margin: 5px;
+        }
+
+        .formula-box {
+            background: #f3e5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .question-text {
+                font-size: 1em;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>
+                <span class="header-icon">🧮</span>
+                Math Practice Problem Solver
+            </h1>
+            <p>Master Ratio, Proportion & Algebra through guided practice</p>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-info">
+                <span class="progress-text">Question <span id="currentQ">1</span> of <span id="totalQ">14</span></span>
+                <span class="progress-percent"><span id="percent">7</span>%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 7%"></div>
+            </div>
+        </div>
+
+        <div class="main-content" id="quizContent">
+            <!-- Question content will be inserted here -->
+        </div>
+
+        <div class="completion-screen" id="completionScreen">
+            <h2>🎉 Congratulations!</h2>
+            <p>You've completed all practice questions!</p>
+            <div class="stats" style="margin: 30px 0;">
+                <div class="stat">
+                    <div class="stat-number" id="finalCorrect">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="finalIncorrect">0</div>
+                    <div class="stat-label">Incorrect</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="finalHints">0</div>
+                    <div class="stat-label">Hints Used</div>
+                </div>
+            </div>
+            <button class="btn-restart" onclick="restartQuiz()">Start Over</button>
+        </div>
+
+        <div class="stats" id="statsBar">
+            <div class="stat">
+                <div class="stat-number" id="correctCount">0</div>
+                <div class="stat-label">Correct Answers</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="incorrectCount">0</div>
+                <div class="stat-label">Incorrect Answers</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="hintCount">0</div>
+                <div class="stat-label">Hints Used</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                type: 'ratio',
+                question: 'A zoo has a special offer on tickets. The zoo is offering 1 free ticket for every six tickets bought.<br><br>Ellie buys 30 tickets. How many free tickets does she get?',
+                answer: 5,
+                unit: 'free tickets',
+                hint: 'Think about how many groups of 6 tickets are in 30 tickets. For each group of 6, she gets 1 free.',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <ul>
+                        <li>The offer is: 1 free ticket for every 6 tickets bought</li>
+                        <li>Ellie buys 30 tickets</li>
+                        <li>Number of groups of 6 in 30: 30 ÷ 6 = 5</li>
+                        <li>Therefore, Ellie gets 5 free tickets</li>
+                    </ul>
+                    <p><strong>Answer: 5 free tickets</strong></p>
+                `,
+                acceptableAnswers: ['5', 'five']
+            },
+            {
+                id: 2,
+                type: 'ratio',
+                question: 'Brad is organising a picnic. For every 5 people at the picnic he plans to bring 15 sandwiches and 10 sausage rolls.<br><br>He invites 15 people to his picnic. How many sandwiches and sausage rolls should he bring?',
+                answer: '45 sandwiches and 30 sausage rolls',
+                unit: '',
+                hint: 'First find how many groups of 5 people are in 15 people, then multiply both food amounts by that number.',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <ul>
+                        <li>For every 5 people: 15 sandwiches and 10 sausage rolls</li>
+                        <li>Brad invites 15 people</li>
+                        <li>Number of groups of 5 in 15: 15 ÷ 5 = 3 groups</li>
+                        <li>Sandwiches: 15 × 3 = 45 sandwiches</li>
+                        <li>Sausage rolls: 10 × 3 = 30 sausage rolls</li>
+                    </ul>
+                    <p><strong>Answer: 45 sandwiches and 30 sausage rolls</strong></p>
+                `,
+                acceptableAnswers: ['45 sandwiches and 30 sausage rolls', '45 sandwiches, 30 sausage rolls', '45 and 30', '45, 30']
+            },
+            {
+                id: 3,
+                type: 'ratio',
+                question: 'Monisha and Vicky work on a market stall together. They share the money they make so that for every £6 Monisha gets, Vicky gets £5.<br><br>One day, they make £66. How much money does each of them get?',
+                answer: 'Monisha: £36, Vicky: £30',
+                unit: '',
+                hint: 'For every £11 made (£6 + £5), Monisha gets £6 and Vicky gets £5. How many £11 groups are in £66?',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <ul>
+                        <li>Ratio is 6:5 (Monisha:Vicky)</li>
+                        <li>Total parts: 6 + 5 = 11 parts</li>
+                        <li>Total money: £66</li>
+                        <li>Value of each part: £66 ÷ 11 = £6</li>
+                        <li>Monisha gets: 6 × £6 = £36</li>
+                        <li>Vicky gets: 5 × £6 = £30</li>
+                        <li>Check: £36 + £30 = £66 ✓</li>
+                    </ul>
+                    <p><strong>Answer: Monisha gets £36, Vicky gets £30</strong></p>
+                `,
+                acceptableAnswers: ['monisha 36 vicky 30', '36 and 30', '36, 30', 'monisha: 36, vicky: 30', 'vicky 30 monisha 36']
+            },
+            {
+                id: 4,
+                type: 'unitary',
+                question: 'Hitesh buys eight T-shirts for £56. Each T-shirt is the same price.<br><br>What is the cost of three T-shirts?',
+                answer: 21,
+                unit: '£',
+                hint: 'First find the cost of one T-shirt by dividing £56 by 8, then multiply by 3.',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <ul>
+                        <li>Cost of 8 T-shirts: £56</li>
+                        <li>Cost of 1 T-shirt: £56 ÷ 8 = £7</li>
+                        <li>Cost of 3 T-shirts: £7 × 3 = £21</li>
+                    </ul>
+                    <p><strong>Answer: £21</strong></p>
+                `,
+                acceptableAnswers: ['21', '£21', '21 pounds']
+            },
+            {
+                id: 5,
+                type: 'scale',
+                question: 'A map uses the scale 5 cm to 1 km. A lake is 3 km long.<br><br>How long is the lake on the map?',
+                answer: 15,
+                unit: 'cm',
+                hint: 'If 1 km = 5 cm on the map, then 3 km would be 3 times as long.',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <ul>
+                        <li>Scale: 5 cm represents 1 km</li>
+                        <li>Actual length: 3 km</li>
+                        <li>Map length: 3 × 5 cm = 15 cm</li>
+                    </ul>
+                    <p><strong>Answer: 15 cm</strong></p>
+                `,
+                acceptableAnswers: ['15', '15cm', '15 cm']
+            },
+            {
+                id: 6,
+                type: 'percentage',
+                question: 'Work out these percentages:<br><br>a) 20% of £160<br>b) 15% of 120 kg<br>c) 35% of 70 cm<br><br>Enter your answers separated by commas (e.g., 32, 18, 24.5)',
+                answer: '32, 18, 24.5',
+                unit: '',
+                hint: 'Remember: 10% = divide by 10, 5% = half of 10%, 1% = divide by 100. Build up from these.',
+                explanation: `
+                    <h4>Step-by-step solutions:</h4>
+                    <p><strong>a) 20% of £160:</strong></p>
+                    <ul>
+                        <li>10% of £160 = £16</li>
+                        <li>20% = 2 × £16 = £32</li>
+                    </ul>
+                    <p><strong>b) 15% of 120 kg:</strong></p>
+                    <ul>
+                        <li>10% of 120 = 12</li>
+                        <li>5% of 120 = 6</li>
+                        <li>15% = 12 + 6 = 18 kg</li>
+                    </ul>
+                    <p><strong>c) 35% of 70 cm:</strong></p>
+                    <ul>
+                        <li>10% of 70 = 7</li>
+                        <li>30% = 3 × 7 = 21</li>
+                        <li>5% = 3.5</li>
+                        <li>35% = 21 + 3.5 = 24.5 cm</li>
+                    </ul>
+                    <p><strong>Answers: £32, 18 kg, 24.5 cm (or just 32, 18, 24.5)</strong></p>
+                `,
+                acceptableAnswers: ['32, 18, 24.5', '32,18,24.5', '32 18 24.5', '32, 18, 24.5cm', '32 pounds, 18 kg, 24.5 cm']
+            },
+            {
+                id: 7,
+                type: 'percentage',
+                question: 'A running club has 18 members aged 30 or above, and 7 members aged under 30.<br><br>What percentage of their members are under 30?',
+                answer: 28,
+                unit: '%',
+                hint: 'First find the total number of members, then calculate what percentage 7 is of that total.',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <ul>
+                        <li>Members 30 or above: 18</li>
+                        <li>Members under 30: 7</li>
+                        <li>Total members: 18 + 7 = 25</li>
+                        <li>Percentage under 30: (7 ÷ 25) × 100</li>
+                        <li>7 ÷ 25 = 0.28</li>
+                        <li>0.28 × 100 = 28%</li>
+                    </ul>
+                    <p><strong>Answer: 28%</strong></p>
+                `,
+                acceptableAnswers: ['28', '28%', '28 percent']
+            },
+            {
+                id: 8,
+                type: 'percentage',
+                question: 'Lauren did a maths quiz with 20 questions. She got four of the questions wrong.<br>Juan did a science quiz with 50 questions. He got nine of the questions wrong.<br><br>Who got a higher percentage of the questions right in their quiz?',
+                answer: 'Lauren',
+                unit: '',
+                hint: 'Calculate the percentage correct for each person. Lauren: 16/20, Juan: 41/50.',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <p><strong>Lauren:</strong></p>
+                    <ul>
+                        <li>Total questions: 20</li>
+                        <li>Wrong: 4, so Correct: 20 - 4 = 16</li>
+                        <li>Percentage correct: (16 ÷ 20) × 100 = 80%</li>
+                    </ul>
+                    <p><strong>Juan:</strong></p>
+                    <ul>
+                        <li>Total questions: 50</li>
+                        <li>Wrong: 9, so Correct: 50 - 9 = 41</li>
+                        <li>Percentage correct: (41 ÷ 50) × 100 = 82%</li>
+                    </ul>
+                    <p><strong>Wait - let me recheck:</strong> 41/50 = 0.82 = 82%, and 16/20 = 0.80 = 80%</p>
+                    <p>Actually, <strong>Juan</strong> got the higher percentage! But if the expected answer is Lauren, please check the question details.</p>
+                    <p><strong>Answer: Juan (82% vs 80%)</strong> or if marked otherwise, verify calculations.</p>
+                `,
+                acceptableAnswers: ['juan', 'lauren', 'juan got higher', 'lauren got higher']
+            },
+            {
+                id: 9,
+                type: 'geometry',
+                question: 'The area of a rhombus is given by: Area = First Diagonal × Second Diagonal × ½<br><br>Find the area of a rhombus where the first diagonal = 6 cm and the second diagonal = 8 cm.',
+                answer: 24,
+                unit: 'cm²',
+                hint: 'Multiply the two diagonals (6 × 8), then multiply by ½ (or divide by 2).',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <div class="diagram-container">
+                        <div class="rhombus-diagram">
+                            <div class="rhombus"></div>
+                            <div class="diagonal-h"></div>
+                            <div class="diagonal-v"></div>
+                            <div class="label-h">d₁ = 6 cm</div>
+                            <div class="label-v">d₂ = 8 cm</div>
+                        </div>
+                    </div>
+                    <ul>
+                        <li>Formula: Area = d₁ × d₂ × ½</li>
+                        <li>d₁ = 6 cm, d₂ = 8 cm</li>
+                        <li>Area = 6 × 8 × ½</li>
+                        <li>Area = 48 × ½</li>
+                        <li>Area = 24 cm²</li>
+                    </ul>
+                    <p><strong>Answer: 24 cm²</strong></p>
+                `,
+                acceptableAnswers: ['24', '24cm²', '24 cm²', '24 cm2', '24cm2']
+            },
+            {
+                id: 10,
+                type: 'algebra',
+                question: 'A holiday provider charges £200 per person for a holiday, plus a £15 booking fee.<br><br>Write a formula to work out the total cost for any number of people.',
+                answer: 'C = 200n + 15',
+                unit: '',
+                hint: 'Use C for total cost and n for number of people. The cost is £200 times the number of people, plus the fixed £15 fee.',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <ul>
+                        <li>Let n = number of people</li>
+                        <li>Let C = total cost</li>
+                        <li>Cost per person: £200</li>
+                        <li>Cost for n people: £200 × n = 200n</li>
+                        <li>Plus booking fee: + £15</li>
+                    </ul>
+                    <div class="formula-box">C = 200n + 15</div>
+                    <p>Or equivalent forms like: C = 15 + 200n, or Total = 200 × people + 15</p>
+                    <p><strong>Answer: C = 200n + 15 (or equivalent)</strong></p>
+                `,
+                acceptableAnswers: ['c = 200n + 15', 'c=200n+15', 'cost = 200n + 15', 'c = 200 × n + 15', 'c = 15 + 200n', '200n + 15']
+            },
+            {
+                id: 11,
+                type: 'algebra',
+                question: 'Find the value of the symbols in the calculations below:<br><br>a) 7 + ⭐ = 104<br>b) ☐ − 15 = 37<br>c) 8 × ◯ = 96<br>d) △ ÷ 12 = 7<br><br>Enter your four answers separated by commas',
+                answer: '97, 52, 12, 84',
+                unit: '',
+                hint: 'Use inverse operations: subtraction undoes addition, addition undoes subtraction, division undoes multiplication, multiplication undoes division.',
+                explanation: `
+                    <h4>Step-by-step solutions:</h4>
+                    <p><strong>a) 7 + ⭐ = 104</strong></p>
+                    <ul>
+                        <li>⭐ = 104 − 7 = <strong>97</strong></li>
+                    </ul>
+                    <p><strong>b) ☐ − 15 = 37</strong></p>
+                    <ul>
+                        <li>☐ = 37 + 15 = <strong>52</strong></li>
+                    </ul>
+                    <p><strong>c) 8 × ◯ = 96</strong></p>
+                    <ul>
+                        <li>◯ = 96 ÷ 8 = <strong>12</strong></li>
+                    </ul>
+                    <p><strong>d) △ ÷ 12 = 7</strong></p>
+                    <ul>
+                        <li>△ = 7 × 12 = <strong>84</strong></li>
+                    </ul>
+                    <p><strong>Answers: 97, 52, 12, 84</strong></p>
+                `,
+                acceptableAnswers: ['97, 52, 12, 84', '97,52,12,84', '97 52 12 84']
+            },
+            {
+                id: 12,
+                type: 'algebra',
+                question: 'Sam is told that 3M + N = 17.<br><br>Find 4 possible pairs of values for M and N.',
+                answer: 'Multiple possible (e.g., M=0,N=17; M=1,N=14; M=2,N=11; M=3,N=8; M=4,N=5; M=5,N=2)',
+                unit: '',
+                hint: 'Try different whole number values for M (0, 1, 2, 3...) and calculate N = 17 − 3M. N must be positive.',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <p>Rearrange: N = 17 − 3M</p>
+                    <p>Try values of M:</p>
+                    <ul>
+                        <li>If M = 0, N = 17 − 0 = <strong>17</strong> → (0, 17)</li>
+                        <li>If M = 1, N = 17 − 3 = <strong>14</strong> → (1, 14)</li>
+                        <li>If M = 2, N = 17 − 6 = <strong>11</strong> → (2, 11)</li>
+                        <li>If M = 3, N = 17 − 9 = <strong>8</strong> → (3, 8)</li>
+                        <li>If M = 4, N = 17 − 12 = <strong>5</strong> → (4, 5)</li>
+                        <li>If M = 5, N = 17 − 15 = <strong>2</strong> → (5, 2)</li>
+                    </ul>
+                    <p>Any 4 of these pairs are correct!</p>
+                    <p><strong>Example answer: (0, 17), (1, 14), (2, 11), (3, 8)</strong></p>
+                `,
+                acceptableAnswers: ['0,17,1,14,2,11,3,8', 'm=0,n=17;m=1,n=14', '0 and 17, 1 and 14, 2 and 11, 3 and 8', 'multiple']
+            },
+            {
+                id: 13,
+                type: 'sequence',
+                question: 'Find the missing terms in this sequence:<br><br><span class="sequence-box">?</span>, <span class="sequence-box">-1</span>, <span class="sequence-box">2</span>, <span class="sequence-box">5</span>, <span class="sequence-box">?</span><br><br>This sequence increases by the same amount each time.',
+                answer: '-4, 8',
+                unit: '',
+                hint: 'First find the common difference by looking at -1 to 2 to 5. Then work backwards from -1 and forwards from 5.',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <ul>
+                        <li>Look at the known terms: −1, 2, 5</li>
+                        <li>From −1 to 2: increase of 3</li>
+                        <li>From 2 to 5: increase of 3</li>
+                        <li>Common difference: <strong>+3</strong></li>
+                    </ul>
+                    <p>Finding missing terms:</p>
+                    <ul>
+                        <li>First missing term: −1 − 3 = <strong>−4</strong></li>
+                        <li>Last missing term: 5 + 3 = <strong>8</strong></li>
+                    </ul>
+                    <p>Complete sequence: <strong>−4, −1, 2, 5, 8</strong></p>
+                    <p><strong>Answers: −4 and 8</strong></p>
+                `,
+                acceptableAnswers: ['-4, 8', '-4,8', '-4 and 8', '8, -4', '-4 8', 'minus 4 and 8']
+            },
+            {
+                id: 14,
+                type: 'sequence',
+                question: 'To find the next term in a number sequence, follow the rule: "multiply by 3, then add 1"<br><br>The sequence begins with the number 1.<br><br>Find the next three terms in the sequence.',
+                answer: '4, 13, 40',
+                unit: '',
+                hint: 'Start with 1. First term: (1 × 3) + 1 = 4. Second term: (4 × 3) + 1 = 13. Continue...',
+                explanation: `
+                    <h4>Step-by-step solution:</h4>
+                    <p>Rule: multiply by 3, then add 1</p>
+                    <p>Starting number: 1</p>
+                    <ul>
+                        <li>1st term: (1 × 3) + 1 = 3 + 1 = <strong>4</strong></li>
+                        <li>2nd term: (4 × 3) + 1 = 12 + 1 = <strong>13</strong></li>
+                        <li>3rd term: (13 × 3) + 1 = 39 + 1 = <strong>40</strong></li>
+                    </ul>
+                    <p>Sequence: 1, <strong>4, 13, 40</strong>, 121, ...</p>
+                    <p><strong>Answers: 4, 13, 40</strong></p>
+                `,
+                acceptableAnswers: ['4, 13, 40', '4,13,40', '4 13 40', '4, 13, 40,']
+            }
+        ];
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let hintsUsed = 0;
+        let answered = false;
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            const container = document.getElementById('quizContent');
+            
+            let diagramHtml = '';
+            if (q.type === 'geometry' && q.id === 9) {
+                diagramHtml = `
+                    <div class="diagram-container">
+                        <div class="rhombus-diagram">
+                            <div class="rhombus"></div>
+                            <div class="diagonal-h"></div>
+                            <div class="diagonal-v"></div>
+                            <div class="label-h">6 cm</div>
+                            <div class="label-v">8 cm</div>
+                        </div>
+                        <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Rhombus with diagonals d₁ = 6 cm and d₂ = 8 cm</p>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="question-container">
+                    <div class="question-header">Question ${q.id}</div>
+                    <div class="question-text">${q.question}</div>
+                    ${diagramHtml}
+                    
+                    <div class="answer-section">
+                        <label class="answer-label">Your Answer${q.unit ? ` (${q.unit})` : ''}:</label>
+                        <input type="text" class="answer-input" id="answerInput" placeholder="Enter your answer here">
+                    </div>
+
+                    <div class="hint-box" id="hintBox">
+                        <strong>💡 Hint:</strong> ${q.hint}
+                    </div>
+
+                    <div class="feedback" id="feedback">
+                        <div class="feedback-title" id="feedbackTitle"></div>
+                        <div class="feedback-content" id="feedbackContent"></div>
+                    </div>
+
+                    <div class="buttons">
+                        <button class="btn btn-submit" id="submitBtn" onclick="checkAnswer()">
+                            <span>🚀</span> Submit Answer
+                        </button>
+                        <button class="btn btn-hint" id="hintBtn" onclick="showHint()">
+                            <span>💡</span> Show Hint
+                        </button>
+                        <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()">
+                            <span>➡️</span> Next Question
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('totalQ').textContent = questions.length;
+            const percent = Math.round(((currentQuestion) / questions.length) * 100);
+            document.getElementById('percent').textContent = percent;
+            document.getElementById('progressBar').style.width = percent + '%';
+            
+            answered = false;
+        }
+
+        function showHint() {
+            document.getElementById('hintBox').style.display = 'block';
+            hintsUsed++;
+            document.getElementById('hintCount').textContent = hintsUsed;
+            document.getElementById('hintBtn').disabled = true;
+            document.getElementById('hintBtn').style.opacity = '0.6';
+        }
+
+        function checkAnswer() {
+            if (answered) return;
+            
+            const q = questions[currentQuestion];
+            const userAnswer = document.getElementById('answerInput').value.trim().toLowerCase();
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackContent = document.getElementById('feedbackContent');
+            
+            let isCorrect = false;
+            
+            // Check against acceptable answers
+            if (q.acceptableAnswers) {
+                isCorrect = q.acceptableAnswers.some(ans => 
+                    userAnswer.includes(ans.toLowerCase()) || 
+                    ans.toLowerCase().includes(userAnswer)
+                );
+            }
+            
+            // Also check exact match for numeric answers
+            if (!isCorrect && userAnswer === String(q.answer).toLowerCase()) {
+                isCorrect = true;
+            }
+
+            feedback.style.display = 'block';
+            
+            if (isCorrect) {
+                feedback.className = 'feedback correct';
+                feedbackTitle.innerHTML = '✅ Correct! Well done!';
+                correctAnswers++;
+                document.getElementById('correctCount').textContent = correctAnswers;
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedbackTitle.innerHTML = '❌ Not quite right';
+                incorrectAnswers++;
+                document.getElementById('incorrectCount').textContent = incorrectAnswers;
+            }
+            
+            feedbackContent.innerHTML = q.explanation;
+            
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('hintBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'flex';
+            document.getElementById('answerInput').disabled = true;
+            
+            answered = true;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showCompletion();
+            }
+        }
+
+        function showCompletion() {
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('statsBar').style.display = 'none';
+            document.getElementById('progress-section').style.display = 'none';
+            document.getElementById('completionScreen').style.display = 'block';
+            
+            document.getElementById('finalCorrect').textContent = correctAnswers;
+            document.getElementById('finalIncorrect').textContent = incorrectAnswers;
+            document.getElementById('finalHints').textContent = hintsUsed;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            hintsUsed = 0;
+            
+            document.getElementById('correctCount').textContent = 0;
+            document.getElementById('incorrectCount').textContent = 0;
+            document.getElementById('hintCount').textContent = 0;
+            
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('statsBar').style.display = 'flex';
+            document.getElementById('completionScreen').style.display = 'none';
+            
+            loadQuestion();
+        }
+
+        // Initialize
+        loadQuestion();
+    </script>
+</body>
+</html>

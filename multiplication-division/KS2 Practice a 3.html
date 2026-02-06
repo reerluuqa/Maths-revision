@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fractions, Decimals & Percentages — Practice Quiz</title>
+  <style>
+    :root{
+      --bg:#0b0b12;
+      --panel:#f7f7fb;
+      --panel2:#ffffff;
+      --ink:#1f2430;
+      --muted:#6b7280;
+      --brand1:#4b1fbf;
+      --brand2:#7c3aed;
+      --green:#16a34a;
+      --green2:#22c55e;
+      --red:#ef4444;
+      --amber:#f59e0b;
+      --border:#e5e7eb;
+      --shadow: 0 20px 50px rgba(0,0,0,.25);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 700px at 50% 0%, rgba(124,58,237,.35), transparent 60%),
+                  linear-gradient(180deg, #0a0a12 0%, #090a14 100%);
+      font-family:var(--sans);
+      color:var(--ink);
+      display:flex;
+      justify-content:center;
+      padding:28px 14px;
+      min-height: 100vh;
+    }
+    .app{
+      width:min(960px, 100%);
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      background: linear-gradient(180deg, rgba(124,58,237,.25), rgba(75,31,191,.25));
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar{
+      padding:22px 22px 18px;
+      background: linear-gradient(90deg, rgba(75,31,191,.88), rgba(124,58,237,.88));
+      color:#fff;
+      display:flex;
+      align-items:flex-end;
+      gap:14px;
+    }
+    .brandIcon{
+      width:34px;height:34px;
+      border-radius:9px;
+      background: rgba(255,255,255,.18);
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+    }
+    .brandIcon svg{opacity:.95}
+    .titleWrap{flex:1}
+    .title{
+      margin:0;
+      font-size:28px;
+      letter-spacing:.2px;
+      font-weight:800;
+      line-height:1.1;
+    }
+    .subtitle{
+      margin:4px 0 0;
+      opacity:.9;
+      font-size:14px;
+      font-weight:500;
+    }
+    .shell{
+      background: var(--panel);
+      padding:18px;
+      flex: 1;
+    }
+    .card{
+      background: var(--panel2);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding:18px;
+    }
+    .metaRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .metaLeft{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:240px;
+    }
+    .qCount{
+      font-weight:700;
+      color: var(--muted);
+      font-size:14px;
+    }
+    .progressWrap{
+      width:100%;
+      height:10px;
+      background:#eef2ff;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid #e6e8ff;
+    }
+    .progressBar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--green), var(--green2));
+      border-radius:999px;
+      transition:width .35s ease;
+    }
+    .pct{
+      font-weight:800;
+      color: var(--muted);
+      font-size:14px;
+      min-width:54px;
+      text-align:right;
+    }
+    .qTitle{
+      margin:10px 0 10px;
+      font-size:20px;
+      color:#2b2f3b;
+      font-weight:800;
+    }
+    .qBody{
+      background:#f3f4f6;
+      border-left:6px solid rgba(124,58,237,.55);
+      border-radius:12px;
+      padding:14px 14px;
+      color:#111827;
+      font-size:18px;
+      line-height:1.35;
+      margin:0 0 16px;
+      min-height: 60px; /* Ensure space is visible if loading fails */
+    }
+    .qBody small{color:#374151}
+    .flexRow{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+    .diagram{
+      flex: 0 0 220px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px;
+    }
+    .diagram h4{
+      margin:0 0 8px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .inputs{
+      flex:1 1 320px;
+      min-width:280px;
+    }
+    .label{
+      font-weight:800;
+      color:#374151;
+      font-size:14px;
+      margin:6px 0 8px;
+    }
+    .inputRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      width:100%;
+      padding:12px 12px;
+      border:2px solid #c7cbe3;
+      border-radius:12px;
+      outline:none;
+      font-size:16px;
+      transition:border-color .2s ease, box-shadow .2s ease;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color: rgba(124,58,237,.85);
+      box-shadow: 0 0 0 4px rgba(124,58,237,.18);
+    }
+    .split3{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width:720px){
+      .split3{grid-template-columns:1fr}
+      .diagram{flex:1 1 100%}
+    }
+    .btnRow{
+      display:flex;
+      gap:12px;
+      margin-top:14px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:900;
+      font-size:15px;
+      cursor:pointer;
+      transition: transform .03s ease, filter .2s ease, opacity .2s ease;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+      user-select:none;
+    }
+    button:active{transform: translateY(1px)}
+    .btnSubmit{
+      flex:1 1 220px;
+      background: linear-gradient(90deg, var(--green), var(--green2));
+      color:#fff;
+    }
+    .btnHint{
+      flex:1 1 160px;
+      background:#fee2e2;
+      color:#7f1d1d;
+      border:2px solid #fecaca;
+    }
+    .btnNext{
+      flex:1 1 180px;
+      background: linear-gradient(90deg, #2563eb, #60a5fa);
+      color:#fff;
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .btnNext.enabled{
+      opacity:1;
+      cursor:pointer;
+    }
+    .feedback{
+      margin-top:14px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+      background:#fbfbff;
+    }
+    .feedbackHeader{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+      font-weight:900;
+    }
+    .pill{
+      font-size:12px;
+      font-weight:900;
+      padding:5px 10px;
+      border-radius:999px;
+      letter-spacing:.2px;
+      background:#e5e7eb;
+      color:#111827;
+    }
+    .pill.ok{background:#dcfce7;color:#14532d}
+    .pill.no{background:#fee2e2;color:#7f1d1d}
+    .feedback pre{
+      margin:0;
+      white-space:pre-wrap;
+      font-family:var(--sans);
+      color:#111827;
+      line-height:1.45;
+      font-size:15px;
+    }
+    .scoreRow{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:16px;
+      color: var(--muted);
+      font-weight:900;
+      flex-wrap:wrap;
+    }
+    .scoreRow .box{
+      flex:1 1 160px;
+      background:#f3f4f6;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px;
+      text-align:center;
+    }
+    .bigNum{
+      font-size:32px;
+      font-weight:1000;
+      color:#111827;
+      font-family:var(--mono);
+      margin-bottom:2px;
+    }
+    .box small{display:block}
+    .kbd{
+      font-family:var(--mono);
+      padding:2px 6px;
+      border-radius:8px;
+      background:#eef2ff;
+      border:1px solid #e0e7ff;
+      font-weight:900;
+    }
+    .helpText{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+    .math{
+      font-family: var(--mono);
+      background:#f3f4f6;
+      border:1px solid var(--border);
+      padding:2px 6px;
+      border-radius:8px;
+      font-weight:800;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brandIcon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" stroke="white" stroke-width="2"/>
+          <path d="M8 7h8M8 11h8M8 15h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="titleWrap">
+        <h1 class="title">Fractions Quiz</h1>
+        <p class="subtitle">Guided practice & step-by-step feedback</p>
+      </div>
+    </div>
+
+    <div class="shell">
+      <div class="card">
+        <div class="metaRow">
+          <div class="metaLeft">
+            <div class="qCount" id="qCount">Loading...</div>
+            <div class="progressWrap" aria-label="Progress">
+              <div class="progressBar" id="progressBar"></div>
+            </div>
+          </div>
+          <div class="pct" id="pct">0%</div>
+        </div>
+
+        <div class="qTitle" id="qTitle">Question 1</div>
+
+        <div class="flexRow">
+          <div class="diagram" id="diagram" style="display:none;">
+            <h4>Diagram</h4>
+            <div id="diagramMount"></div>
+          </div>
+
+          <div class="inputs">
+            <p class="qBody" id="qBody"></p>
+
+            <div class="label" id="answerLabel">Your Answer</div>
+            <div id="answerMount"></div>
+
+            <div class="btnRow">
+              <button class="btnSubmit" id="btnSubmit">
+                <span aria-hidden="true">🟢</span> Submit
+              </button>
+              <button class="btnHint" id="btnHint">
+                <span aria-hidden="true">💡</span> Hint
+              </button>
+              <button class="btnNext" id="btnNext">
+                <span aria-hidden="true">➡️</span> Next
+              </button>
+            </div>
+
+            <div class="feedback" id="feedback" style="display:none;">
+              <div class="feedbackHeader">
+                <span class="pill" id="resultPill">Result</span>
+                <span id="resultText">—</span>
+              </div>
+              <pre id="feedbackText"></pre>
+            </div>
+
+            <div class="helpText">
+              Input conventions:
+              <span class="kbd">fraction</span> like <span class="math">5/6</span>,
+              <span class="kbd">mixed</span> like <span class="math">2 3/5</span>,
+              <span class="kbd">order</span> like <span class="math">2/3, 3/5</span>.
+            </div>
+          </div>
+        </div>
+
+        <div class="scoreRow">
+          <div class="box">
+            <div class="bigNum" id="correctNum">0</div>
+            <small>Correct</small>
+          </div>
+          <div class="box">
+            <div class="bigNum" id="incorrectNum">0</div>
+            <small>Incorrect</small>
+          </div>
+          <div class="box">
+            <div class="bigNum" id="hintNum">0</div>
+            <small>Hints</small>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ============================
+   Utilities: parsing & compare
+   ============================ */
+
+function normalizeSpaces(s){ return (s || "").trim().replace(/\s+/g," "); }
+
+function gcd(a,b){
+  a=Math.abs(a); b=Math.abs(b);
+  while(b){ const t=a%b; a=b; b=t; }
+  return a||1;
+}
+function reduceFrac(n,d){
+  if(d===0) return {n, d};
+  const sign = (d<0)?-1:1;
+  n*=sign; d*=sign;
+  const g=gcd(n,d);
+  return {n:n/g, d:d/g};
+}
+
+// Parse: "a/b", "w a/b" (mixed), or integer
+function parseRational(raw){
+  let s = normalizeSpaces(raw);
+  if(!s) return null;
+  if(s.includes("%")) return null; // handled by percent type
+
+  // mixed: "2 3/5"
+  const parts = s.split(" ");
+  if(parts.length===2 && parts[1].includes("/")){
+    const w = Number(parts[0]);
+    if(!Number.isFinite(w)) return null;
+    const [a,b] = parts[1].split("/").map(Number);
+    if(!Number.isFinite(a)||!Number.isFinite(b)||b===0) return null;
+    const sign = (w<0)?-1:1;
+    const n = Math.abs(w)*b + a;
+    return reduceFrac(sign*n, b);
+  }
+
+  // fraction
+  if(s.includes("/")){
+    const [a,b] = s.split("/").map(Number);
+    if(!Number.isFinite(a)||!Number.isFinite(b)||b===0) return null;
+    return reduceFrac(a,b);
+  }
+
+  // integer / decimal
+  const x = Number(s);
+  if(!Number.isFinite(x)) return null;
+  if(Number.isInteger(x)) return {n:x, d:1};
+
+  // decimal to rational
+  const str = s;
+  const idx = str.indexOf(".");
+  if(idx<0) return {n:x, d:1};
+  const dec = str.length - idx - 1;
+  const scale = Math.pow(10, dec);
+  const n = Math.round(x * scale);
+  return reduceFrac(n, scale);
+}
+
+function rationalEqual(a,b){
+  if(!a || !b) return false;
+  const ar = reduceFrac(a.n, a.d);
+  const br = reduceFrac(b.n, b.d);
+  return ar.n===br.n && ar.d===br.d;
+}
+
+function parseOrderList(raw){
+  const s = normalizeSpaces(raw);
+  if(!s) return null;
+  const items = s.split(",").map(x=>normalizeSpaces(x)).filter(Boolean);
+  if(items.length===0) return null;
+  const rats = items.map(parseRational);
+  if(rats.some(x=>x===null)) return null;
+  return items.map((_,i)=>reduceFrac(rats[i].n, rats[i].d));
+}
+
+/* ============================
+   UI: circle diagram (10 slices, 4 shaded)
+   ============================ */
+function renderPie10_4Shaded(mount){
+  const size = 170;
+  const cx = size/2, cy = size/2;
+  const r = 70;
+  const slices = 10;
+  const shaded = 4;
+
+  function polarToCartesian(angleDeg){
+    const a = (angleDeg-90) * Math.PI/180;
+    return {x: cx + r*Math.cos(a), y: cy + r*Math.sin(a)};
+  }
+  function wedgePath(startAngle, endAngle){
+    const p1 = polarToCartesian(startAngle);
+    const p2 = polarToCartesian(endAngle);
+    const largeArc = (endAngle-startAngle) > 180 ? 1 : 0;
+    return [
+      `M ${cx} ${cy}`,
+      `L ${p1.x} ${p1.y}`,
+      `A ${r} ${r} 0 ${largeArc} 1 ${p2.x} ${p2.y}`,
+      "Z"
+    ].join(" ");
+  }
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("width", size);
+  svg.setAttribute("height", size);
+  svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+
+  const bg = document.createElementNS(svg.namespaceURI,"circle");
+  bg.setAttribute("cx", cx); bg.setAttribute("cy", cy); bg.setAttribute("r", r);
+  bg.setAttribute("fill", "#ffffff");
+  bg.setAttribute("stroke", "#d1d5db");
+  bg.setAttribute("stroke-width", "2");
+  svg.appendChild(bg);
+
+  for(let i=0;i<slices;i++){
+    const start = (360/slices)*i;
+    const end   = (360/slices)*(i+1);
+    const path = document.createElementNS(svg.namespaceURI,"path");
+    path.setAttribute("d", wedgePath(start,end));
+    path.setAttribute("fill", i < shaded ? "rgba(124,58,237,.65)" : "rgba(255,255,255,1)");
+    path.setAttribute("stroke", "#9ca3af");
+    path.setAttribute("stroke-width", "1");
+    svg.appendChild(path);
+  }
+
+  const t = document.createElementNS(svg.namespaceURI,"text");
+  t.setAttribute("x", cx);
+  t.setAttribute("y", cy + r + 22);
+  t.setAttribute("text-anchor","middle");
+  t.setAttribute("font-size","12");
+  t.setAttribute("font-weight","800");
+  t.setAttribute("fill","#6b7280");
+  t.textContent = "4 out of 10 shaded";
+  svg.appendChild(t);
+
+  mount.innerHTML = "";
+  mount.appendChild(svg);
+}
+
+/* ============================
+   Question bank
+   ============================ */
+
+const QUESTIONS = [
+  {
+    id: 1,
+    title: "Question 1",
+    body: `The circle has been split into 10 identical sections. 4 sections are shaded.
+Fill the missing values to make three equivalent fractions showing the shaded part:
+
+  4 / □      □ / 5      6 / □`,
+    type: "triple",
+    diagram: "pie10",
+    correct: { a:"10", b:"2", c:"15" },
+    hint: "Start from 4/10. Reduce it, then scale it.",
+    explain: ({user}) => `1) Diagram shows 4 shaded of 10 → 4/10.
+2) Simplify 4/10: Divide both by 2 → 2/5.
+3) Scale 2/5 to numerator 6: 2×3=6, so 5×3=15 → 6/15.`
+  },
+  {
+    id: 2,
+    title: "Question 2a",
+    body: `Convert: Write 3 3/7 as an improper fraction.`,
+    type: "single",
+    correctRational: reduceFrac(24,7),
+    hint: "Multiply whole by denominator, add numerator.",
+    explain: () => `3 × 7 = 21. Add 3 = 24.
+Result: 24/7`
+  },
+  {
+    id: 3,
+    title: "Question 2b",
+    body: `Convert: Write 14/5 as a mixed number.`,
+    type: "singleMixed",
+    correctMixed: {w:2, n:4, d:5},
+    hint: "Divide 14 by 5.",
+    explain: () => `14 ÷ 5 = 2 remainder 4.
+Result: 2 4/5`
+  },
+  {
+    id: 4,
+    title: "Question 3",
+    body: `Which of these is equivalent to 5/6?
+
+6/9, 10/12, 15/16, 20/25, 9/12`,
+    type: "choiceText",
+    correctTextSet: ["10/12"],
+    hint: "Simplify each option.",
+    explain: () => `10/12 simplifies to 5/6 (divide by 2).`
+  },
+  {
+    id: 5,
+    title: "Question 4",
+    body: `Put in order from largest to smallest:
+
+3/5, 5/9, 2/3`,
+    type: "order",
+    correctOrder: [reduceFrac(2,3), reduceFrac(3,5), reduceFrac(5,9)],
+    hint: "Use decimals or a common denominator.",
+    explain: () => `Decimals:
+2/3 ≈ 0.66
+3/5 = 0.60
+5/9 ≈ 0.55
+Order: 2/3, 3/5, 5/9`
+  },
+  {
+    id: 6,
+    title: "Question 5a",
+    body: `Calculate: (2/3) × 21`,
+    type: "single",
+    correctRational: reduceFrac(14,1),
+    hint: "21 divided by 3, then times 2.",
+    explain: () => `21 ÷ 3 = 7.
+7 × 2 = 14.`
+  },
+  {
+    id: 7,
+    title: "Question 5b",
+    body: `Calculate: 2 3/5 × 25`,
+    type: "single",
+    correctRational: reduceFrac(65,1),
+    hint: "Convert 2 3/5 to improper first.",
+    explain: () => `2 3/5 = 13/5.
+(13/5) × 25 = 13 × 5 = 65.`
+  },
+  {
+    id: 8,
+    title: "Question 6a",
+    body: `Work out: (1/3) × (1/4)`,
+    type: "single",
+    correctRational: reduceFrac(1,12),
+    hint: "Multiply tops and bottoms.",
+    explain: () => `(1×1) / (3×4) = 1/12`
+  },
+  {
+    id: 9,
+    title: "Question 6b",
+    body: `Work out: (3/8) × (7/10)`,
+    type: "single",
+    correctRational: reduceFrac(21,80),
+    hint: "Multiply tops and bottoms.",
+    explain: () => `(3×7) / (8×10) = 21/80`
+  },
+  {
+    id: 10,
+    title: "Question 7a",
+    body: `Give the answer as a mixed number:
+
+8/15 + 11/15 + 4/15`,
+    type: "singleMixed",
+    correctMixed: {w:1, n:8, d:15},
+    hint: "Add numerators, then convert.",
+    explain: () => `8+11+4 = 23.
+23/15 = 1 remainder 8.
+Result: 1 8/15`
+  },
+  {
+    id: 11,
+    title: "Question 7b",
+    body: `Give the answer as a mixed number:
+
+1 9/10 + 3/10 − 1/10`,
+    type: "singleMixed",
+    correctMixed: {w:2, n:1, d:10},
+    hint: "Combine the tenths, then add the whole.",
+    explain: () => `9/10 + 3/10 - 1/10 = 11/10.
+1 + 11/10 = 1 + 1 1/10 = 2 1/10.`
+  },
+  {
+    id: 12,
+    title: "Question 8a",
+    body: `Work out: 7/8 − 5/12`,
+    type: "single",
+    correctRational: reduceFrac(11,24),
+    hint: "Common denominator is 24.",
+    explain: () => `7/8 = 21/24.
+5/12 = 10/24.
+21 - 10 = 11.
+Result: 11/24`
+  },
+  {
+    id: 13,
+    title: "Question 8b",
+    body: `Work out: 1/3 + 2/7`,
+    type: "single",
+    correctRational: reduceFrac(13,21),
+    hint: "Common denominator is 21.",
+    explain: () => `1/3 = 7/21.
+2/7 = 6/21.
+7+6 = 13.
+Result: 13/21`
+  },
+  {
+    id: 14,
+    title: "Question 8c",
+    body: `Work out: 2 1/3 − 5/9`,
+    type: "singleMixed",
+    correctMixed: {w:1, n:7, d:9},
+    hint: "Convert 1/3 to 3/9.",
+    explain: () => `2 3/9 - 5/9.
+Borrow 1 whole (9/9).
+1 12/9 - 5/9 = 1 7/9.`
+  },
+  {
+    id: 15,
+    title: "Question 9",
+    body: `Mark has 4/5 of a tablespoon of jam. He spreads 1/4 of a tablespoon of jam on toast.
+
+What fraction of a tablespoon of jam does he have left?`,
+    type: "single",
+    correctRational: reduceFrac(11,20),
+    hint: "Subtract 1/4 from 4/5.",
+    explain: () => `Common denominator 20.
+4/5 = 16/20.
+1/4 = 5/20.
+16 - 5 = 11.
+Result: 11/20`
+  },
+  {
+    id: 16,
+    title: "Question 10a",
+    body: `Calculate: (1/8) ÷ 4`,
+    type: "single",
+    correctRational: reduceFrac(1,32),
+    hint: "Same as multiplying by 1/4.",
+    explain: () => `(1/8) × (1/4) = 1/32`
+  },
+  {
+    id: 17,
+    title: "Question 10b",
+    body: `Calculate: (2/5) ÷ 7`,
+    type: "single",
+    correctRational: reduceFrac(2,35),
+    hint: "Same as multiplying by 1/7.",
+    explain: () => `(2/5) × (1/7) = 2/35`
+  },
+  {
+    id: 18,
+    title: "Question 11",
+    body: `Zahra cuts a loaf into 5 equal pieces, then cuts each piece into 3 equal slices.
+
+What fraction of the whole loaf is one slice?`,
+    type: "single",
+    correctRational: reduceFrac(1,15),
+    hint: "Total slices = 5 × 3.",
+    explain: () => `5 × 3 = 15 total slices.
+One slice is 1/15.`
+  },
+  {
+    id: 19,
+    title: "Question 12a",
+    body: `Convert: 0.219 to a fraction (simplest form).`,
+    type: "single",
+    correctRational: reduceFrac(219,1000),
+    hint: "Put it over 1000.",
+    explain: () => `219/1000 (cannot be simplified).`
+  },
+  {
+    id: 20,
+    title: "Question 12b",
+    body: `Convert: 0.49 to a fraction (simplest form).`,
+    type: "single",
+    correctRational: reduceFrac(49,100),
+    hint: "Put it over 100.",
+    explain: () => `49/100.`
+  },
+  {
+    id: 21,
+    title: "Question 12c",
+    body: `Convert: 16/25 to a decimal.`,
+    type: "decimal",
+    correctDecimal: 0.64,
+    hint: "Multiply top and bottom by 4.",
+    explain: () => `16/25 = 64/100 = 0.64`
+  },
+  {
+    id: 22,
+    title: "Question 12d",
+    body: `Convert: 3/500 to a decimal.`,
+    type: "decimal",
+    correctDecimal: 0.006,
+    hint: "Multiply by 2 to get /1000.",
+    explain: () => `3/500 = 6/1000 = 0.006`
+  },
+  {
+    id: 23,
+    title: "Question 13a",
+    body: `Write: 0.39 as a percentage.`,
+    type: "percent",
+    correctPercent: 39,
+    hint: "Multiply by 100.",
+    explain: () => `0.39 × 100 = 39%.`
+  },
+  {
+    id: 24,
+    title: "Question 13b",
+    body: `Write: 13% as a decimal.`,
+    type: "decimal",
+    correctDecimal: 0.13,
+    hint: "Divide by 100.",
+    explain: () => `13 / 100 = 0.13`
+  },
+  {
+    id: 25,
+    title: "Question 14",
+    body: `Justin has 50 T-shirts. 11 are white.
+
+What percentage are white?`,
+    type: "percent",
+    correctPercent: 22,
+    hint: "Make the denominator 100.",
+    explain: () => `11/50 = 22/100 = 22%.`
+  },
+  {
+    id: 26,
+    title: "Question 15",
+    body: `60% of Lilou’s friends are at her birthday party.
+
+What fraction are NOT at the party?`,
+    type: "single",
+    correctRational: reduceFrac(2,5),
+    hint: "100% - 60% = 40%. Convert to fraction.",
+    explain: () => `100 - 60 = 40%.
+40/100 = 4/10 = 2/5.`
+  }
+];
+
+const TOTAL = QUESTIONS.length;
+
+/* ============================
+   App state
+   ============================ */
+let idx = 0;
+let correct = 0;
+let incorrect = 0;
+let hints = 0;
+let canAdvance = false;
+
+const el = (id)=>document.getElementById(id);
+const qCountEl = el("qCount");
+const progressBarEl = el("progressBar");
+const pctEl = el("pct");
+const qTitleEl = el("qTitle");
+const qBodyEl = el("qBody");
+const answerLabelEl = el("answerLabel");
+const answerMountEl = el("answerMount");
+const diagramEl = el("diagram");
+const diagramMountEl = el("diagramMount");
+const btnSubmit = el("btnSubmit");
+const btnHint = el("btnHint");
+const btnNext = el("btnNext");
+const feedbackEl = el("feedback");
+const feedbackTextEl = el("feedbackText");
+const resultPillEl = el("resultPill");
+const resultTextEl = el("resultText");
+const correctNumEl = el("correctNum");
+const incorrectNumEl = el("incorrectNum");
+const hintNumEl = el("hintNum");
+
+function setNextEnabled(on){
+  canAdvance = on;
+  if(on){
+    btnNext.classList.add("enabled");
+    btnNext.disabled = false;
+  }else{
+    btnNext.classList.remove("enabled");
+    btnNext.disabled = true;
+  }
+}
+
+function updateProgress(){
+  const qNum = idx + 1;
+  qCountEl.textContent = `Question ${qNum} of ${TOTAL}`;
+  const pct = Math.round((idx)/TOTAL * 100);
+  progressBarEl.style.width = `${pct}%`;
+  pctEl.textContent = `${pct}%`;
+  correctNumEl.textContent = String(correct);
+  incorrectNumEl.textContent = String(incorrect);
+  hintNumEl.textContent = String(hints);
+}
+
+function clearFeedback(){
+  feedbackEl.style.display = "none";
+  feedbackTextEl.textContent = "";
+  resultTextEl.textContent = "—";
+  resultPillEl.className = "pill";
+}
+
+function showFeedback(ok, text){
+  feedbackEl.style.display = "block";
+  resultPillEl.className = ok ? "pill ok" : "pill no";
+  resultPillEl.textContent = ok ? "Correct" : "Not yet";
+  resultTextEl.textContent = ok ? "Good job!" : "Review the working below.";
+  feedbackTextEl.textContent = text;
+}
+
+/* ============================
+   Render question
+   ============================ */
+function renderQuestion(){
+  updateProgress();
+  clearFeedback();
+  setNextEnabled(false);
+
+  const q = QUESTIONS[idx];
+  qTitleEl.textContent = q.title;
+  qBodyEl.innerText = q.body; // innerText handles newlines
+
+  // Diagram
+  diagramEl.style.display = "none";
+  diagramMountEl.innerHTML = "";
+  if(q.diagram === "pie10"){
+    diagramEl.style.display = "block";
+    renderPie10_4Shaded(diagramMountEl);
+  }
+
+  // Answer UI
+  answerMountEl.innerHTML = "";
+  if(q.type === "triple"){
+    answerLabelEl.textContent = "Enter missing values (left to right)";
+    const grid = document.createElement("div");
+    grid.className = "split3";
+    grid.innerHTML = `
+      <input id="ansA" type="text" placeholder="Under 4" inputmode="numeric" />
+      <input id="ansB" type="text" placeholder="Over 5" inputmode="numeric" />
+      <input id="ansC" type="text" placeholder="Under 6" inputmode="numeric" />
+    `;
+    answerMountEl.appendChild(grid);
+  } else {
+    answerLabelEl.textContent = "Your Answer";
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.id = "ans";
+    inp.placeholder = "Enter your answer";
+    inp.autocomplete = "off";
+    answerMountEl.appendChild(inp);
+  }
+  
+  // Focus first input
+  const firstInput = answerMountEl.querySelector("input");
+  if(firstInput) firstInput.focus();
+}
+
+/* ============================
+   Checking logic
+   ============================ */
+function checkAnswer(){
+  const q = QUESTIONS[idx];
+
+  if(q.type === "triple"){
+    const a = normalizeSpaces(el("ansA").value);
+    const b = normalizeSpaces(el("ansB").value);
+    const c = normalizeSpaces(el("ansC").value);
+    const ok = (a === q.correct.a) && (b === q.correct.b) && (c === q.correct.c);
+    return { ok, user: {a,b,c} };
+  }
+
+  const raw = normalizeSpaces(el("ans").value);
+
+  if(q.type === "choiceText"){
+    const ok = q.correctTextSet.includes(raw);
+    return { ok, user: raw };
+  }
+
+  if(q.type === "order"){
+    const list = parseOrderList(raw);
+    if(!list) return { ok:false, user: raw, parseError:true };
+    if(list.length !== q.correctOrder.length) return { ok:false, user: raw };
+    let ok = true;
+    for(let i=0;i<list.length;i++){
+      if(!rationalEqual(list[i], q.correctOrder[i])) { ok = false; break; }
+    }
+    return { ok, user: raw };
+  }
+
+  if(q.type === "singleMixed"){
+    const r = parseRational(raw);
+    if(!r) return { ok:false, user: raw, parseError:true };
+    const target = reduceFrac(q.correctMixed.w*q.correctMixed.d + q.correctMixed.n, q.correctMixed.d);
+    const ok = rationalEqual(r, target);
+    return { ok, user: raw };
+  }
+
+  if(q.type === "decimal"){
+    const x = Number(raw);
+    if(!Number.isFinite(x)) return { ok:false, user: raw, parseError:true };
+    const ok = Math.abs(x - q.correctDecimal) < 1e-9;
+    return { ok, user: raw };
+  }
+
+  if(q.type === "percent"){
+    let s = raw.replace("%","").trim();
+    const x = Number(s);
+    if(!Number.isFinite(x)) return { ok:false, user: raw, parseError:true };
+    const ok = Math.abs(x - q.correctPercent) < 1e-9;
+    return { ok, user: raw };
+  }
+
+  // default: single rational
+  const r = parseRational(raw);
+  if(!r) return { ok:false, user: raw, parseError:true };
+  const ok = rationalEqual(r, q.correctRational);
+  return { ok, user: raw };
+}
+
+/* ============================
+   Event handlers
+   ============================ */
+btnSubmit.addEventListener("click", () => {
+  const q = QUESTIONS[idx];
+  const res = checkAnswer();
+  const detailed = q.explain(res);
+
+  if(res.ok){
+    correct += 1;
+    showFeedback(true, detailed);
+    setNextEnabled(true);
+  }else{
+    incorrect += 1;
+    let extra = "";
+    if(res.parseError){
+      extra = "\n\n(Check your format. Fractions like 3/4, Mixed like 2 1/2)";
+    }
+    showFeedback(false, detailed + extra);
+    setNextEnabled(false);
+  }
+  updateProgress();
+});
+
+btnHint.addEventListener("click", () => {
+  const q = QUESTIONS[idx];
+  hints += 1;
+  hintNumEl.textContent = String(hints);
+  
+  feedbackEl.style.display = "block";
+  resultPillEl.className = "pill";
+  resultPillEl.textContent = "Hint";
+  resultTextEl.textContent = "Try again.";
+  feedbackTextEl.textContent = q.hint;
+});
+
+btnNext.addEventListener("click", () => {
+  if(!canAdvance) return;
+  idx += 1;
+  if(idx >= TOTAL){
+    qTitleEl.textContent = "Quiz Completed";
+    qBodyEl.textContent = "You have finished all questions. Refresh to restart.";
+    answerLabelEl.textContent = "—";
+    answerMountEl.innerHTML = "";
+    diagramEl.style.display = "none";
+    progressBarEl.style.width = "100%";
+    pctEl.textContent = "100%";
+    setNextEnabled(false);
+    btnSubmit.disabled = true;
+    btnHint.disabled = true;
+    showFeedback(true,
+      `Final Score:\nCorrect: ${correct}\nIncorrect: ${incorrect}\nHints Used: ${hints}`
+    );
+    return;
+  }
+  renderQuestion();
+});
+
+document.addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    if(canAdvance) {
+      btnNext.click();
+    } else {
+      const active = document.activeElement;
+      if(active && active.tagName === "INPUT"){
+        btnSubmit.click();
+      }
+    }
+  }
+});
+
+/* ============================
+   Boot
+   ============================ */
+renderQuestion();
+</script>
+</body>
+</html>

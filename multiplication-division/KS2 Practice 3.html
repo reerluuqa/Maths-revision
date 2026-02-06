@@ -1,0 +1,1349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fractions, Decimals & Percentages — Practice Quiz</title>
+  <style>
+    :root{
+      --bg:#0b0b12;
+      --panel:#f7f7fb;
+      --panel2:#ffffff;
+      --ink:#1f2430;
+      --muted:#6b7280;
+      --brand1:#4b1fbf;
+      --brand2:#7c3aed;
+      --green:#16a34a;
+      --green2:#22c55e;
+      --red:#ef4444;
+      --amber:#f59e0b;
+      --border:#e5e7eb;
+      --shadow: 0 20px 50px rgba(0,0,0,.25);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 700px at 50% 0%, rgba(124,58,237,.35), transparent 60%),
+                  linear-gradient(180deg, #0a0a12 0%, #090a14 100%);
+      font-family:var(--sans);
+      color:var(--ink);
+      display:flex;
+      justify-content:center;
+      padding:28px 14px;
+    }
+    .app{
+      width:min(960px, 100%);
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      background: linear-gradient(180deg, rgba(124,58,237,.25), rgba(75,31,191,.25));
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(6px);
+    }
+    .topbar{
+      padding:22px 22px 18px;
+      background: linear-gradient(90deg, rgba(75,31,191,.88), rgba(124,58,237,.88));
+      color:#fff;
+      display:flex;
+      align-items:flex-end;
+      gap:14px;
+    }
+    .brandIcon{
+      width:34px;height:34px;
+      border-radius:9px;
+      background: rgba(255,255,255,.18);
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+    }
+    .brandIcon svg{opacity:.95}
+    .titleWrap{flex:1}
+    .title{
+      margin:0;
+      font-size:28px;
+      letter-spacing:.2px;
+      font-weight:800;
+      line-height:1.1;
+    }
+    .subtitle{
+      margin:4px 0 0;
+      opacity:.9;
+      font-size:14px;
+      font-weight:500;
+    }
+    .shell{
+      background: var(--panel);
+      padding:18px;
+    }
+    .card{
+      background: var(--panel2);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding:18px;
+    }
+    .metaRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .metaLeft{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:240px;
+    }
+    .qCount{
+      font-weight:700;
+      color: var(--muted);
+      font-size:14px;
+    }
+    .progressWrap{
+      width:100%;
+      height:10px;
+      background:#eef2ff;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid #e6e8ff;
+    }
+    .progressBar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--green), var(--green2));
+      border-radius:999px;
+      transition:width .35s ease;
+    }
+    .pct{
+      font-weight:800;
+      color: var(--muted);
+      font-size:14px;
+      min-width:54px;
+      text-align:right;
+    }
+    .qTitle{
+      margin:10px 0 10px;
+      font-size:20px;
+      color:#2b2f3b;
+      font-weight:800;
+    }
+    /* FIX 1: white-space: pre-wrap so \n in question text actually renders */
+    .qBody{
+      background:#f3f4f6;
+      border-left:6px solid rgba(124,58,237,.55);
+      border-radius:12px;
+      padding:14px 14px;
+      color:#111827;
+      font-size:18px;
+      line-height:1.35;
+      margin:0 0 16px;
+      white-space: pre-wrap;
+    }
+    .qBody small{color:#374151}
+    .flexRow{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+    .diagram{
+      flex: 0 0 220px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px;
+    }
+    .diagram h4{
+      margin:0 0 8px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .inputs{
+      flex:1 1 320px;
+      min-width:280px;
+    }
+    .label{
+      font-weight:800;
+      color:#374151;
+      font-size:14px;
+      margin:6px 0 8px;
+    }
+    .inputRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="text"]{
+      width:100%;
+      padding:12px 12px;
+      border:2px solid #c7cbe3;
+      border-radius:12px;
+      outline:none;
+      font-size:16px;
+      transition:border-color .2s ease, box-shadow .2s ease;
+      background:#fff;
+    }
+    input[type="text"]:focus{
+      border-color: rgba(124,58,237,.85);
+      box-shadow: 0 0 0 4px rgba(124,58,237,.18);
+    }
+    input[type="text"].correct-border{
+      border-color: var(--green);
+      background: #f0fdf4;
+    }
+    input[type="text"].wrong-border{
+      border-color: var(--red);
+      background: #fef2f2;
+    }
+    .split3{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width:720px){
+      .split3{grid-template-columns:1fr}
+      .diagram{flex:1 1 100%}
+    }
+    .btnRow{
+      display:flex;
+      gap:12px;
+      margin-top:14px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:900;
+      font-size:15px;
+      cursor:pointer;
+      transition: transform .03s ease, filter .2s ease, opacity .2s ease;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+      user-select:none;
+    }
+    button:active{transform: translateY(1px)}
+    .btnSubmit{
+      flex:1 1 220px;
+      background: linear-gradient(90deg, var(--green), var(--green2));
+      color:#fff;
+    }
+    .btnSubmit:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+    .btnHint{
+      flex:1 1 160px;
+      background:#fee2e2;
+      color:#7f1d1d;
+      border:2px solid #fecaca;
+    }
+    .btnHint:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+    .btnNext{
+      flex:1 1 180px;
+      background: linear-gradient(90deg, #2563eb, #60a5fa);
+      color:#fff;
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .btnNext.enabled{
+      opacity:1;
+      cursor:pointer;
+    }
+    .feedback{
+      margin-top:14px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+      background:#fbfbff;
+    }
+    .feedback.feedback-correct{
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+    }
+    .feedback.feedback-wrong{
+      border-color: #fecaca;
+      background: #fef7f7;
+    }
+    .feedbackHeader{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+      font-weight:900;
+    }
+    .pill{
+      font-size:12px;
+      font-weight:900;
+      padding:5px 10px;
+      border-radius:999px;
+      letter-spacing:.2px;
+      background:#e5e7eb;
+      color:#111827;
+    }
+    .pill.ok{background:#dcfce7;color:#14532d}
+    .pill.no{background:#fee2e2;color:#7f1d1d}
+    .feedback pre{
+      margin:0;
+      white-space:pre-wrap;
+      font-family:var(--sans);
+      color:#111827;
+      line-height:1.45;
+      font-size:15px;
+    }
+    .scoreRow{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:16px;
+      color: var(--muted);
+      font-weight:900;
+      flex-wrap:wrap;
+    }
+    .scoreRow .box{
+      flex:1 1 160px;
+      background:#f3f4f6;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px;
+      text-align:center;
+    }
+    .bigNum{
+      font-size:32px;
+      font-weight:1000;
+      color:#111827;
+      font-family:var(--mono);
+      margin-bottom:2px;
+    }
+    .box small{display:block}
+    .kbd{
+      font-family:var(--mono);
+      padding:2px 6px;
+      border-radius:8px;
+      background:#eef2ff;
+      border:1px solid #e0e7ff;
+      font-weight:900;
+    }
+    .helpText{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+    .math{
+      font-family: var(--mono);
+      background:#f3f4f6;
+      border:1px solid var(--border);
+      padding:2px 6px;
+      border-radius:8px;
+      font-weight:800;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brandIcon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" stroke="white" stroke-width="2"/>
+          <path d="M8 7h8M8 11h8M8 15h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="titleWrap">
+        <h1 class="title">Fractions, Decimals & Percentages Quiz</h1>
+        <p class="subtitle">Guided practice with step-by-step feedback before moving on</p>
+      </div>
+    </div>
+
+    <div class="shell">
+      <div class="card">
+        <div class="metaRow">
+          <div class="metaLeft">
+            <div class="qCount" id="qCount">Question 1 of 15</div>
+            <div class="progressWrap" aria-label="Progress">
+              <div class="progressBar" id="progressBar"></div>
+            </div>
+          </div>
+          <div class="pct" id="pct">0%</div>
+        </div>
+
+        <div class="qTitle" id="qTitle">Question 1</div>
+
+        <div class="flexRow">
+          <div class="diagram" id="diagram" style="display:none;">
+            <h4>Diagram</h4>
+            <div id="diagramMount"></div>
+          </div>
+
+          <div class="inputs">
+            <div class="qBody" id="qBody"></div>
+
+            <div class="label" id="answerLabel">Your Answer</div>
+            <div id="answerMount"></div>
+
+            <div class="btnRow">
+              <button class="btnSubmit" id="btnSubmit">
+                <span aria-hidden="true">🟢</span> Submit Answer
+              </button>
+              <button class="btnHint" id="btnHint">
+                <span aria-hidden="true">💡</span> Show Hint
+              </button>
+              <button class="btnNext" id="btnNext">
+                <span aria-hidden="true">➡️</span> Next Question
+              </button>
+            </div>
+
+            <div class="feedback" id="feedback" style="display:none;">
+              <div class="feedbackHeader">
+                <span class="pill" id="resultPill">Result</span>
+                <span id="resultText">—</span>
+              </div>
+              <pre id="feedbackText"></pre>
+            </div>
+
+            <div class="helpText">
+              Input conventions:
+              <span class="kbd">fraction</span> like <span class="math">5/6</span>,
+              <span class="kbd">mixed</span> like <span class="math">2 3/5</span>,
+              <span class="kbd">order</span> like <span class="math">2/3, 3/5, 5/9</span>.
+              For "convert to decimal/percent", type the numeric value (e.g. <span class="math">0.64</span> or <span class="math">39%</span>).
+            </div>
+          </div>
+        </div>
+
+        <div class="scoreRow">
+          <div class="box">
+            <div class="bigNum" id="correctNum">0</div>
+            <small>Correct Answers</small>
+          </div>
+          <div class="box">
+            <div class="bigNum" id="incorrectNum">0</div>
+            <small>Incorrect Answers</small>
+          </div>
+          <div class="box">
+            <div class="bigNum" id="hintNum">0</div>
+            <small>Hints Used</small>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ============================
+   Utilities: parsing & compare
+   ============================ */
+
+function normalizeSpaces(s){ return (s ?? "").trim().replace(/\s+/g," "); }
+
+function gcd(a,b){
+  a=Math.abs(a); b=Math.abs(b);
+  while(b){ const t=a%b; a=b; b=t; }
+  return a||1;
+}
+function reduceFrac(n,d){
+  if(d===0) return {n, d};
+  const sign = (d<0)?-1:1;
+  n*=sign; d*=sign;
+  const g=gcd(n,d);
+  return {n:n/g, d:d/g};
+}
+
+function parseRational(raw){
+  let s = normalizeSpaces(raw);
+  if(!s) return null;
+  if(s.includes("%")) return null;
+
+  const parts = s.split(" ");
+  if(parts.length===2 && parts[1].includes("/")){
+    const w = Number(parts[0]);
+    if(!Number.isFinite(w)) return null;
+    const [a,b] = parts[1].split("/").map(Number);
+    if(!Number.isFinite(a)||!Number.isFinite(b)||b===0) return null;
+    const sign = (w<0)?-1:1;
+    const n = Math.abs(w)*b + a;
+    return reduceFrac(sign*n, b);
+  }
+
+  if(s.includes("/")){
+    const [a,b] = s.split("/").map(Number);
+    if(!Number.isFinite(a)||!Number.isFinite(b)||b===0) return null;
+    return reduceFrac(a,b);
+  }
+
+  const x = Number(s);
+  if(!Number.isFinite(x)) return null;
+  if(Number.isInteger(x)) return {n:x, d:1};
+
+  const str = s;
+  const idxDot = str.indexOf(".");
+  if(idxDot<0) return {n:x, d:1};
+  const dec = str.length - idxDot - 1;
+  const scale = Math.pow(10, dec);
+  const n = Math.round(x * scale);
+  return reduceFrac(n, scale);
+}
+
+function rationalEqual(a,b){
+  if(!a || !b) return false;
+  const ar = reduceFrac(a.n, a.d);
+  const br = reduceFrac(b.n, b.d);
+  return ar.n===br.n && ar.d===br.d;
+}
+
+function parseOrderList(raw){
+  const s = normalizeSpaces(raw);
+  if(!s) return null;
+  const items = s.split(",").map(x=>normalizeSpaces(x)).filter(Boolean);
+  if(items.length===0) return null;
+  const rats = items.map(parseRational);
+  if(rats.some(x=>x===null)) return null;
+  return items.map((_,i)=>reduceFrac(rats[i].n, rats[i].d));
+}
+
+/* ============================
+   UI: circle diagram (10 slices, 4 shaded)
+   ============================ */
+function renderPie10_4Shaded(mount){
+  const size = 170;
+  const cx = size/2, cy = size/2;
+  const r = 70;
+  const slices = 10;
+  const shaded = 4;
+
+  function polarToCartesian(angleDeg){
+    const a = (angleDeg-90) * Math.PI/180;
+    return {x: cx + r*Math.cos(a), y: cy + r*Math.sin(a)};
+  }
+  function wedgePath(startAngle, endAngle){
+    const p1 = polarToCartesian(startAngle);
+    const p2 = polarToCartesian(endAngle);
+    const largeArc = (endAngle-startAngle) > 180 ? 1 : 0;
+    return [
+      `M ${cx} ${cy}`,
+      `L ${p1.x} ${p1.y}`,
+      `A ${r} ${r} 0 ${largeArc} 1 ${p2.x} ${p2.y}`,
+      "Z"
+    ].join(" ");
+  }
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("width", size);
+  svg.setAttribute("height", size);
+  svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+
+  const bg = document.createElementNS(svg.namespaceURI,"circle");
+  bg.setAttribute("cx", cx); bg.setAttribute("cy", cy); bg.setAttribute("r", r);
+  bg.setAttribute("fill", "#ffffff");
+  bg.setAttribute("stroke", "#d1d5db");
+  bg.setAttribute("stroke-width", "2");
+  svg.appendChild(bg);
+
+  for(let i=0;i<slices;i++){
+    const start = (360/slices)*i;
+    const end   = (360/slices)*(i+1);
+    const path = document.createElementNS(svg.namespaceURI,"path");
+    path.setAttribute("d", wedgePath(start,end));
+    path.setAttribute("fill", i < shaded ? "rgba(124,58,237,.65)" : "rgba(255,255,255,1)");
+    path.setAttribute("stroke", "#9ca3af");
+    path.setAttribute("stroke-width", "1");
+    svg.appendChild(path);
+  }
+
+  const t = document.createElementNS(svg.namespaceURI,"text");
+  t.setAttribute("x", cx);
+  t.setAttribute("y", cy + r + 22);
+  t.setAttribute("text-anchor","middle");
+  t.setAttribute("font-size","12");
+  t.setAttribute("font-weight","800");
+  t.setAttribute("fill","#6b7280");
+  t.textContent = "4 out of 10 shaded (4/10)";
+  svg.appendChild(t);
+
+  mount.innerHTML = "";
+  mount.appendChild(svg);
+}
+
+/* ============================
+   Question bank
+   ============================ */
+
+const QUESTIONS = [
+  {
+    id: 1,
+    title: "Question 1",
+    body:
+`The circle has been split into 10 identical sections. 4 sections are shaded.
+Fill the missing values to make three equivalent fractions showing the shaded part:
+
+  4 / □      □ / 5      6 / □`,
+    type: "triple",
+    diagram: "pie10",
+    correct: { a:"10", b:"2", c:"15" },
+    hint:
+`Start from the picture: it shows 4 shaded out of 10.
+Reduce 4/10 to simplest form, then scale it to make numerator 6.`,
+    explain: ({user}) => {
+      return [
+        "Goal: express the same proportion three ways.",
+        "",
+        "1) Read the diagram: 4 shaded parts out of 10 total parts → fraction = 4/10.",
+        "   So the first blank (denominator under 4) must be 10.",
+        "",
+        "2) Simplify 4/10 by dividing top and bottom by their GCD (2):",
+        "   4/10 = (4÷2)/(10÷2) = 2/5.",
+        "   So the second blank (numerator over 5) must be 2.",
+        "",
+        "3) Create an equivalent fraction with numerator 6:",
+        "   2/5 × 3/3 = 6/15.",
+        "   So the third blank (denominator under 6) must be 15.",
+      ].join("\n");
+    }
+  },
+
+  {
+    id: 2,
+    title: "Question 2a",
+    body: "Convert: Write 3 3/7 as an improper fraction.",
+    type: "single",
+    correctRational: reduceFrac(24,7),
+    hint: "Multiply the whole number by the denominator, then add the numerator.",
+    explain: () => [
+      "3 3/7 means 3 wholes and 3/7 more.",
+      "Convert to sevenths:",
+      "  3 wholes = 3 × 7/7 = 21/7",
+      "Add 3/7:",
+      "  21/7 + 3/7 = 24/7",
+      "Answer: 24/7"
+    ].join("\n")
+  },
+
+  {
+    id: 3,
+    title: "Question 2b",
+    body: "Convert: Write 14/5 as a mixed number.",
+    type: "singleMixed",
+    correctMixed: {w:2, n:4, d:5},
+    hint: "Divide 14 by 5: quotient is the whole part, remainder is the numerator.",
+    explain: () => [
+      "Compute 14 ÷ 5:",
+      "  5 goes into 14 two times (2×5=10) with remainder 4.",
+      "So:",
+      "  14/5 = 2 and 4/5",
+      "Answer: 2 4/5"
+    ].join("\n")
+  },
+
+  {
+    id: 4,
+    title: "Question 3",
+    body: "Which of these is equivalent to 5/6?\n\n6/9, 10/12, 15/16, 20/25, 9/12",
+    type: "choiceText",
+    correctTextSet: ["10/12"],
+    hint: "Make each fraction simplest form and compare to 5/6.",
+    explain: () => [
+      "Reduce each option to simplest form:",
+      "  6/9  = 2/3 (÷3) → not 5/6",
+      "  10/12 = 5/6 (÷2) → MATCH",
+      "  15/16 is already simplest → not 5/6",
+      "  20/25 = 4/5 (÷5) → not 5/6",
+      "  9/12 = 3/4 (÷3) → not 5/6",
+      "Answer: 10/12"
+    ].join("\n")
+  },
+
+  {
+    id: 5,
+    title: "Question 4",
+    body: "Put in order from largest to smallest:\n\n3/5, 5/9, 2/3",
+    type: "order",
+    correctOrder: [reduceFrac(2,3), reduceFrac(3,5), reduceFrac(5,9)],
+    hint: "Use a common denominator (e.g. 45) or compare as decimals.",
+    explain: () => [
+      "Compare using common denominator 45:",
+      "  2/3 = 30/45",
+      "  3/5 = 27/45",
+      "  5/9 = 25/45",
+      "So largest to smallest:",
+      "  2/3, 3/5, 5/9"
+    ].join("\n")
+  },
+
+  {
+    id: 6,
+    title: "Question 5a",
+    body: "Calculate: (2/3) × 21",
+    type: "single",
+    correctRational: reduceFrac(14,1),
+    hint: "Multiply 21 by 2, then divide by 3 (or divide first).",
+    explain: () => [
+      "Compute (2/3) × 21.",
+      "Simplify by dividing 21 by 3 first:",
+      "  21 ÷ 3 = 7",
+      "Then multiply by 2:",
+      "  7 × 2 = 14",
+      "Answer: 14"
+    ].join("\n")
+  },
+
+  {
+    id: 7,
+    title: "Question 5b",
+    body: "Calculate: 2 3/5 × 25",
+    type: "single",
+    correctRational: reduceFrac(65,1),
+    hint: "Convert 2 3/5 to an improper fraction, then multiply.",
+    explain: () => [
+      "Convert 2 3/5 to an improper fraction:",
+      "  2 3/5 = (2×5 + 3)/5 = 13/5",
+      "Multiply:",
+      "  (13/5) × 25 = 13 × (25/5) = 13 × 5 = 65",
+      "Answer: 65"
+    ].join("\n")
+  },
+
+  {
+    id: 8,
+    title: "Question 6a",
+    body: "Work out: (1/3) × (1/4)",
+    type: "single",
+    correctRational: reduceFrac(1,12),
+    hint: "Multiply numerators together and denominators together, then simplify.",
+    explain: () => [
+      "Multiply tops and bottoms:",
+      "  (1×1)/(3×4) = 1/12",
+      "Already simplest.",
+      "Answer: 1/12"
+    ].join("\n")
+  },
+
+  {
+    id: 9,
+    title: "Question 6b",
+    body: "Work out: (3/8) × (7/10)",
+    type: "single",
+    correctRational: reduceFrac(21,80),
+    hint: "Multiply then simplify; check for cross-cancellation first if possible.",
+    explain: () => [
+      "Multiply:",
+      "  (3×7)/(8×10) = 21/80",
+      "21 and 80 share no common factor >1.",
+      "Answer: 21/80"
+    ].join("\n")
+  },
+
+  {
+    id: 10,
+    title: "Question 7a",
+    body: "Give the answer as a mixed number:\n\n8/15 + 11/15 + 4/15",
+    type: "singleMixed",
+    correctMixed: {w:1, n:8, d:15},
+    hint: "Same denominators: add numerators, then convert to a mixed number.",
+    explain: () => [
+      "Same denominator 15, so add numerators:",
+      "  (8+11+4)/15 = 23/15",
+      "Convert to mixed number:",
+      "  23 ÷ 15 = 1 remainder 8",
+      "So:",
+      "  23/15 = 1 8/15",
+      "Answer: 1 8/15"
+    ].join("\n")
+  },
+
+  {
+    id: 11,
+    title: "Question 7b",
+    body: "Give the answer as a mixed number:\n\n1 9/10 + 3/10 − 1/10",
+    type: "singleMixed",
+    correctMixed: {w:2, n:1, d:10},
+    hint: "Combine the tenths first, then add to the whole number.",
+    explain: () => [
+      "Start with the fractional parts (all tenths):",
+      "  9/10 + 3/10 − 1/10 = (9+3−1)/10 = 11/10",
+      "Now include the whole 1:",
+      "  1 + 11/10 = 1 + 1 1/10 = 2 1/10",
+      "Answer: 2 1/10"
+    ].join("\n")
+  },
+
+  {
+    id: 12,
+    title: "Question 8a",
+    body: "Work out: 7/8 − 5/12",
+    type: "single",
+    correctRational: reduceFrac(11,24),
+    hint: "Use common denominator 24 (LCM of 8 and 12).",
+    explain: () => [
+      "Find a common denominator: LCM(8,12) = 24.",
+      "Convert:",
+      "  7/8 = 21/24",
+      "  5/12 = 10/24",
+      "Subtract:",
+      "  21/24 − 10/24 = 11/24",
+      "Answer: 11/24"
+    ].join("\n")
+  },
+
+  {
+    id: 13,
+    title: "Question 8b",
+    body: "Work out: 1/3 + 2/7",
+    type: "single",
+    correctRational: reduceFrac(13,21),
+    hint: "Common denominator 21.",
+    explain: () => [
+      "Common denominator: LCM(3,7)=21.",
+      "Convert:",
+      "  1/3 = 7/21",
+      "  2/7 = 6/21",
+      "Add:",
+      "  7/21 + 6/21 = 13/21",
+      "Answer: 13/21"
+    ].join("\n")
+  },
+
+  {
+    id: 14,
+    title: "Question 8c",
+    body: "Work out: 2 1/3 − 5/9",
+    type: "singleMixed",
+    correctMixed: {w:1, n:7, d:9},
+    hint: "Convert 2 1/3 to ninths: 1/3 = 3/9.",
+    explain: () => [
+      "Rewrite the mixed number with denominator 9:",
+      "  2 1/3 = 2 + 1/3 = 2 + 3/9 = 2 3/9",
+      "Subtract 5/9:",
+      "  2 3/9 − 5/9 = 2 (3/9 − 5/9)",
+      "Since 3/9 < 5/9, borrow 1 from 2:",
+      "  2 3/9 = 1 + (9/9 + 3/9) = 1 12/9",
+      "Now subtract:",
+      "  1 12/9 − 5/9 = 1 7/9",
+      "Answer: 1 7/9"
+    ].join("\n")
+  },
+
+  {
+    id: 15,
+    title: "Question 9",
+    body:
+"Mark has 4/5 of a tablespoon of jam. He spreads 1/4 of a tablespoon of jam on toast.\n\nWhat fraction of a tablespoon of jam does he have left?",
+    type: "single",
+    correctRational: reduceFrac(11,20),
+    hint: "Subtract: 4/5 − 1/4 using denominator 20.",
+    explain: () => [
+      "Compute 4/5 − 1/4.",
+      "Common denominator: LCM(5,4)=20.",
+      "Convert:",
+      "  4/5 = 16/20",
+      "  1/4 = 5/20",
+      "Subtract:",
+      "  16/20 − 5/20 = 11/20",
+      "Answer: 11/20"
+    ].join("\n")
+  },
+
+  {
+    id: 16,
+    title: "Question 10a",
+    body: "Calculate: (1/8) ÷ 4",
+    type: "single",
+    correctRational: reduceFrac(1,32),
+    hint: "Dividing by 4 is multiplying by 1/4.",
+    explain: () => [
+      "Division by 4 equals multiplication by 1/4:",
+      "  (1/8) ÷ 4 = (1/8) × (1/4) = 1/32",
+      "Answer: 1/32"
+    ].join("\n")
+  },
+
+  {
+    id: 17,
+    title: "Question 10b",
+    body: "Calculate: (2/5) ÷ 7",
+    type: "single",
+    correctRational: reduceFrac(2,35),
+    hint: "Dividing by 7 is multiplying by 1/7.",
+    explain: () => [
+      "  (2/5) ÷ 7 = (2/5) × (1/7) = 2/35",
+      "Already simplest.",
+      "Answer: 2/35"
+    ].join("\n")
+  },
+
+  {
+    id: 18,
+    title: "Question 11",
+    body:
+"Zahra cuts a loaf into 5 equal pieces, then cuts each piece into 3 equal slices.\n\nWhat fraction of the whole loaf is one slice?",
+    type: "single",
+    correctRational: reduceFrac(1,15),
+    hint: "Total slices = 5 × 3.",
+    explain: () => [
+      "First cut: 5 equal pieces.",
+      "Second cut: each piece becomes 3 slices.",
+      "Total slices in the whole loaf:",
+      "  5 × 3 = 15",
+      "One slice is therefore:",
+      "  1/15",
+      "Answer: 1/15"
+    ].join("\n")
+  },
+
+  {
+    id: 19,
+    title: "Question 12a",
+    body: "Convert: 0.219 to a fraction (simplest form).",
+    type: "single",
+    correctRational: reduceFrac(219,1000),
+    hint: "0.219 = 219/1000. Check if it reduces.",
+    explain: () => [
+      "0.219 has 3 decimal places → denominator 1000:",
+      "  0.219 = 219/1000",
+      "Check reduction: 219 = 3×73 and 1000 = 2^3×5^3 → no common factors.",
+      "Answer: 219/1000"
+    ].join("\n")
+  },
+
+  {
+    id: 20,
+    title: "Question 12b",
+    body: "Convert: 0.49 to a fraction (simplest form).",
+    type: "single",
+    correctRational: reduceFrac(49,100),
+    hint: "0.49 = 49/100. 49 and 100 share no common factor.",
+    explain: () => [
+      "Two decimal places → denominator 100:",
+      "  0.49 = 49/100",
+      "49 and 100 are coprime.",
+      "Answer: 49/100"
+    ].join("\n")
+  },
+
+  {
+    id: 21,
+    title: "Question 12c",
+    body: "Convert: 16/25 to a decimal.",
+    type: "decimal",
+    correctDecimal: 0.64,
+    hint: "Make denominator 100: multiply top and bottom by 4.",
+    explain: () => [
+      "Convert 16/25 to denominator 100:",
+      "  16/25 = (16×4)/(25×4) = 64/100",
+      "So decimal is 0.64.",
+      "Answer: 0.64"
+    ].join("\n")
+  },
+
+  {
+    id: 22,
+    title: "Question 12d",
+    body: "Convert: 3/500 to a decimal.",
+    type: "decimal",
+    correctDecimal: 0.006,
+    hint: "500 × 2 = 1000, so convert to thousandths.",
+    explain: () => [
+      "Make denominator 1000:",
+      "  3/500 = (3×2)/(500×2) = 6/1000",
+      "6/1000 = 0.006",
+      "Answer: 0.006"
+    ].join("\n")
+  },
+
+  {
+    id: 23,
+    title: "Question 13a",
+    body: "Write: 0.39 as a percentage.",
+    type: "percent",
+    correctPercent: 39,
+    hint: "Multiply by 100 and add %.",
+    explain: () => [
+      "Percentage means \u201cout of 100\u201d.",
+      "  0.39 × 100 = 39",
+      "Answer: 39%"
+    ].join("\n")
+  },
+
+  {
+    id: 24,
+    title: "Question 13b",
+    body: "Write: 13% as a decimal.",
+    type: "decimal",
+    correctDecimal: 0.13,
+    hint: "Divide by 100.",
+    explain: () => [
+      "  13% = 13/100 = 0.13",
+      "Answer: 0.13"
+    ].join("\n")
+  },
+
+  {
+    id: 25,
+    title: "Question 14",
+    body:
+"Justin has 50 T-shirts. 11 are white.\n\nWhat percentage are white?",
+    type: "percent",
+    correctPercent: 22,
+    hint: "Compute 11/50 and convert to percent.",
+    explain: () => [
+      "Fraction white = 11/50.",
+      "Convert to percent:",
+      "  11/50 = (11×2)/(50×2) = 22/100 = 0.22",
+      "So percentage = 22%.",
+      "Answer: 22%"
+    ].join("\n")
+  },
+
+  {
+    id: 26,
+    title: "Question 15",
+    body:
+"60% of Lilou's friends are at her birthday party.\n\nWhat fraction are NOT at the party?",
+    type: "single",
+    correctRational: reduceFrac(2,5),
+    hint: "Not at party = 100% − 60% = 40% = 40/100.",
+    explain: () => [
+      "If 60% are at the party, then not at the party:",
+      "  100% − 60% = 40%",
+      "Convert 40% to a fraction:",
+      "  40% = 40/100 = 4/10 = 2/5",
+      "Answer: 2/5"
+    ].join("\n")
+  },
+];
+
+const TOTAL = QUESTIONS.length;
+
+/* ============================
+   App state
+   ============================ */
+let idx = 0;
+let correct = 0;
+let incorrect = 0;
+let hints = 0;
+let canAdvance = false;
+
+// FIX 2: Track per-question state so we don't double-count
+let questionAttempted = false;   // has the user submitted at least once on this question?
+let questionResolved = false;    // has the user gotten it right (or given up via Next)?
+
+const el = (id)=>document.getElementById(id);
+const qCountEl = el("qCount");
+const progressBarEl = el("progressBar");
+const pctEl = el("pct");
+const qTitleEl = el("qTitle");
+const qBodyEl = el("qBody");
+const answerLabelEl = el("answerLabel");
+const answerMountEl = el("answerMount");
+const diagramEl = el("diagram");
+const diagramMountEl = el("diagramMount");
+const btnSubmit = el("btnSubmit");
+const btnHint = el("btnHint");
+const btnNext = el("btnNext");
+const feedbackEl = el("feedback");
+const feedbackTextEl = el("feedbackText");
+const resultPillEl = el("resultPill");
+const resultTextEl = el("resultText");
+const correctNumEl = el("correctNum");
+const incorrectNumEl = el("incorrectNum");
+const hintNumEl = el("hintNum");
+
+function setNextEnabled(on){
+  canAdvance = on;
+  if(on){
+    btnNext.classList.add("enabled");
+    btnNext.disabled = false;
+  }else{
+    btnNext.classList.remove("enabled");
+    btnNext.disabled = true;
+  }
+}
+
+function updateProgress(){
+  const qNum = idx + 1;
+  qCountEl.textContent = `Question ${qNum} of ${TOTAL}`;
+  const pct = Math.round((idx)/TOTAL * 100);
+  progressBarEl.style.width = `${pct}%`;
+  pctEl.textContent = `${pct}%`;
+  correctNumEl.textContent = String(correct);
+  incorrectNumEl.textContent = String(incorrect);
+  hintNumEl.textContent = String(hints);
+}
+
+function clearFeedback(){
+  feedbackEl.style.display = "none";
+  feedbackEl.className = "feedback";
+  feedbackTextEl.textContent = "";
+  resultTextEl.textContent = "\u2014";
+  resultPillEl.className = "pill";
+}
+
+function showFeedback(ok, text){
+  feedbackEl.style.display = "block";
+  feedbackEl.className = "feedback " + (ok ? "feedback-correct" : "feedback-wrong");
+  resultPillEl.className = ok ? "pill ok" : "pill no";
+  resultPillEl.textContent = ok ? "Correct \u2714" : "Incorrect \u2718";
+  resultTextEl.textContent = ok
+    ? "Well done! Press Next to continue."
+    : "Review the working below, then try again or press Next to move on.";
+  feedbackTextEl.textContent = text;
+}
+
+/* ============================
+   Render question
+   ============================ */
+function renderQuestion(){
+  // Reset per-question tracking
+  questionAttempted = false;
+  questionResolved = false;
+
+  updateProgress();
+  clearFeedback();
+  setNextEnabled(false);
+  btnSubmit.disabled = false;
+  btnHint.disabled = false;
+
+  const q = QUESTIONS[idx];
+  qTitleEl.textContent = q.title;
+  qBodyEl.textContent = q.body;
+
+  // Diagram
+  diagramEl.style.display = "none";
+  diagramMountEl.innerHTML = "";
+  if(q.diagram === "pie10"){
+    diagramEl.style.display = "block";
+    renderPie10_4Shaded(diagramMountEl);
+  }
+
+  // Answer UI
+  answerMountEl.innerHTML = "";
+  if(q.type === "triple"){
+    answerLabelEl.textContent = "Enter the three missing values (left\u2192right)";
+    const grid = document.createElement("div");
+    grid.className = "split3";
+    grid.innerHTML = `
+      <input id="ansA" type="text" placeholder="Blank under 4 (e.g. 10)" inputmode="numeric" />
+      <input id="ansB" type="text" placeholder="Blank over 5 (e.g. 2)" inputmode="numeric" />
+      <input id="ansC" type="text" placeholder="Blank under 6 (e.g. 15)" inputmode="numeric" />
+    `;
+    answerMountEl.appendChild(grid);
+  } else {
+    answerLabelEl.textContent = "Your Answer";
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.id = "ans";
+    inp.placeholder = placeholderForType(q.type);
+    answerMountEl.appendChild(inp);
+    // Auto-focus
+    setTimeout(()=>inp.focus(), 50);
+  }
+}
+
+function placeholderForType(type){
+  switch(type){
+    case "order": return "e.g. 2/3, 3/5, 5/9";
+    case "singleMixed": return "e.g. 2 4/5";
+    case "decimal": return "e.g. 0.64";
+    case "percent": return "e.g. 39 or 39%";
+    case "choiceText": return "Type the matching fraction, e.g. 10/12";
+    default: return "e.g. 5/6 or 14";
+  }
+}
+
+/* ============================
+   Checking logic per type
+   ============================ */
+function checkAnswer(){
+  const q = QUESTIONS[idx];
+
+  if(q.type === "triple"){
+    const a = normalizeSpaces(document.getElementById("ansA")?.value);
+    const b = normalizeSpaces(document.getElementById("ansB")?.value);
+    const c = normalizeSpaces(document.getElementById("ansC")?.value);
+    const ok = (a === q.correct.a) && (b === q.correct.b) && (c === q.correct.c);
+    return { ok, user: {a,b,c} };
+  }
+
+  const ansEl = document.getElementById("ans");
+  const raw = normalizeSpaces(ansEl?.value);
+
+  if(q.type === "choiceText"){
+    const ok = q.correctTextSet.includes(raw);
+    return { ok, user: raw };
+  }
+
+  if(q.type === "order"){
+    const list = parseOrderList(raw);
+    if(!list) return { ok:false, user: raw, parseError:true };
+    if(list.length !== q.correctOrder.length) return { ok:false, user: raw };
+    let ok = true;
+    for(let i=0;i<list.length;i++){
+      if(!rationalEqual(list[i], q.correctOrder[i])) { ok = false; break; }
+    }
+    return { ok, user: raw };
+  }
+
+  if(q.type === "singleMixed"){
+    const r = parseRational(raw);
+    if(!r) return { ok:false, user: raw, parseError:true };
+    const target = reduceFrac(q.correctMixed.w*q.correctMixed.d + q.correctMixed.n, q.correctMixed.d);
+    const ok = rationalEqual(r, target);
+    return { ok, user: raw };
+  }
+
+  if(q.type === "decimal"){
+    const x = Number(raw);
+    if(!Number.isFinite(x)) return { ok:false, user: raw, parseError:true };
+    const ok = Math.abs(x - q.correctDecimal) < 1e-9;
+    return { ok, user: raw };
+  }
+
+  if(q.type === "percent"){
+    let s = raw.replace("%","").trim();
+    const x = Number(s);
+    if(!Number.isFinite(x)) return { ok:false, user: raw, parseError:true };
+    const ok = Math.abs(x - q.correctPercent) < 1e-9;
+    return { ok, user: raw };
+  }
+
+  // default: single rational
+  const r = parseRational(raw);
+  if(!r) return { ok:false, user: raw, parseError:true };
+  const ok = rationalEqual(r, q.correctRational);
+  return { ok, user: raw };
+}
+
+/* ============================
+   Highlight input borders
+   ============================ */
+function setInputBorder(isCorrect){
+  const cls = isCorrect ? "correct-border" : "wrong-border";
+  answerMountEl.querySelectorAll("input").forEach(inp => {
+    inp.classList.remove("correct-border","wrong-border");
+    inp.classList.add(cls);
+  });
+}
+
+/* ============================
+   Event handlers
+   ============================ */
+btnSubmit.addEventListener("click", () => {
+  if(questionResolved) return; // already answered correctly, just press Next
+
+  const q = QUESTIONS[idx];
+  const res = checkAnswer();
+  const detailed = q.explain(res);
+
+  if(res.ok){
+    // Only count correct if this is their first attempt on this question
+    if(!questionAttempted){
+      correct += 1;
+    }
+    questionAttempted = true;
+    questionResolved = true;
+    showFeedback(true, detailed);
+    setNextEnabled(true);
+    btnSubmit.disabled = true;
+    setInputBorder(true);
+  }else{
+    // Only count incorrect once per question
+    if(!questionAttempted){
+      incorrect += 1;
+    }
+    questionAttempted = true;
+
+    let extra = "";
+    if(res.parseError){
+      extra = "\n\nInput format issue detected.\nExamples:\n  - fraction: 5/6\n  - mixed: 2 3/5\n  - order: 2/3, 3/5, 5/9\n  - percent: 22 or 22%";
+    }
+    showFeedback(false, detailed + extra);
+    setInputBorder(false);
+
+    // FIX 2: Enable Next even on wrong answer so the user isn't stuck
+    setNextEnabled(true);
+  }
+  updateProgress();
+});
+
+btnHint.addEventListener("click", () => {
+  const q = QUESTIONS[idx];
+  hints += 1;
+  hintNumEl.textContent = String(hints);
+  const hintText = `HINT:\n${q.hint}\n\nNow attempt the question, then press "Submit Answer" for full working.`;
+  feedbackEl.style.display = "block";
+  feedbackEl.className = "feedback";
+  resultPillEl.className = "pill";
+  resultPillEl.textContent = "Hint \uD83D\uDCA1";
+  resultTextEl.textContent = "Try answering now.";
+  feedbackTextEl.textContent = hintText;
+});
+
+btnNext.addEventListener("click", () => {
+  if(!canAdvance) return;
+  idx += 1;
+  if(idx >= TOTAL){
+    // finish screen
+    qTitleEl.textContent = "\uD83C\uDF89 Quiz Complete!";
+    qBodyEl.textContent =
+      "You have completed all questions. Review your score below.\nRefresh the page to restart.";
+    answerLabelEl.textContent = "";
+    answerMountEl.innerHTML = "";
+    diagramEl.style.display = "none";
+    progressBarEl.style.width = "100%";
+    pctEl.textContent = "100%";
+    qCountEl.textContent = `Completed ${TOTAL} of ${TOTAL}`;
+    setNextEnabled(false);
+    btnSubmit.disabled = true;
+    btnHint.disabled = true;
+
+    const pctCorrect = TOTAL > 0 ? Math.round(correct/TOTAL*100) : 0;
+    showFeedback(true,
+      [
+        "Final Summary:",
+        `  Correct:     ${correct} / ${TOTAL}  (${pctCorrect}%)`,
+        `  Incorrect:   ${incorrect}`,
+        `  Hints used:  ${hints}`,
+        "",
+        pctCorrect >= 80 ? "Excellent work! \uD83C\uDF1F" :
+        pctCorrect >= 50 ? "Good effort! Review the ones you missed." :
+        "Keep practising \u2014 you\u2019ll get there!",
+      ].join("\n")
+    );
+    return;
+  }
+  renderQuestion();
+});
+
+document.addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    const active = document.activeElement;
+    if(active && active.tagName === "INPUT"){
+      if(!questionResolved){
+        btnSubmit.click();
+      } else if(canAdvance){
+        btnNext.click();
+      }
+    }
+  }
+});
+
+/* ============================
+   Boot
+   ============================ */
+renderQuestion();
+</script>
+</body>
+</html>

@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Practice Questions</title>
+  <style>
+    :root{
+      --bg1:#3a0ca3;
+      --bg2:#7209b7;
+      --card:#f6f7fb;
+      --ink:#111827;
+      --muted:#6b7280;
+      --border:#d1d5db;
+      --ok:#22c55e;
+      --bad:#ef4444;
+      --purple:#7c3aed;
+      --shadow: 0 14px 40px rgba(0,0,0,.18);
+      --radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--ink);
+      min-height:100vh;
+      background:
+        radial-gradient(1200px 700px at 20% 15%, rgba(255,255,255,.14), transparent 60%),
+        radial-gradient(900px 600px at 80% 85%, rgba(255,255,255,.10), transparent 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 14px;
+    }
+
+    .wrap{ width:min(980px, 96vw); }
+
+    .hero{
+      background: linear-gradient(90deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 22px;
+      padding: 18px 20px;
+      color:#fff;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+    .hero h1{
+      margin:0;
+      font-size: 22px;
+      line-height:1.15;
+      letter-spacing:.2px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .hero .sub{
+      margin-top:6px;
+      color: rgba(255,255,255,.78);
+      font-size: 13px;
+    }
+    .badge{
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.28);
+      color: rgba(255,255,255,.92);
+      background: rgba(255,255,255,.10);
+      height: fit-content;
+      white-space: nowrap;
+    }
+
+    .card{
+      background: rgba(246,247,251,.96);
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .card-top{
+      padding: 18px 20px 12px;
+      border-bottom: 1px solid rgba(209,213,219,.65);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .progress-wrap{
+      width: 70%;
+      max-width: 520px;
+    }
+    .progress-meta{
+      display:flex;
+      justify-content:space-between;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .progress-bar{
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow:hidden;
+      border: 1px solid rgba(0,0,0,.04);
+    }
+    .progress-fill{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      border-radius: 999px;
+      transition: width .35s ease;
+    }
+    .pct{
+      font-weight:600;
+      color: var(--muted);
+      font-size: 12px;
+      white-space:nowrap;
+    }
+
+    .card-body{ padding: 20px; }
+
+    .qtitle{
+      margin:0 0 10px 0;
+      font-size: 15px;
+      color: #111827;
+    }
+
+    .qbox{
+      background:#fff;
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--purple);
+      border-radius: 12px;
+      padding: 14px 14px;
+      font-size: 16px;
+      line-height:1.45;
+      margin-bottom: 14px;
+      white-space: pre-wrap;
+    }
+
+    label{
+      display:block;
+      font-size: 13px;
+      color: var(--muted);
+      margin: 10px 0 6px;
+    }
+
+    .answer{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 2px solid #c7b8f5;
+      outline:none;
+      font-size: 16px;
+      background:#fff;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .answer:focus{
+      border-color:var(--purple);
+      box-shadow: 0 0 0 4px rgba(124,58,237,.15);
+    }
+
+    .row{
+      display:flex;
+      gap:12px;
+      margin-top: 14px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-width: 170px;
+      user-select:none;
+      transition: transform .03s ease, filter .2s ease, opacity .2s ease;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn-primary{
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      color:#fff;
+    }
+    .btn-next{
+      background: linear-gradient(90deg, #64748b, #94a3b8);
+      color:#fff;
+    }
+    .btn-hint{
+      background: #f3f4f6;
+      color:#374151;
+      border: 1px solid rgba(209,213,219,.9);
+    }
+    .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      filter:saturate(.85);
+    }
+
+    .feedback{
+      margin-top: 12px;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: rgba(255,255,255,.9);
+      display:none;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+    .feedback.ok{
+      display:block;
+      border-color: rgba(34,197,94,.35);
+      background: rgba(34,197,94,.10);
+      color: #14532d;
+    }
+    .feedback.bad{
+      display:block;
+      border-color: rgba(239,68,68,.35);
+      background: rgba(239,68,68,.10);
+      color: #7f1d1d;
+    }
+
+    .hint{
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px dashed rgba(124,58,237,.35);
+      background: rgba(124,58,237,.06);
+      color: #3b0764;
+      display:none;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 14px 20px 18px;
+      border-top: 1px solid rgba(209,213,219,.65);
+      background: rgba(255,255,255,.55);
+    }
+    .stat{
+      text-align:center;
+      padding: 10px 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(209,213,219,.55);
+    }
+    .stat .n{
+      font-size: 24px;
+      font-weight: 800;
+      color:#4c1d95;
+      line-height:1.1;
+    }
+    .stat .t{
+      margin-top:4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 640px){
+      .progress-wrap{ width: 100%; }
+      .card-top{ flex-direction:column; align-items:stretch; }
+      .btn{ min-width: 0; flex: 1; }
+      .row{ flex-direction:column; }
+      .stats{ grid-template-columns: 1fr; }
+      .badge{ align-self:flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1>🧠 Practice Questions</h1>
+        <div class="sub">Number & Place Value — guided practice with feedback</div>
+      </div>
+      <div class="badge" id="badge">Question 1 of 14</div>
+    </div>
+
+    <div class="card" role="application" aria-label="Quiz">
+      <div class="card-top">
+        <div class="progress-wrap">
+          <div class="progress-meta">
+            <div id="qCounter">Question 1 of 14</div>
+            <div class="pct" id="pct">0%</div>
+          </div>
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <h2 class="qtitle" id="qTitle">Question 1</h2>
+        <div class="qbox" id="qText">Loading…</div>
+
+        <label for="answerInput">Your Answer:</label>
+        <input id="answerInput" class="answer" type="text" placeholder="Enter your answer here" />
+
+        <div class="row">
+          <button class="btn btn-primary" id="submitBtn">✅ Submit Answer</button>
+          <button class="btn btn-hint" id="hintBtn">💡 Show Hint</button>
+          <button class="btn btn-next" id="nextBtn" disabled>➡️ Next</button>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+        <div class="hint" id="hintBox"></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="n" id="correctN">0</div>
+          <div class="t">Correct Answers</div>
+        </div>
+        <div class="stat">
+          <div class="n" id="incorrectN">0</div>
+          <div class="t">Incorrect Answers</div>
+        </div>
+        <div class="stat">
+          <div class="n" id="hintsN">0</div>
+          <div class="t">Hints Used</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // QUESTIONS (from extracted pages)
+    // =========================
+
+    const questions = [
+      {
+        id: "1a",
+        title: "Question 1a",
+        text: "Charlie is flying around the world. She has already flown 3 872 651 m.\n\nWhat is the digit in the hundreds place of this number?",
+        accepted: ["6"],
+        correctDisplay: "6",
+        hint: "Hundreds digit is the 3rd digit from the right."
+      },
+      {
+        id: "1b",
+        title: "Question 1b",
+        text: "Write 3 872 651 out in words.",
+        accepted: [
+          "three million eight hundred and seventy-two thousand six hundred and fifty-one",
+          "three million eight hundred seventy-two thousand six hundred and fifty-one",
+          "three million, eight hundred and seventy-two thousand, six hundred and fifty-one"
+        ],
+        correctDisplay: "three million eight hundred and seventy-two thousand six hundred and fifty-one",
+        hint: "Split into: 3 million | 872 thousand | 651."
+      },
+      {
+        id: "2",
+        title: "Question 2",
+        text: "Cho wins six hundred thousand, two hundred and eighty-one pounds on a quiz show.\n\nWrite this amount as a number.",
+        accepted: ["600281", "600,281", "600 281"],
+        correctDisplay: "600,281",
+        hint: "600,000 + 281."
+      },
+      {
+        id: "3",
+        title: "Question 3",
+        text: "Arrange these numbers in descending order:\n6 782 149, 6 812 993, 582 107, 696 999",
+        accepted: [
+          "6 812 993, 6 782 149, 696 999, 582 107",
+          "6812993, 6782149, 696999, 582107",
+          "6,812,993, 6,782,149, 696,999, 582,107"
+        ],
+        correctDisplay: "6 812 993, 6 782 149, 696 999, 582 107",
+        hint: "Compare millions first, then thousands."
+      },
+      {
+        id: "4a",
+        title: "Question 4a",
+        text: "Arabella is on floor 3 of a building. She takes the lift down 7 floors.\n\nWhich floor is Arabella on now?",
+        accepted: ["-4", "floor -4", "-4th", "-4 floor"],
+        correctDisplay: "-4",
+        hint: "3 − 7 = −4 (using 0 as ground)."
+      },
+      {
+        id: "4b",
+        title: "Question 4b",
+        text: "After Arabella gets out of the lift, Jamal is 2 floors below her.\n\nWhich floor is Jamal on?",
+        accepted: ["-6", "floor -6", "-6th", "-6 floor"],
+        correctDisplay: "-6",
+        hint: "If Arabella is at −4, then 2 below is −6."
+      },
+      {
+        id: "5",
+        title: "Question 5",
+        text: "It is −6°C outside a castle. It is 5°C inside the castle.\n\nHow much warmer is it inside than outside?",
+        accepted: ["11", "11c", "11°c", "11 °c", "11 degrees", "11 degrees celsius"],
+        correctDisplay: "11°C",
+        hint: "Difference: 5 − (−6)."
+      },
+      {
+        id: "6",
+        title: "Question 6",
+        text: "Colin says that −7 + 8 = −15. Is he correct?\n(Answer yes/no or correct/incorrect.)",
+        accepted: ["no", "incorrect", "not correct", "false"],
+        correctDisplay: "No (−7 + 8 = 1)",
+        hint: "Adding 8 moves 8 steps up from −7."
+      },
+      {
+        id: "7a",
+        title: "Question 7a",
+        text: "Buckthwaite was founded in the year MLXVI.\n\nWhat year was Buckthwaite founded?",
+        accepted: ["1066", "1,066"],
+        correctDisplay: "1066",
+        hint: "M=1000, L=50, X=10, V=5, I=1."
+      },
+      {
+        id: "7b",
+        title: "Question 7b",
+        text: "Roshead was founded in the year MMIII.\n\nWas Roshead founded before or after Buckthwaite?",
+        accepted: ["after"],
+        correctDisplay: "After",
+        hint: "MMIII = 2003, which is later than 1066."
+      },
+      {
+        id: "8a",
+        title: "Question 8a",
+        text: "Dean eats 3.562 kg of spaghetti.\n\nWhat digit is in the tenths place?",
+        accepted: ["5"],
+        correctDisplay: "5",
+        hint: "Tenths is the first digit after the decimal point."
+      },
+      {
+        id: "8b",
+        title: "Question 8b",
+        text: "Dean eats 3.562 kg of spaghetti.\n\nWhat digit is in the thousandths place?",
+        accepted: ["2"],
+        correctDisplay: "2",
+        hint: "Thousandths is the 3rd digit after the decimal point."
+      },
+      {
+        id: "9",
+        title: "Question 9",
+        text: "Oliver has £33.47. Angelina has £34.25.\n\nWho has more money?",
+        accepted: ["angelina"],
+        correctDisplay: "Angelina",
+        hint: "Compare pounds first: 34 > 33."
+      },
+      {
+        id: "10",
+        title: "Question 10",
+        text: "Arrange these numbers from smallest to largest:\n12.25, 8.4, 8.32, 8.104, 12.3",
+        accepted: [
+          "8.104, 8.32, 8.4, 12.25, 12.3",
+          "8.104,8.32,8.4,12.25,12.3"
+        ],
+        correctDisplay: "8.104, 8.32, 8.4, 12.25, 12.3",
+        hint: "Pad with zeros: 8.400, 8.320, 8.104."
+      },
+      {
+        id: "11",
+        title: "Question 11",
+        text: "In one day, Alicia cycled 68.35 km and Fred cycled 68.306 km.\n\nWho cycled further?",
+        accepted: ["alicia"],
+        correctDisplay: "Alicia",
+        hint: "68.350 > 68.306"
+      },
+      {
+        id: "12a",
+        title: "Question 12a",
+        text: "Round 8 523 419 to the nearest hundred.",
+        accepted: ["8523400", "8,523,400", "8 523 400"],
+        correctDisplay: "8,523,400",
+        hint: "Look at the tens digit (1)."
+      },
+      {
+        id: "12b",
+        title: "Question 12b",
+        text: "Round 8 523 419 to the nearest ten thousand.",
+        accepted: ["8520000", "8,520,000", "8 520 000"],
+        correctDisplay: "8,520,000",
+        hint: "Look at the thousands digit (3)."
+      },
+      {
+        id: "12c",
+        title: "Question 12c",
+        text: "Round 8 523 419 to the nearest million.",
+        accepted: ["9000000", "9,000,000", "9 000 000"],
+        correctDisplay: "9,000,000",
+        hint: "523,419 is ≥ 500,000, so round up."
+      },
+      {
+        id: "13",
+        title: "Question 13",
+        text: "Parvati’s backpack weighs 1.62 kg.\n\nRound the weight to the nearest whole number.",
+        accepted: ["2", "2kg", "2 kg"],
+        correctDisplay: "2",
+        hint: "1.62 rounds up."
+      },
+      {
+        id: "14",
+        title: "Question 14",
+        text: "Katie throws a shot put 7.23 m.\n\nRound this distance to 1 decimal place.",
+        accepted: ["7.2", "7.2m", "7.2 m"],
+        correctDisplay: "7.2",
+        hint: "Look at the hundredths digit (3)."
+      }
+    ];
+
+    // =========================
+    // STATE
+    // =========================
+    let idx = 0;
+    let correct = 0;
+    let incorrect = 0;
+    let hintsUsed = 0;
+    let answeredThisQ = false;
+    let hintShownThisQ = false;
+
+    const $ = (id) => document.getElementById(id);
+
+    // =========================
+    // NORMALIZATION / CHECKING
+    // =========================
+    function normalize(s){
+      if (s === null || s === undefined) return "";
+      let x = String(s).trim().toLowerCase();
+
+      // unify spaces and remove trailing punctuation
+      x = x.replace(/\s+/g, " ").replace(/[.]+$/g,"");
+
+      // remove currency/units symbols for numeric comparisons (keep minus/decimal)
+      // also remove commas/spaces in big numbers
+      const numericLike = x
+        .replace(/£/g,"")
+        .replace(/°/g,"")
+        .replace(/celsius/g,"c")
+        .replace(/\bdegrees\b/g,"")
+        .replace(/\bmeters?\b|\bmetres?\b|\bkm\b|\bg\b|\bkg\b|\bm\b|\bmin(?:utes?)?\b/g,"")
+        .replace(/\bfloor\b/g,"")
+        .trim();
+
+      // if it becomes a plain number (maybe with commas/spaces), canonicalize digits
+      const digitsOnly = numericLike.replace(/[,\s]/g,"");
+      if (/^-?\d+(\.\d+)?$/.test(digitsOnly)) return digitsOnly;
+
+      // otherwise return cleaned text
+      return numericLike.replace(/\s+/g," ").trim();
+    }
+
+    function isCorrect(userInput, acceptedList){
+      const u = normalize(userInput);
+      if (!u) return false;
+      return acceptedList.some(a => normalize(a) === u);
+    }
+
+    // =========================
+    // UI RENDER
+    // =========================
+    function setProgress(){
+      const total = questions.length;
+      const currentHuman = idx + 1;
+      const pct = Math.round((idx / total) * 100);
+      $("qCounter").textContent = `Question ${currentHuman} of ${total}`;
+      $("badge").textContent = `Question ${currentHuman} of ${total}`;
+      $("pct").textContent = `${pct}%`;
+      $("progressFill").style.width = `${pct}%`;
+      $("qTitle").textContent = questions[idx].title;
+    }
+
+    function updateStats(){
+      $("correctN").textContent = correct;
+      $("incorrectN").textContent = incorrect;
+      $("hintsN").textContent = hintsUsed;
+    }
+
+    function showFeedback(ok, message){
+      const el = $("feedback");
+      el.className = "feedback " + (ok ? "ok" : "bad");
+      el.textContent = message;
+    }
+
+    function renderQuestion(){
+      answeredThisQ = false;
+      hintShownThisQ = false;
+
+      const q = questions[idx];
+      $("qText").textContent = q.text;
+
+      $("answerInput").value = "";
+      $("answerInput").disabled = false;
+      $("answerInput").focus();
+
+      $("feedback").className = "feedback";
+      $("feedback").style.display = "none";
+      $("feedback").textContent = "";
+
+      $("hintBox").style.display = "none";
+      $("hintBox").textContent = "";
+
+      $("submitBtn").disabled = false;
+      $("nextBtn").disabled = true;
+      $("hintBtn").disabled = false;
+
+      setProgress();
+    }
+
+    function showFinal(){
+      const total = questions.length;
+      $("qTitle").textContent = "Completed";
+      $("qText").textContent =
+        `You have completed all questions.\n\nScore: ${correct}/${total}\nCorrect: ${correct}\nIncorrect: ${incorrect}\nHints used: ${hintsUsed}`;
+
+      $("answerInput").value = "";
+      $("answerInput").disabled = true;
+
+      $("feedback").className = "feedback ok";
+      $("feedback").style.display = "block";
+      $("feedback").textContent = "Done ✅  Press Restart to try again.";
+
+      $("hintBox").style.display = "none";
+
+      $("submitBtn").textContent = "🔁 Restart";
+      $("submitBtn").disabled = false;
+      $("nextBtn").disabled = true;
+      $("hintBtn").disabled = true;
+
+      $("pct").textContent = "100%";
+      $("progressFill").style.width = "100%";
+      $("badge").textContent = "Completed";
+    }
+
+    // =========================
+    // EVENTS
+    // =========================
+    $("submitBtn").addEventListener("click", () => {
+      // Restart mode on final screen
+      if (idx >= questions.length){
+        idx = 0; correct = 0; incorrect = 0; hintsUsed = 0;
+        $("submitBtn").textContent = "✅ Submit Answer";
+        updateStats();
+        renderQuestion();
+        return;
+      }
+
+      if (answeredThisQ) return;
+
+      const user = $("answerInput").value;
+      const q = questions[idx];
+
+      if (!normalize(user)){
+        showFeedback(false, "Please enter an answer.");
+        return;
+      }
+
+      answeredThisQ = true;
+      $("answerInput").disabled = true;
+
+      const ok = isCorrect(user, q.accepted);
+
+      if (ok){
+        correct++;
+        updateStats();
+        showFeedback(true, "Correct ✅");
+      } else {
+        incorrect++;
+        updateStats();
+        showFeedback(false, `Incorrect ❌\nCorrect answer: ${q.correctDisplay}`);
+      }
+
+      $("feedback").style.display = "block";
+      $("submitBtn").disabled = true;
+      $("nextBtn").disabled = false;
+
+      // progress after answering
+      const total = questions.length;
+      const pct = Math.round(((idx + 1) / total) * 100);
+      $("pct").textContent = `${pct}%`;
+      $("progressFill").style.width = `${pct}%`;
+    });
+
+    $("nextBtn").addEventListener("click", () => {
+      if (!answeredThisQ) return;
+      idx++;
+      if (idx >= questions.length){
+        showFinal();
+        return;
+      }
+      renderQuestion();
+    });
+
+    $("hintBtn").addEventListener("click", () => {
+      const q = questions[idx];
+      if (!q.hint) return;
+
+      if (!hintShownThisQ){
+        hintsUsed++;
+        hintShownThisQ = true;
+        updateStats();
+      }
+      $("hintBox").textContent = "Hint: " + q.hint;
+      $("hintBox").style.display = "block";
+    });
+
+    $("answerInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter"){
+        e.preventDefault();
+        if (!$("submitBtn").disabled) $("submitBtn").click();
+        else if (!$("nextBtn").disabled) $("nextBtn").click();
+      }
+    });
+
+    // INIT
+    updateStats();
+    renderQuestion();
+  </script>
+</body>
+</html>

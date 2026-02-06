@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraction Playground</title>
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --slate-900: #0f172a;
+            --slate-700: #334155;
+            --slate-500: #64748b;
+            --slate-200: #e2e8f0;
+            --slate-50: #f8fafc;
+            
+            --teal-500: #14b8a6;
+            --teal-600: #0d9488;
+            
+            --coral-500: #fb7185;
+            
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--slate-50);
+            color: var(--slate-700);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .app-container {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            border: 1px solid var(--slate-200);
+        }
+
+        @media (max-width: 768px) {
+            .app-container { grid-template-columns: 1fr; }
+        }
+
+        /* --- LEFT PANEL: CONTROLS --- */
+        .controls-panel {
+            padding: 2rem;
+            border-right: 1px solid var(--slate-200);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--slate-900);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--slate-500);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Sliders */
+        .slider-group {
+            margin-bottom: 1rem;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .highlight-denom { color: var(--coral-500); }
+        .highlight-num { color: var(--teal-500); }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+            accent-color: var(--slate-700);
+        }
+
+        /* Explanation Box */
+        .explanation-card {
+            background-color: var(--slate-50);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--teal-500);
+            transition: all 0.3s ease;
+        }
+
+        .fraction-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .fraction-text {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--slate-500);
+            line-height: 1.4;
+        }
+
+        /* Presets */
+        .presets {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            background: white;
+            border: 1px solid var(--slate-200);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--slate-700);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--teal-500);
+            color: var(--teal-500);
+            background: var(--slate-50);
+        }
+
+        /* --- RIGHT PANEL: VISUALS --- */
+        .visual-panel {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            background-image: radial-gradient(var(--slate-50) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        #canvas-container {
+            width: 320px;
+            height: 320px;
+            position: relative;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg); /* Start from top */
+            overflow: visible;
+        }
+
+        /* SVG Slice Styling */
+        .slice {
+            fill: transparent;
+            stroke: var(--slate-200);
+            stroke-width: 2;
+            cursor: pointer;
+            transition: fill 0.3s ease, transform 0.2s ease, stroke 0.3s ease;
+            transform-origin: center;
+        }
+
+        .slice:hover {
+            stroke: var(--slate-500);
+            transform: scale(1.05); /* Pop effect */
+            z-index: 10;
+        }
+
+        .slice.active {
+            fill: var(--teal-500);
+            stroke: var(--teal-600);
+        }
+
+        /* Center Hole for Donut Text (Optional style choice, keeping solid for now) */
+        .center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: var(--slate-500);
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Controls -->
+    <div class="controls-panel">
+        <div>
+            <h1>Fraction Playground</h1>
+            <p class="subtitle">Understand the relationship between the whole and its parts. Slice the shape, then fill it.</p>
+        </div>
+
+        <!-- Sliders -->
+        <div>
+            <div class="slider-group">
+                <div class="label-row">
+                    <span>Total Slices (Denominator)</span>
+                    <span class="highlight-denom" id="denom-val">4</span>
+                </div>
+                <input type="range" id="denominator" min="1" max="12" value="4">
+            </div>
+
+            <div class="slider-group">
+                <div class="label-row">
+                    <span>Selected Slices (Numerator)</span>
+                    <span class="highlight-num" id="num-val">1</span>
+                </div>
+                <input type="range" id="numerator" min="0" max="4" value="1">
+            </div>
+        </div>
+
+        <!-- Feedback Area -->
+        <div class="explanation-card">
+            <div class="fraction-display">
+                <span class="highlight-num" id="disp-num">1</span>
+                <span>&frasl;</span>
+                <span class="highlight-denom" id="disp-denom">4</span>
+            </div>
+            <p class="fraction-text" id="explanation-text">
+                You have cut the whole into <strong>4 equal parts</strong>. 
+                You have selected <strong>1</strong> of those parts.
+            </p>
+        </div>
+
+        <!-- Presets -->
+        <div>
+            <p style="font-size: 0.8rem; margin-bottom: 0.5rem; font-weight: 600; color:var(--slate-500)">TRY EXAMPLES</p>
+            <div class="presets">
+                <button class="preset-btn" onclick="setFraction(1, 2)">1 / 2 (Half)</button>
+                <button class="preset-btn" onclick="setFraction(3, 4)">3 / 4 (Three Quarters)</button>
+                <button class="preset-btn" onclick="setFraction(5, 8)">5 / 8</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visuals -->
+    <div class="visual-panel">
+        <div id="canvas-container">
+            <svg viewBox="0 0 100 100" id="pie-chart">
+                <!-- Slices generated by JS -->
+            </svg>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- STATE MANAGEMENT ---
+    const state = {
+        numerator: 1,
+        denominator: 4
+    };
+
+    // --- DOM ELEMENTS ---
+    const els = {
+        denomInput: document.getElementById('denominator'),
+        numInput: document.getElementById('numerator'),
+        denomVal: document.getElementById('denom-val'),
+        numVal: document.getElementById('num-val'),
+        dispNum: document.getElementById('disp-num'),
+        dispDenom: document.getElementById('disp-denom'),
+        explanation: document.getElementById('explanation-text'),
+        svg: document.getElementById('pie-chart')
+    };
+
+    // --- MATH HELPERS ---
+    // Calculate coordinates on a circle for SVG path
+    function getCoordinatesForPercent(percent) {
+        const x = Math.cos(2 * Math.PI * percent);
+        const y = Math.sin(2 * Math.PI * percent);
+        return [x, y];
+    }
+
+    // --- CORE LOGIC ---
+
+    function init() {
+        // Event Listeners for Sliders
+        els.denomInput.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            updateState(null, val);
+        });
+
+        els.numInput.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            updateState(val, null);
+        });
+
+        // Initial Draw
+        render();
+    }
+
+    // Update state safely (handling constraints)
+    function updateState(newNum, newDenom) {
+        if (newDenom !== null) {
+            state.denominator = newDenom;
+            // If denominator drops below numerator, clamp numerator
+            if (state.numerator > state.denominator) {
+                state.numerator = state.denominator;
+            }
+            // Update the Max attribute of the numerator slider
+            els.numInput.max = state.denominator;
+        }
+
+        if (newNum !== null) {
+            state.numerator = newNum;
+        }
+
+        // Sync Slider UI values
+        els.denomInput.value = state.denominator;
+        els.numInput.value = state.numerator;
+
+        render();
+    }
+
+    // Preset Buttons Handler
+    function setFraction(n, d) {
+        updateState(n, d);
+    }
+
+    // Generate the Explanation Text
+    function getExplanation(n, d) {
+        if (d === 1) {
+            return n === 1 
+                ? "You have a single Whole. It is selected." 
+                : "You have a single Whole, but you haven't selected it.";
+        }
+        
+        if (n === 0) {
+            return `You divided the whole into <strong>${d} parts</strong>, but selected <strong>none</strong>.`;
+        }
+
+        if (n === d) {
+            return `You selected all <strong>${d} parts</strong>. This equals <strong>One Whole</strong>.`;
+        }
+
+        const partWord = "part" + (d > 1 ? "s" : "");
+        return `The denominator (bottom) splits the whole into <strong>${d} equal ${partWord}</strong>. <br>The numerator (top) counts <strong>${n}</strong> of them.`;
+    }
+
+    // --- RENDERING ---
+
+    function render() {
+        // 1. Update Text UI
+        els.denomVal.textContent = state.denominator;
+        els.numVal.textContent = state.numerator;
+        els.dispNum.textContent = state.numerator;
+        els.dispDenom.textContent = state.denominator;
+        els.explanation.innerHTML = getExplanation(state.numerator, state.denominator);
+
+        // 2. Draw SVG
+        drawPie();
+    }
+
+    function drawPie() {
+        els.svg.innerHTML = ''; // Clear canvas
+        
+        const totalSlices = state.denominator;
+        const selectedSlices = state.numerator;
+        
+        // If 1 slice, draw a simple circle
+        if (totalSlices === 1) {
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", "50");
+            circle.setAttribute("cy", "50");
+            circle.setAttribute("r", "48"); // padding
+            circle.setAttribute("class", `slice ${selectedSlices === 1 ? 'active' : ''}`);
+            
+            // Allow click to toggle
+            circle.addEventListener('click', () => {
+                const newVal = state.numerator === 0 ? 1 : 0;
+                updateState(newVal, null);
+            });
+            
+            els.svg.appendChild(circle);
+            return;
+        }
+
+        // Generate Path for each slice
+        for (let i = 0; i < totalSlices; i++) {
+            const slicePercent = 1 / totalSlices;
+            const startPercent = i * slicePercent;
+            const endPercent = startPercent + slicePercent;
+
+            const [startX, startY] = getCoordinatesForPercent(startPercent);
+            const [endX, endY] = getCoordinatesForPercent(endPercent);
+
+            // Create Path Command
+            // Move to center (50,50)
+            // Line to Start Coordinates (scale to radius 48 and offset 50)
+            // Arc to End Coordinates
+            // Close Path
+            
+            const radius = 48;
+            const cx = 50; 
+            const cy = 50;
+
+            const x1 = cx + startX * radius;
+            const y1 = cy + startY * radius;
+            const x2 = cx + endX * radius;
+            const y2 = cy + endY * radius;
+
+            const largeArcFlag = slicePercent > 0.5 ? 1 : 0;
+
+            const pathData = [
+                `M ${cx} ${cy}`,
+                `L ${x1} ${y1}`,
+                `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                `Z`
+            ].join(' ');
+
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", pathData);
+            
+            // Determine active state based on index vs numerator
+            // We fill slices sequentially 0 to n-1
+            const isActive = i < selectedSlices;
+            path.setAttribute("class", `slice ${isActive ? 'active' : ''}`);
+
+            // Interactivity: Click a slice
+            // Logic: If I click slice index 3 (4th slice), I want to set numerator to 4.
+            // If I click a slice that is already active, usually we want to toggle.
+            // But for a linear fraction lesson, clicking slice 3 usually implies "Select up to 3".
+            // Let's make it intuitive: clicking a slice sets the numerator to that slice's index + 1.
+            // Unless it is the exact last selected slice, then we deselect it? 
+            // Let's keep it simple: Click sets the count.
+            
+            path.addEventListener('click', () => {
+                // If I click the 3rd slice (index 2), I want 3 pieces total.
+                let newNum = i + 1;
+                
+                // Toggle UX: If I click the exact last active slice, reduce count by 1
+                if (newNum === state.numerator) {
+                   newNum = newNum - 1;
+                }
+                
+                updateState(newNum, null);
+            });
+
+            els.svg.appendChild(path);
+        }
+    }
+
+    // Start App
+    init();
+
+</script>
+
+</body>
+</html>

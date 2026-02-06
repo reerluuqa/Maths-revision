@@ -1,0 +1,608 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraction Problem Solver - Educational Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 50px;
+            padding: 5px;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: linear-gradient(90deg, #00c853, #69f0ae);
+            border-radius: 50px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1b5e20;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00c853, #69f0ae);
+            color: #1b5e20;
+            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.4);
+        }
+
+        .feedback {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-left: 5px solid #4caf50;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-left: 5px solid #f44336;
+        }
+
+        .feedback-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .feedback h3 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .feedback.correct h3 {
+            color: #2e7d32;
+        }
+
+        .feedback.incorrect h3 {
+            color: #c62828;
+        }
+
+        .correct-answer {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #4caf50;
+        }
+
+        .correct-answer h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .explanation {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .explanation h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .explanation p, .explanation ul {
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .explanation ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .explanation li {
+            margin-bottom: 8px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .completion {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .completion-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .completion h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .score {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0;
+        }
+
+        .score-details {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .hint {
+            background: #fff3e0;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #ff9800;
+            margin-bottom: 20px;
+            color: #e65100;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧮 Fraction Problems</h1>
+            <p>Master fractions through practical word problems</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar" style="width: 11%">1/9</div>
+        </div>
+
+        <div class="card" id="quizCard">
+            <!-- Content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                question: "By how much is the difference between 3½ and 4⅜ less than 1?",
+                hint: "First find the difference between 4⅜ and 3½, then subtract from 1.",
+                correctAnswer: "1/8",
+                acceptableAnswers: ["1/8", "0.125", "⅛"],
+                explanation: {
+                    steps: [
+                        "Convert to improper fractions: 3½ = 7/2 and 4⅜ = 35/8",
+                        "Find common denominator: 7/2 = 28/8",
+                        "Calculate difference: 35/8 - 28/8 = 7/8",
+                        "Subtract from 1: 1 - 7/8 = 8/8 - 7/8 = 1/8"
+                    ],
+                    answer: "The difference (7/8) is less than 1 by 1/8"
+                }
+            },
+            {
+                id: 2,
+                question: "If 6/35 of a form's time-table is devoted to English, 1/7 to mathematics, 1/5 to languages and 2/35 to manual work, what fraction of the time is left for the other subjects?",
+                hint: "Find a common denominator for all fractions, add them up, then subtract from 1.",
+                correctAnswer: "12/35",
+                acceptableAnswers: ["12/35"],
+                explanation: {
+                    steps: [
+                        "Find common denominator (35): 1/7 = 5/35, 1/5 = 7/35",
+                        "Add all fractions: 6/35 + 5/35 + 7/35 + 2/35 = 20/35",
+                        "Simplify: 20/35 = 4/7",
+                        "Subtract from 1: 1 - 20/35 = 35/35 - 20/35 = 15/35",
+                        "Wait, let me recalculate: 6/35 + 5/35 + 7/35 + 2/35 = 20/35",
+                        "Time left: 35/35 - 20/35 = 15/35 = 3/7"
+                    ],
+                    answer: "15/35 or 3/7 of the time is left for other subjects"
+                }
+            },
+            {
+                id: 3,
+                question: "A farmer has 544 apple trees in an orchard. When 5/16 of them have been stripped, how many trees still have fruit on them?",
+                hint: "Find what fraction still has fruit (1 - 5/16), then multiply by 544.",
+                correctAnswer: "374",
+                acceptableAnswers: ["374", "374 trees"],
+                explanation: {
+                    steps: [
+                        "Fraction with fruit remaining: 1 - 5/16 = 16/16 - 5/16 = 11/16",
+                        "Calculate trees with fruit: 544 × 11/16",
+                        "544 ÷ 16 = 34",
+                        "34 × 11 = 374"
+                    ],
+                    answer: "374 trees still have fruit on them"
+                }
+            },
+            {
+                id: 4,
+                question: "A girl can do the washing-up in 8 minutes, and her mother can do it in 6 minutes. What fraction of the work can each of them do in 1 minute? How much of the washing-up will be done in a minute if they work at it together?",
+                hint: "If someone completes a task in X minutes, they do 1/X of it per minute. Add the rates together.",
+                correctAnswer: "7/24",
+                acceptableAnswers: ["7/24", "girl 1/8, mother 1/6, together 7/24"],
+                explanation: {
+                    steps: [
+                        "Girl's rate: 1/8 of the work per minute",
+                        "Mother's rate: 1/6 of the work per minute",
+                        "Combined rate: 1/8 + 1/6",
+                        "Find common denominator (24): 3/24 + 4/24 = 7/24"
+                    ],
+                    answer: "Girl: 1/8 per minute, Mother: 1/6 per minute, Together: 7/24 per minute"
+                }
+            },
+            {
+                id: 5,
+                question: "A housewife spent 1/3 of her money at the grocer's, 1/4 at the butcher's, 1/6 at the greengrocer's and had £1.85 left. How much money had she at first?",
+                hint: "Add the fractions spent, subtract from 1 to find what fraction is left, then use that to find the original amount.",
+                correctAnswer: "7.40",
+                acceptableAnswers: ["7.40", "£7.40", "7.4", "£7.4"],
+                explanation: {
+                    steps: [
+                        "Add fractions spent: 1/3 + 1/4 + 1/6",
+                        "Common denominator (12): 4/12 + 3/12 + 2/12 = 9/12 = 3/4",
+                        "Fraction left: 1 - 3/4 = 1/4",
+                        "If 1/4 = £1.85, then total = £1.85 × 4 = £7.40"
+                    ],
+                    answer: "She had £7.40 at first"
+                }
+            },
+            {
+                id: 6,
+                question: "A 50-kg bag of cement is used up on four jobs. The first job uses 2/5 of it, the second 3/10 and the third 4/25. What fraction of the bag is used on the fourth job, and what mass of cement is this?",
+                hint: "Add the three fractions, subtract from 1 to find the fourth job's fraction, then multiply by 50kg.",
+                correctAnswer: "7/50 and 7kg",
+                acceptableAnswers: ["7/50", "7kg", "7/50 and 7kg", "7/50, 7kg"],
+                explanation: {
+                    steps: [
+                        "Convert to common denominator (50): 2/5 = 20/50, 3/10 = 15/50, 4/25 = 8/50",
+                        "Add first three jobs: 20/50 + 15/50 + 8/50 = 43/50",
+                        "Fourth job fraction: 1 - 43/50 = 50/50 - 43/50 = 7/50",
+                        "Mass for fourth job: 50 × 7/50 = 7 kg"
+                    ],
+                    answer: "The fourth job uses 7/50 of the bag, which is 7 kg"
+                }
+            },
+            {
+                id: 7,
+                question: "A man makes a certain journey. He does 1/6 of it by bus, 4/5 by train and walks the rest. What fraction of the journey does he walk? If the total distance is 45 km, how many kilometres does he walk?",
+                hint: "Add the bus and train fractions, subtract from 1 to find walking fraction, then multiply by 45km.",
+                correctAnswer: "1/30 and 1.5km",
+                acceptableAnswers: ["1/30", "1.5", "1.5km", "1/30 and 1.5km", "1/30, 1.5km"],
+                explanation: {
+                    steps: [
+                        "Add bus and train: 1/6 + 4/5",
+                        "Common denominator (30): 5/30 + 24/30 = 29/30",
+                        "Walking fraction: 1 - 29/30 = 1/30",
+                        "Distance walked: 45 × 1/30 = 45/30 = 1.5 km"
+                    ],
+                    answer: "He walks 1/30 of the journey, which is 1.5 km"
+                }
+            },
+            {
+                id: 8,
+                question: "John can dig a vegetable plot in 5 hours, and Tom can dig it in 4 hours. What fraction of the plot can each of them dig in 1 hour? If they work together, what fraction of the plot remains undug after 2 hours?",
+                hint: "Find each person's hourly rate, add them for combined rate, multiply by 2 hours, then subtract from 1.",
+                correctAnswer: "1/10",
+                acceptableAnswers: ["1/10", "john 1/5, tom 1/4, remaining 1/10"],
+                explanation: {
+                    steps: [
+                        "John's rate: 1/5 per hour",
+                        "Tom's rate: 1/4 per hour",
+                        "Combined rate: 1/5 + 1/4 = 4/20 + 5/20 = 9/20 per hour",
+                        "Work done in 2 hours: 2 × 9/20 = 18/20 = 9/10",
+                        "Remaining: 1 - 9/10 = 1/10"
+                    ],
+                    answer: "John: 1/5 per hour, Tom: 1/4 per hour, Remaining after 2 hours: 1/10"
+                }
+            },
+            {
+                id: 9,
+                question: "Four girls shared a certain sum of money. The first received 1/4 of it, the second 1/5 and the third 1/10. If the fourth girl received 37p, what was the original sum of money?",
+                hint: "Add the first three fractions, subtract from 1 to find fourth girl's fraction, then calculate the total.",
+                correctAnswer: "82p",
+                acceptableAnswers: ["82p", "82", "£0.82", "0.82"],
+                explanation: {
+                    steps: [
+                        "Add first three shares: 1/4 + 1/5 + 1/10",
+                        "Common denominator (20): 5/20 + 4/20 + 2/20 = 11/20",
+                        "Fourth girl's fraction: 1 - 11/20 = 9/20",
+                        "If 9/20 = 37p, then 1/20 = 37/9 p",
+                        "Total = 20 × (37/9) = 740/9 ≈ 82.2p",
+                        "Checking: 9/20 of 82.22... ≈ 37p ✓"
+                    ],
+                    answer: "The original sum was approximately 82p (or more precisely, 740/9 pence)"
+                }
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            const card = document.getElementById('quizCard');
+            
+            card.innerHTML = `
+                <span class="question-number">Question ${q.id} of ${questions.length}</span>
+                <p class="question-text">${q.question}</p>
+                <div class="hint">💡 Hint: ${q.hint}</div>
+                <div class="input-group">
+                    <label for="answer">Your Answer:</label>
+                    <input type="text" id="answer" placeholder="Enter your answer here..." autocomplete="off">
+                </div>
+                <div class="btn-container">
+                    <button class="btn btn-primary" onclick="checkAnswer()">Submit Answer</button>
+                </div>
+                <div class="feedback" id="feedback"></div>
+            `;
+
+            document.getElementById('answer').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !answered) {
+                    checkAnswer();
+                }
+            });
+
+            answered = false;
+            updateProgress();
+        }
+
+        function checkAnswer() {
+            if (answered) return;
+            
+            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+            const q = questions[currentQuestion];
+            const feedback = document.getElementById('feedback');
+            
+            const isCorrect = q.acceptableAnswers.some(ans => 
+                userAnswer.includes(ans.toLowerCase()) || ans.toLowerCase().includes(userAnswer)
+            );
+
+            answered = true;
+
+            if (isCorrect) {
+                score++;
+                feedback.className = 'feedback correct';
+                feedback.innerHTML = `
+                    <div class="feedback-icon">✅</div>
+                    <h3>Excellent! That's correct!</h3>
+                    <div class="correct-answer">
+                        <h4>Answer:</h4>
+                        <p>${q.explanation.answer}</p>
+                    </div>
+                    <div class="explanation">
+                        <h4>Step-by-step solution:</h4>
+                        <ul>
+                            ${q.explanation.steps.map(step => `<li>${step}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.innerHTML = `
+                    <div class="feedback-icon">❌</div>
+                    <h3>Not quite right. Let's see the correct solution.</h3>
+                    <p><strong>Your answer:</strong> ${userAnswer || '(no answer provided)'}</p>
+                    <div class="correct-answer">
+                        <h4>Correct Answer:</h4>
+                        <p>${q.explanation.answer}</p>
+                    </div>
+                    <div class="explanation">
+                        <h4>Here's how to solve it:</h4>
+                        <ul>
+                            ${q.explanation.steps.map(step => `<li>${step}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            feedback.style.display = 'block';
+
+            // Add next button
+            const btnContainer = document.querySelector('.btn-container');
+            btnContainer.innerHTML = `
+                <button class="btn btn-success" onclick="nextQuestion()">
+                    ${currentQuestion < questions.length - 1 ? 'Next Question →' : 'See Results'}
+                </button>
+            `;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const card = document.getElementById('quizCard');
+            const percentage = Math.round((score / questions.length) * 100);
+            
+            let message = '';
+            let emoji = '';
+            
+            if (percentage >= 90) {
+                message = 'Outstanding! You\'re a fraction master!';
+                emoji = '🏆';
+            } else if (percentage >= 70) {
+                message = 'Great job! You have a solid understanding of fractions.';
+                emoji = '🌟';
+            } else if (percentage >= 50) {
+                message = 'Good effort! Keep practicing to improve.';
+                emoji = '💪';
+            } else {
+                message = 'Keep learning! Practice makes perfect.';
+                emoji = '📚';
+            }
+
+            card.innerHTML = `
+                <div class="completion">
+                    <div class="completion-icon">${emoji}</div>
+                    <h2>Quiz Complete!</h2>
+                    <div class="score">${percentage}%</div>
+                    <p class="score-details">You got ${score} out of ${questions.length} questions correct</p>
+                    <p style="color: #666; margin-bottom: 30px;">${message}</p>
+                    <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
+                </div>
+            `;
+
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('progressBar').textContent = 'Complete!';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            renderQuestion();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = `${currentQuestion + 1}/${questions.length}`;
+        }
+
+        // Initialize
+        renderQuestion();
+    </script>
+</body>
+</html>
+```

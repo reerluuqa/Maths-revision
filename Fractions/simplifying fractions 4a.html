@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fraction & Mixed Number Operations Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+  
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .container {
+    background: white;
+    max-width: 700px;
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    overflow: hidden;
+  }
+  .header {
+    background: #4a90e2;
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  .header h1 { margin: 0; font-size: 28px; }
+  .header p { margin: 10px 0 0; opacity: 0.9; }
+  .progress-container {
+    height: 8px;
+    background: #e0e0e0;
+    margin: 20px;
+  }
+  .progress-bar {
+    height: 100%;
+    background: #4a90e2;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .content {
+    padding: 40px 30px;
+  }
+  .question {
+    font-size: 28px;
+    text-align: center;
+    margin: 40px 0;
+    line-height: 1.6;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  input {
+    width: 100%;
+    padding: 18px;
+    font-size: 20px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    margin: 20px 0;
+    box-sizing: border-box;
+  }
+  input:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 4px rgba(74,144,226,0.2);
+  }
+  button {
+    padding: 16px 32px;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  #submit {
+    background: #4a90e2;
+    color: white;
+  }
+  #submit:hover { background: #357abd; }
+  #next {
+    background: #27ae60;
+    color: white;
+    display: none;
+  }
+  #next:hover { background: #1e8449; }
+  .feedback {
+    margin: 30px 0;
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  .correct { background: #d5efdf; border-left: 6px solid #27ae60; }
+  .wrong { background: #fce8e8; border-left: 6px solid #e74c3c; }
+  .score {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 20px 0;
+    color: #4a90e2;
+  }
+  .final {
+    text-align: center;
+    font-size: 26px;
+    padding: 40px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Fraction Operations Quiz</h1>
+    <p>Simplify each expression — mixed numbers, algebraic fractions, and combined forms</p>
+  </div>
+  
+  <div class="progress-container"><div class="progress-bar" id="progress"></div></div>
+  
+  <div class="content">
+    <div class="score" id="score">Score: 0 / 0</div>
+    
+    <div class="question" id="question"></div>
+    
+    <input type="text" id="answer" placeholder="Type your simplified answer here (e.g. 2 9/16 or (6a-8b+9c)/12)" autocomplete="off">
+    
+    <div style="text-align:center;">
+      <button id="submit">Submit Answer</button>
+      <button id="next">Next Question →</button>
+    </div>
+    
+    <div class="feedback" id="feedback"></div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {q:"(9 + 3/16) − (10 + 7/8) + (4 + 1/4)", accepted:["2 9/16","41/16"], exp:"Convert everything to sixteenths:<br>9 3/16 = 147/16  10 7/8 = 174/16  4 1/4 = 68/16<br>147/16 − 174/16 + 68/16 = 41/16 = <strong>2 9/16</strong>"},
+  {q:"a/2 − 2b/3 + 3c/4", accepted:["(6a-8b+9c)/12","(6a - 8b + 9c)/12"], exp:"LCD = 12<br>a/2 = 6a/12  2b/3 = 8b/12  3c/4 = 9c/12<br>Result: <strong>(6a − 8b + 9c)/12</strong>"},
+  {q:"a + x/4", accepted:["(4a+x)/4","(4a + x)/4"], exp:"Write a as 4a/4:<br>4a/4 + x/4 = <strong>(4a + x)/4</strong>"},
+  {q:"(9 + 1/3) + (5 + 3/4) − (6 + 1/2)", accepted:["8 7/12","103/12"], exp:"Convert to twelfths:<br>9 1/3 = 112/12  5 3/4 = 69/12  6 1/2 = 78/12<br>112 + 69 − 78 = 103/12 = <strong>8 7/12</strong>"},
+  {q:"5a/12 − 3c/8", accepted:["(10a-9c)/24","(10a - 9c)/24"], exp:"LCD = 24<br>5a/12 = 10a/24  3c/8 = 9c/24<br>Result: <strong>(10a − 9c)/24</strong>"},
+  {q:"(12 + 1/10) + (5 + 4/5) − (7 + 3/5)", accepted:["10 3/10","103/10"], exp:"Convert to tenths:<br>12 1/10 = 121/10  5 4/5 = 58/10  7 3/5 = 76/10<br>121 + 58 − 76 = 103/10 = <strong>10 3/10</strong>"},
+  {q:"(3 + 1/2) + (5 + 7/10) − (4 + 1/4) − (3 + 2/5)", accepted:["1 11/20","31/20"], exp:"LCD = 20<br>3 1/2 = 70/20  5 7/10 = 114/20  4 1/4 = 85/20  3 2/5 = 68/20<br>70 + 114 − 85 − 68 = 31/20 = <strong>1 11/20</strong>"},
+  {q:"c/4 + 2d/3 − 5e/6", accepted:["(3c+8d-10e)/12","(3c + 8d - 10e)/12"], exp:"LCD = 12<br>c/4 = 3c/12  2d/3 = 8d/12  5e/6 = 10e/12<br>Result: <strong>(3c + 8d − 10e)/12</strong>"},
+  {q:"u − 2·d/5", accepted:["(5u-2d)/5","(5u - 2d)/5"], exp:"u = 5u/5<br>5u/5 − 2d/5 = <strong>(5u − 2d)/5</strong>"},
+  {q:"4/m − 3/n", accepted:["(4n-3m)/(mn)","(4n-3m)/(m n)"], exp:"Common denominator mn:<br>4/m = 4n/(mn)  3/n = 3m/(mn)<br>Result: <strong>(4n − 3m)/(mn)</strong>"},
+  {q:"m/(2a) − n/(3a)", accepted:["(3m-2n)/(6a)","(3m - 2n)/(6a)"], exp:"Common denominator 6a:<br>m/(2a) = 3m/(6a)  n/(3a) = 2n/(6a)<br>Result: <strong>(3m − 2n)/(6a)</strong>"},
+  {q:"(5 + 1/4) + (3 + 1/6) − (4 + 19/24) + (1 + 7/12)", accepted:["5 5/24","125/24"], exp:"LCD = 24<br>5 1/4 = 126/24  3 1/6 = 76/24  4 19/24 = 115/24  1 7/12 = 38/24<br>126 + 76 − 115 + 38 = 125/24 = <strong>5 5/24</strong>"},
+  {q:"(7 + 5/12) − (8 + 1/4) − (3 + 5/6) + (5 + 3/8)", accepted:["17/24"], exp:"LCD = 24<br>7 5/12 = 178/24  8 1/4 = 198/24  3 5/6 = 92/24  5 3/8 = 129/24<br>178 − 198 − 92 + 129 = 17/24 = <strong>17/24</strong>"},
+  {q:"2/(a u) − 5/(b u)", accepted:["(2b-5a)/(a b u)","(2b-5a)/(abu)"], exp:"Common denominator a b u:<br>2/(a u) = 2b/(a b u)  5/(b u) = 5a/(a b u)<br>Result: <strong>(2b − 5a)/(a b u)</strong>"}
+];
+
+let current = 0, score = 0, answered = 0;
+
+const qEl = document.getElementById("question");
+const ansInput = document.getElementById("answer");
+const feedbackEl = document.getElementById("feedback");
+const submitBtn = document.getElementById("submit");
+const nextBtn = document.getElementById("next");
+const progressEl = document.getElementById("progress");
+const scoreEl = document.getElementById("score");
+
+function loadQuestion() {
+  qEl.innerHTML = questions[current].q;
+  ansInput.value = "";
+  feedbackEl.innerHTML = "";
+  submitBtn.style.display = "inline-block";
+  nextBtn.style.display = "none";
+  progressEl.style.width = (current / questions.length * 100) + "%";
+  ansInput.focus();
+}
+
+function normalize(str) {
+  return str.replace(/\s/g,"").toLowerCase();
+}
+
+submitBtn.onclick = () => {
+  answered++;
+  const user = ansInput.value.trim();
+  const normUser = normalize(user);
+  const correctOptions = questions[current].accepted;
+  const isCorrect = correctOptions.some(opt => normalize(opt) === normUser || user === opt);
+  
+  const primaryAnswer = correctOptions[0];
+  
+  if (isCorrect) {
+    score++;
+    feedbackEl.className = "feedback correct";
+    feedbackEl.innerHTML = `<strong>✓ Correct!</strong><br><br>Explanation:<br>${questions[current].exp}`;
+  } else {
+    feedbackEl.className = "feedback wrong";
+    feedbackEl.innerHTML = `<strong>✗ Incorrect</strong><br>Your answer: <em>${user || "(empty)"}</em><br>Correct answer: <strong>${primaryAnswer}</strong><br><br>Explanation:<br>${questions[current].exp}`;
+  }
+  
+  scoreEl.textContent = `Score: ${score} / ${answered}`;
+  submitBtn.style.display = "none";
+  nextBtn.style.display = "inline-block";
+};
+
+nextBtn.onclick = () => {
+  current++;
+  if (current < questions.length) {
+    loadQuestion();
+  } else {
+    document.querySelector(".content").innerHTML = `<div class="final"><h2>Quiz Complete! 🎉</h2><p>Your final score: <strong>${score}/${questions.length}</strong></p><p>Great job practicing fraction operations!</p></div>`;
+  }
+};
+
+loadQuestion();
+</script>
+</body>
+</html>

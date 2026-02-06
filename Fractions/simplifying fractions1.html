@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplifying Fractions - Interactive Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #4a4a4a;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 1rem;
+        }
+
+        .progress-container {
+            background: #e9ecef;
+            border-radius: 50px;
+            height: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            border-radius: 50px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .question-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .question-label {
+            color: #764ba2;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .fraction-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .fraction {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4a4a4a;
+        }
+
+        .fraction .numerator,
+        .fraction .denominator {
+            padding: 5px 20px;
+        }
+
+        .fraction .line {
+            width: 100%;
+            height: 4px;
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .equals {
+            font-size: 2rem;
+            margin: 0 20px;
+            color: #888;
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .answer-fraction {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .answer-fraction input {
+            width: 80px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .answer-fraction input:focus {
+            border-color: #667eea;
+        }
+
+        .answer-fraction .input-line {
+            width: 80px;
+            height: 4px;
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            margin-top: 15px;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(56, 239, 125, 0.4);
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid #28a745;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 2px solid #dc3545;
+        }
+
+        .feedback-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feedback h3 {
+            margin-bottom: 10px;
+        }
+
+        .feedback.correct h3 {
+            color: #155724;
+        }
+
+        .feedback.incorrect h3 {
+            color: #721c24;
+        }
+
+        .feedback p {
+            color: #4a4a4a;
+            line-height: 1.6;
+        }
+
+        .explanation-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .explanation-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .explanation-box p {
+            font-size: 0.95rem;
+        }
+
+        .correct-answer {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .score-display h2 {
+            color: #4a4a4a;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+            color: white;
+        }
+
+        .score-circle .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-circle .score-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .tips-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .tips-box h4 {
+            color: #856404;
+            margin-bottom: 8px;
+        }
+
+        .tips-box p {
+            color: #856404;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧮 Simplifying Fractions</h1>
+            <p>Reduce each fraction to its simplest form</p>
+        </div>
+
+        <div class="progress-text" id="progressText">Question 1 of 13</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar" style="width: 7.7%;"></div>
+        </div>
+
+        <div id="quizContent">
+            <div class="question-card">
+                <div class="question-label">Simplify this fraction:</div>
+                <div class="fraction-display">
+                    <div class="fraction">
+                        <span class="numerator" id="numerator">15</span>
+                        <div class="line"></div>
+                        <span class="denominator" id="denominator">20</span>
+                    </div>
+                    <span class="equals">=</span>
+                    <div class="answer-fraction">
+                        <input type="text" id="answerNumerator" placeholder="?" autofocus>
+                        <div class="input-line"></div>
+                        <input type="text" id="answerDenominator" placeholder="?">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="checkBtn" onclick="checkAnswer()">Check Answer</button>
+            <button class="btn btn-next hidden" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+
+            <div class="feedback" id="feedback">
+                <div class="feedback-icon" id="feedbackIcon"></div>
+                <h3 id="feedbackTitle"></h3>
+                <p id="feedbackText"></p>
+                <div class="correct-answer" id="correctAnswerDisplay"></div>
+                <div class="explanation-box">
+                    <h4>📖 Explanation:</h4>
+                    <p id="explanation"></p>
+                </div>
+            </div>
+
+            <div class="tips-box">
+                <h4>💡 Tip:</h4>
+                <p>To simplify a fraction, divide both the numerator and denominator by their Greatest Common Factor (GCF).</p>
+            </div>
+        </div>
+
+        <div id="resultsContent" class="hidden">
+            <div class="score-display">
+                <h2>🎉 Quiz Complete!</h2>
+                <div class="score-circle">
+                    <span class="score-number" id="finalScore">0</span>
+                    <span class="score-label">out of 13</span>
+                </div>
+                <p id="resultMessage"></p>
+                <button class="btn btn-primary" onclick="restartQuiz()" style="margin-top: 20px;">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { num: "15", den: "20", ansNum: "3", ansDen: "4", gcf: 5, explanation: "The GCF of 15 and 20 is 5. Divide both by 5: 15÷5 = 3 and 20÷5 = 4. So 15/20 = 3/4" },
+            { num: "7", den: "35", ansNum: "1", ansDen: "5", gcf: 7, explanation: "The GCF of 7 and 35 is 7. Divide both by 7: 7÷7 = 1 and 35÷7 = 5. So 7/35 = 1/5" },
+            { num: "6", den: "18", ansNum: "1", ansDen: "3", gcf: 6, explanation: "The GCF of 6 and 18 is 6. Divide both by 6: 6÷6 = 1 and 18÷6 = 3. So 6/18 = 1/3" },
+            { num: "30", den: "80", ansNum: "3", ansDen: "8", gcf: 10, explanation: "The GCF of 30 and 80 is 10. Divide both by 10: 30÷10 = 3 and 80÷10 = 8. So 30/80 = 3/8" },
+            { num: "3a", den: "8a", ansNum: "3", ansDen: "8", gcf: "a", explanation: "The common factor is 'a'. Cancel out 'a' from both: 3a÷a = 3 and 8a÷a = 8. So 3a/8a = 3/8" },
+            { num: "14", den: "21", ansNum: "2", ansDen: "3", gcf: 7, explanation: "The GCF of 14 and 21 is 7. Divide both by 7: 14÷7 = 2 and 21÷7 = 3. So 14/21 = 2/3" },
+            { num: "24", den: "32", ansNum: "3", ansDen: "4", gcf: 8, explanation: "The GCF of 24 and 32 is 8. Divide both by 8: 24÷8 = 3 and 32÷8 = 4. So 24/32 = 3/4" },
+            { num: "5m", den: "7m", ansNum: "5", ansDen: "7", gcf: "m", explanation: "The common factor is 'm'. Cancel out 'm' from both: 5m÷m = 5 and 7m÷m = 7. So 5m/7m = 5/7" },
+            { num: "15", den: "25", ansNum: "3", ansDen: "5", gcf: 5, explanation: "The GCF of 15 and 25 is 5. Divide both by 5: 15÷5 = 3 and 25÷5 = 5. So 15/25 = 3/5" },
+            { num: "16", den: "24", ansNum: "2", ansDen: "3", gcf: 8, explanation: "The GCF of 16 and 24 is 8. Divide both by 8: 16÷8 = 2 and 24÷8 = 3. So 16/24 = 2/3" },
+            { num: "15", den: "45", ansNum: "1", ansDen: "3", gcf: 15, explanation: "The GCF of 15 and 45 is 15. Divide both by 15: 15÷15 = 1 and 45÷15 = 3. So 15/45 = 1/3" },
+            { num: "2x", den: "10x", ansNum: "1", ansDen: "5", gcf: "2x", explanation: "The common factor is '2x'. Divide both by 2x: 2x÷2x = 1 and 10x÷2x = 5. So 2x/10x = 1/5" },
+            { num: "12a", den: "16a", ansNum: "3", ansDen: "4", gcf: "4a", explanation: "The common factor is '4a'. Divide both by 4a: 12a÷4a = 3 and 16a÷4a = 4. So 12a/16a = 3/4" }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('numerator').textContent = q.num;
+            document.getElementById('denominator').textContent = q.den;
+            document.getElementById('answerNumerator').value = '';
+            document.getElementById('answerDenominator').value = '';
+            document.getElementById('answerNumerator').focus();
+            
+            document.getElementById('progressText').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('progressBar').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('checkBtn').classList.remove('hidden');
+            document.getElementById('nextBtn').classList.add('hidden');
+        }
+
+        function checkAnswer() {
+            const q = questions[currentQuestion];
+            const userNum = document.getElementById('answerNumerator').value.trim();
+            const userDen = document.getElementById('answerDenominator').value.trim();
+            
+            const feedback = document.getElementById('feedback');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackText = document.getElementById('feedbackText');
+            const correctAnswerDisplay = document.getElementById('correctAnswerDisplay');
+            const explanation = document.getElementById('explanation');
+            
+            const isCorrect = userNum === q.ansNum && userDen === q.ansDen;
+            
+            if (isCorrect) {
+                score++;
+                feedback.className = 'feedback correct';
+                feedbackIcon.textContent = '✅';
+                feedbackTitle.textContent = 'Excellent!';
+                feedbackText.textContent = 'You got it right! Great job simplifying this fraction.';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedbackIcon.textContent = '❌';
+                feedbackTitle.textContent = 'Not quite right';
+                
+                if (userNum === '' || userDen === '') {
+                    feedbackText.textContent = 'You need to enter both the numerator and denominator.';
+                } else {
+                    feedbackText.textContent = `You answered ${userNum}/${userDen}, but that's not the simplest form.`;
+                }
+            }
+            
+            correctAnswerDisplay.textContent = `Correct Answer: ${q.ansNum}/${q.ansDen}`;
+            explanation.textContent = q.explanation;
+            
+            feedback.style.display = 'block';
+            document.getElementById('checkBtn').classList.add('hidden');
+            document.getElementById('nextBtn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion >= questions.length) {
+                showResults();
+            } else {
+                loadQuestion();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizContent').classList.add('hidden');
+            document.getElementById('resultsContent').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = score;
+            
+            const percentage = (score / questions.length) * 100;
+            let message = '';
+            
+            if (percentage === 100) {
+                message = '🌟 Perfect score! You\'re a fraction master!';
+            } else if (percentage >= 80) {
+                message = '🎯 Great job! You have a strong understanding of simplifying fractions!';
+            } else if (percentage >= 60) {
+                message = '👍 Good effort! Keep practicing to improve your skills.';
+            } else {
+                message = '📚 Keep practicing! Remember to find the GCF to simplify fractions.';
+            }
+            
+            document.getElementById('resultMessage').textContent = message;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quizContent').classList.remove('hidden');
+            document.getElementById('resultsContent').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Handle Enter key
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (!document.getElementById('checkBtn').classList.contains('hidden')) {
+                    checkAnswer();
+                } else if (!document.getElementById('nextBtn').classList.contains('hidden')) {
+                    nextQuestion();
+                }
+            }
+        });
+
+        // Initialize
+        loadQuestion();
+    </script>
+</body>
+</html>

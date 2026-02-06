@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 6 SATs Maths Adventure</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .progress-container {
+            background: #e0e0e0;
+            height: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .question-card {
+            background: #f8f9ff;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 3px solid #e0e6ff;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #764ba2;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-top: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            font-family: 'Fredoka', sans-serif;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(118, 75, 162, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            display: none;
+            margin-left: 10px;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            display: none;
+            animation: slideIn 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+            display: block;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+
+        .star {
+            position: absolute;
+            font-size: 3em;
+            animation: starPop 1s ease-out forwards;
+        }
+
+        @keyframes starPop {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.5) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .mascot {
+            font-size: 4em;
+            text-align: center;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.5em;
+            color: #764ba2;
+            font-weight: 700;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .start-screen, .end-screen {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .hint {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8em; }
+            .question-text { font-size: 1.1em; }
+            .game-container { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <!-- Start Screen -->
+    <div class="start-screen" id="startScreen">
+        <div class="mascot">🚀</div>
+        <h1>Maths Mission: SATs Prep!</h1>
+        <p class="subtitle">Help Captain Cosmo solve 12 math challenges!<br>Ready for launch?</p>
+        <button class="btn" onclick="startGame()" style="margin-top: 30px;">Start Mission! 🌟</button>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div class="quiz-screen hidden" id="quizScreen">
+        <header>
+            <h1>🚀 Maths Mission</h1>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </header>
+
+        <div class="question-card" id="questionCard">
+            <span class="question-number" id="questionNumber">Question 1 of 12</span>
+            <div class="question-text" id="questionText">Loading...</div>
+            
+            <div class="input-group">
+                <label for="answerInput">Your Answer:</label>
+                <input type="number" id="answerInput" placeholder="Type your answer here..." step="0.01">
+                <div class="hint" id="hint"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" id="checkBtn" onclick="checkAnswer()">Check Answer ✓</button>
+                <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="score-display" id="scoreDisplay">Score: 0/12</div>
+    </div>
+
+    <!-- End Screen -->
+    <div class="end-screen hidden" id="endScreen">
+        <div class="mascot">🏆</div>
+        <h1>Mission Complete!</h1>
+        <div id="finalMessage"></div>
+        <div id="finalScore" style="font-size: 2em; color: #764ba2; margin: 20px 0; font-weight: 700;"></div>
+        <button class="btn" onclick="restartGame()">Play Again 🔄</button>
+    </div>
+
+    <!-- Celebration Container -->
+    <div class="celebration" id="celebration"></div>
+</div>
+
+<script>
+    const questions = [
+        {
+            text: "A train journey starts at 14:30 and finishes at 16:45. How many minutes long is the journey?",
+            answer: 135,
+            hint: "First work out the hours, then convert to minutes!",
+            explanation: "From 14:30 to 16:30 is 2 hours (120 minutes), plus 15 minutes = 135 minutes total."
+        },
+        {
+            text: "A shop sells 6 packs of juice for £4.80. What is the cost of one pack?",
+            answer: 0.8,
+            accept: [0.8, 0.80, 80],
+            hint: "Divide the total cost by the number of packs.",
+            explanation: "£4.80 ÷ 6 = £0.80 (or 80p) per pack."
+        },
+        {
+            text: "What is 3/4 of 48?",
+            answer: 36,
+            hint: "Divide by 4 first, then multiply by 3.",
+            explanation: "48 ÷ 4 = 12, then 12 × 3 = 36."
+        },
+        {
+            text: "A rectangle has a length of 12cm and width of 8cm. What is its perimeter?",
+            answer: 40,
+            hint: "Perimeter means adding up ALL the sides!",
+            explanation: "12 + 8 + 12 + 8 = 40cm (or 2×(12+8) = 40cm)."
+        },
+        {
+            text: "If 1/5 of a number is 15, what is the number?",
+            answer: 75,
+            hint: "If 1/5 is 15, then the whole number is 5 times bigger!",
+            explanation: "15 × 5 = 75. Check: 75 ÷ 5 = 15 ✓"
+        },
+        {
+            text: "Multi-Step Challenge: A box contains 24 chocolates. If you buy 3 boxes and eat 18 chocolates, how many are left?",
+            answer: 54,
+            hint: "First find the total, then subtract what was eaten.",
+            explanation: "3 boxes × 24 = 72 chocolates. 72 - 18 = 54 left."
+        },
+        {
+            text: "Which is larger: 3/4 or 2/3? (Type 1 for 3/4, or 2 for 2/3)",
+            answer: 1,
+            accept: [1],
+            hint: "Convert to twelfths: 3/4 = 9/12 and 2/3 = 8/12",
+            explanation: "3/4 (0.75) is larger than 2/3 (0.666...)."
+        },
+        {
+            text: "A bike costs £240. In a sale it is reduced by 1/4. What is the sale price?",
+            answer: 180,
+            accept: [180],
+            hint: "Find 1/4 of £240, then subtract it from the original price.",
+            explanation: "1/4 of £240 = £60. £240 - £60 = £180."
+        },
+        {
+            text: "There are 120 pupils in Year 6. 3/5 of them are girls. How many are boys?",
+            answer: 48,
+            hint: "If 3/5 are girls, then 2/5 are boys.",
+            explanation: "2/5 of 120 = (120 ÷ 5) × 2 = 24 × 2 = 48 boys."
+        },
+        {
+            text: "Multi-Step Challenge: Sarah buys 4 pens at £1.25 each and 2 notebooks at £2.50 each. If she pays with a £20 note, how much change does she get?",
+            answer: 10,
+            accept: [10, 10.00],
+            hint: "Calculate pens total + notebooks total, then subtract from £20.",
+            explanation: "Pens: 4 × £1.25 = £5. Notebooks: 2 × £2.50 = £5. Total = £10. Change = £20 - £10 = £10."
+        },
+        {
+            text: "What is 7.2 - 3.85?",
+            answer: 3.35,
+            accept: [3.35],
+            hint: "Remember to line up the decimal points! You might need to borrow.",
+            explanation: "7.20 - 3.85 = 3.35"
+        },
+        {
+            text: "A recipe needs 3/8 of a litre of milk for 4 people. How much milk is needed for 12 people?",
+            answer: 1.125,
+            accept: [1.125, 9/8, 1.13, 1.1],
+            hint: "12 people is 3 times more than 4 people!",
+            explanation: "3/8 × 3 = 9/8 = 1.125 litres (or 1 and 1/8 litres)."
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    function startGame() {
+        document.getElementById('startScreen').classList.add('hidden');
+        document.getElementById('quizScreen').classList.remove('hidden');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        answered = false;
+        const q = questions[currentQuestion];
+        
+        document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+        document.getElementById('questionText').textContent = q.text;
+        document.getElementById('hint').textContent = `💡 Hint: ${q.hint}`;
+        document.getElementById('answerInput').value = '';
+        document.getElementById('answerInput').disabled = false;
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('feedback').className = 'feedback';
+        document.getElementById('checkBtn').style.display = 'inline-block';
+        document.getElementById('nextBtn').style.display = 'none';
+        
+        // Update progress bar
+        const progress = ((currentQuestion) / questions.length) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+        
+        document.getElementById('answerInput').focus();
+    }
+
+    function checkAnswer() {
+        if (answered) return;
+        
+        const input = document.getElementById('answerInput');
+        const userAnswer = parseFloat(input.value);
+        const q = questions[currentQuestion];
+        
+        if (isNaN(userAnswer)) {
+            alert('Please enter a number!');
+            return;
+        }
+        
+        answered = true;
+        input.disabled = true;
+        
+        const feedback = document.getElementById('feedback');
+        const isCorrect = userAnswer === q.answer || (q.accept && q.accept.includes(userAnswer));
+        
+        if (isCorrect) {
+            score++;
+            feedback.className = 'feedback correct';
+            feedback.innerHTML = `🎉 Correct! Well done!<br><small>${q.explanation}</small>`;
+            document.getElementById('scoreDisplay').textContent = `Score: ${score}/${questions.length}`;
+            document.getElementById('scoreDisplay').style.display = 'block';
+            celebrate();
+        } else {
+            feedback.className = 'feedback incorrect';
+            feedback.innerHTML = `🤔 Not quite! The correct answer was ${q.answer}.<br><small>${q.explanation}</small>`;
+        }
+        
+        feedback.style.display = 'block';
+        document.getElementById('checkBtn').style.display = 'none';
+        document.getElementById('nextBtn').style.display = 'inline-block';
+        
+        // Update progress bar to show completion
+        const progress = ((currentQuestion + 1) / questions.length) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+    }
+
+    function celebrate() {
+        const container = document.getElementById('celebration');
+        container.style.display = 'block';
+        container.innerHTML = '';
+        
+        const emojis = ['⭐', '🌟', '✨', '🎉', '🚀', '💫'];
+        
+        for (let i = 0; i < 6; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            // Random positions around center
+            const angle = (i / 6) * 2 * Math.PI;
+            const distance = 100;
+            const x = Math.cos(angle) * distance;
+            const y = Math.sin(angle) * distance;
+            
+            star.style.left = x + 'px';
+            star.style.top = y + 'px';
+            star.style.animationDelay = (i * 0.1) + 's';
+            
+            container.appendChild(star);
+        }
+        
+        setTimeout(() => {
+            container.style.display = 'none';
+        }, 1500);
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        
+        if (currentQuestion >= questions.length) {
+            showEndScreen();
+        } else {
+            loadQuestion();
+        }
+    }
+
+    function showEndScreen() {
+        document.getElementById('quizScreen').classList.add('hidden');
+        document.getElementById('endScreen').classList.remove('hidden');
+        
+        const percentage = (score / questions.length) * 100;
+        let message = '';
+        let emoji = '';
+        
+        if (percentage === 100) {
+            message = "Perfect Score! You're a Maths Superstar! 🌟";
+            emoji = '🏆';
+        } else if (percentage >= 80) {
+            message = "Amazing work! You're ready for SATs! 🚀";
+            emoji = '🌟';
+        } else if (percentage >= 60) {
+            message = "Great job! Keep practicing! 💪";
+            emoji = '👍';
+        } else {
+            message = "Good effort! Try again to beat your score! 📚";
+            emoji = '🌈';
+        }
+        
+        document.getElementById('finalMessage').innerHTML = `<p style="font-size: 1.3em; color: #555; margin: 20px 0;">${message}</p>`;
+        document.getElementById('finalScore').textContent = `${score} out of ${questions.length} ${emoji}`;
+        
+        // Final celebration
+        celebrate();
+        setTimeout(celebrate, 500);
+        setTimeout(celebrate, 1000);
+    }
+
+    function restartGame() {
+        currentQuestion = 0;
+        score = 0;
+        document.getElementById('endScreen').classList.add('hidden');
+        document.getElementById('startScreen').classList.remove('hidden');
+        document.getElementById('scoreDisplay').style.display = 'none';
+    }
+
+    // Allow Enter key to submit
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            if (document.getElementById('quizScreen').classList.contains('hidden')) {
+                if (!document.getElementById('startScreen').classList.contains('hidden')) {
+                    startGame();
+                }
+            } else {
+                if (document.getElementById('checkBtn').style.display !== 'none') {
+                    checkAnswer();
+                } else {
+                    nextQuestion();
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

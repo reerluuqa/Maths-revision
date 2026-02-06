@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Fraction Mastery</title>
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #5a52d5;
+            --secondary: #3F3D56;
+            --accent: #00b894;
+            --error: #d63031;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text: #2d3436;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header & Progress */
+        .header {
+            padding: 20px 30px;
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            background-color: rgba(255,255,255,0.3);
+            height: 6px;
+            border-radius: 3px;
+            width: 100%;
+        }
+
+        .progress-bar {
+            background-color: var(--accent);
+            height: 100%;
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 30px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: var(--secondary);
+            margin-bottom: 25px;
+        }
+
+        /* Input Styling */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        /* Buttons */
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            background-color: #b2bec3;
+            cursor: not-allowed;
+        }
+
+        /* Feedback Section */
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .feedback.correct {
+            background-color: rgba(0, 184, 148, 0.1);
+            border-left: 5px solid var(--accent);
+        }
+
+        .feedback.incorrect {
+            background-color: rgba(214, 48, 49, 0.1);
+            border-left: 5px solid var(--error);
+        }
+
+        .feedback h3 {
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .feedback.correct h3 { color: var(--accent); }
+        .feedback.incorrect h3 { color: var(--error); }
+
+        .explanation {
+            font-size: 0.95rem;
+            color: var(--secondary);
+            line-height: 1.5;
+        }
+
+        .explanation strong {
+            font-weight: 700;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 20px auto;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1 id="header-title">Math Quiz</h1>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- Quiz View -->
+    <div class="content" id="quiz-view">
+        <div class="question-text" id="question-text">
+            Loading question...
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="user-input" placeholder="Type your answer here (e.g., 1/2 or 25)" autocomplete="off">
+        </div>
+
+        <button class="btn" id="submit-btn">Check Answer</button>
+        <button class="btn hidden" id="next-btn">Next Question</button>
+
+        <div class="feedback" id="feedback-area">
+            <h3 id="feedback-title"></h3>
+            <p class="explanation" id="feedback-text"></p>
+        </div>
+    </div>
+
+    <!-- Results View -->
+    <div class="results-screen" id="results-view">
+        <div class="score-circle">
+            <span id="final-score">0</span>%
+        </div>
+        <h2>Quiz Completed!</h2>
+        <p style="margin: 15px 0 30px;">Great job working through these problems.</p>
+        <button class="btn" onclick="restartQuiz()">Try Again</button>
+    </div>
+</div>
+
+<script>
+    /* Data Structure */
+    const questions = [
+        {
+            q: "A gardener planted 288 cabbage plants and 36 of them died. What fraction of the original number survived?",
+            a: ["7/8"],
+            explanation: "<strong>Step 1:</strong> Calculate how many survived.<br>288 - 36 = 252.<br><strong>Step 2:</strong> Create the fraction 252/288.<br><strong>Step 3:</strong> Simplify. Dividing both numbers by 36 gives <strong>7/8</strong>."
+        },
+        {
+            q: "There are 572 pupils in a mixed school, and 5/11 of them are boys. How many girls are there?",
+            a: ["312"],
+            explanation: "<strong>Step 1:</strong> Find the fraction of girls.<br>1 - 5/11 = 6/11.<br><strong>Step 2:</strong> Calculate 6/11 of 572.<br>572 ÷ 11 = 52.<br>52 × 6 = <strong>312</strong>."
+        },
+        {
+            q: "When I have read 11/15 of a book of 405 pages, how many pages have I still to read?",
+            a: ["108"],
+            explanation: "<strong>Step 1:</strong> Find the fraction remaining.<br>1 - 11/15 = 4/15.<br><strong>Step 2:</strong> Calculate 4/15 of 405.<br>405 ÷ 15 = 27.<br>27 × 4 = <strong>108</strong>."
+        },
+        {
+            q: "If a book contains 405 pages and I have read 315 of them, what fraction of the book have I still to read?",
+            a: ["2/9"],
+            explanation: "<strong>Step 1:</strong> Pages remaining: 405 - 315 = 90.<br><strong>Step 2:</strong> Make the fraction: 90/405.<br><strong>Step 3:</strong> Simplify. Divide both by 45 to get <strong>2/9</strong>."
+        },
+        {
+            q: "In a mixed school of 486 pupils there are 270 girls. What fraction of the whole school is boys?",
+            a: ["4/9"],
+            explanation: "<strong>Step 1:</strong> Calculate number of boys.<br>486 - 270 = 216.<br><strong>Step 2:</strong> Fraction is 216/486.<br><strong>Step 3:</strong> Simplify. Divide both by 54 to get <strong>4/9</strong>."
+        },
+        {
+            q: "How much less than 6 is the sum of 2 3/4 and 2 4/5?",
+            a: ["9/20", "0.45"],
+            explanation: "<strong>Step 1:</strong> Add the mixed numbers.<br>2 3/4 = 2.75<br>2 4/5 = 2.80<br>Sum = 5.55 (or 5 11/20).<br><strong>Step 2:</strong> Subtract from 6.<br>6 - 5.55 = 0.45.<br>In fractions: 6 - 5 11/20 = <strong>9/20</strong>."
+        },
+        {
+            q: "What must be added to the sum of 1 7/12 and 3 5/8 to make 6 1/12?",
+            a: ["7/8"],
+            explanation: "<strong>Step 1:</strong> Find Common Denominator (24).<br>1 7/12 = 1 14/24<br>3 5/8 = 3 15/24<br>Sum = 4 29/24 = 5 5/24.<br><strong>Step 2:</strong> Subtract sum from target (6 1/12 = 6 2/24).<br>6 2/24 - 5 5/24 = (5 26/24) - (5 5/24) = 21/24.<br><strong>Step 3:</strong> Simplify 21/24 to <strong>7/8</strong>."
+        },
+        {
+            q: "A notebook has 128 pages, and 88 of them have been used. What fraction of the notebook remains?",
+            a: ["5/16"],
+            explanation: "<strong>Step 1:</strong> Pages remaining: 128 - 88 = 40.<br><strong>Step 2:</strong> Fraction: 40/128.<br><strong>Step 3:</strong> Simplify. Divide both by 8 to get <strong>5/16</strong>."
+        },
+        {
+            q: "A girl spends 1/4 of her weekly pocket-money on Monday, 5/24 on Wednesday and 1/8 on Thursday. What fraction of her money is left?",
+            a: ["5/12"],
+            explanation: "<strong>Step 1:</strong> Common denominator is 24.<br>Mon: 6/24, Wed: 5/24, Thu: 3/24.<br><strong>Step 2:</strong> Total spent: (6+5+3)/24 = 14/24.<br><strong>Step 3:</strong> Fraction left: 1 - 14/24 = 10/24.<br><strong>Step 4:</strong> Simplify 10/24 to <strong>5/12</strong>."
+        },
+        {
+            q: "A fruit grower uses 1/3 of his land for apples, 3/8 for plums, 1/4 for pears and the remaining 23 acres for cherries. Find the total area of the land.",
+            a: ["552", "552 acres"],
+            explanation: "<strong>Step 1:</strong> Add used fractions (LCM 24).<br>8/24 (Apples) + 9/24 (Plums) + 6/24 (Pears) = 23/24.<br><strong>Step 2:</strong> Remaining fraction for cherries is 1/24.<br><strong>Step 3:</strong> If 1/24 = 23 acres, then Total (24/24) = 23 × 24 = <strong>552</strong> acres."
+        }
+    ];
+
+    /* State Management */
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    /* DOM Elements */
+    const quizView = document.getElementById('quiz-view');
+    const resultsView = document.getElementById('results-view');
+    const questionText = document.getElementById('question-text');
+    const userInput = document.getElementById('user-input');
+    const submitBtn = document.getElementById('submit-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const feedbackArea = document.getElementById('feedback-area');
+    const feedbackTitle = document.getElementById('feedback-title');
+    const feedbackText = document.getElementById('feedback-text');
+    const progressBar = document.getElementById('progress-bar');
+    const headerTitle = document.getElementById('header-title');
+    const finalScoreEl = document.getElementById('final-score');
+
+    /* Initialize */
+    function init() {
+        loadQuestion();
+    }
+
+    /* Logic */
+    function loadQuestion() {
+        const q = questions[currentQuestionIndex];
+        
+        // Reset UI
+        quizView.classList.remove('hidden');
+        resultsView.style.display = 'none';
+        userInput.value = '';
+        userInput.disabled = false;
+        userInput.focus();
+        submitBtn.classList.remove('hidden');
+        nextBtn.classList.add('hidden');
+        feedbackArea.style.display = 'none';
+        feedbackArea.className = 'feedback'; // Reset classes
+        
+        // Update Content
+        headerTitle.innerText = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        questionText.innerText = q.q;
+        
+        // Update Progress
+        const progress = ((currentQuestionIndex) / questions.length) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+
+    function checkAnswer() {
+        const userVal = userInput.value.trim().toLowerCase();
+        
+        if (!userVal) return; // Don't submit empty
+
+        const currentQ = questions[currentQuestionIndex];
+        // Check if user answer matches any of the accepted answers
+        // We remove spaces from user input to handle "7 / 8" vs "7/8"
+        const cleanUserVal = userVal.replace(/\s/g, '');
+        const isCorrect = currentQ.a.some(ans => ans.toLowerCase().replace(/\s/g, '') === cleanUserVal);
+
+        userInput.disabled = true;
+        submitBtn.classList.add('hidden');
+        nextBtn.classList.remove('hidden');
+        
+        feedbackArea.style.display = 'block';
+
+        if (isCorrect) {
+            score++;
+            feedbackArea.classList.add('correct');
+            feedbackTitle.innerText = "Correct!";
+            feedbackTitle.innerText += " \u2713"; // Checkmark
+        } else {
+            feedbackArea.classList.add('incorrect');
+            feedbackTitle.innerText = "Incorrect";
+            feedbackTitle.innerText += " \u2717"; // Cross
+        }
+
+        // Show explanation
+        feedbackText.innerHTML = currentQ.explanation;
+        
+        // Update progress bar to completion of this step
+        const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+        progressBar.style.width = `${progress}%`;
+        
+        // Focus next button
+        nextBtn.focus();
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizView.classList.add('hidden');
+        resultsView.style.display = 'block';
+        
+        const percentage = Math.round((score / questions.length) * 100);
+        finalScoreEl.innerText = percentage;
+        headerTitle.innerText = "Summary";
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        init();
+    }
+
+    /* Event Listeners */
+    submitBtn.addEventListener('click', checkAnswer);
+    nextBtn.addEventListener('click', nextQuestion);
+
+    // Allow "Enter" key to submit
+    userInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+    
+    // Allow "Enter" on Next button
+    nextBtn.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            nextQuestion();
+        }
+    });
+
+    // Start
+    init();
+
+</script>
+
+</body>
+</html>

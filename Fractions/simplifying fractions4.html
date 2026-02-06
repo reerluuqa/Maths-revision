@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra & Fractions Mastery</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338ca;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --success: #10b981;
+            --success-bg: #d1fae5;
+            --error: #ef4444;
+            --error-bg: #fee2e2;
+            --border-radius: 16px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin: 0 0 10px 0;
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background-color: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+        }
+
+        .expression {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-size: 1.25rem;
+            text-align: center;
+            font-weight: bold;
+            color: #334155;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .feedback.correct {
+            background-color: var(--success-bg);
+            border-left: 5px solid var(--success);
+            color: #065f46;
+        }
+
+        .feedback.incorrect {
+            background-color: var(--error-bg);
+            border-left: 5px solid var(--error);
+            color: #991b1b;
+        }
+
+        .feedback h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+
+        .explanation {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .next-btn {
+            margin-top: 20px;
+            background-color: var(--text-main);
+        }
+
+        .next-btn:hover {
+            background-color: #000;
+        }
+
+        .results {
+            text-align: center;
+            display: none;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 20px auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            .expression {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="quiz-container">
+    <header>
+        <h1>Math Simplification</h1>
+        <div style="font-size: 0.9rem; color: var(--text-sub);">Simplify the expression below</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </header>
+
+    <div id="quiz-content">
+        <div class="question-box">
+            <div class="expression" id="expression-display">
+                <!-- Question goes here -->
+            </div>
+            
+            <div class="input-group">
+                <label for="user-answer">Your Answer (e.g., "2 1/2" or "(3a+b)/c")</label>
+                <input type="text" id="user-answer" placeholder="Enter simplified result..." autocomplete="off">
+            </div>
+
+            <button id="submit-btn" onclick="checkAnswer()">Submit Answer</button>
+        </div>
+
+        <div id="feedback-area" class="feedback">
+            <h3 id="feedback-title"></h3>
+            <div id="feedback-text" class="explanation"></div>
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question &rarr;</button>
+        </div>
+    </div>
+
+    <div id="results-area" class="results">
+        <div class="score-circle" id="final-score"></div>
+        <h2>Quiz Complete!</h2>
+        <p>You have reviewed all the problems.</p>
+        <button onclick="location.reload()">Try Again</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            expr: "(9 + 3/16) - (10 + 7/8) + (4 + 1/4)",
+            // Allows: 2 9/16, 41/16, 2+9/16
+            answers: ["2 9/16", "41/16", "2+9/16"], 
+            explanation: "1. Group integers: 9 - 10 + 4 = 3\n2. Group fractions: 3/16 - 7/8 + 1/4\n3. Find LCD (16): 3/16 - 14/16 + 4/16 = -7/16\n4. Combine: 3 - 7/16 = 2 + (16/16 - 7/16) = 2 9/16"
+        },
+        {
+            expr: "a/2 - 2b/3 + 3c/4",
+            answers: ["(6a-8b+9c)/12", "6a/12-8b/12+9c/12", "1/12(6a-8b+9c)"],
+            explanation: "1. Find LCD of 2, 3, 4, which is 12.\n2. Convert terms:\n   (a*6)/12 - (2b*4)/12 + (3c*3)/12\n3. Combine numerators:\n   (6a - 8b + 9c) / 12"
+        },
+        {
+            expr: "a + x/4",
+            answers: ["(4a+x)/4", "4a/4+x/4", "a+x/4"], 
+            explanation: "1. Treat 'a' as a/1.\n2. LCD is 4.\n3. Convert a to 4a/4.\n4. Add: (4a + x) / 4"
+        },
+        {
+            expr: "(9 + 1/3) + (5 + 3/4) - (6 + 1/2)",
+            answers: ["8 7/12", "103/12", "8+7/12"],
+            explanation: "1. Integers: 9 + 5 - 6 = 8\n2. Fractions: 1/3 + 3/4 - 1/2\n3. LCD is 12: 4/12 + 9/12 - 6/12 = 7/12\n4. Result: 8 7/12"
+        },
+        {
+            expr: "5a/12 - 3c/8",
+            answers: ["(10a-9c)/24", "10a/24-9c/24"],
+            explanation: "1. LCD of 12 and 8 is 24.\n2. First term: 5a * 2 = 10a.\n3. Second term: 3c * 3 = 9c.\n4. Subtract: (10a - 9c) / 24"
+        },
+        {
+            expr: "(12 + 1/10) + (5 + 4/5) - (7 + 3/5)",
+            answers: ["10 3/10", "103/10", "10+3/10"],
+            explanation: "1. Integers: 12 + 5 - 7 = 10\n2. Fractions: 1/10 + 4/5 - 3/5\n3. LCD is 10: 1/10 + 8/10 - 6/10 = 3/10\n4. Result: 10 3/10"
+        },
+        {
+            expr: "(3 + 1/2) + (5 + 7/10) - (4 + 1/4) - (3 + 2/5)",
+            answers: ["1 11/20", "31/20", "1+11/20"],
+            explanation: "1. Integers: 3 + 5 - 4 - 3 = 1\n2. Fractions: 1/2 + 7/10 - 1/4 - 2/5\n3. LCD is 20:\n   10/20 + 14/20 - 5/20 - 8/20\n   (10+14-5-8)/20 = 11/20\n4. Result: 1 11/20"
+        },
+        {
+            expr: "c/4 + 2d/3 - 5e/6",
+            answers: ["(3c+8d-10e)/12", "3c/12+8d/12-10e/12"],
+            explanation: "1. LCD of 4, 3, 6 is 12.\n2. Terms: (3c)/12, (8d)/12, (10e)/12.\n3. Combine: (3c + 8d - 10e) / 12"
+        },
+        {
+            expr: "u - 2d/5",
+            answers: ["(5u-2d)/5", "5u/5-2d/5", "u-2d/5"],
+            explanation: "1. Treat u as u/1.\n2. LCD is 5.\n3. Convert u: 5u/5.\n4. Subtract: (5u - 2d) / 5"
+        },
+        {
+            expr: "4/m - 3/n",
+            answers: ["(4n-3m)/mn", "(4n-3m)/(mn)", "4n-3m/mn"],
+            explanation: "1. LCD is mn.\n2. First term: multiply by n/n -> 4n/mn.\n3. Second term: multiply by m/m -> 3m/mn.\n4. Result: (4n - 3m) / mn"
+        },
+        {
+            expr: "m/(2a) - n/(3a)",
+            answers: ["(3m-2n)/(6a)", "(3m-2n)/6a"],
+            explanation: "1. LCD of 2a and 3a is 6a.\n2. First term: multiply by 3 -> 3m/6a.\n3. Second term: multiply by 2 -> 2n/6a.\n4. Result: (3m - 2n) / 6a"
+        },
+        {
+            expr: "(5 + 1/4) + (3 + 1/6) - (4 + 19/24) + (1 + 7/12)",
+            answers: ["5 5/24", "125/24", "5+5/24"],
+            explanation: "1. Integers: 5 + 3 - 4 + 1 = 5\n2. Fractions (LCD 24):\n   6/24 + 4/24 - 19/24 + 14/24\n   (6+4-19+14)/24 = 5/24\n3. Result: 5 5/24"
+        },
+        {
+            expr: "(7 + 5/12) - (8 + 1/4) - (3 + 5/6) + (5 + 3/8)",
+            answers: ["17/24", "0 17/24"],
+            explanation: "1. Integers: 7 - 8 - 3 + 5 = 1\n2. Fractions (LCD 24):\n   10/24 - 6/24 - 20/24 + 9/24\n   (10 - 6 - 20 + 9)/24 = -7/24\n3. Combine: 1 - 7/24 = 24/24 - 7/24 = 17/24"
+        },
+        {
+            expr: "2/(au) - 5/(bu)",
+            answers: ["(2b-5a)/(abu)", "(2b-5a)/abu"],
+            explanation: "1. LCD is abu.\n2. First term: multiply by b -> 2b/(abu).\n3. Second term: multiply by a -> 5a/(abu).\n4. Result: (2b - 5a) / (abu)"
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    const totalQuestions = questions.length;
+
+    // Elements
+    const expressionEl = document.getElementById('expression-display');
+    const inputEl = document.getElementById('user-answer');
+    const submitBtn = document.getElementById('submit-btn');
+    const feedbackArea = document.getElementById('feedback-area');
+    const feedbackTitle = document.getElementById('feedback-title');
+    const feedbackText = document.getElementById('feedback-text');
+    const progressBar = document.getElementById('progress-fill');
+    const quizContent = document.getElementById('quiz-content');
+    const resultsArea = document.getElementById('results-area');
+    const finalScore = document.getElementById('final-score');
+
+    function loadQuestion() {
+        // Update Progress
+        const progress = (currentQuestion / totalQuestions) * 100;
+        progressBar.style.width = `${progress}%`;
+
+        // Reset UI
+        feedbackArea.style.display = 'none';
+        feedbackArea.className = 'feedback'; // remove correct/incorrect classes
+        inputEl.value = '';
+        inputEl.disabled = false;
+        submitBtn.disabled = false;
+        submitBtn.style.display = 'block';
+        
+        inputEl.focus();
+
+        // Load Content
+        const q = questions[currentQuestion];
+        expressionEl.textContent = q.expr;
+    }
+
+    // Helper to normalize strings for comparison (remove spaces, lowercase)
+    function normalize(str) {
+        return str.replace(/\s+/g, '').toLowerCase();
+    }
+
+    function checkAnswer() {
+        const userVal = normalize(inputEl.value);
+        if(!userVal) return; // Don't submit empty
+
+        const q = questions[currentQuestion];
+        // Check if user input matches any of the accepted answer variations
+        const isCorrect = q.answers.some(ans => normalize(ans) === userVal);
+
+        inputEl.disabled = true;
+        submitBtn.style.display = 'none';
+        feedbackArea.style.display = 'block';
+
+        if (isCorrect) {
+            score++;
+            feedbackArea.classList.add('correct');
+            feedbackTitle.textContent = "Correct!";
+            feedbackTitle.innerHTML = `Correct! &nbsp; <span style='font-size:0.8em; font-weight:normal'>(${q.answers[0]})</span>`;
+        } else {
+            feedbackArea.classList.add('incorrect');
+            feedbackTitle.textContent = "Incorrect";
+            feedbackText.innerHTML = `<strong>Correct Answer:</strong> ${q.answers[0]}<br><br>`;
+        }
+
+        // Append Explanation
+        const explanationHTML = `<strong>Steps:</strong><br>${q.explanation}`;
+        // If incorrect, we already added the answer line, if correct, just show steps
+        if(isCorrect) {
+            feedbackText.innerHTML = explanationHTML;
+        } else {
+            feedbackText.innerHTML += explanationHTML;
+        }
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < totalQuestions) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizContent.style.display = 'none';
+        resultsArea.style.display = 'block';
+        progressBar.style.width = '100%';
+        finalScore.textContent = `${score}/${totalQuestions}`;
+    }
+
+    // Initialize
+    loadQuestion();
+
+    // Allow Enter key to submit
+    inputEl.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            if(submitBtn.style.display !== 'none') {
+                checkAnswer();
+            }
+        }
+    });
+
+</script>
+
+</body>
+</html>

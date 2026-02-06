@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Fraction Tutorial</title>
+    <style>
+        /* ============================================
+           CSS VARIABLES FOR THEMING
+           ============================================ */
+        :root {
+            --primary-color: #4a90d9;
+            --primary-dark: #357abd;
+            --secondary-color: #2ecc71;
+            --secondary-dark: #27ae60;
+            --accent-color: #9b59b6;
+            --accent-dark: #8e44ad;
+            --warning-color: #f39c12;
+            --background-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --text-muted: #7f8c8d;
+            --border-color: #e1e8ed;
+            --success-bg: #d5f5e3;
+            --tip-bg: #fef9e7;
+            --tip-border: #f1c40f;
+            --border-radius: 16px;
+            --border-radius-sm: 8px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+
+        /* ============================================
+           BASE STYLES
+           ============================================ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--background-color) 0%, #e8eef3 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* ============================================
+           HEADER STYLES
+           ============================================ */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* ============================================
+           CARD STYLES
+           ============================================ */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title-icon {
+            font-size: 1.5rem;
+        }
+
+        /* ============================================
+           VISUALIZATION CONTAINER
+           ============================================ */
+        .visualization-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 650px) {
+            .visualization-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .canvas-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #fractionCanvas {
+            max-width: 100%;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        /* ============================================
+           FRACTION DISPLAY
+           ============================================ */
+        .fraction-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .fraction-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px 40px;
+            border-radius: var(--border-radius);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+        }
+
+        .fraction-display .numerator,
+        .fraction-display .denominator {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            min-width: 80px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .fraction-display .fraction-line {
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+            border-radius: 3px;
+            margin: 8px 0;
+        }
+
+        .fraction-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .spoken-form {
+            background: var(--success-bg);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-sm);
+            font-size: 1.1rem;
+            color: var(--secondary-dark);
+            font-weight: 500;
+        }
+
+        /* ============================================
+           SLIDER STYLES
+           ============================================ */
+        .sliders-container {
+            display: grid;
+            gap: 25px;
+        }
+
+        .slider-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .slider-label {
+            font-weight: 600;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slider-label-icon {
+            font-size: 1.2rem;
+        }
+
+        .slider-value {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 700;
+            font-size: 1.3rem;
+            padding: 5px 15px;
+            border-radius: 20px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .slider-value.denominator-value {
+            background: var(--secondary-color);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #ddd 0%, #ddd 100%);
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(74, 144, 217, 0.4);
+            transition: var(--transition);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 15px rgba(74, 144, 217, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 3px 10px rgba(74, 144, 217, 0.4);
+        }
+
+        #denominatorSlider::-webkit-slider-thumb {
+            background: var(--secondary-color);
+            box-shadow: 0 3px 10px rgba(46, 204, 113, 0.4);
+        }
+
+        #denominatorSlider::-moz-range-thumb {
+            background: var(--secondary-color);
+            box-shadow: 0 3px 10px rgba(46, 204, 113, 0.4);
+        }
+
+        .slider-hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* ============================================
+           INFO GRID
+           ============================================ */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            padding: 25px 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card.primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .info-card.secondary {
+            background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
+            color: white;
+        }
+
+        .info-card.accent {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-dark));
+            color: white;
+        }
+
+        .info-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* ============================================
+           TIP BOX
+           ============================================ */
+        .tip-box {
+            background: var(--tip-bg);
+            border-left: 5px solid var(--tip-border);
+            padding: 20px 25px;
+            border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+            margin-top: 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .tip-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .tip-content {
+            flex: 1;
+        }
+
+        .tip-title {
+            font-weight: 600;
+            color: var(--warning-color);
+            margin-bottom: 5px;
+        }
+
+        .tip-text {
+            color: #7d6608;
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           PROGRESS BAR
+           ============================================ */
+        .progress-container {
+            margin-top: 20px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 6px;
+            transition: width 0.4s ease;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ============================================
+           RESPONSIVE ADJUSTMENTS
+           ============================================ */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .fraction-display .numerator,
+            .fraction-display .denominator {
+                font-size: 2.8rem;
+            }
+
+            .info-value {
+                font-size: 1.5rem;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">🥧</div>
+            <h1>Interactive Fraction Tutorial</h1>
+            <p class="subtitle">Master fractions with visual learning! Adjust the sliders below and watch the magic happen.</p>
+        </header>
+
+        <!-- Main Visualization Card -->
+        <div class="card">
+            <h2 class="card-title">
+                <span class="card-title-icon">📊</span>
+                Visualize Your Fraction
+            </h2>
+
+            <div class="visualization-wrapper">
+                <div class="canvas-container">
+                    <canvas id="fractionCanvas" width="280" height="280"></canvas>
+                </div>
+
+                <div class="fraction-panel">
+                    <div class="fraction-display">
+                        <span class="numerator" id="displayNumerator">1</span>
+                        <div class="fraction-line"></div>
+                        <span class="denominator" id="displayDenominator">4</span>
+                    </div>
+                    <div class="spoken-form" id="spokenForm">
+                        "One Fourth"
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sliders -->
+            <div class="sliders-container">
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">
+                            <span class="slider-label-icon">⬆️</span>
+                            Numerator (parts you have)
+                        </span>
+                        <span class="slider-value" id="numeratorValue">1</span>
+                    </div>
+                    <input type="range" id="numeratorSlider" min="0" max="12" value="1">
+                    <p class="slider-hint">The top number tells us how many parts we're talking about</p>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">
+                            <span class="slider-label-icon">⬇️</span>
+                            Denominator (total parts)
+                        </span>
+                        <span class="slider-value denominator-value" id="denominatorValue">4</span>
+                    </div>
+                    <input type="range" id="denominatorSlider" min="1" max="12" value="4">
+                    <p class="slider-hint">The bottom number tells us how many equal parts make up the whole</p>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Fraction filled:</span>
+                    <span id="progressPercent">25%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 25%"></div>
+                </div>
+            </div>
+
+            <!-- Tip Box -->
+            <div class="tip-box">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <div class="tip-title">Learning Tip</div>
+                    <p class="tip-text" id="tipText">
+                        Great start! You've selected 1/4, which represents one quarter of the whole. 
+                        Think of it like one slice of a pizza cut into 4 equal pieces!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculations Card -->
+        <div class="card">
+            <h2 class="card-title">
+                <span class="card-title-icon">🔢</span>
+                Understanding Your Fraction
+            </h2>
+
+            <div class="info-grid">
+                <div class="info-card primary">
+                    <div class="info-icon">🔵</div>
+                    <div class="info-label">Decimal Value</div>
+                    <div class="info-value" id="decimalValue">0.25</div>
+                </div>
+
+                <div class="info-card secondary">
+                    <div class="info-icon">📈</div>
+                    <div class="info-label">Percentage</div>
+                    <div class="info-value" id="percentageValue">25%</div>
+                </div>
+
+                <div class="info-card accent">
+                    <div class="info-icon">✨</div>
+                    <div class="info-label">Simplified</div>
+                    <div class="info-value" id="simplifiedValue">1/4</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>Keep practicing! Every mathematician started exactly where you are now. 🌟</p>
+        </footer>
+    </div>
+
+    <script>
+        // ============================================
+        // MODEL - Fraction Business Logic
+        // ============================================
+        class FractionModel {
+            constructor(numerator = 1, denominator = 4) {
+                this._numerator = numerator;
+                this._denominator = denominator;
+                this._observers = [];
+            }
+
+            // Getters
+            get numerator() {
+                return this._numerator;
+            }
+
+            get denominator() {
+                return this._denominator;
+            }
+
+            // Setters with validation
+            set numerator(value) {
+                // For proper fractions, numerator cannot exceed denominator
+                const validated = Math.max(0, Math.min(value, this._denominator));
+                if (this._numerator !== validated) {
+                    this._numerator = validated;
+                    this._notifyObservers();
+                }
+            }
+
+            set denominator(value) {
+                // Denominator must be at least 1
+                const validated = Math.max(1, value);
+                if (this._denominator !== validated) {
+                    this._denominator = validated;
+                    // Adjust numerator if it now exceeds denominator
+                    if (this._numerator > this._denominator) {
+                        this._numerator = this._denominator;
+                    }
+                    this._notifyObservers();
+                }
+            }
+
+            // Calculate Greatest Common Divisor using Euclidean algorithm
+            _gcd(a, b) {
+                a = Math.abs(a);
+                b = Math.abs(b);
+                while (b !== 0) {
+                    const temp = b;
+                    b = a % b;
+                    a = temp;
+                }
+                return a || 1;
+            }
+
+            // Get simplified fraction
+            getSimplified() {
+                if (this._numerator === 0) {
+                    return { numerator: 0, denominator: 1 };
+                }
+                const divisor = this._gcd(this._numerator, this._denominator);
+                return {
+                    numerator: this._numerator / divisor,
+                    denominator: this._denominator / divisor
+                };
+            }
+
+            // Check if fraction is already in simplest form
+            isSimplified() {
+                const simplified = this.getSimplified();
+                return simplified.numerator === this._numerator && 
+                       simplified.denominator === this._denominator;
+            }
+
+            // Convert to decimal
+            toDecimal() {
+                if (this._denominator === 0) return 0;
+                return this._numerator / this._denominator;
+            }
+
+            // Convert to percentage
+            toPercentage() {
+                return this.toDecimal() * 100;
+            }
+
+            // Get spoken form of the fraction
+            getSpokenForm() {
+                const num = this._numerator;
+                const den = this._denominator;
+
+                if (num === 0) return '"Zero"';
+                if (num === den) return '"One Whole"';
+
+                const ordinals = {
+                    1: 'Whole', 2: 'Half', 3: 'Third', 4: 'Fourth', 5: 'Fifth',
+                    6: 'Sixth', 7: 'Seventh', 8: 'Eighth', 9: 'Ninth', 10: 'Tenth',
+                    11: 'Eleventh', 12: 'Twelfth'
+                };
+
+                const cardinals = {
+                    1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five',
+                    6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten',
+                    11: 'Eleven', 12: 'Twelve'
+                };
+
+                const numWord = cardinals[num] || num;
+                let denWord = ordinals[den] || `${den}th`;
+                
+                // Pluralize if numerator > 1
+                if (num > 1 && den !== 2) {
+                    denWord += 's';
+                } else if (num > 1 && den === 2) {
+                    denWord = 'Halves';
+                }
+
+                return `"${numWord} ${denWord}"`;
+            }
+
+            // Observer pattern methods
+            subscribe(observer) {
+                this._observers.push(observer);
+            }
+
+            _notifyObservers() {
+                this._observers.forEach(observer => observer.update(this));
+            }
+        }
+
+        // ============================================
+        // VIEW - DOM Manipulation & Canvas Rendering
+        // ============================================
+        class FractionView {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                
+                // Cache DOM elements
+                this.elements = {
+                    displayNumerator: document.getElementById('displayNumerator'),
+                    displayDenominator: document.getElementById('displayDenominator'),
+                    numeratorValue: document.getElementById('numeratorValue'),
+                    denominatorValue: document.getElementById('denominatorValue'),
+                    numeratorSlider: document.getElementById('numeratorSlider'),
+                    decimalValue: document.getElementById('decimalValue'),
+                    percentageValue: document.getElementById('percentageValue'),
+                    simplifiedValue: document.getElementById('simplifiedValue'),
+                    tipText: document.getElementById('tipText'),
+                    spokenForm: document.getElementById('spokenForm'),
+                    progressFill: document.getElementById('progressFill'),
+                    progressPercent: document.getElementById('progressPercent')
+                };
+
+                // Animation state
+                this._animationProgress = 0;
+                this._targetProgress = 0;
+                this._animationFrame = null;
+
+                this._setupCanvas();
+            }
+
+            _setupCanvas() {
+                // Handle high DPI displays
+                const dpr = window.devicePixelRatio || 1;
+                const rect = this.canvas.getBoundingClientRect();
+                
+                this.canvas.width = 280 * dpr;
+                this.canvas.height = 280 * dpr;
+                this.canvas.style.width = '280px';
+                this.canvas.style.height = '280px';
+                
+                this.ctx.scale(dpr, dpr);
+            }
+
+            // Main render function for pie chart
+            _renderPieChart(numerator, denominator, animated = true) {
+                const ctx = this.ctx;
+                const centerX = 140;
+                const centerY = 140;
+                const radius = 115;
+                const innerRadius = 35;
+
+                // Clear canvas
+                ctx.clearRect(0, 0, 280, 280);
+
+                // Draw shadow
+                ctx.beginPath();
+                ctx.arc(centerX + 3, centerY + 3, radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fill();
+
+                // Draw background circle (unfilled portion)
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#ecf0f1';
+                ctx.fill();
+
+                // Draw filled segments
+                if (numerator > 0 && denominator > 0) {
+                    const progress = animated ? this._animationProgress : numerator;
+                    const segmentAngle = (Math.PI * 2) / denominator;
+                    
+                    for (let i = 0; i < Math.min(progress, denominator); i++) {
+                        const startAngle = -Math.PI / 2 + (i * segmentAngle);
+                        const endAngle = startAngle + segmentAngle;
+                        
+                        // Partial fill for animation
+                        let actualEnd = endAngle;
+                        if (i === Math.floor(progress) && progress % 1 !== 0) {
+                            actualEnd = startAngle + (segmentAngle * (progress % 1));
+                        }
+
+                        // Create gradient for each segment
+                        const gradient = ctx.createLinearGradient(
+                            centerX - radius, centerY - radius,
+                            centerX + radius, centerY + radius
+                        );
+                        gradient.addColorStop(0, '#4a90d9');
+                        gradient.addColorStop(1, '#2ecc71');
+
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY);
+                        ctx.arc(centerX, centerY, radius, startAngle, actualEnd);
+                        ctx.closePath();
+                        ctx.fillStyle = gradient;
+                        ctx.fill();
+
+                        if (i >= Math.floor(progress)) break;
+                    }
+                }
+
+                // Draw segment dividers
+                const segmentAngle = (Math.PI * 2) / denominator;
+                for (let i = 0; i < denominator; i++) {
+                    const angle = -Math.PI / 2 + (i * segmentAngle);
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(
+                        centerX + radius * Math.cos(angle),
+                        centerY + radius * Math.sin(angle)
+                    );
+                    ctx.strokeStyle = '#95a5a6';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+
+                // Draw outer ring
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = '#7f8c8d';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Draw center circle (donut hole)
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+                ctx.strokeStyle = '#7f8c8d';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Draw fraction text in center
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = 'bold 18px Segoe UI, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`${numerator}/${denominator}`, centerX, centerY);
+            }
+
+            // Animate the pie chart fill
+            _animatePieChart(numerator, denominator) {
+                this._targetProgress = numerator;
+                
+                if (this._animationFrame) {
+                    cancelAnimationFrame(this._animationFrame);
+                }
+
+                const animate = () => {
+                    const diff = this._targetProgress - this._animationProgress;
+                    
+                    if (Math.abs(diff) < 0.01) {
+                        this._animationProgress = this._targetProgress;
+                        this._renderPieChart(numerator, denominator, true);
+                        return;
+                    }
+
+                    this._animationProgress += diff * 0.15;
+                    this._renderPieChart(numerator, denominator, true);
+                    this._animationFrame = requestAnimationFrame(animate);
+                };
+
+                animate();
+            }
+
+            // Generate educational tip based on current fraction
+            _generateTip(numerator, denominator, percentage, simplified, isSimplified) {
+                if (numerator === 0) {
+                    return `Zero divided by any number is always zero. The pie is empty—no slices have been taken yet!`;
+                }
+                
+                if (numerator === denominator) {
+                    return `When the numerator equals the denominator, you have the whole thing—100%! It's like eating every slice of the pizza.`;
+                }
+                
+                if (percentage === 50) {
+                    return `You've found one half! This is one of the most common fractions. Think of splitting something equally between two people.`;
+                }
+                
+                if (percentage === 25) {
+                    return `One quarter! Just like a quarter dollar (25 cents) or 15 minutes of an hour. This fraction appears everywhere in daily life.`;
+                }
+                
+                if (percentage === 75) {
+                    return `Three quarters is the same as 75%—you have most of the whole! Only one quarter remains.`;
+                }
+                
+                if (denominator === 3 && numerator === 1) {
+                    return `One third! If you split something into three equal parts, this is one of them. Three thirds make one whole.`;
+                }
+                
+                if (!isSimplified && numerator !== 0) {
+                    return `Interesting! ${numerator}/${denominator} can be simplified to ${simplified.numerator}/${simplified.denominator}. Both fractions represent exactly the same amount—they're equivalent fractions!`;
+                }
+                
+                return `You're working with ${numerator}/${denominator}. The pie is divided into ${denominator} equal slices, and ${numerator} ${numerator === 1 ? 'slice is' : 'slices are'} highlighted. That's ${percentage.toFixed(1)}% of the whole!`;
+            }
+
+            // Main update method called when model changes
+            update(model) {
+                const numerator = model.numerator;
+                const denominator = model.denominator;
+                const simplified = model.getSimplified();
+                const decimal = model.toDecimal();
+                const percentage = model.toPercentage();
+                const isSimplified = model.isSimplified();
+                const spokenForm = model.getSpokenForm();
+
+                // Update fraction display
+                this.elements.displayNumerator.textContent = numerator;
+                this.elements.displayDenominator.textContent = denominator;
+
+                // Update slider displays
+                this.elements.numeratorValue.textContent = numerator;
+                this.elements.denominatorValue.textContent = denominator;
+                this.elements.numeratorSlider.max = denominator;
+
+                // Update calculations
+                this.elements.decimalValue.textContent = decimal.toFixed(4);
+                this.elements.percentageValue.textContent = percentage.toFixed(1) + '%';
+                
+                // Show simplified form or indicate already simplified
+                if (isSimplified) {
+                    this.elements.simplifiedValue.textContent = `${numerator}/${denominator}`;
+                } else {
+                    this.elements.simplifiedValue.textContent = 
+                        `${simplified.numerator}/${simplified.denominator}`;
+                }
+
+                // Update spoken form
+                this.elements.spokenForm.textContent = spokenForm;
+
+                // Update progress bar
+                this.elements.progressFill.style.width = percentage + '%';
+                this.elements.progressPercent.textContent = percentage.toFixed(1) + '%';
+
+                // Update tip
+                this.elements.tipText.textContent = 
+                    this._generateTip(numerator, denominator, percentage, simplified, isSimplified);
+
+                // Animate pie chart
+                this._animatePieChart(numerator, denominator);
+            }
+        }
+
+        // ============================================
+        // CONTROLLER - User Interaction Handling
+        // ============================================
+        class FractionController {
+            constructor(model, view) {
+                this.model = model;
+                this.view = view;
+
+                // Get slider elements
+                this.numeratorSlider = document.getElementById('numeratorSlider');
+                this.denominatorSlider = document.getElementById('denominatorSlider');
+
+                this._init();
+            }
+
+            _init() {
+                // Subscribe view to model changes
+                this.model.subscribe(this.view);
+
+                // Set up event listeners
+                this._bindEvents();
+
+                // Trigger initial render
+                this.view.update(this.model);
+            }
+
+            _bindEvents() {
+                // Numerator slider input
+                this.numeratorSlider.addEventListener('input', (e) => {
+                    const value = parseInt(e.target.value, 10);
+                    this.model.numerator = value;
+                    // Sync slider with validated model value
+                    e.target.value = this.model.numerator;
+                });
+
+                // Denominator slider input
+                this.denominatorSlider.addEventListener('input', (e) => {
+                    const value = parseInt(e.target.value, 10);
+                    this.model.denominator = value;
+                    // Update numerator slider max
+                    this.numeratorSlider.max = this.model.denominator;
+                    // Sync numerator slider if value was clamped
+                    this.numeratorSlider.value = this.model.numerator;
+                });
+
+                // Handle window resize
+                let resizeTimeout;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => {
+                        this.view._setupCanvas();
+                        this.view.update(this.model);
+                    }, 100);
+                });
+
+                // Keyboard accessibility for sliders
+                this.numeratorSlider.addEventListener('keydown', (e) => {
+                    this._handleSliderKeyboard(e, 'numerator');
+                });
+
+                this.denominatorSlider.addEventListener('keydown', (e) => {
+                    this._handleSliderKeyboard(e, 'denominator');
+                });
+            }
+
+            _handleSliderKeyboard(e, type) {
+                const step = e.shiftKey ? 5 : 1;
+                
+                if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    if (type === 'numerator') {
+                        this.model.numerator = this.model.numerator + step;
+                        this.numeratorSlider.value = this.model.numerator;
+                    } else {
+                        this.model.denominator = this.model.denominator + step;
+                        this.denominatorSlider.value = this.model.denominator;
+                    }
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (type === 'numerator') {
+                        this.model.numerator = this.model.numerator - step;
+                        this.numeratorSlider.value = this.model.numerator;
+                    } else {
+                        this.model.denominator = this.model.denominator - step;
+                        this.denominatorSlider.value = this.model.denominator;
+                    }
+                }
+            }
+        }
+
+        // ============================================
+        // APPLICATION INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create MVC components
+            const fractionModel = new FractionModel(1, 4);
+            const fractionView = new FractionView('fractionCanvas');
+            const fractionController = new FractionController(fractionModel, fractionView);
+
+            // Log initialization for debugging
+            console.log('🥧 Fraction Tutorial initialized successfully!');
+            console.log('Model:', fractionModel);
+        });
+    </script>
+</body>
+</html>

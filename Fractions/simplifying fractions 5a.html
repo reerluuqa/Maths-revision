@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tutor: Fractions & Algebraic Expressions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #4a6fa5;
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 25px 0;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: linear-gradient(90deg, #4a6fa5, #6d9dde);
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a6fa5;
+        }
+
+        .question-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .problem-display {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 1.8rem;
+            text-align: center;
+            margin: 20px 0 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            border-left: 5px solid #4a6fa5;
+            color: #2c3e50;
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #4a6fa5;
+            font-size: 1.1rem;
+        }
+
+        input {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: 'Source Code Pro', monospace;
+            transition: border 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4a6fa5;
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn {
+            background-color: #4a6fa5;
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background-color: #3a5a85;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(58, 90, 133, 0.3);
+        }
+
+        .next-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .next-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .hint-btn {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .hint-btn:hover {
+            background-color: #d68910;
+            transform: translateY(-3px);
+        }
+
+        .feedback-section {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .correct {
+            background-color: rgba(46, 204, 113, 0.15);
+            border-left: 5px solid #2ecc71;
+        }
+
+        .incorrect {
+            background-color: rgba(231, 76, 60, 0.15);
+            border-left: 5px solid #e74c3c;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .feedback-icon {
+            font-size: 1.5rem;
+        }
+
+        .correct .feedback-icon {
+            color: #2ecc71;
+        }
+
+        .incorrect .feedback-icon {
+            color: #e74c3c;
+        }
+
+        .explanation {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 1.05rem;
+            border-left: 3px solid #3498db;
+        }
+
+        .explanation-title {
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #4a6fa5;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .instructions {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .instructions h3 {
+            color: #4a6fa5;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+        }
+
+        .instructions .note {
+            background-color: #fff8e1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-style: italic;
+            border-left: 3px solid #f39c12;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .problem-display {
+                font-size: 1.4rem;
+                padding: 15px;
+            }
+            
+            button {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            .button-container {
+                flex-direction: column;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Math Expression Tutor</h1>
+            <p class="subtitle">Master fractions and algebraic expressions through step-by-step practice</p>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-text">
+                <span>Progress</span>
+                <span id="progress-counter">0/7</span>
+            </div>
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="question-card">
+            <h2 id="question-title">Question 1: Fraction Addition & Subtraction</h2>
+            
+            <div class="problem-display" id="problem-display">
+                [(4 + 5/6) + (7 + 1/3) - (1 + 2/9) - (5 + 1/2)]
+            </div>
+            
+            <div class="input-section">
+                <label for="answer-input">Your Answer (simplify to a mixed number or fraction):</label>
+                <input type="text" id="answer-input" placeholder="e.g., 4 5/6 or 29/6">
+            </div>
+            
+            <div class="button-container">
+                <button class="hint-btn" id="hint-btn">
+                    <i class="fas fa-lightbulb"></i> Show Hint
+                </button>
+                <button class="submit-btn" id="submit-btn">
+                    <i class="fas fa-check-circle"></i> Check Answer
+                </button>
+                <button class="next-btn" id="next-btn" style="display: none;">
+                    <i class="fas fa-arrow-right"></i> Next Question
+                </button>
+            </div>
+            
+            <div class="feedback-section" id="feedback-section">
+                <div class="feedback-header">
+                    <span class="feedback-icon" id="feedback-icon"></span>
+                    <span id="feedback-title">Feedback</span>
+                </div>
+                <p id="feedback-text"></p>
+                <div class="explanation">
+                    <div class="explanation-title">
+                        <i class="fas fa-book-open"></i> Step-by-step Explanation
+                    </div>
+                    <div id="explanation-text"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correct</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrect</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="questions-remaining">7</div>
+                <div class="stat-label">Remaining</div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> How to Use This Tutor</h3>
+            <ul>
+                <li>Solve one problem at a time by entering your answer in the input field.</li>
+                <li>For fractions, you can enter as a mixed number (e.g., "4 5/6") or improper fraction (e.g., "29/6").</li>
+                <li>For algebraic expressions, enter in simplest form (e.g., "(4e+3a)/(a*c*e)").</li>
+                <li>Click "Check Answer" to see immediate feedback and explanation.</li>
+                <li>Use "Show Hint" if you need help getting started.</li>
+                <li>Click "Next Question" to proceed after checking your answer.</li>
+            </ul>
+            <div class="note">
+                <strong>Tip:</strong> Try to solve each problem on your own before checking the answer!
+            </div>
+        </div>
+        
+        <footer>
+            <p>Math Expression Tutor &copy; 2023 | Practice makes perfect!</p>
+        </footer>
+    </div>
+
+    <script>
+        // Question data - each question has problem, answer, hint, and explanation
+        const questions = [
+            {
+                problem: "[(4 + 5/6) + (7 + 1/3) - (1 + 2/9) - (5 + 1/2)]",
+                answer: "4 13/18",
+                hint: "Convert all mixed numbers to improper fractions with a common denominator, then combine.",
+                explanation: "Step 1: Convert mixed numbers to improper fractions:<br>4 5/6 = 29/6, 7 1/3 = 22/3, 1 2/9 = 11/9, 5 1/2 = 11/2<br><br>Step 2: Find common denominator (LCD = 18):<br>29/6 = 87/18, 22/3 = 132/18, 11/9 = 22/18, 11/2 = 99/18<br><br>Step 3: Combine: 87/18 + 132/18 - 22/18 - 99/18 = (87+132-22-99)/18 = 98/18<br><br>Step 4: Simplify: 98/18 = 49/9 = 4 13/18"
+            },
+            {
+                problem: "[(6 + 5/9) - (9 + 3/4) + (7 + 1/3) - (1 + 5/6)]",
+                answer: "1 47/36",
+                hint: "Convert all to improper fractions, find common denominator (36), then combine.",
+                explanation: "Step 1: Convert to improper fractions:<br>6 5/9 = 59/9, 9 3/4 = 39/4, 7 1/3 = 22/3, 1 5/6 = 11/6<br><br>Step 2: LCD = 36:<br>59/9 = 236/36, 39/4 = 351/36, 22/3 = 264/36, 11/6 = 66/36<br><br>Step 3: Combine: 236/36 - 351/36 + 264/36 - 66/36 = (236-351+264-66)/36 = 83/36<br><br>Step 4: Convert to mixed number: 83/36 = 1 47/36"
+            },
+            {
+                problem: "[4/(a*c) + 3/(c*e)]",
+                answer: "(4e+3a)/(a*c*e)",
+                hint: "Find common denominator (a*c*e) and combine numerators.",
+                explanation: "Step 1: Identify denominators: a*c and c*e<br><br>Step 2: Common denominator is a*c*e<br><br>Step 3: Convert fractions:<br>4/(a*c) = (4*e)/(a*c*e) = 4e/(a*c*e)<br>3/(c*e) = (3*a)/(a*c*e) = 3a/(a*c*e)<br><br>Step 4: Combine: 4e/(a*c*e) + 3a/(a*c*e) = (4e+3a)/(a*c*e)"
+            },
+            {
+                problem: "[3/(m*n) + 5/(m*x) - 2/(n*x)]",
+                answer: "(3x+5n-2m)/(m*n*x)",
+                hint: "Common denominator is m*n*x. Adjust each fraction accordingly.",
+                explanation: "Step 1: Common denominator is m*n*x<br><br>Step 2: Convert each fraction:<br>3/(m*n) = (3*x)/(m*n*x)<br>5/(m*x) = (5*n)/(m*n*x)<br>2/(n*x) = (2*m)/(m*n*x)<br><br>Step 3: Combine: (3x)/(m*n*x) + (5n)/(m*n*x) - (2m)/(m*n*x) = (3x+5n-2m)/(m*n*x)"
+            },
+            {
+                problem: "[p/(a*b) - q/(a*c) + r/(b*c)]",
+                answer: "(p*c - q*b + r*a)/(a*b*c)",
+                hint: "Common denominator is a*b*c. Multiply each numerator accordingly.",
+                explanation: "Step 1: Common denominator is a*b*c<br><br>Step 2: Convert each fraction:<br>p/(a*b) = (p*c)/(a*b*c)<br>q/(a*c) = (q*b)/(a*b*c)<br>r/(b*c) = (r*a)/(a*b*c)<br><br>Step 3: Combine: (p*c)/(a*b*c) - (q*b)/(a*b*c) + (r*a)/(a*b*c) = (p*c - q*b + r*a)/(a*b*c)"
+            },
+            {
+                problem: "[(4 + 1/4) - (3 + 2/10) + (6 + 1/5) - (2 + 19/20)]",
+                answer: "4 3/5",
+                hint: "Simplify fractions first (2/10 = 1/5), then find common denominator.",
+                explanation: "Step 1: Simplify 2/10 to 1/5:<br>Expression becomes: (4 1/4) - (3 1/5) + (6 1/5) - (2 19/20)<br><br>Step 2: Convert to improper fractions with LCD = 20:<br>4 1/4 = 17/4 = 85/20<br>3 1/5 = 16/5 = 64/20<br>6 1/5 = 31/5 = 124/20<br>2 19/20 = 59/20<br><br>Step 3: Combine: 85/20 - 64/20 + 124/20 - 59/20 = (85-64+124-59)/20 = 86/20<br><br>Step 4: Simplify: 86/20 = 43/10 = 4 3/5"
+            },
+            {
+                problem: "[(10 + 1/12) - (2 + 7/8) - (1 + 11/12) - (3 + 23/24)]",
+                answer: "1 5/8",
+                hint: "Convert all to fractions with common denominator (24), then combine.",
+                explanation: "Step 1: Convert to improper fractions with LCD = 24:<br>10 1/12 = 121/12 = 242/24<br>2 7/8 = 23/8 = 69/24<br>1 11/12 = 23/12 = 46/24<br>3 23/24 = 95/24<br><br>Step 2: Combine: 242/24 - 69/24 - 46/24 - 95/24 = (242-69-46-95)/24 = 32/24<br><br>Step 3: Simplify: 32/24 = 4/3 = 1 1/3"
+            }
+        ];
+
+        // Initialize variables
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        
+        // DOM elements
+        const problemDisplay = document.getElementById('problem-display');
+        const answerInput = document.getElementById('answer-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const hintBtn = document.getElementById('hint-btn');
+        const feedbackSection = document.getElementById('feedback-section');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const explanationText = document.getElementById('explanation-text');
+        const progressBar = document.getElementById('progress-bar');
+        const progressCounter = document.getElementById('progress-counter');
+        const correctCount = document.getElementById('correct-count');
+        const incorrectCount = document.getElementById('incorrect-count');
+        const questionsRemaining = document.getElementById('questions-remaining');
+        const questionTitle = document.getElementById('question-title');
+        
+        // Initialize the app
+        function init() {
+            displayQuestion(currentQuestionIndex);
+            updateProgress();
+            updateStats();
+            
+            // Event listeners
+            submitBtn.addEventListener('click', checkAnswer);
+            nextBtn.addEventListener('click', nextQuestion);
+            hintBtn.addEventListener('click', showHint);
+            answerInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        }
+        
+        // Display the current question
+        function displayQuestion(index) {
+            const question = questions[index];
+            problemDisplay.textContent = question.problem;
+            questionTitle.textContent = `Question ${index + 1}: ${getQuestionType(question)}`;
+            answerInput.value = '';
+            answerInput.focus();
+            feedbackSection.style.display = 'none';
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'flex';
+        }
+        
+        // Get question type for display
+        function getQuestionType(question) {
+            if (question.problem.includes('a') || question.problem.includes('b') || 
+                question.problem.includes('c') || question.problem.includes('x') ||
+                question.problem.includes('m') || question.problem.includes('n') ||
+                question.problem.includes('p') || question.problem.includes('q') ||
+                question.problem.includes('r') || question.problem.includes('e')) {
+                return "Algebraic Fractions";
+            } else {
+                return "Fraction Operations";
+            }
+        }
+        
+        // Check the user's answer
+        function checkAnswer() {
+            const userAnswer = answerInput.value.trim();
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            
+            if (!userAnswer) {
+                alert("Please enter an answer before submitting.");
+                return;
+            }
+            
+            // Normalize answers for comparison
+            const normalizedUserAnswer = normalizeAnswer(userAnswer);
+            const normalizedCorrectAnswer = normalizeAnswer(correctAnswer);
+            
+            const isCorrect = normalizedUserAnswer === normalizedCorrectAnswer;
+            
+            // Show feedback
+            feedbackSection.style.display = 'block';
+            if (isCorrect) {
+                feedbackSection.className = 'feedback-section correct';
+                feedbackIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                feedbackTitle.textContent = 'Correct!';
+                feedbackText.textContent = `Your answer "${userAnswer}" is correct.`;
+                correctAnswers++;
+            } else {
+                feedbackSection.className = 'feedback-section incorrect';
+                feedbackIcon.innerHTML = '<i class="fas fa-times-circle"></i>';
+                feedbackTitle.textContent = 'Not Quite Right';
+                feedbackText.textContent = `Your answer "${userAnswer}" is incorrect. The correct answer is "${correctAnswer}".`;
+                incorrectAnswers++;
+            }
+            
+            // Show explanation
+            explanationText.innerHTML = questions[currentQuestionIndex].explanation;
+            
+            // Update UI
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'flex';
+            updateProgress();
+            updateStats();
+        }
+        
+        // Normalize answer for comparison (handles different formats)
+        function normalizeAnswer(answer) {
+            // Remove spaces
+            let normalized = answer.replace(/\s+/g, '');
+            
+            // Handle mixed numbers (convert to improper fractions)
+            const mixedNumberMatch = normalized.match(/^(\d+)(\d+)\/(\d+)$/);
+            if (mixedNumberMatch) {
+                const whole = parseInt(mixedNumberMatch[1]);
+                const num = parseInt(mixedNumberMatch[2]);
+                const den = parseInt(mixedNumberMatch[3]);
+                normalized = `${whole*den + num}/${den}`;
+            }
+            
+            // Simplify fraction if possible (basic simplification)
+            const fractionMatch = normalized.match(/^(\d+)\/(\d+)$/);
+            if (fractionMatch) {
+                let num = parseInt(fractionMatch[1]);
+                let den = parseInt(fractionMatch[2]);
+                
+                // Simplify by dividing by common factors (up to 10)
+                for (let i = 10; i >= 2; i--) {
+                    if (num % i === 0 && den % i === 0) {
+                        num /= i;
+                        den /= i;
+                    }
+                }
+                normalized = `${num}/${den}`;
+            }
+            
+            return normalized;
+        }
+        
+        // Show a hint for the current question
+        function showHint() {
+            feedbackSection.style.display = 'block';
+            feedbackSection.className = 'feedback-section';
+            feedbackIcon.innerHTML = '<i class="fas fa-lightbulb"></i>';
+            feedbackTitle.textContent = 'Hint';
+            feedbackText.textContent = questions[currentQuestionIndex].hint;
+            explanationText.innerHTML = "Try to solve the problem using this hint, then check your answer.";
+        }
+        
+        // Move to the next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion(currentQuestionIndex);
+            } else {
+                // All questions completed
+                problemDisplay.innerHTML = '<i class="fas fa-trophy" style="color: #f39c12; margin-right: 10px;"></i> Congratulations! You completed all questions!';
+                answerInput.style.display = 'none';
+                submitBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                hintBtn.style.display = 'none';
+                feedbackSection.style.display = 'none';
+                
+                // Show final results
+                const resultsHTML = `
+                    <div class="feedback-section correct" style="display: block;">
+                        <div class="feedback-header">
+                            <span class="feedback-icon"><i class="fas fa-trophy"></i></span>
+                            <span>Course Complete!</span>
+                        </div>
+                        <p>You answered ${correctAnswers} out of ${questions.length} questions correctly.</p>
+                        <div class="explanation">
+                            <div class="explanation-title">
+                                <i class="fas fa-star"></i> Final Score: ${Math.round(correctAnswers/questions.length*100)}%
+                            </div>
+                            <p>${getFinalMessage(correctAnswers, questions.length)}</p>
+                            <p>Refresh the page to start over.</p>
+                        </div>
+                    </div>
+                `;
+                
+                document.querySelector('.question-card').insertAdjacentHTML('beforeend', resultsHTML);
+            }
+            
+            updateProgress();
+        }
+        
+        // Get a final message based on score
+        function getFinalMessage(correct, total) {
+            const percentage = correct / total;
+            
+            if (percentage >= 0.9) {
+                return "Excellent work! You've mastered these concepts.";
+            } else if (percentage >= 0.7) {
+                return "Great job! You have a good understanding of these concepts.";
+            } else if (percentage >= 0.5) {
+                return "Good effort! Review the explanations to strengthen your understanding.";
+            } else {
+                return "Keep practicing! Review the explanations and try again.";
+            }
+        }
+        
+        // Update progress bar and counter
+        function updateProgress() {
+            const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressCounter.textContent = `${currentQuestionIndex + 1}/${questions.length}`;
+        }
+        
+        // Update statistics display
+        function updateStats() {
+            correctCount.textContent = correctAnswers;
+            incorrectCount.textContent = incorrectAnswers;
+            questionsRemaining.textContent = questions.length - (currentQuestionIndex + 1);
+        }
+        
+        // Initialize the app when the page loads
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

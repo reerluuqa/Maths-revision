@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebraic Fraction Simplifier</title>
+    <style>
+        :root {
+            /* Color Palette */
+            --primary: #4F46E5;
+            --primary-light: #EEF2FF;
+            --secondary: #10B981;
+            --secondary-light: #D1FAE5;
+            --danger: #EF4444;
+            --danger-light: #FEE2E2;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --bg-body: #F3F4F6;
+            --bg-card: #FFFFFF;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* App Container */
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header & Progress */
+        header {
+            background: var(--primary-light);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #E0E7FF;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: #E0E7FF;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .question-counter {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Main Content Area */
+        main {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 300px;
+            justify-content: center;
+        }
+
+        /* Fraction Display Styling */
+        .fraction-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            color: var(--text-main);
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px;
+        }
+
+        .numerator {
+            border-bottom: 3px solid var(--text-main);
+            padding-bottom: 5px;
+            display: block;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .denominator {
+            padding-top: 5px;
+            display: block;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .operator {
+            margin: 0 15px;
+            color: var(--text-muted);
+        }
+
+        /* Input Area */
+        .input-group {
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1.1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-align: center;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        .hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            background: #CBD5E1;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--text-main);
+            margin-top: 10px;
+        }
+
+        /* Feedback Section */
+        .feedback {
+            display: none; /* Hidden by default */
+            width: 100%;
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background: var(--secondary-light);
+            border: 1px solid var(--secondary);
+            color: #065F46;
+        }
+
+        .feedback.incorrect {
+            background: var(--danger-light);
+            border: 1px solid var(--danger);
+            color: #991B1B;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .explanation {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .answer-reveal {
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        /* Completion Screen */
+        .completion-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.4);
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+        
+        .visible {
+            display: block !important;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>Algebra Simplification</h1>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="question-counter" id="questionCounter">Question 1 of 7</div>
+    </header>
+
+    <main id="quizArea">
+        <!-- Question Display -->
+        <div id="questionContainer">
+            <div class="fraction-display" id="fractionDisplay">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-group" id="inputContainer">
+            <label for="answerInput">Simplify the expression:</label>
+            <input type="text" id="answerInput" placeholder="e.g. 2k/3h" autocomplete="off">
+            <div class="hint">Use "/" for division. No spaces needed.</div>
+        </div>
+
+        <!-- Action Buttons -->
+        <button id="checkBtn" class="btn">Check Answer</button>
+        
+        <!-- Feedback Section -->
+        <div id="feedback" class="feedback">
+            <div class="feedback-title" id="feedbackTitle"></div>
+            <div id="feedbackMessage"></div>
+            <div class="explanation" id="explanation"></div>
+            <button id="nextBtn" class="btn btn-secondary" style="margin-top:15px;">Next Question</button>
+        </div>
+    </main>
+
+    <!-- Completion Screen -->
+    <main id="completionArea" class="completion-screen">
+        <div class="score-circle" id="finalScore">0%</div>
+        <h2>Quiz Completed!</h2>
+        <p style="color: var(--text-muted); margin: 10px 0 20px;">Great job practicing your algebra skills.</p>
+        <button class="btn" onclick="location.reload()">Try Again</button>
+    </main>
+</div>
+
+<script>
+    // Data Structure for Questions
+    // "variations" allows for common ways users might input answers (order of terms, spacing)
+    const questions = [
+        {
+            num: "8dk",
+            den: "12dh",
+            answer: "2k/3h",
+            explanation: "1. Divide numbers 8 and 12 by 4 (GCF).<br>2. Cancel variable 'd' present in both numerator and denominator.<br>3. Remaining is 2k over 3h."
+        },
+        {
+            num: "42a²", // Using HTML entity for display logic handling, stored specifically
+            den: "56a",
+            rawNum: "42aa", // Keeping raw text for consistency with prompt
+            rawDen: "56a",
+            answer: "3a/4",
+            explanation: "1. Treat 42aa as 42a².<br>2. Divide 42 and 56 by 14.<br>3. Cancel one 'a' from top and bottom.<br>4. Result is 3a/4."
+        },
+        {
+            num: "99",
+            den: "108",
+            answer: "11/12",
+            explanation: "1. Find the Greatest Common Factor (GCF) of 99 and 108, which is 9.<br>2. 99 ÷ 9 = 11.<br>3. 108 ÷ 9 = 12.<br>4. Result is 11/12."
+        },
+        {
+            num: "77",
+            den: "121",
+            answer: "7/11",
+            explanation: "1. The GCF of 77 and 121 is 11.<br>2. 77 ÷ 11 = 7.<br>3. 121 ÷ 11 = 11.<br>4. Result is 7/11."
+        },
+        {
+            num: "15m",
+            den: "20mn",
+            answer: "3/4n",
+            explanation: "1. GCF of 15 and 20 is 5.<br>2. Cancel 'm' from numerator and denominator.<br>3. Result is 3/4n."
+        },
+        {
+            num: "24amx",
+            den: "30anx",
+            answer: "4m/5n",
+            explanation: "1. Divide 24 and 30 by 6.<br>2. Cancel 'a' and 'x' (common variables).<br>3. Result is 4m/5n."
+        },
+        {
+            num: "108x",
+            den: "144x²",
+            rawNum: "108x",
+            rawDen: "144xx",
+            answer: "3/4x",
+            explanation: "1. Divide 108 and 144 by 36.<br>2. Cancel one 'x' from top and bottom.<br>3. Note: x*x is x². After canceling, one x remains in the denominator.<br>4. Result is 3/4x."
+        }
+    ];
+
+    // State Variables
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let isAnswered = false;
+
+    // DOM Elements
+    const progressBar = document.getElementById('progressBar');
+    const questionCounter = document.getElementById('questionCounter');
+    const fractionDisplay = document.getElementById('fractionDisplay');
+    const answerInput = document.getElementById('answerInput');
+    const checkBtn = document.getElementById('checkBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const feedbackBox = document.getElementById('feedback');
+    const feedbackTitle = document.getElementById('feedbackTitle');
+    const feedbackMessage = document.getElementById('feedbackMessage');
+    const explanationDiv = document.getElementById('explanation');
+    const quizArea = document.getElementById('quizArea');
+    const completionArea = document.getElementById('completionArea');
+    const finalScore = document.getElementById('finalScore');
+
+    // Initialize App
+    function init() {
+        renderQuestion();
+        
+        // Event Listeners
+        checkBtn.addEventListener('click', handleCheckAnswer);
+        nextBtn.addEventListener('click', handleNextQuestion);
+        answerInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                if (isAnswered) handleNextQuestion();
+                else handleCheckAnswer();
+            }
+        });
+    }
+
+    // Render current question
+    function renderQuestion() {
+        isAnswered = false;
+        const q = questions[currentQuestionIndex];
+        
+        // Update Progress
+        const progress = ((currentQuestionIndex) / questions.length) * 100;
+        progressBar.style.width = `${progress}%`;
+        questionCounter.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+
+        // Format Math Display
+        // Use rawNum/rawDen if available to match prompt exactly, otherwise num/den
+        const numText = q.rawNum || q.num;
+        const denText = q.rawDen || q.den;
+        
+        // Format display text for prettier math (convert aa to a² visually)
+        const prettyNum = numText.replace('aa', 'a²').replace('xx', 'x²');
+        const prettyDen = denText.replace('aa', 'a²').replace('xx', 'x²');
+
+        fractionDisplay.innerHTML = `
+            <div class="fraction">
+                <span class="numerator">${prettyNum}</span>
+                <span class="denominator">${prettyDen}</span>
+            </div>
+        `;
+
+        // Reset UI
+        answerInput.value = '';
+        answerInput.disabled = false;
+        answerInput.focus();
+        checkBtn.style.display = 'block';
+        feedbackBox.className = 'feedback'; // remove correct/incorrect classes
+        feedbackBox.style.display = 'none';
+    }
+
+    // Normalize Input to compare answers loosely
+    function normalizeInput(input) {
+        return input.toLowerCase()
+            .replace(/\s/g, '') // remove spaces
+            .replace(/\*/g, '') // remove multiplication signs
+            .replace('//', '/'); // fix accidental double slashes
+    }
+
+    // Check Logic
+    function handleCheckAnswer() {
+        const userRaw = answerInput.value.trim();
+        if (!userRaw) {
+            showToast("Please enter an answer.");
+            return;
+        }
+
+        const q = questions[currentQuestionIndex];
+        const normalizedUser = normalizeInput(userRaw);
+        const normalizedCorrect = normalizeInput(q.answer);
+
+        // Simple check: Does it match the core pattern?
+        // We check if the cleaned user string matches the cleaned answer string.
+        // This handles "3/4n" vs "3 / 4n".
+        const isCorrect = normalizedUser === normalizedCorrect;
+
+        isAnswered = true;
+        answerInput.disabled = true;
+        checkBtn.style.display = 'none';
+        
+        displayFeedback(isCorrect, q, userRaw);
+    }
+
+    function displayFeedback(isCorrect, questionObj, userAnswer) {
+        feedbackBox.style.display = 'block';
+        
+        if (isCorrect) {
+            score++;
+            feedbackBox.classList.add('correct');
+            feedbackTitle.innerHTML = `<span>✅</span> Correct!`;
+            feedbackMessage.textContent = `Great work. ${questionObj.answer} is the simplified form.`;
+            explanationDiv.style.display = 'none'; // Hide explanation if correct, usually less clutter, but prompt asks for feedback. 
+            // User prompt: "provide the right answer with explanation".
+            // Even if correct, showing explanation reinforces learning.
+            explanationDiv.style.display = 'block';
+            explanationDiv.innerHTML = `<strong>Explanation:</strong><br>${questionObj.explanation}`;
+        } else {
+            feedbackBox.classList.add('incorrect');
+            feedbackTitle.innerHTML = `<span>❌</span> Incorrect`;
+            feedbackMessage.innerHTML = `You entered: <em>${userAnswer}</em>`;
+            explanationDiv.innerHTML = `
+                <div class="answer-reveal">Correct Answer: ${questionObj.answer}</div>
+                <div style="margin-top:8px"><strong>Explanation:</strong><br>${questionObj.explanation}</div>
+            `;
+            explanationDiv.style.display = 'block';
+        }
+    }
+
+    function handleNextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            renderQuestion();
+        } else {
+            showCompletion();
+        }
+    }
+
+    function showCompletion() {
+        quizArea.style.display = 'none';
+        completionArea.style.display = 'block';
+        
+        // Update progress bar to full
+        progressBar.style.width = '100%';
+        questionCounter.textContent = `Completed`;
+
+        // Calculate Percentage
+        const percentage = Math.round((score / questions.length) * 100);
+        finalScore.textContent = `${percentage}%`;
+        
+        // Color code the score
+        if (percentage === 100) finalScore.style.background = 'var(--secondary)';
+        else if (percentage > 60) finalScore.style.background = 'var(--primary)';
+        else finalScore.style.background = 'var(--danger)';
+    }
+
+    // Custom Toast Notification (Non-intrusive alert)
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.background = 'rgba(0,0,0,0.8)';
+        toast.style.color = 'white';
+        toast.style.padding = '10px 20px';
+        toast.style.borderRadius = '20px';
+        toast.style.zIndex = '1000';
+        toast.style.animation = 'slideUp 0.3s ease-out';
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.5s';
+            setTimeout(() => toast.remove(), 500);
+        }, 2000);
+    }
+
+    // Start
+    init();
+
+</script>
+
+</body>
+</html>

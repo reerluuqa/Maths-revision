@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Fractions | Interactive Learning</title>
+    <style>
+        /* ============================================
+           CSS VARIABLES & RESET
+        ============================================ */
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-elevated: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #475569;
+            --success: #22c55e;
+            --error: #ef4444;
+            --radius: 16px;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ============================================
+           LAYOUT & CONTAINERS
+        ============================================ */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            margin-top: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 3rem;
+            background: var(--bg-card);
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .nav-tab {
+            padding: 1rem 2rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: calc(var(--radius) - 4px);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-elevated);
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-tab.active::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1));
+        }
+
+        /* Section Panels */
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-title .icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        /* ============================================
+           LEARN SECTION STYLES
+        ============================================ */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, var(--bg-elevated), var(--bg-card));
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .concept-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: var(--bg-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .concept-card.numerator .concept-icon {
+            border: 3px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        .concept-card.denominator .concept-icon {
+            border: 3px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .concept-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-card.numerator h3 { color: var(--secondary); }
+        .concept-card.denominator h3 { color: var(--accent); }
+
+        .concept-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Fraction Display */
+        .fraction-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 2rem 0;
+        }
+
+        .fraction-display .numerator-value {
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+
+        .fraction-display .fraction-line {
+            width: 80px;
+            height: 6px;
+            background: var(--text-primary);
+            border-radius: 3px;
+            margin: 0.25rem 0;
+        }
+
+        .fraction-display .denominator-value {
+            color: var(--accent);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Analogy Section */
+        .analogy-box {
+            background: var(--bg-dark);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .analogy-box h4 {
+            color: var(--primary-light);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .analogy-box p {
+            color: var(--text-secondary);
+        }
+
+        /* ============================================
+           EXPLORE SECTION STYLES
+        ============================================ */
+        .explore-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .explore-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Visualization Container */
+        .viz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        /* SVG Pie Chart */
+        .pie-chart-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        .pie-chart {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .pie-slice {
+            fill: none;
+            stroke-width: 100;
+            stroke-linecap: butt;
+            transition: stroke-dasharray 0.5s ease, stroke 0.3s ease;
+        }
+
+        .pie-background {
+            stroke: var(--bg-elevated);
+        }
+
+        .pie-filled {
+            stroke: var(--primary);
+        }
+
+        .pie-dividers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .divider-line {
+            stroke: var(--bg-dark);
+            stroke-width: 3;
+            transition: var(--transition);
+        }
+
+        /* Bar Visualization */
+        .bar-viz {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 2rem;
+        }
+
+        .bar-container {
+            display: flex;
+            gap: 4px;
+            height: 60px;
+            background: var(--bg-dark);
+            border-radius: 8px;
+            padding: 4px;
+            overflow: hidden;
+        }
+
+        .bar-segment {
+            flex: 1;
+            border-radius: 4px;
+            transition: var(--transition);
+            background: var(--bg-elevated);
+        }
+
+        .bar-segment.filled {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .bar-segment.cutting {
+            animation: cutIn 0.4s ease forwards;
+        }
+
+        @keyframes cutIn {
+            0% { transform: scaleX(0); }
+            100% { transform: scaleX(1); }
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            padding: 1.5rem;
+        }
+
+        .slider-group {
+            margin-bottom: 2rem;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .slider-label span:first-child {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .slider-value {
+            background: var(--bg-elevated);
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .slider-value.numerator { color: var(--secondary); }
+        .slider-value.denominator { color: var(--accent); }
+
+        /* Custom Slider Styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+            transition: var(--transition);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .numerator-slider::-webkit-slider-thumb { background: var(--secondary); }
+        .denominator-slider::-webkit-slider-thumb { background: var(--accent); }
+
+        /* Results Display */
+        .results-display {
+            background: var(--bg-dark);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: var(--text-secondary);
+        }
+
+        .result-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Big Fraction Display */
+        .big-fraction {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            gap: 0.5rem;
+        }
+
+        .big-fraction .frac-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .big-fraction .num {
+            color: var(--secondary);
+        }
+
+        .big-fraction .line {
+            width: 60px;
+            height: 4px;
+            background: var(--text-primary);
+            border-radius: 2px;
+        }
+
+        .big-fraction .denom {
+            color: var(--accent);
+        }
+
+        /* ============================================
+           QUIZ SECTION STYLES
+        ============================================ */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .quiz-score {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .score-item {
+            background: var(--bg-elevated);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .score-item.correct { border-left: 3px solid var(--success); }
+        .score-item.incorrect { border-left: 3px solid var(--error); }
+
+        .score-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .score-item.correct .score-number { color: var(--success); }
+        .score-item.incorrect .score-number { color: var(--error); }
+
+        /* Quiz Question */
+        .quiz-question {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .quiz-visual {
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+
+        @media (max-width: 600px) {
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .quiz-option {
+            background: var(--bg-elevated);
+            border: 2px solid transparent;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(34, 197, 94, 0.2);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error);
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .quiz-option:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .quiz-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Feedback Message */
+        .feedback {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .feedback.correct {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .feedback.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Viz Toggle */
+        .viz-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--bg-dark);
+            padding: 0.25rem;
+            border-radius: 8px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .viz-toggle-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .viz-toggle-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Animation for cutting */
+        .cutting-animation {
+            animation: cutEffect 0.6s ease;
+        }
+
+        @keyframes cutEffect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Tooltip Styles */
+        .info-tip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: var(--bg-elevated);
+            border-radius: 50%;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            cursor: help;
+            margin-left: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--bg-elevated);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- ============================================
+             HEADER
+        ============================================ -->
+        <header class="header">
+            <h1>Understanding Fractions</h1>
+            <p>An interactive guide to mastering the fundamentals</p>
+        </header>
+
+        <!-- ============================================
+             NAVIGATION TABS
+        ============================================ -->
+        <nav class="nav-tabs" role="tablist" aria-label="Main Navigation">
+            <button class="nav-tab active" 
+                    data-section="learn" 
+                    role="tab" 
+                    aria-selected="true"
+                    aria-controls="learn-section">
+                📚 Learn
+            </button>
+            <button class="nav-tab" 
+                    data-section="explore" 
+                    role="tab" 
+                    aria-selected="false"
+                    aria-controls="explore-section">
+                🔬 Explore
+            </button>
+            <button class="nav-tab" 
+                    data-section="quiz" 
+                    role="tab" 
+                    aria-selected="false"
+                    aria-controls="quiz-section">
+                🎯 Quiz
+            </button>
+        </nav>
+
+        <!-- ============================================
+             LEARN SECTION
+        ============================================ -->
+        <section id="learn-section" class="section active" role="tabpanel" aria-labelledby="learn-tab">
+            <!-- Introduction Card -->
+            <div class="card">
+                <h2 class="card-title">
+                    <span class="icon">🧩</span>
+                    What is a Fraction?
+                </h2>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">
+                    A fraction represents <strong>a part of a whole</strong>. Think of it as a way to describe 
+                    how much of something you have when it's been divided into equal pieces.
+                </p>
+                
+                <!-- Animated Fraction Display -->
+                <div class="fraction-display" aria-label="Fraction example showing 3 over 4">
+                    <span class="numerator-value">3</span>
+                    <div class="fraction-line"></div>
+                    <span class="denominator-value">4</span>
+                </div>
+                
+                <!-- Real-world Analogy -->
+                <div class="analogy-box">
+                    <h4>💡 Real-World Analogy</h4>
+                    <p>
+                        Imagine a pizza cut into <strong>4 equal slices</strong>. If you eat <strong>3 slices</strong>, 
+                        you've eaten <strong>3/4</strong> (three-fourths) of the pizza. The bottom number tells you 
+                        how many total slices there are, and the top number tells you how many you took.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Concept Cards Grid -->
+            <div class="concept-grid">
+                <!-- Numerator Card -->
+                <div class="concept-card numerator">
+                    <div class="concept-icon">↑</div>
+                    <h3>Numerator</h3>
+                    <p>
+                        The <strong>top number</strong> of a fraction. It tells you <em>how many parts</em> 
+                        you have or are talking about. Think of it as "the counter" — it counts the pieces you're interested in.
+                    </p>
+                    <div class="analogy-box" style="text-align: left; margin-top: 1rem;">
+                        <h4>Example</h4>
+                        <p>In ¾, the numerator is <strong>3</strong> — you have 3 pieces.</p>
+                    </div>
+                </div>
+
+                <!-- Denominator Card -->
+                <div class="concept-card denominator">
+                    <div class="concept-icon">↓</div>
+                    <h3>Denominator</h3>
+                    <p>
+                        The <strong>bottom number</strong> of a fraction. It tells you <em>how many equal parts</em> 
+                        the whole was divided into. Think of it as "the divider" — it shows the total pieces.
+                    </p>
+                    <div class="analogy-box" style="text-align: left; margin-top: 1rem;">
+                        <h4>Example</h4>
+                        <p>In ¾, the denominator is <strong>4</strong> — the pizza was cut into 4 slices.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Insights Card -->
+            <div class="card">
+                <h2 class="card-title">
+                    <span class="icon">✨</span>
+                    Key Insights
+                </h2>
+                <ul style="color: var(--text-secondary); padding-left: 1.5rem;">
+                    <li style="margin-bottom: 0.75rem;">
+                        <strong>Proper Fraction:</strong> When the numerator is smaller than the denominator (like ¾), 
+                        you have less than one whole.
+                    </li>
+                    <li style="margin-bottom: 0.75rem;">
+                        <strong>Improper Fraction:</strong> When the numerator is larger than the denominator (like 5/4), 
+                        you have more than one whole.
+                    </li>
+                    <li style="margin-bottom: 0.75rem;">
+                        <strong>Equal Parts:</strong> When the numerator equals the denominator (like 4/4), 
+                        you have exactly one whole.
+                    </li>
+                    <li>
+                        <strong>The larger the denominator</strong>, the smaller each piece becomes. 
+                        1/8 of a pizza is smaller than 1/4 of the same pizza!
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================
+             EXPLORE SECTION (SANDBOX MODE)
+        ============================================ -->
+        <section id="explore-section" class="section" role="tabpanel" aria-labelledby="explore-tab">
+            <div class="card">
+                <h2 class="card-title">
+                    <span class="icon">🎨</span>
+                    Fraction Sandbox
+                </h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    Adjust the sliders below to create your own fractions and watch the visualization update in real-time.
+                </p>
+
+                <div class="explore-layout">
+                    <!-- Visualization Panel -->
+                    <div class="viz-container">
+                        <!-- Visualization Toggle -->
+                        <div class="viz-toggle">
+                            <button class="viz-toggle-btn active" data-viz="pie">Pie Chart</button>
+                            <button class="viz-toggle-btn" data-viz="bar">Bar Graph</button>
+                        </div>
+
+                        <!-- Pie Chart Visualization -->
+                        <div id="pie-viz" class="pie-chart-container">
+                            <svg class="pie-chart" viewBox="0 0 200 200" aria-label="Pie chart fraction visualization">
+                                <!-- Background circle -->
+                                <circle class="pie-slice pie-background" 
+                                        cx="100" cy="100" r="50" 
+                                        stroke-dasharray="314.159 314.159"></circle>
+                                <!-- Filled portion -->
+                                <circle class="pie-slice pie-filled" 
+                                        cx="100" cy="100" r="50" 
+                                        stroke-dasharray="0 314.159"></circle>
+                            </svg>
+                            <!-- Divider lines will be added dynamically -->
+                            <svg class="pie-dividers" viewBox="0 0 200 200" aria-hidden="true"></svg>
+                        </div>
+
+                        <!-- Bar Visualization (hidden by default) -->
+                        <div id="bar-viz" class="bar-viz" style="display: none;">
+                            <div class="bar-container" id="bar-segments" aria-label="Bar graph fraction visualization">
+                                <!-- Bar segments will be added dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Big Fraction Display -->
+                        <div class="big-fraction" aria-live="polite">
+                            <div class="frac-container">
+                                <span class="num" id="display-numerator">1</span>
+                                <div class="line"></div>
+                                <span class="denom" id="display-denominator">4</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controls Panel -->
+                    <div class="controls-panel">
+                        <!-- Numerator Slider -->
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Numerator (Parts Taken)</span>
+                                <span class="slider-value numerator" id="num-value">1</span>
+                            </div>
+                            <input type="range" 
+                                   id="numerator-slider" 
+                                   class="numerator-slider"
+                                   min="0" 
+                                   max="12" 
+                                   value="1"
+                                   aria-label="Adjust numerator value">
+                        </div>
+
+                        <!-- Denominator Slider -->
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Denominator (Total Parts)</span>
+                                <span class="slider-value denominator" id="denom-value">4</span>
+                            </div>
+                            <input type="range" 
+                                   id="denominator-slider" 
+                                   class="denominator-slider"
+                                   min="1" 
+                                   max="12" 
+                                   value="4"
+                                   aria-label="Adjust denominator value">
+                        </div>
+
+                        <!-- Results Display -->
+                        <div class="results-display" aria-live="polite">
+                            <div class="result-row">
+                                <span class="result-label">Decimal</span>
+                                <span class="result-value" id="decimal-value">0.25</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Percentage</span>
+                                <span class="result-value" id="percentage-value">25%</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Type</span>
+                                <span class="result-value" id="fraction-type">Proper</span>
+                            </div>
+                        </div>
+
+                        <!-- Quick Preset Buttons -->
+                        <div style="margin-top: 1.5rem;">
+                            <p style="color: var(--text-muted); margin-bottom: 0.75rem; font-size: 0.9rem;">Quick Presets:</p>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <button class="btn btn-secondary preset-btn" data-num="1" data-denom="2">½</button>
+                                <button class="btn btn-secondary preset-btn" data-num="1" data-denom="4">¼</button>
+                                <button class="btn btn-secondary preset-btn" data-num="3" data-denom="4">¾</button>
+                                <button class="btn btn-secondary preset-btn" data-num="1" data-denom="3">⅓</button>
+                                <button class="btn btn-secondary preset-btn" data-num="2" data-denom="3">⅔</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             QUIZ SECTION
+        ============================================ -->
+        <section id="quiz-section" class="section" role="tabpanel" aria-labelledby="quiz-tab">
+            <div class="card">
+                <div class="quiz-header">
+                    <h2 class="card-title">
+                        <span class="icon">🎯</span>
+                        Test Your Knowledge
+                    </h2>
+                    <div class="quiz-score">
+                        <div class="score-item correct">
+                            <span class="score-number" id="correct-count">0</span>
+                            <span>Correct</span>
+                        </div>
+                        <div class="score-item incorrect">
+                            <span class="score-number" id="incorrect-count">0</span>
+                            <span>Incorrect</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quiz-progress" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>Question <span id="current-question">1</span> of <span id="total-questions">10</span></span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                </div>
+
+                <!-- Quiz Question Area -->
+                <div class="quiz-question" id="quiz-area">
+                    <p class="question-text" id="question-text">
+                        What fraction of the shape is shaded?
+                    </p>
+
+                    <!-- Quiz Visual -->
+                    <div class="quiz-visual" id="quiz-visual">
+                        <!-- SVG will be inserted here -->
+                    </div>
+
+                    <!-- Answer Options -->
+                    <div class="quiz-options" id="quiz-options">
+                        <!-- Options will be generated dynamically -->
+                    </div>
+
+                    <!-- Feedback Area -->
+                    <div id="feedback-area"></div>
+
+                    <!-- Quiz Actions -->
+                    <div class="quiz-actions">
+                        <button class="btn btn-secondary" id="skip-btn">Skip</button>
+                        <button class="btn btn-primary" id="next-btn" style="display: none;">Next Question</button>
+                    </div>
+                </div>
+
+                <!-- Quiz Complete Screen -->
+                <div id="quiz-complete" style="display: none; text-align: center; padding: 3rem;">
+                    <h2 style="font-size: 2rem; margin-bottom: 1rem;">🎉 Quiz Complete!</h2>
+                    <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2rem;">
+                        You scored <span id="final-score" style="color: var(--success); font-weight: 700;">0</span> 
+                        out of <span id="final-total">10</span>
+                    </p>
+                    <div id="performance-message" style="margin-bottom: 2rem;"></div>
+                    <button class="btn btn-primary" id="restart-btn">Try Again</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Built with ❤️ for learners everywhere</p>
+        </footer>
+    </div>
+
+    <script>
+        /* ============================================
+           JAVASCRIPT - MAIN APPLICATION
+        ============================================ */
+
+        // ============================================
+        // GLOBAL STATE & CONSTANTS
+        // ============================================
+        const state = {
+            // Explore section state
+            numerator: 1,
+            denominator: 4,
+            currentViz: 'pie',
+            
+            // Quiz section state
+            quizQuestions: [],
+            currentQuestionIndex: 0,
+            correctCount: 0,
+            incorrectCount: 0,
+            answered: false,
+            totalQuestions: 10
+        };
+
+        // Circle circumference for pie chart (2 * PI * radius where radius = 50)
+        const CIRCUMFERENCE = 314.159;
+
+        // ============================================
+        // DOM ELEMENT REFERENCES
+        // ============================================
+        const elements = {
+            // Navigation
+            navTabs: document.querySelectorAll('.nav-tab'),
+            sections: document.querySelectorAll('.section'),
+            
+            // Explore section
+            numeratorSlider: document.getElementById('numerator-slider'),
+            denominatorSlider: document.getElementById('denominator-slider'),
+            numValue: document.getElementById('num-value'),
+            denomValue: document.getElementById('denom-value'),
+            displayNumerator: document.getElementById('display-numerator'),
+            displayDenominator: document.getElementById('display-denominator'),
+            decimalValue: document.getElementById('decimal-value'),
+            percentageValue: document.getElementById('percentage-value'),
+            fractionType: document.getElementById('fraction-type'),
+            pieFilled: document.querySelector('.pie-filled'),
+            pieDividers: document.querySelector('.pie-dividers'),
+            barSegments: document.getElementById('bar-segments'),
+            pieViz: document.getElementById('pie-viz'),
+            barViz: document.getElementById('bar-viz'),
+            vizToggleBtns: document.querySelectorAll('.viz-toggle-btn'),
+            presetBtns: document.querySelectorAll('.preset-btn'),
+            
+            // Quiz section
+            questionText: document.getElementById('question-text'),
+            quizVisual: document.getElementById('quiz-visual'),
+            quizOptions: document.getElementById('quiz-options'),
+            feedbackArea: document.getElementById('feedback-area'),
+            nextBtn: document.getElementById('next-btn'),
+            skipBtn: document.getElementById('skip-btn'),
+            correctCount: document.getElementById('correct-count'),
+            incorrectCount: document.getElementById('incorrect-count'),
+            currentQuestion: document.getElementById('current-question'),
+            totalQuestions: document.getElementById('total-questions'),
+            progressPercent: document.getElementById('progress-percent'),
+            quizProgress: document.getElementById('quiz-progress'),
+            quizArea: document.getElementById('quiz-area'),
+            quizComplete: document.getElementById('quiz-complete'),
+            finalScore: document.getElementById('final-score'),
+            finalTotal: document.getElementById('final-total'),
+            performanceMessage: document.getElementById('performance-message'),
+            restartBtn: document.getElementById('restart-btn')
+        };
+
+        // ============================================
+        // NAVIGATION FUNCTIONALITY
+        // ============================================
+        
+        /**
+         * Switches between sections (Learn, Explore, Quiz)
+         * @param {string} sectionId - The ID of the section to show
+         */
+        function switchSection(sectionId) {
+            // Update tab states
+            elements.navTabs.forEach(tab => {
+                const isActive = tab.dataset.section === sectionId;
+                tab.classList.toggle('active', isActive);
+                tab.setAttribute('aria-selected', isActive);
+            });
+            
+            // Update section visibility
+            elements.sections.forEach(section => {
+                const isActive = section.id === `${sectionId}-section`;
+                section.classList.toggle('active', isActive);
+            });
+            
+            // Initialize quiz if switching to quiz section
+            if (sectionId === 'quiz' && state.quizQuestions.length === 0) {
+                initializeQuiz();
+            }
+        }
+
+        // ============================================
+        // EXPLORE SECTION - VISUALIZATION LOGIC
+        // ============================================
+        
+        /**
+         * Updates all visualizations based on current numerator/denominator
+         */
+        function updateVisualization() {
+            const { numerator, denominator } = state;
+            
+            // Update display values
+            elements.numValue.textContent = numerator;
+            elements.denomValue.textContent = denominator;
+            elements.displayNumerator.textContent = numerator;
+            elements.displayDenominator.textContent = denominator;
+            
+            // Calculate and display decimal/percentage
+            const decimal = numerator / denominator;
+            elements.decimalValue.textContent = decimal.toFixed(4);
+            elements.percentageValue.textContent = `${(decimal * 100).toFixed(2)}%`;
+            
+            // Determine fraction type
+            let fractionType = 'Proper';
+            if (numerator === denominator) {
+                fractionType = 'Whole';
+            } else if (numerator > denominator) {
+                fractionType = 'Improper';
+            } else if (numerator === 0) {
+                fractionType = 'Zero';
+            }
+            elements.fractionType.textContent = fractionType;
+            
+            // Update visualizations
+            updatePieChart();
+            updateBarChart();
+        }
+
+        /**
+         * Updates the pie chart visualization
+         */
+        function updatePieChart() {
+            const { numerator, denominator } = state;
+            
+            // Calculate stroke-dasharray for filled portion
+            const fillAmount = (numerator / denominator) * CIRCUMFERENCE;
+            const remaining = CIRCUMFERENCE - fillAmount;
+            
+            // Animate the pie slice
+            elements.pieFilled.style.strokeDasharray = `${fillAmount} ${remaining}`;
+            
+            // Add cutting animation effect
+            elements.pieViz.classList.add('cutting-animation');
+            setTimeout(() => {
+                elements.pieViz.classList.remove('cutting-animation');
+            }, 600);
+            
+            // Draw divider lines
+            drawDividerLines();
+        }
+
+        /**
+         * Draws the divider lines on the pie chart
+         */
+        function drawDividerLines() {
+            const { denominator } = state;
+            
+            let linesHTML = '';
+            const centerX = 100;
+            const centerY = 100;
+            const radius = 100;
+            
+            for (let i = 0; i < denominator; i++) {
+                const angle = (i / denominator) * 2 * Math.PI - Math.PI / 2;
+                const x2 = centerX + radius * Math.cos(angle);
+                const y2 = centerY + radius * Math.sin(angle);
+                
+                linesHTML += `
+                    <line class="divider-line" 
+                          x1="${centerX}" y1="${centerY}" 
+                          x2="${x2}" y2="${y2}" 
+                          style="animation-delay: ${i * 0.05}s"/>
+                `;
+            }
+            
+            elements.pieDividers.innerHTML = linesHTML;
+        }
+
+        /**
+         * Updates the bar chart visualization
+         */
+        function updateBarChart() {
+            const { numerator, denominator } = state;
+            
+            let segmentsHTML = '';
+            
+            for (let i = 0; i < denominator; i++) {
+                const isFilled = i < numerator;
+                segmentsHTML += `
+                    <div class="bar-segment ${isFilled ? 'filled' : ''} cutting" 
+                         style="animation-delay: ${i * 0.05}s"
+                         aria-label="Segment ${i + 1} of ${denominator}, ${isFilled ? 'filled' : 'empty'}"></div>
+                `;
+            }
+            
+            elements.barSegments.innerHTML = segmentsHTML;
+        }
+
+        /**
+         * Switches between pie and bar visualization
+         * @param {string} vizType - 'pie' or 'bar'
+         */
+        function switchVisualization(vizType) {
+            state.currentViz = vizType;
+            
+            // Update toggle buttons
+            elements.vizToggleBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.viz === vizType);
+            });
+            
+            // Show/hide visualizations
+            elements.pieViz.style.display = vizType === 'pie' ? 'block' : 'none';
+            elements.barViz.style.display = vizType === 'bar' ? 'block' : 'none';
+        }
+
+        /**
+         * Sets fraction from preset button
+         * @param {number} num - Numerator value
+         * @param {number} denom - Denominator value
+         */
+        function setPreset(num, denom) {
+            state.numerator = num;
+            state.denominator = denom;
+            
+            elements.numeratorSlider.value = num;
+            elements.denominatorSlider.value = denom;
+            elements.numeratorSlider.max = denom;
+            
+            updateVisualization();
+        }
+
+        // ============================================
+        // QUIZ SECTION - LOGIC
+        // ============================================
+        
+        /**
+         * Generates a random question for the quiz
+         * @returns {Object} Question object with question, visual, options, and answer
+         */
+        function generateQuestion() {
+            const questionTypes = ['identify', 'decimal', 'compare'];
+            const type = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+            
+            // Generate random fraction
+            const denominator = Math.floor(Math.random() * 8) + 2; // 2-9
+            const numerator = Math.floor(Math.random() * denominator) + 1; // 1 to denominator
+            
+            let question = {};
+            
+            switch (type) {
+                case 'identify':
+                    question = createIdentifyQuestion(numerator, denominator);
+                    break;
+                case 'decimal':
+                    question = createDecimalQuestion(numerator, denominator);
+                    break;
+                case 'compare':
+                    question = createCompareQuestion();
+                    break;
+            }
+            
+            return question;
+        }
+
+        /**
+         * Creates an "identify the fraction" question
+         */
+        function createIdentifyQuestion(numerator, denominator) {
+            // Generate wrong answers
+            const options = new Set([`${numerator}/${denominator}`]);
+            
+            while (options.size < 4) {
+                const wrongNum = Math.floor(Math.random() * denominator) + 1;
+                const wrongDenom = Math.floor(Math.random() * 8) + 2;
+                if (wrongNum !== numerator || wrongDenom !== denominator) {
+                    options.add(`${wrongNum}/${wrongDenom}`);
+                }
+            }
+            
+            return {
+                type: 'identify',
+                text: 'What fraction of the shape is shaded?',
+                numerator,
+                denominator,
+                options: shuffleArray([...options]),
+                answer: `${numerator}/${denominator}`
+            };
+        }
+
+        /**
+         * Creates a "fraction to decimal" question
+         */
+        function createDecimalQuestion(numerator, denominator) {
+            const correctDecimal = (numerator / denominator).toFixed(2);
+            const options = new Set([correctDecimal]);
+            
+            while (options.size < 4) {
+                const wrongDecimal = (Math.random() * 1.5).toFixed(2);
+                if (wrongDecimal !== correctDecimal && parseFloat(wrongDecimal) > 0) {
+                    options.add(wrongDecimal);
+                }
+            }
+            
+            return {
+                type: 'decimal',
+                text: `What is ${numerator}/${denominator} as a decimal?`,
+                numerator,
+                denominator,
+                options: shuffleArray([...options]),
+                answer: correctDecimal
+            };
+        }
+
+        /**
+         * Creates a comparison question
+         */
+        function createCompareQuestion() {
+            const denom1 = Math.floor(Math.random() * 6) + 2;
+            const num1 = Math.floor(Math.random() * denom1) + 1;
+            
+            const denom2 = Math.floor(Math.random() * 6) + 2;
+            const num2 = Math.floor(Math.random() * denom2) + 1;
+            
+            const val1 = num1 / denom1;
+            const val2 = num2 / denom2;
+            
+            let answer;
+            if (val1 > val2) answer = `${num1}/${denom1}`;
+            else if (val2 > val1) answer = `${num2}/${denom2}`;
+            else answer = 'Equal';
+            
+            return {
+                type: 'compare',
+                text: 'Which fraction is larger?',
+                fraction1: { numerator: num1, denominator: denom1 },
+                fraction2: { numerator: num2, denominator: denom2 },
+                options: [`${num1}/${denom1}`, `${num2}/${denom2}`, 'Equal'],
+                answer
+            };
+        }
+
+        /**
+         * Shuffles an array randomly
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        /**
+         * Creates an SVG pie chart for quiz visualization
+         */
+        function createQuizPieChart(numerator, denominator, size = 150) {
+            const circumference = 2 * Math.PI * 50;
+            const fillAmount = (numerator / denominator) * circumference;
+            const remaining = circumference - fillAmount;
+            
+            // Create divider lines
+            let dividerLines = '';
+            for (let i = 0; i < denominator; i++) {
+                const angle = (i / denominator) * 2 * Math.PI - Math.PI / 2;
+                const x2 = 100 + 100 * Math.cos(angle);
+                const y2 = 100 + 100 * Math.sin(angle);
+                dividerLines += `<line x1="100" y1="100" x2="${x2}" y2="${y2}" 
+                                 stroke="#0f172a" stroke-width="3"/>`;
+            }
+            
+            return `
+                <svg width="${size}" height="${size}" viewBox="0 0 200 200" 
+                     style="transform: rotate(-90deg);">
+                    <circle cx="100" cy="100" r="50" fill="none" 
+                            stroke="#334155" stroke-width="100"/>
+                    <circle cx="100" cy="100" r="50" fill="none" 
+                            stroke="#6366f1" stroke-width="100"
+                            stroke-dasharray="${fillAmount} ${remaining}"/>
+                    <g style="transform: rotate(90deg); transform-origin: center;">
+                        ${dividerLines}
+                    </g>
+                </svg>
+            `;
+        }
+
+        /**
+         * Initializes the quiz with fresh questions
+         */
+        function initializeQuiz() {
+            // Generate questions
+            state.quizQuestions = [];
+            for (let i = 0; i < state.totalQuestions; i++) {
+                state.quizQuestions.push(generateQuestion());
+            }
+            
+            // Reset state
+            state.currentQuestionIndex = 0;
+            state.correctCount = 0;
+            state.incorrectCount = 0;
+            
+            // Update UI
+            elements.totalQuestions.textContent = state.totalQuestions;
+            elements.correctCount.textContent = 0;
+            elements.incorrectCount.textContent = 0;
+            elements.quizArea.style.display = 'block';
+            elements.quizComplete.style.display = 'none';
+            
+            // Display first question
+            displayQuestion();
+        }
+
+        /**
+         * Displays the current quiz question
+         */
+        function displayQuestion() {
+            const question = state.quizQuestions[state.currentQuestionIndex];
+            state.answered = false;
+            
+            // Update progress
+            elements.currentQuestion.textContent = state.currentQuestionIndex + 1;
+            const progressPercent = ((state.currentQuestionIndex) / state.totalQuestions) * 100;
+            elements.quizProgress.style.width = `${progressPercent}%`;
+            elements.progressPercent.textContent = `${Math.round(progressPercent)}%`;
+            
+            // Set question text
+            elements.questionText.textContent = question.text;
+            
+            // Create visualization based on question type
+            if (question.type === 'identify') {
+                elements.quizVisual.innerHTML = createQuizPieChart(question.numerator, question.denominator);
+            } else if (question.type === 'decimal') {
+                elements.quizVisual.innerHTML = `
+                    <div style="font-size: 3rem; font-weight: 700; color: var(--primary-light);">
+                        <span style="color: var(--secondary);">${question.numerator}</span>
+                        <span style="color: var(--text-primary);">⁄</span>
+                        <span style="color: var(--accent);">${question.denominator}</span>
+                    </div>
+                `;
+            } else if (question.type === 'compare') {
+                elements.quizVisual.innerHTML = `
+                    <div style="display: flex; gap: 2rem; align-items: center;">
+                        ${createQuizPieChart(question.fraction1.numerator, question.fraction1.denominator, 120)}
+                        <span style="font-size: 2rem; color: var(--text-muted);">vs</span>
+                        ${createQuizPieChart(question.fraction2.numerator, question.fraction2.denominator, 120)}
+                    </div>
+                `;
+            }
+            
+            // Create answer options
+            let optionsHTML = '';
+            question.options.forEach(option => {
+                optionsHTML += `
+                    <button class="quiz-option" data-answer="${option}">
+                        ${option}
+                    </button>
+                `;
+            });
+            elements.quizOptions.innerHTML = optionsHTML;
+            
+            // Add click handlers to options
+            document.querySelectorAll('.quiz-option').forEach(btn => {
+                btn.addEventListener('click', () => handleAnswer(btn));
+            });
+            
+            // Reset feedback and buttons
+            elements.feedbackArea.innerHTML = '';
+            elements.nextBtn.style.display = 'none';
+            elements.skipBtn.style.display = 'inline-block';
+        }
+
+        /**
+         * Handles user's answer selection
+         */
+        function handleAnswer(selectedBtn) {
+            if (state.answered) return;
+            state.answered = true;
+            
+            const question = state.quizQuestions[state.currentQuestionIndex];
+            const userAnswer = selectedBtn.dataset.answer;
+            const isCorrect = userAnswer === question.answer;
+            
+            // Update scores
+            if (isCorrect) {
+                state.correctCount++;
+                elements.correctCount.textContent = state.correctCount;
+            } else {
+                state.incorrectCount++;
+                elements.incorrectCount.textContent = state.incorrectCount;
+            }
+            
+            // Mark selected button
+            selectedBtn.classList.add(isCorrect ? 'correct' : 'incorrect');
+            
+            // Highlight correct answer if user was wrong
+            if (!isCorrect) {
+                document.querySelectorAll('.quiz-option').forEach(btn => {
+                    if (btn.dataset.answer === question.answer) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+            
+            // Disable all options
+            document.querySelectorAll('.quiz-option').forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // Show feedback
+            elements.feedbackArea.innerHTML = `
+                <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                    ${isCorrect ? '✓ Correct!' : `✗ Incorrect. The answer is ${question.answer}`}
+                </div>
+            `;
+            
+            // Show next button
+            elements.nextBtn.style.display = 'inline-block';
+            elements.skipBtn.style.display = 'none';
+        }
+
+        /**
+         * Moves to the next question or ends the quiz
+         */
+        function nextQuestion() {
+            state.currentQuestionIndex++;
+            
+            if (state.currentQuestionIndex >= state.totalQuestions) {
+                endQuiz();
+            } else {
+                displayQuestion();
+            }
+        }
+
+        /**
+         * Skips the current question (counts as incorrect)
+         */
+        function skipQuestion() {
+            state.incorrectCount++;
+            elements.incorrectCount.textContent = state.incorrectCount;
+            nextQuestion();
+        }
+
+        /**
+         * Ends the quiz and shows results
+         */
+        function endQuiz() {
+            elements.quizArea.style.display = 'none';
+            elements.quizComplete.style.display = 'block';
+            
+            elements.finalScore.textContent = state.correctCount;
+            elements.finalTotal.textContent = state.totalQuestions;
+            
+            // Update progress to 100%
+            elements.quizProgress.style.width = '100%';
+            elements.progressPercent.textContent = '100%';
+            
+            // Performance message
+            const percentage = (state.correctCount / state.totalQuestions) * 100;
+            let message = '';
+            
+            if (percentage === 100) {
+                message = '<p style="color: var(--success); font-size: 1.25rem;">🏆 Perfect Score! You\'ve mastered fractions!</p>';
+            } else if (percentage >= 80) {
+                message = '<p style="color: var(--secondary);">🌟 Excellent! You have a strong understanding of fractions.</p>';
+            } else if (percentage >= 60) {
+                message = '<p style="color: var(--accent);">👍 Good effort! Keep practicing to improve.</p>';
+            } else {
+                message = '<p style="color: var(--text-secondary);">📚 Keep learning! Review the concepts and try again.</p>';
+            }
+            
+            elements.performanceMessage.innerHTML = message;
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        
+        /**
+         * Initializes all event listeners
+         */
+        function initEventListeners() {
+            // Navigation tabs
+            elements.navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    switchSection(tab.dataset.section);
+                });
+            });
+            
+            // Numerator slider
+            elements.numeratorSlider.addEventListener('input', (e) => {
+                state.numerator = parseInt(e.target.value);
+                updateVisualization();
+            });
+            
+            // Denominator slider
+            elements.denominatorSlider.addEventListener('input', (e) => {
+                const newDenom = parseInt(e.target.value);
+                state.denominator = newDenom;
+                
+                // Adjust numerator max to match denominator for proper fractions
+                // But allow it to exceed for improper fractions
+                elements.numeratorSlider.max = Math.max(newDenom, 12);
+                
+                // Optionally cap numerator to denominator
+                if (state.numerator > newDenom * 1.5) {
+                    state.numerator = newDenom;
+                    elements.numeratorSlider.value = newDenom;
+                }
+                
+                updateVisualization();
+            });
+            
+            // Visualization toggle
+            elements.vizToggleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchVisualization(btn.dataset.viz);
+                });
+            });
+            
+            // Preset buttons
+            elements.presetBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setPreset(
+                        parseInt(btn.dataset.num),
+                        parseInt(btn.dataset.denom)
+                    );
+                });
+            });
+            
+            // Quiz buttons
+            elements.nextBtn.addEventListener('click', nextQuestion);
+            elements.skipBtn.addEventListener('click', skipQuestion);
+            elements.restartBtn.addEventListener('click', initializeQuiz);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                    const activeTab = document.querySelector('.nav-tab.active');
+                    const tabs = [...elements.navTabs];
+                    const currentIndex = tabs.indexOf(activeTab);
+                    
+                    let newIndex;
+                    if (e.key === 'ArrowRight') {
+                        newIndex = (currentIndex + 1) % tabs.length;
+                    } else {
+                        newIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+                    }
+                    
+                    switchSection(tabs[newIndex].dataset.section);
+                }
+            });
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        
+        /**
+         * Main initialization function
+         */
+        function init() {
+            // Initialize event listeners
+            initEventListeners();
+            
+            // Initialize explore section visualization
+            updateVisualization();
+            
+            console.log('Fraction Learning App initialized successfully!');
+        }
+
+        // Start the application when DOM is ready
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

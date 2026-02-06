@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polynomial Simplification Practice</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 2.5rem;
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .progress-bar {
+            flex-grow: 1;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            width: 10%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .question-container {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-number {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            background-color: #e3f2fd;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .question-text {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            border: 1px dashed #bdc3c7;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .input-container {
+            margin: 25px 0;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.3rem;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-check {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-check:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-next {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .btn-next:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .feedback-container {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .feedback-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feedback-content {
+            line-height: 1.6;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+        }
+        
+        .explanation {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .explanation h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .explanation-steps {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+        
+        .step {
+            margin-bottom: 8px;
+        }
+        
+        .answer {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-top: 15px;
+            padding: 12px;
+            background-color: white;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .correct-icon {
+            color: #28a745;
+        }
+        
+        .incorrect-icon {
+            color: #dc3545;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        
+        .stat {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question-text {
+                font-size: 1.3rem;
+            }
+            
+            .button-container {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Polynomial Simplification Practice</h1>
+            <p class="subtitle">Combine like terms to simplify each polynomial expression. Get immediate feedback and learn step-by-step.</p>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-text">Question <span id="current-question">1</span> of <span id="total-questions">10</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="score">Score: <span id="score">0</span>/<span id="max-score">0</span></div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question-header">
+                <div class="question-number" id="question-id">Question 16</div>
+                <div class="difficulty">Combine like terms</div>
+            </div>
+            
+            <div class="question-text" id="question-expression">
+                3a² + 6a + 5 + 2a² + a + 3
+            </div>
+            
+            <div class="input-container">
+                <label class="input-label" for="user-answer">Your simplified answer:</label>
+                <input type="text" id="user-answer" class="answer-input" placeholder="Enter your answer here (e.g., 5a² + 7a + 8)">
+            </div>
+            
+            <div class="button-container">
+                <button id="check-button" class="btn btn-check">
+                    <i class="fas fa-check-circle"></i> Check Answer
+                </button>
+                <button id="next-button" class="btn btn-next" disabled>
+                    <i class="fas fa-arrow-right"></i> Next Question
+                </button>
+            </div>
+        </div>
+        
+        <div id="feedback-container" class="feedback-container">
+            <div class="feedback-title" id="feedback-title">
+                <i class="fas fa-check-circle correct-icon" id="feedback-icon"></i>
+                <span id="feedback-text">Your answer is correct!</span>
+            </div>
+            <div class="feedback-content" id="feedback-content">
+                <p id="feedback-message">Great job! You correctly combined all like terms.</p>
+                
+                <div class="explanation">
+                    <h3><i class="fas fa-lightbulb"></i> Step-by-Step Solution</h3>
+                    <div class="explanation-steps" id="explanation-steps">
+                        <!-- Explanation steps will be inserted here -->
+                    </div>
+                    <div class="answer">Correct answer: <span id="correct-answer">5a² + 7a + 8</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correct</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrect</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="completion">0%</div>
+                <div class="stat-label">Completion</div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Educational Tool • Polynomial Simplification Practice • Made with <i class="fas fa-heart" style="color: #e74c3c;"></i></p>
+        </footer>
+    </div>
+
+    <script>
+        // Questions data
+        const questions = [
+            {
+                id: 16,
+                expression: "3a² + 6a + 5 + 2a² + a + 3",
+                answer: "5a² + 7a + 8",
+                steps: [
+                    "Identify like terms: terms with a², terms with a, and constant terms",
+                    "Combine a² terms: 3a² + 2a² = 5a²",
+                    "Combine a terms: 6a + a = 7a",
+                    "Combine constants: 5 + 3 = 8",
+                    "Write the simplified expression: 5a² + 7a + 8"
+                ]
+            },
+            {
+                id: 17,
+                expression: "2b² + 3b + 5 + 4b² - b - 4",
+                answer: "6b² + 2b + 1",
+                steps: [
+                    "Identify like terms: terms with b², terms with b, and constant terms",
+                    "Combine b² terms: 2b² + 4b² = 6b²",
+                    "Combine b terms: 3b - b = 2b",
+                    "Combine constants: 5 - 4 = 1",
+                    "Write the simplified expression: 6b² + 2b + 1"
+                ]
+            },
+            {
+                id: 18,
+                expression: "8c² - 2c + 7 - 6c² + 5c - 2",
+                answer: "2c² + 3c + 5",
+                steps: [
+                    "Identify like terms: terms with c², terms with c, and constant terms",
+                    "Combine c² terms: 8c² - 6c² = 2c²",
+                    "Combine c terms: -2c + 5c = 3c",
+                    "Combine constants: 7 - 2 = 5",
+                    "Write the simplified expression: 2c² + 3c + 5"
+                ]
+            },
+            {
+                id: 19,
+                expression: "5x² + 6x - 4x² - x + 3",
+                answer: "x² + 5x + 3",
+                steps: [
+                    "Identify like terms: terms with x², terms with x, and constant terms",
+                    "Combine x² terms: 5x² - 4x² = 1x² (or simply x²)",
+                    "Combine x terms: 6x - x = 5x",
+                    "The constant term 3 remains as is",
+                    "Write the simplified expression: x² + 5x + 3"
+                ]
+            },
+            {
+                id: 20,
+                expression: "y² - 3 + 9y + 6y² - 5y + 6",
+                answer: "7y² + 4y + 3",
+                steps: [
+                    "Identify like terms: terms with y², terms with y, and constant terms",
+                    "Combine y² terms: y² + 6y² = 7y²",
+                    "Combine y terms: 9y - 5y = 4y",
+                    "Combine constants: -3 + 6 = 3",
+                    "Write the simplified expression: 7y² + 4y + 3"
+                ]
+            },
+            {
+                id: 21,
+                expression: "4z³ + 8z - 3 + 5z³ + 7 - 2z³",
+                answer: "7z³ + 8z + 4",
+                steps: [
+                    "Identify like terms: terms with z³, terms with z, and constant terms",
+                    "Combine z³ terms: 4z³ + 5z³ - 2z³ = 7z³",
+                    "The z term 8z remains as is (no other z terms)",
+                    "Combine constants: -3 + 7 = 4",
+                    "Write the simplified expression: 7z³ + 8z + 4"
+                ]
+            },
+            {
+                id: 22,
+                expression: "5 - 3m² - 8 + 2m + m³ + 4m² + 5",
+                answer: "m³ + m² + 2m + 2",
+                steps: [
+                    "Identify like terms: terms with m³, terms with m², terms with m, and constant terms",
+                    "The m³ term m³ remains as is (no other m³ terms)",
+                    "Combine m² terms: -3m² + 4m² = m²",
+                    "The m term 2m remains as is (no other m terms)",
+                    "Combine constants: 5 - 8 + 5 = 2",
+                    "Write in standard form (descending exponents): m³ + m² + 2m + 2"
+                ]
+            },
+            {
+                id: 23,
+                expression: "3n² - 2 + 6n⁵ + 2n + 4n⁶ - 2n² + 5 + 3n⁴ - 2n",
+                answer: "4n⁶ + 6n⁵ + 3n⁴ + n² + 3",
+                steps: [
+                    "Identify like terms by exponent: n⁶, n⁵, n⁴, n², n, and constant terms",
+                    "The n⁶ term 4n⁶ remains as is (no other n⁶ terms)",
+                    "The n⁵ term 6n⁵ remains as is (no other n⁵ terms)",
+                    "The n⁴ term 3n⁴ remains as is (no other n⁴ terms)",
+                    "Combine n² terms: 3n² - 2n² = n²",
+                    "Combine n terms: 2n - 2n = 0 (so no n term in the answer)",
+                    "Combine constants: -2 + 5 = 3",
+                    "Write in standard form (descending exponents): 4n⁶ + 6n⁵ + 3n⁴ + n² + 3"
+                ]
+            },
+            {
+                id: 24,
+                expression: "d⁴ + 7 - 3d² + 2d⁶ - 4 + d⁴ + 3d² - 2",
+                answer: "2d⁶ + 2d⁴ + 1",
+                steps: [
+                    "Identify like terms by exponent: d⁶, d⁴, d², and constant terms",
+                    "The d⁶ term 2d⁶ remains as is (no other d⁶ terms)",
+                    "Combine d⁴ terms: d⁴ + d⁴ = 2d⁴",
+                    "Combine d² terms: -3d² + 3d² = 0 (so no d² term in the answer)",
+                    "Combine constants: 7 - 4 - 2 = 1",
+                    "Write in standard form (descending exponents): 2d⁶ + 2d⁴ + 1"
+                ]
+            },
+            {
+                id: 25,
+                expression: "1 - 2e² + 9e - 3e² - 5 + 2e + 7e² + 14 - 4e",
+                answer: "2e² + 7e + 10",
+                steps: [
+                    "Identify like terms: terms with e², terms with e, and constant terms",
+                    "Combine e² terms: -2e² - 3e² + 7e² = 2e²",
+                    "Combine e terms: 9e + 2e - 4e = 7e",
+                    "Combine constants: 1 - 5 + 14 = 10",
+                    "Write the simplified expression: 2e² + 7e + 10"
+                ]
+            }
+        ];
+
+        // App state
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        
+        // DOM elements
+        const questionIdElement = document.getElementById('question-id');
+        const questionExpressionElement = document.getElementById('question-expression');
+        const userAnswerInput = document.getElementById('user-answer');
+        const checkButton = document.getElementById('check-button');
+        const nextButton = document.getElementById('next-button');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const explanationStepsElement = document.getElementById('explanation-steps');
+        const correctAnswerElement = document.getElementById('correct-answer');
+        const currentQuestionElement = document.getElementById('current-question');
+        const totalQuestionsElement = document.getElementById('total-questions');
+        const progressFillElement = document.getElementById('progress-fill');
+        const scoreElement = document.getElementById('score');
+        const maxScoreElement = document.getElementById('max-score');
+        const correctCountElement = document.getElementById('correct-count');
+        const incorrectCountElement = document.getElementById('incorrect-count');
+        const completionElement = document.getElementById('completion');
+        
+        // Initialize app
+        function initApp() {
+            totalQuestionsElement.textContent = questions.length;
+            maxScoreElement.textContent = questions.length;
+            updateProgress();
+            loadQuestion(currentQuestionIndex);
+            
+            // Event listeners
+            checkButton.addEventListener('click', checkAnswer);
+            nextButton.addEventListener('click', nextQuestion);
+            
+            // Allow Enter key to check answer
+            userAnswerInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        }
+        
+        // Load a question by index
+        function loadQuestion(index) {
+            if (index < 0 || index >= questions.length) return;
+            
+            const question = questions[index];
+            
+            questionIdElement.textContent = `Question ${question.id}`;
+            questionExpressionElement.textContent = question.expression;
+            currentQuestionElement.textContent = index + 1;
+            
+            // Reset UI for new question
+            userAnswerInput.value = '';
+            userAnswerInput.disabled = false;
+            userAnswerInput.focus();
+            feedbackContainer.style.display = 'none';
+            checkButton.disabled = false;
+            nextButton.disabled = true;
+            
+            updateProgress();
+        }
+        
+        // Check the user's answer
+        function checkAnswer() {
+            const userAnswer = userAnswerInput.value.trim();
+            const question = questions[currentQuestionIndex];
+            
+            if (!userAnswer) {
+                alert('Please enter an answer before checking.');
+                return;
+            }
+            
+            // Normalize answer for comparison
+            const normalizedUserAnswer = normalizeExpression(userAnswer);
+            const normalizedCorrectAnswer = normalizeExpression(question.answer);
+            
+            const isCorrect = normalizedUserAnswer === normalizedCorrectAnswer;
+            
+            // Update score and stats
+            if (isCorrect) {
+                score++;
+                correctCount++;
+                showFeedback(true, "Great job! You correctly simplified the expression.");
+            } else {
+                incorrectCount++;
+                showFeedback(false, "Let's review how to simplify this expression correctly.");
+            }
+            
+            // Update UI
+            updateStats();
+            userAnswerInput.disabled = true;
+            checkButton.disabled = true;
+            nextButton.disabled = false;
+            
+            // Show explanation
+            showExplanation(question);
+        }
+        
+        // Normalize expression for comparison (remove spaces, handle exponents)
+        function normalizeExpression(expr) {
+            return expr
+                .toLowerCase()
+                .replace(/\s+/g, '') // Remove all whitespace
+                .replace(/\^/g, '') // Remove caret for exponents
+                .replace(/²/g, '2') // Convert superscript 2 to regular 2
+                .replace(/³/g, '3') // Convert superscript 3 to regular 3
+                .replace(/⁴/g, '4') // Convert superscript 4 to regular 4
+                .replace(/⁵/g, '5') // Convert superscript 5 to regular 5
+                .replace(/⁶/g, '6') // Convert superscript 6 to regular 6
+                .replace(/(\d)([a-z])/g, '$1*$2') // Add multiplication sign between coefficient and variable
+                .replace(/([a-z])(\d)/g, '$1^$2'); // Add exponent notation
+        }
+        
+        // Show feedback to user
+        function showFeedback(isCorrect, message) {
+            feedbackContainer.style.display = 'block';
+            
+            if (isCorrect) {
+                feedbackContainer.className = 'feedback-container correct';
+                feedbackIcon.className = 'fas fa-check-circle correct-icon';
+                feedbackText.textContent = 'Your answer is correct!';
+            } else {
+                feedbackContainer.className = 'feedback-container incorrect';
+                feedbackIcon.className = 'fas fa-times-circle incorrect-icon';
+                feedbackText.textContent = 'Your answer needs correction';
+            }
+            
+            feedbackMessage.textContent = message;
+        }
+        
+        // Show explanation for the current question
+        function showExplanation(question) {
+            // Clear previous steps
+            explanationStepsElement.innerHTML = '';
+            
+            // Add each step
+            question.steps.forEach((step, index) => {
+                const stepElement = document.createElement('div');
+                stepElement.className = 'step';
+                stepElement.innerHTML = `<strong>Step ${index + 1}:</strong> ${step}`;
+                explanationStepsElement.appendChild(stepElement);
+            });
+            
+            // Show correct answer
+            correctAnswerElement.textContent = question.answer;
+        }
+        
+        // Move to the next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                // All questions completed
+                showCompletionMessage();
+            }
+        }
+        
+        // Show completion message when all questions are done
+        function showCompletionMessage() {
+            questionIdElement.textContent = "Practice Complete!";
+            questionExpressionElement.textContent = `You've completed all ${questions.length} polynomial simplification problems.`;
+            userAnswerInput.style.display = 'none';
+            checkButton.style.display = 'none';
+            nextButton.style.display = 'none';
+            feedbackContainer.style.display = 'none';
+            
+            // Show final results
+            const completionMessage = document.createElement('div');
+            completionMessage.className = 'question-container';
+            completionMessage.innerHTML = `
+                <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">Practice Results</h2>
+                <div style="text-align: center; font-size: 1.2rem;">
+                    <p>You got <strong>${correctCount}</strong> out of <strong>${questions.length}</strong> questions correct!</p>
+                    <p>That's a score of <strong>${Math.round((correctCount / questions.length) * 100)}%</strong>.</p>
+                    <p style="margin-top: 20px;">${getEncouragementMessage(correctCount, questions.length)}</p>
+                </div>
+                <div style="text-align: center; margin-top: 30px;">
+                    <button id="restart-button" class="btn" style="background-color: #9b59b6; color: white;">
+                        <i class="fas fa-redo"></i> Practice Again
+                    </button>
+                </div>
+            `;
+            
+            document.querySelector('.question-container').replaceWith(completionMessage);
+            
+            // Add event listener for restart button
+            document.getElementById('restart-button').addEventListener('click', function() {
+                location.reload();
+            });
+        }
+        
+        // Get an encouraging message based on performance
+        function getEncouragementMessage(correct, total) {
+            const percentage = correct / total;
+            
+            if (percentage >= 0.9) {
+                return "Excellent work! You've mastered polynomial simplification.";
+            } else if (percentage >= 0.7) {
+                return "Great job! You have a solid understanding of combining like terms.";
+            } else if (percentage >= 0.5) {
+                return "Good effort! With a bit more practice, you'll master this skill.";
+            } else {
+                return "Keep practicing! Review the step-by-step solutions to improve.";
+            }
+        }
+        
+        // Update progress bar and stats
+        function updateProgress() {
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            progressFillElement.style.width = `${progress}%`;
+            
+            const completionPercentage = Math.round((currentQuestionIndex / questions.length) * 100);
+            completionElement.textContent = `${completionPercentage}%`;
+        }
+        
+        // Update statistics
+        function updateStats() {
+            scoreElement.textContent = score;
+            correctCountElement.textContent = correctCount;
+            incorrectCountElement.textContent = incorrectCount;
+        }
+        
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

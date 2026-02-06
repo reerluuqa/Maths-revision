@@ -1,0 +1,440 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Fraction Explorer</title>
+    <style>
+        :root {
+            /* Theme Variables */
+            --primary-color: #4A90E2;
+            --secondary-color: #50E3C2;
+            --accent-color: #F5A623;
+            --text-color: #333333;
+            --bg-color: #F4F7F9;
+            --card-bg: #FFFFFF;
+            --radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Layout Container */
+        .container {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 900px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        /* View Section (Visualization) */
+        .visualization-pane {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+            border-radius: var(--radius);
+            padding: 1rem;
+            border: 1px solid #eee;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Control Section */
+        .controls-pane {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        p.intro {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .control-group {
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        span.value-display {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        /* Range Sliders */
+        input[type=range] {
+            width: 100%;
+            height: 8px;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: background .15s ease-in-out;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            background: #357ABD;
+        }
+
+        /* Stats Dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            background-color: #F0F4F8;
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .simplification-note {
+            grid-column: span 2;
+            font-size: 0.95rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-top: 0.5rem;
+            min-height: 1.5rem; /* Prevent layout jump */
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .visualization-pane {
+                min-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- View: Canvas Visualization -->
+    <div class="visualization-pane">
+        <canvas id="fractionCanvas" width="400" height="400"></canvas>
+    </div>
+
+    <!-- Controller: User Inputs -->
+    <div class="controls-pane">
+        <div>
+            <h1>Fraction Explorer</h1>
+            <p class="intro">
+                Visualizing mathematics helps us understand the relationship between parts and the whole. 
+                Adjust the sliders below to see how the numbers shape the chart.
+            </p>
+
+            <div class="control-group">
+                <label for="denSlider">
+                    Denominator (Total Parts)
+                    <span id="denDisplay" class="value-display">4</span>
+                </label>
+                <input type="range" id="denSlider" min="1" max="20" value="4">
+            </div>
+
+            <div class="control-group">
+                <label for="numSlider">
+                    Numerator (Selected Parts)
+                    <span id="numDisplay" class="value-display">1</span>
+                </label>
+                <input type="range" id="numSlider" min="0" max="4" value="1">
+            </div>
+        </div>
+
+        <!-- View: Textual output -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-label">Decimal</span>
+                <span class="stat-value" id="decimalValue">0.25</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Percentage</span>
+                <span class="stat-value" id="percentValue">25%</span>
+            </div>
+            <div class="simplification-note" id="simplifyText"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * Fraction Explorer Application
+ * Architecture: Model-View-Controller (MVC)
+ */
+
+// ==========================================
+// 1. MODEL
+// Handles business logic, state, and math
+// ==========================================
+class FractionModel {
+    constructor(numerator = 1, denominator = 4) {
+        this.numerator = numerator;
+        this.denominator = denominator;
+    }
+
+    setNumerator(val) {
+        // Ensure numerator never exceeds denominator (Proper Fraction constraint)
+        this.numerator = Math.min(val, this.denominator);
+    }
+
+    setDenominator(val) {
+        this.denominator = val;
+        // If denominator drops below numerator, cap numerator
+        if (this.numerator > this.denominator) {
+            this.numerator = this.denominator;
+        }
+    }
+
+    getDecimal() {
+        return (this.numerator / this.denominator).toFixed(2);
+    }
+
+    getPercentage() {
+        return Math.round((this.numerator / this.denominator) * 100);
+    }
+
+    // Euclid's Algorithm for GCD (Greatest Common Divisor)
+    getGCD(a, b) {
+        return b ? this.getGCD(b, a % b) : a;
+    }
+
+    getSimplified() {
+        if (this.numerator === 0) return "0";
+        if (this.numerator === this.denominator) return "1";
+
+        const gcd = this.getGCD(this.numerator, this.denominator);
+        
+        // Only return text if simplification actually happened
+        if (gcd > 1) {
+            return `${this.numerator / gcd}/${this.denominator / gcd}`;
+        }
+        return null; // Already simplest form
+    }
+}
+
+// ==========================================
+// 2. VIEW
+// Handles DOM manipulation and Canvas drawing
+// ==========================================
+class FractionView {
+    constructor() {
+        // Text Elements
+        this.denDisplay = document.getElementById('denDisplay');
+        this.numDisplay = document.getElementById('numDisplay');
+        this.decimalValue = document.getElementById('decimalValue');
+        this.percentValue = document.getElementById('percentValue');
+        this.simplifyText = document.getElementById('simplifyText');
+        
+        // Inputs
+        this.denSlider = document.getElementById('denSlider');
+        this.numSlider = document.getElementById('numSlider');
+
+        // Canvas
+        this.canvas = document.getElementById('fractionCanvas');
+        this.ctx = this.canvas.getContext('2d');
+    }
+
+    updateControls(model) {
+        // Sync slider attributes
+        this.denSlider.value = model.denominator;
+        
+        // Update numerator slider max to match denominator constraint
+        this.numSlider.max = model.denominator;
+        this.numSlider.value = model.numerator;
+
+        // Update labels
+        this.denDisplay.textContent = model.denominator;
+        this.numDisplay.textContent = model.numerator;
+    }
+
+    updateStats(model) {
+        this.decimalValue.textContent = model.getDecimal();
+        this.percentValue.textContent = model.getPercentage() + '%';
+        
+        const simplified = model.getSimplified();
+        if (simplified) {
+            this.simplifyText.textContent = `Reduces to ${simplified}`;
+        } else {
+            this.simplifyText.textContent = ""; // Clear if no simplification
+        }
+    }
+
+    drawChart(model) {
+        const { width, height } = this.canvas;
+        const ctx = this.ctx;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = Math.min(width, height) / 2 - 20; // Padding
+
+        // Clear Canvas
+        ctx.clearRect(0, 0, width, height);
+
+        // 1. Draw Background Circle (Empty container)
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#E0E6ED'; // Light gray
+        ctx.fill();
+        ctx.strokeStyle = '#BDC3C7';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // 2. Draw Filled Slices (Numerator)
+        if (model.numerator > 0) {
+            const startAngle = -Math.PI / 2; // Start at 12 o'clock
+            const sliceAngle = (Math.PI * 2) / model.denominator;
+            const endAngle = startAngle + (sliceAngle * model.numerator);
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
+            
+            // Gradient fill for nicer aesthetics
+            const gradient = ctx.createRadialGradient(centerX, centerY, radius * 0.2, centerX, centerY, radius);
+            gradient.addColorStop(0, '#50E3C2'); // Secondary
+            gradient.addColorStop(1, '#4A90E2'); // Primary
+            
+            ctx.fillStyle = gradient;
+            ctx.fill();
+        }
+
+        // 3. Draw Grid Lines (Denominator divisions)
+        // We always draw these to show "Potential" parts
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 3;
+
+        for (let i = 0; i < model.denominator; i++) {
+            const angle = -Math.PI / 2 + (i * (Math.PI * 2) / model.denominator);
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            // Math to find point on circumference
+            const x = centerX + Math.cos(angle) * radius;
+            const y = centerY + Math.sin(angle) * radius;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+
+        // 4. Draw Center White Circle (Donut chart style - optional, keeps it clean)
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius * 0.15, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+    }
+}
+
+// ==========================================
+// 3. CONTROLLER
+// Binds View to Model events
+// ==========================================
+class FractionController {
+    constructor(model, view) {
+        this.model = model;
+        this.view = view;
+
+        // Initialize listeners
+        this.view.denSlider.addEventListener('input', (e) => this.handleDenominatorChange(e));
+        this.view.numSlider.addEventListener('input', (e) => this.handleNumeratorChange(e));
+
+        // Initial Render
+        this.updateAll();
+    }
+
+    handleDenominatorChange(e) {
+        const val = parseInt(e.target.value);
+        this.model.setDenominator(val);
+        this.updateAll();
+    }
+
+    handleNumeratorChange(e) {
+        const val = parseInt(e.target.value);
+        this.model.setNumerator(val);
+        this.updateAll();
+    }
+
+    updateAll() {
+        // Sync DOM inputs with State
+        this.view.updateControls(this.model);
+        // Calculate and show stats
+        this.view.updateStats(this.model);
+        // Draw the visualization
+        this.view.drawChart(this.model);
+    }
+}
+
+// Initialize Application
+document.addEventListener('DOMContentLoaded', () => {
+    const model = new FractionModel(1, 4); // Start at 1/4
+    const view = new FractionView();
+    const app = new FractionController(model, view);
+});
+
+</script>
+</body>
+</html>

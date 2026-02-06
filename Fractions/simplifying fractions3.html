@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 5e – Simplify Fractions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #4a4a4a;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 1rem;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .question-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .question-label {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 2rem;
+            color: #333;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .input-section label {
+            display: block;
+            color: #555;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .input-section input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            text-align: center;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        .input-section input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+        }
+
+        .input-hint {
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            display: none;
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left: 5px solid #28a745;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-left: 5px solid #dc3545;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .feedback-icon {
+            font-size: 1.5rem;
+        }
+
+        .feedback-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .feedback.correct .feedback-title {
+            color: #155724;
+        }
+
+        .feedback.incorrect .feedback-title {
+            color: #721c24;
+        }
+
+        .feedback-content {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .correct-answer {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .explanation {
+            font-size: 0.95rem;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        .completion {
+            text-align: center;
+            display: none;
+        }
+
+        .completion-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .completion h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .completion p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+
+            .question-text {
+                font-size: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📐 Exercise 5e – Simplify Fractions</h1>
+            <p>Practice adding and subtracting fractions</p>
+        </div>
+
+        <div class="progress-text">Question <span id="currentQ">1</span> of <span id="totalQ">8</span></div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 12.5%"></div>
+        </div>
+
+        <div id="quizContent">
+            <div class="question-card">
+                <div class="question-label">Simplify</div>
+                <div class="question-text" id="questionText"></div>
+            </div>
+
+            <div class="input-section">
+                <label for="answer">Your Answer:</label>
+                <input type="text" id="answer" placeholder="e.g., 5/6 or 8a/11" autocomplete="off">
+                <div class="input-hint">Enter fractions as a/b (e.g., 3/4, 2c/5)</div>
+            </div>
+
+            <button class="btn btn-primary" id="submitBtn" onclick="checkAnswer()">Check Answer</button>
+            <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+
+            <div class="feedback" id="feedback">
+                <div class="feedback-header">
+                    <span class="feedback-icon" id="feedbackIcon"></span>
+                    <span class="feedback-title" id="feedbackTitle"></span>
+                </div>
+                <div class="feedback-content">
+                    <div class="correct-answer" id="correctAnswer"></div>
+                    <div class="explanation" id="explanation"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="completion" id="completion">
+            <div class="completion-icon">🎉</div>
+            <h2>Exercise Complete!</h2>
+            <p>Great job working through these fraction problems!</p>
+            <div class="score">Score: <span id="finalScore">0</span>/8</div>
+            <p id="scoreMessage"></p>
+            <button class="btn btn-restart" onclick="restartQuiz()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                display: "3/4 + 2/3",
+                answer: "17/12",
+                altAnswers: [],
+                explanation: "To add 3/4 + 2/3, find the LCD (12).<br><br>• 3/4 = 9/12 (multiply by 3/3)<br>• 2/3 = 8/12 (multiply by 4/4)<br>• 9/12 + 8/12 = 17/12<br><br>Since 17/12 is already in lowest terms (17 is prime), the answer is <strong>17/12</strong> or 1 5/12."
+            },
+            {
+                display: "3/4 − 2/3",
+                answer: "1/12",
+                altAnswers: [],
+                explanation: "To subtract 3/4 − 2/3, find the LCD (12).<br><br>• 3/4 = 9/12 (multiply by 3/3)<br>• 2/3 = 8/12 (multiply by 4/4)<br>• 9/12 − 8/12 = 1/12<br><br>The answer is <strong>1/12</strong>."
+            },
+            {
+                display: "5/6 + 2/9",
+                answer: "19/18",
+                altAnswers: [],
+                explanation: "To add 5/6 + 2/9, find the LCD (18).<br><br>• 5/6 = 15/18 (multiply by 3/3)<br>• 2/9 = 4/18 (multiply by 2/2)<br>• 15/18 + 4/18 = 19/18<br><br>Since 19/18 is already in lowest terms (19 is prime), the answer is <strong>19/18</strong> or 1 1/18."
+            },
+            {
+                display: "5/6 − 2/9",
+                answer: "11/18",
+                altAnswers: [],
+                explanation: "To subtract 5/6 − 2/9, find the LCD (18).<br><br>• 5/6 = 15/18 (multiply by 3/3)<br>• 2/9 = 4/18 (multiply by 2/2)<br>• 15/18 − 4/18 = 11/18<br><br>Since 11/18 is already in lowest terms (11 is prime), the answer is <strong>11/18</strong>."
+            },
+            {
+                display: "5a/11 + 3a/11",
+                answer: "8a/11",
+                altAnswers: ["8*a/11"],
+                explanation: "Since both fractions have the same denominator (11), simply add the numerators:<br><br>• 5a/11 + 3a/11 = (5a + 3a)/11<br>• = 8a/11<br><br>The answer is <strong>8a/11</strong>."
+            },
+            {
+                display: "5b/8 − 3b/8",
+                answer: "b/4",
+                altAnswers: ["1b/4", "2b/8"],
+                explanation: "Since both fractions have the same denominator (8), simply subtract the numerators:<br><br>• 5b/8 − 3b/8 = (5b − 3b)/8<br>• = 2b/8<br>• = b/4 (simplified by dividing by 2)<br><br>The answer is <strong>b/4</strong>."
+            },
+            {
+                display: "2c/5 + 4d/5",
+                answer: "(2c+4d)/5",
+                altAnswers: ["(2c + 4d)/5", "2(c+2d)/5", "2(c + 2d)/5"],
+                explanation: "Since both fractions have the same denominator (5), add the numerators:<br><br>• 2c/5 + 4d/5 = (2c + 4d)/5<br><br>Note: Since c and d are different variables, we cannot combine them further. The answer is <strong>(2c + 4d)/5</strong>."
+            },
+            {
+                display: "7/12 − 3/8",
+                answer: "5/24",
+                altAnswers: [],
+                explanation: "To subtract 7/12 − 3/8, find the LCD (24).<br><br>• 7/12 = 14/24 (multiply by 2/2)<br>• 3/8 = 9/24 (multiply by 3/3)<br>• 14/24 − 9/24 = 5/24<br><br>Since 5/24 is already in lowest terms (5 is prime), the answer is <strong>5/24</strong>."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function init() {
+            document.getElementById('totalQ').textContent = questions.length;
+            showQuestion();
+            document.getElementById('answer').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    if (document.getElementById('submitBtn').style.display !== 'none') {
+                        checkAnswer();
+                    } else {
+                        nextQuestion();
+                    }
+                }
+            });
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('questionText').textContent = q.display;
+            document.getElementById('answer').value = '';
+            document.getElementById('answer').disabled = false;
+            document.getElementById('answer').focus();
+            document.getElementById('submitBtn').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            updateProgress();
+        }
+
+        function normalizeAnswer(ans) {
+            return ans.toLowerCase()
+                      .replace(/\s+/g, '')
+                      .replace(/\*/g, '');
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.trim();
+            const q = questions[currentQuestion];
+            const feedback = document.getElementById('feedback');
+            
+            if (!userAnswer) {
+                document.getElementById('answer').style.borderColor = '#dc3545';
+                return;
+            }
+
+            const normalizedUser = normalizeAnswer(userAnswer);
+            const normalizedCorrect = normalizeAnswer(q.answer);
+            const altNormalized = q.altAnswers.map(a => normalizeAnswer(a));
+
+            const isCorrect = normalizedUser === normalizedCorrect || 
+                             altNormalized.includes(normalizedUser);
+
+            document.getElementById('answer').disabled = true;
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'block';
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                score++;
+                feedback.className = 'feedback correct';
+                document.getElementById('feedbackIcon').textContent = '✅';
+                document.getElementById('feedbackTitle').textContent = 'Excellent! Correct!';
+                document.getElementById('answer').style.borderColor = '#28a745';
+            } else {
+                feedback.className = 'feedback incorrect';
+                document.getElementById('feedbackIcon').textContent = '❌';
+                document.getElementById('feedbackTitle').textContent = 'Not quite right';
+                document.getElementById('answer').style.borderColor = '#dc3545';
+            }
+
+            document.getElementById('correctAnswer').innerHTML = `Correct Answer: <strong>${q.answer}</strong>`;
+            document.getElementById('explanation').innerHTML = q.explanation;
+
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('nextBtn').textContent = 'See Results →';
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion >= questions.length) {
+                showCompletion();
+            } else {
+                document.getElementById('answer').style.borderColor = '#e0e0e0';
+                showQuestion();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showCompletion() {
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('completion').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+
+            let message = '';
+            const percentage = (score / questions.length) * 100;
+            
+            if (percentage === 100) {
+                message = '🌟 Perfect score! You\'ve mastered fraction operations!';
+            } else if (percentage >= 75) {
+                message = '👏 Great work! You have a solid understanding of fractions.';
+            } else if (percentage >= 50) {
+                message = '📚 Good effort! Keep practicing to improve.';
+            } else {
+                message = '💪 Don\'t give up! Review the explanations and try again.';
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('completion').style.display = 'none';
+            document.getElementById('nextBtn').textContent = 'Next Question →';
+            document.getElementById('answer').style.borderColor = '#e0e0e0';
+            showQuestion();
+        }
+
+        init();
+    </script>
+</body>
+</html>

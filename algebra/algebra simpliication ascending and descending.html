@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polynomial Simplification Practice</title>
+    <style>
+        :root {
+            /* Color Palette - Educational & Modern */
+            --primary: #4F46E5; /* Indigo */
+            --primary-hover: #4338ca;
+            --secondary: #ec4899; /* Pink/Magenta for accents */
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --success: #10b981;
+            --success-bg: #d1fae5;
+            --error: #ef4444;
+            --error-bg: #fee2e2;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        /* App Container */
+        .app-container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header */
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.3);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--secondary);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Main Content */
+        main {
+            padding: 30px;
+        }
+
+        .question-meta {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+
+        /* Math Expression Display */
+        .expression-box {
+            background-color: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--text-main);
+            word-wrap: break-word;
+        }
+
+        .expression-box sup {
+            font-size: 0.7em;
+        }
+
+        /* Input Area */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #eef2ff;
+        }
+
+        .btn:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+            border-color: #d1d5db;
+            color: #6b7280;
+        }
+
+        /* Feedback Section */
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--success-bg);
+            color: #065f46;
+            border: 1px solid var(--success);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--error-bg);
+            color: #991b1b;
+            border: 1px solid var(--error);
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            font-size: 0.95rem;
+        }
+
+        .step {
+            margin-bottom: 6px;
+            padding-left: 10px;
+            border-left: 3px solid rgba(0,0,0,0.2);
+        }
+
+        .correct-answer-display {
+            font-weight: 700;
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(255,255,255,0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Results Screen */
+        #results-screen {
+            text-align: center;
+            display: none;
+            padding: 40px 20px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 auto 20px;
+        }
+
+        .congrats-msg {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        /* Utility for superscripts in simple text */
+        sup {
+            font-size: 0.7em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>Algebra: Simplify & Arrange</h1>
+        <p style="font-size: 0.9rem; opacity: 0.9;">Powers in Ascending Order</p>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </header>
+
+    <main id="quiz-screen">
+        <div id="question-container">
+            <div class="question-meta" id="question-number">Question 1 of 5</div>
+            
+            <div class="expression-box" id="question-text">
+                <!-- Math content loads here -->
+            </div>
+
+            <div class="input-group">
+                <label for="user-answer">Your Answer (e.g., 3 + 2h + h<sup>2</sup>):</label>
+                <input type="text" id="user-answer" placeholder="Type simplified expression..." autocomplete="off">
+            </div>
+
+            <button class="btn btn-primary" id="check-btn">Check Answer</button>
+        </div>
+
+        <!-- Feedback Section -->
+        <div class="feedback" id="feedback-area">
+            <div class="feedback-title" id="feedback-title"></div>
+            <div id="feedback-content"></div>
+            <div class="explanation" id="explanation-content"></div>
+            <button class="btn btn-secondary" id="next-btn">Next Question &rarr;</button>
+        </div>
+    </main>
+
+    <!-- Results Screen -->
+    <div id="results-screen">
+        <div class="score-circle" id="final-score">0/5</div>
+        <h2 class="congrats-msg">Practice Complete!</h2>
+        <p style="margin-bottom: 25px; color: var(--text-muted);">Great job working through these polynomial expressions.</p>
+        <button class="btn btn-primary" onclick="location.reload()">Try Again</button>
+    </div>
+</div>
+
+<script>
+    /**
+     * Data Structure containing the questions, correct answers, and step-by-step explanations.
+     * The 'answer' property is the canonical string, but validation uses a normalized version.
+     */
+    const questions = [
+        {
+            id: 26,
+            html: "h<sup>3</sup> + 7h - 2 - 3h<sup>2</sup> - 4h + 6 + 5h<sup>2</sup>",
+            rawAnswer: "4 + 3h + 2h^2 + h^3", // Used for normalization logic
+            displayAnswer: "4 + 3h + 2h<sup>2</sup> + h<sup>3</sup>",
+            steps: [
+                "Group like terms: (7h - 4h) + (-3h<sup>2</sup> + 5h<sup>2</sup>) + (h<sup>3</sup>) + (-2 + 6)",
+                "Simplify groups: 3h + 2h<sup>2</sup> + h<sup>3</sup> + 4",
+                "Arrange in ascending order (constant, h, h<sup>2</sup>, h<sup>3</sup>):",
+                "<strong>4 + 3h + 2h<sup>2</sup> + h<sup>3</sup></strong>"
+            ]
+        },
+        {
+            id: 27,
+            html: "p<sup>4</sup> - 3p<sup>3</sup> + 2p + p<sup>3</sup> - 4p<sup>2</sup> + 3",
+            rawAnswer: "3 + 2p - 4p^2 - 2p^3 + p^4",
+            displayAnswer: "3 + 2p - 4p<sup>2</sup> - 2p<sup>3</sup> + p<sup>4</sup>",
+            steps: [
+                "Group like terms: (2p) + (-3p<sup>3</sup> + p<sup>3</sup>) + (-4p<sup>2</sup>) + (p<sup>4</sup>) + (3)",
+                "Simplify groups: 2p - 2p<sup>3</sup> - 4p<sup>2</sup> + p<sup>4</sup> + 3",
+                "Arrange in ascending order:",
+                "<strong>3 + 2p - 4p<sup>2</sup> - 2p<sup>3</sup> + p<sup>4</sup></strong>"
+            ]
+        },
+        {
+            id: 28,
+            html: "q<sup>5</sup> - 2q<sup>3</sup> + q<sup>2</sup> - 4q<sup>3</sup> + 6 - q<sup>2</sup>",
+            rawAnswer: "6 - 6q^3 + q^5",
+            displayAnswer: "6 - 6q<sup>3</sup> + q<sup>5</sup>",
+            steps: [
+                "Group like terms: (-2q<sup>3</sup> - 4q<sup>3</sup>) + (q<sup>2</sup> - q<sup>2</sup>) + (q<sup>5</sup>) + (6)",
+                "Simplify groups: -6q<sup>3</sup> + 0 + q<sup>5</sup> + 6",
+                "Arrange in ascending order (q<sup>2</sup> term is 0 and disappears):",
+                "<strong>6 - 6q<sup>3</sup> + q<sup>5</sup></strong>"
+            ]
+        },
+        {
+            id: 29,
+            html: "k<sup>4</sup> + 3k - 2k<sup>3</sup> + k<sup>2</sup> - 4k + 7",
+            rawAnswer: "7 - k + k^2 - 2k^3 + k^4",
+            displayAnswer: "7 - k + k<sup>2</sup> - 2k<sup>3</sup> + k<sup>4</sup>",
+            steps: [
+                "Group like terms: (3k - 4k) + (-2k<sup>3</sup>) + (k<sup>2</sup>) + (k<sup>4</sup>) + (7)",
+                "Simplify groups: -k - 2k<sup>3</sup> + k<sup>2</sup> + k<sup>4</sup> + 7",
+                "Arrange in ascending order:",
+                "<strong>7 - k + k<sup>2</sup> - 2k<sup>3</sup> + k<sup>4</sup></strong>"
+            ]
+        },
+        {
+            id: 30,
+            html: "t<sup>3</sup> + 5t - 2t<sup>3</sup> + t - 1",
+            rawAnswer: "-1 + 6t - t^3",
+            displayAnswer: "-1 + 6t - t<sup>3</sup>",
+            steps: [
+                "Group like terms: (t<sup>3</sup> - 2t<sup>3</sup>) + (5t + t) + (-1)",
+                "Simplify groups: -t<sup>3</sup> + 6t - 1",
+                "Arrange in ascending order:",
+                "<strong>-1 + 6t - t<sup>3</sup></strong>"
+            ]
+        }
+    ];
+
+    // State Management
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let isAnswered = false;
+
+    // DOM Elements
+    const progressBar = document.getElementById('progress-bar');
+    const questionNumberEl = document.getElementById('question-number');
+    const questionTextEl = document.getElementById('question-text');
+    const userAnswerInput = document.getElementById('user-answer');
+    const checkBtn = document.getElementById('check-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const feedbackArea = document.getElementById('feedback-area');
+    const feedbackTitle = document.getElementById('feedback-title');
+    const feedbackContent = document.getElementById('feedback-content');
+    const explanationContent = document.getElementById('explanation-content');
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultsScreen = document.getElementById('results-screen');
+    const finalScoreEl = document.getElementById('final-score');
+
+    /**
+     * Normalizes user input to make comparison easier.
+     * 1. Lowercase.
+     * 2. Remove all spaces.
+     * 3. Remove caret '^' (so h2 matches h^2).
+     */
+    function normalizeInput(str) {
+        if (!str) return "";
+        return str.toLowerCase().replace(/\s+/g, '').replace(/\^/g, '');
+    }
+
+    /**
+     * Initialize the app
+     */
+    function init() {
+        renderQuestion();
+        
+        // Event Listeners
+        checkBtn.addEventListener('click', handleCheckAnswer);
+        nextBtn.addEventListener('click', handleNextQuestion);
+        
+        // Allow "Enter" key to submit
+        userAnswerInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                if (isAnswered) {
+                    handleNextQuestion();
+                } else {
+                    handleCheckAnswer();
+                }
+            }
+        });
+    }
+
+    /**
+     * Render the current question
+     */
+    function renderQuestion() {
+        const currentQ = questions[currentQuestionIndex];
+        
+        // Update Progress
+        const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
+        progressBar.style.width = `${progressPercent}%`;
+        
+        // Update Text
+        questionNumberEl.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        questionTextEl.innerHTML = currentQ.html;
+        
+        // Reset UI State
+        userAnswerInput.value = "";
+        userAnswerInput.disabled = false;
+        userAnswerInput.focus();
+        
+        checkBtn.style.display = 'inline-block';
+        checkBtn.disabled = false;
+        
+        feedbackArea.style.display = 'none';
+        feedbackArea.className = 'feedback'; // remove correct/incorrect classes
+        
+        isAnswered = false;
+    }
+
+    /**
+     * Handle checking the user's answer
+     */
+    function handleCheckAnswer() {
+        const currentQ = questions[currentQuestionIndex];
+        const userRaw = userAnswerInput.value;
+        const userClean = normalizeInput(userRaw);
+        const correctClean = normalizeInput(currentQ.rawAnswer);
+
+        // UI Updates
+        checkBtn.style.display = 'none';
+        userAnswerInput.disabled = true;
+        feedbackArea.style.display = 'block';
+        
+        // Validation logic
+        if (userClean === correctClean) {
+            // Correct
+            score++;
+            feedbackArea.classList.add('correct');
+            feedbackTitle.innerHTML = `<span>&#10003;</span> Correct!`;
+            feedbackContent.textContent = "You simplified and arranged the terms correctly.";
+            explanationContent.innerHTML = `<strong>Quick Review:</strong><br>` + currentQ.steps.join("<br>");
+        } else {
+            // Incorrect
+            feedbackArea.classList.add('incorrect');
+            feedbackTitle.innerHTML = `<span>&#10007;</span> Incorrect`;
+            feedbackContent.innerHTML = `Your answer: <em>${userRaw || "(empty)"}</em>`;
+            
+            explanationContent.innerHTML = `
+                <p>The correct answer is <span class="correct-answer-display">${currentQ.displayAnswer}</span></p>
+                <div style="margin-top:15px;"><strong>Explanation:</strong></div>
+                ${currentQ.steps.map(step => `<div class="step">${step}</div>`).join('')}
+            `;
+        }
+
+        isAnswered = true;
+        // If on last question, change Next button text
+        if (currentQuestionIndex === questions.length - 1) {
+            nextBtn.textContent = "See Results";
+        } else {
+            nextBtn.textContent = "Next Question \u2192";
+        }
+    }
+
+    /**
+     * Handle moving to the next question or showing results
+     */
+    function handleNextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            renderQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    /**
+     * Show the final score screen
+     */
+    function showResults() {
+        quizScreen.style.display = 'none';
+        resultsScreen.style.display = 'block';
+        progressBar.style.width = '100%';
+        
+        // Animation for score
+        finalScoreEl.textContent = `${score}/${questions.length}`;
+        
+        // Optional: specific message based on score
+        const congratsMsg = document.querySelector('.congrats-msg');
+        if (score === questions.length) {
+            congratsMsg.textContent = "Perfect Score!";
+        } else if (score >= questions.length / 2) {
+            congratsMsg.textContent = "Good Job!";
+        } else {
+            congratsMsg.textContent = "Keep Practicing!";
+        }
+    }
+
+    // Start the app
+    init();
+
+</script>
+
+</body>
+</html>

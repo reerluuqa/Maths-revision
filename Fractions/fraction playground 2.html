@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraction Playground</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-500: #64748b;
+            --slate-400: #94a3b8;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --teal-600: #0d9488;
+            --teal-500: #14b8a6;
+            --teal-400: #2dd4bf;
+            --teal-300: #5eead4;
+            --coral-500: #f97316;
+            --coral-400: #fb923c;
+            --coral-300: #fdba74;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-800) 100%);
+            min-height: 100vh;
+            color: var(--slate-100);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--teal-400), var(--coral-400));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--slate-400);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .playground-card {
+            background: var(--slate-800);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--slate-700);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title .icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--teal-500), var(--teal-400));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: var(--slate-900);
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            min-height: 280px;
+        }
+
+        #fractionSvg {
+            filter: drop-shadow(0 10px 30px rgba(20, 184, 166, 0.2));
+        }
+
+        .slice {
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+
+        .slice:hover {
+            filter: brightness(1.1);
+        }
+
+        .slice.filled {
+            fill: var(--teal-500);
+        }
+
+        .slice.empty {
+            fill: var(--slate-700);
+        }
+
+        .slice-outline {
+            fill: none;
+            stroke: var(--slate-500);
+            stroke-width: 2;
+            pointer-events: none;
+        }
+
+        .controls {
+            margin-bottom: 1.5rem;
+        }
+
+        .control-label {
+            font-size: 0.875rem;
+            color: var(--slate-400);
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .slice-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .slice-btn {
+            width: 44px;
+            height: 44px;
+            border: 2px solid var(--slate-600);
+            background: var(--slate-800);
+            color: var(--slate-300);
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slice-btn:hover {
+            border-color: var(--teal-500);
+            color: var(--teal-400);
+            transform: translateY(-2px);
+        }
+
+        .slice-btn.active {
+            background: var(--teal-600);
+            border-color: var(--teal-500);
+            color: white;
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.4);
+        }
+
+        .feedback-box {
+            background: linear-gradient(135deg, var(--slate-900), var(--slate-800));
+            border: 1px solid var(--slate-600);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            min-height: 120px;
+        }
+
+        .fraction-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .fraction-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .numerator {
+            color: var(--teal-400);
+            line-height: 1;
+        }
+
+        .fraction-line {
+            width: 60px;
+            height: 4px;
+            background: var(--coral-500);
+            border-radius: 2px;
+            margin: 0.25rem 0;
+        }
+
+        .denominator {
+            color: var(--coral-400);
+            line-height: 1;
+        }
+
+        .feedback-text {
+            color: var(--slate-300);
+            font-size: 1rem;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .feedback-text strong {
+            color: var(--teal-400);
+        }
+
+        .examples-section {
+            margin-top: 2rem;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .example-card {
+            background: var(--slate-700);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            text-align: center;
+        }
+
+        .example-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--teal-500);
+            box-shadow: 0 10px 30px rgba(20, 184, 166, 0.2);
+        }
+
+        .example-card.active {
+            border-color: var(--coral-500);
+            background: var(--slate-600);
+        }
+
+        .example-fraction {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--slate-100);
+            margin-bottom: 0.5rem;
+        }
+
+        .example-label {
+            font-size: 0.75rem;
+            color: var(--slate-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .example-svg-container {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, var(--coral-500), var(--coral-400));
+            border: none;
+            border-radius: 0.75rem;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 1rem;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4);
+        }
+
+        .info-panel {
+            background: var(--slate-800);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--slate-700);
+        }
+
+        .info-section {
+            margin-bottom: 2rem;
+        }
+
+        .info-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--teal-400);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-text {
+            color: var(--slate-300);
+            font-size: 0.9375rem;
+            line-height: 1.7;
+        }
+
+        .term {
+            display: inline-block;
+            padding: 0.125rem 0.5rem;
+            background: var(--slate-700);
+            border-radius: 0.375rem;
+            color: var(--coral-400);
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--slate-700);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--teal-500), var(--coral-500));
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .percentage-display {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--slate-400);
+        }
+
+        .comparison-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--slate-700);
+        }
+
+        .comparison-bar {
+            background: var(--slate-900);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .comparison-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .comparison-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .comparison-label {
+            width: 50px;
+            font-weight: 600;
+            color: var(--slate-300);
+        }
+
+        .comparison-track {
+            flex: 1;
+            height: 24px;
+            background: var(--slate-700);
+            border-radius: 0.375rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .comparison-fill {
+            height: 100%;
+            border-radius: 0.375rem;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fill-teal {
+            background: linear-gradient(90deg, var(--teal-600), var(--teal-400));
+        }
+
+        .fill-coral {
+            background: linear-gradient(90deg, var(--coral-500), var(--coral-300));
+        }
+
+        .fill-slate {
+            background: linear-gradient(90deg, var(--slate-500), var(--slate-400));
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .slice-enter {
+            animation: sliceEnter 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes sliceEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .hint {
+            background: var(--slate-700);
+            border-left: 3px solid var(--teal-500);
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: var(--slate-300);
+        }
+
+        .hint strong {
+            color: var(--teal-400);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fraction Playground</h1>
+            <p class="subtitle">Click, explore, and master fractions at your own pace</p>
+        </header>
+
+        <div class="main-content">
+            <div class="playground-card">
+                <h2 class="card-title">
+                    <span class="icon">◉</span>
+                    Interactive Canvas
+                </h2>
+
+                <div class="svg-container">
+                    <svg id="fractionSvg" width="240" height="240" viewBox="0 0 240 240">
+                        <g id="slicesGroup" transform="translate(120, 120)"></g>
+                    </svg>
+                </div>
+
+                <div class="controls">
+                    <span class="control-label">Divide into equal parts (denominator):</span>
+                    <div class="slice-buttons">
+                        <button class="slice-btn" data-slices="2">2</button>
+                        <button class="slice-btn" data-slices="3">3</button>
+                        <button class="slice-btn" data-slices="4">4</button>
+                        <button class="slice-btn" data-slices="5">5</button>
+                        <button class="slice-btn" data-slices="6">6</button>
+                        <button class="slice-btn" data-slices="8">8</button>
+                        <button class="slice-btn" data-slices="10">10</button>
+                        <button class="slice-btn" data-slices="12">12</button>
+                    </div>
+                </div>
+
+                <div class="feedback-box">
+                    <div class="fraction-display">
+                        <div class="fraction-visual">
+                            <span class="numerator" id="numeratorDisplay">0</span>
+                            <div class="fraction-line"></div>
+                            <span class="denominator" id="denominatorDisplay">1</span>
+                        </div>
+                    </div>
+                    <p class="feedback-text" id="feedbackText">
+                        Choose how many parts to divide the circle into, then click the slices to select them.
+                    </p>
+                </div>
+
+                <button class="reset-btn" id="resetBtn">Reset Selection</button>
+
+                <div class="examples-section">
+                    <span class="control-label">Quick Examples:</span>
+                    <div class="examples-grid">
+                        <div class="example-card" data-numerator="1" data-denominator="2">
+                            <div class="example-svg-container">
+                                <svg width="50" height="50" viewBox="0 0 50 50">
+                                    <g transform="translate(25, 25)" id="example1"></g>
+                                </svg>
+                            </div>
+                            <div class="example-fraction">1/2</div>
+                            <div class="example-label">One Half</div>
+                        </div>
+                        <div class="example-card" data-numerator="3" data-denominator="4">
+                            <div class="example-svg-container">
+                                <svg width="50" height="50" viewBox="0 0 50 50">
+                                    <g transform="translate(25, 25)" id="example2"></g>
+                                </svg>
+                            </div>
+                            <div class="example-fraction">3/4</div>
+                            <div class="example-label">Three Quarters</div>
+                        </div>
+                        <div class="example-card" data-numerator="5" data-denominator="8">
+                            <div class="example-svg-container">
+                                <svg width="50" height="50" viewBox="0 0 50 50">
+                                    <g transform="translate(25, 25)" id="example3"></g>
+                                </svg>
+                            </div>
+                            <div class="example-fraction">5/8</div>
+                            <div class="example-label">Five Eighths</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <div class="info-section">
+                    <h3 class="info-title">📐 What is a Fraction?</h3>
+                    <p class="info-text">
+                        A fraction represents <strong>a part of a whole</strong>. Think of it as dividing something into equal pieces and taking some of those pieces.
+                    </p>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="info-title">🔢 The Two Numbers</h3>
+                    <p class="info-text">
+                        The <span class="term">numerator</span> (top) tells you how many parts you have selected.<br><br>
+                        The <span class="term">denominator</span> (bottom) tells you how many equal parts the whole is divided into.
+                    </p>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="info-title">📊 Your Current Selection</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="percentage-display" id="percentageDisplay">0% of the whole</div>
+                </div>
+
+                <div class="hint">
+                    <strong>💡 Tip:</strong> Try selecting different amounts and watch how the fraction changes. Notice how the same portion can be written in different ways!
+                </div>
+
+                <div class="comparison-section">
+                    <h3 class="info-title">📏 Size Comparison</h3>
+                    <p class="info-text" style="margin-bottom: 1rem;">See how different fractions compare in size:</p>
+                    <div class="comparison-bar">
+                        <div class="comparison-item">
+                            <span class="comparison-label">1/2</span>
+                            <div class="comparison-track">
+                                <div class="comparison-fill fill-teal" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-label">3/4</span>
+                            <div class="comparison-track">
+                                <div class="comparison-fill fill-coral" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-label">5/8</span>
+                            <div class="comparison-track">
+                                <div class="comparison-fill fill-slate" style="width: 62.5%"></div>
+                            </div>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-label" id="yourFractionLabel">Yours</span>
+                            <div class="comparison-track">
+                                <div class="comparison-fill" id="yourFractionBar" style="width: 0%; background: linear-gradient(90deg, var(--teal-400), var(--coral-400))"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let state = {
+            denominator: 1,
+            filledSlices: new Set(),
+            animating: false
+        };
+
+        // DOM Elements
+        const slicesGroup = document.getElementById('slicesGroup');
+        const numeratorDisplay = document.getElementById('numeratorDisplay');
+        const denominatorDisplay = document.getElementById('denominatorDisplay');
+        const feedbackText = document.getElementById('feedbackText');
+        const progressFill = document.getElementById('progressFill');
+        const percentageDisplay = document.getElementById('percentageDisplay');
+        const yourFractionBar = document.getElementById('yourFractionBar');
+        const yourFractionLabel = document.getElementById('yourFractionLabel');
+        const resetBtn = document.getElementById('resetBtn');
+        const sliceButtons = document.querySelectorAll('.slice-btn');
+        const exampleCards = document.querySelectorAll('.example-card');
+
+        // Calculate SVG arc path
+        function describeArc(x, y, radius, startAngle, endAngle) {
+            const start = polarToCartesian(x, y, radius, endAngle);
+            const end = polarToCartesian(x, y, radius, startAngle);
+            const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+            
+            return [
+                "M", x, y,
+                "L", start.x, start.y,
+                "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y,
+                "Z"
+            ].join(" ");
+        }
+
+        function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+            const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+            return {
+                x: centerX + (radius * Math.cos(angleInRadians)),
+                y: centerY + (radius * Math.sin(angleInRadians))
+            };
+        }
+
+        // Create pie slices
+        function createSlices(container, numSlices, radius, interactive = true, filledCount = 0) {
+            container.innerHTML = '';
+            const anglePerSlice = 360 / numSlices;
+            
+            for (let i = 0; i < numSlices; i++) {
+                const startAngle = i * anglePerSlice;
+                const endAngle = (i + 1) * anglePerSlice;
+                
+                // Create slice
+                const slice = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                slice.setAttribute("d", describeArc(0, 0, radius, startAngle, endAngle - 0.5));
+                slice.setAttribute("class", `slice ${i < filledCount ? 'filled' : 'empty'} slice-enter`);
+                slice.setAttribute("data-index", i);
+                slice.style.animationDelay = `${i * 0.05}s`;
+                
+                if (interactive) {
+                    slice.addEventListener('click', () => toggleSlice(i));
+                }
+                
+                container.appendChild(slice);
+            }
+
+            // Add outline
+            const outline = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            outline.setAttribute("r", radius);
+            outline.setAttribute("class", "slice-outline");
+            container.appendChild(outline);
+
+            // Add division lines
+            for (let i = 0; i < numSlices; i++) {
+                const angle = (i * anglePerSlice - 90) * Math.PI / 180;
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", 0);
+                line.setAttribute("y1", 0);
+                line.setAttribute("x2", Math.cos(angle) * radius);
+                line.setAttribute("y2", Math.sin(angle) * radius);
+                line.setAttribute("stroke", "var(--slate-500)");
+                line.setAttribute("stroke-width", "2");
+                line.style.pointerEvents = "none";
+                container.appendChild(line);
+            }
+        }
+
+        // Toggle slice fill
+        function toggleSlice(index) {
+            if (state.animating) return;
+            
+            const slice = slicesGroup.querySelector(`[data-index="${index}"]`);
+            
+            if (state.filledSlices.has(index)) {
+                state.filledSlices.delete(index);
+                slice.classList.remove('filled');
+                slice.classList.add('empty');
+            } else {
+                state.filledSlices.add(index);
+                slice.classList.remove('empty');
+                slice.classList.add('filled');
+            }
+            
+            // Add a little bounce effect
+            slice.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                slice.style.transform = 'scale(1)';
+            }, 150);
+            
+            updateDisplay();
+        }
+
+        // Update the display
+        function updateDisplay() {
+            const numerator = state.filledSlices.size;
+            const denominator = state.denominator;
+            const percentage = denominator > 0 ? (numerator / denominator * 100) : 0;
+            
+            // Update fraction display
+            numeratorDisplay.textContent = numerator;
+            denominatorDisplay.textContent = denominator;
+            
+            // Update progress bar
+            progressFill.style.width = `${percentage}%`;
+            percentageDisplay.textContent = `${percentage.toFixed(1)}% of the whole`;
+            
+            // Update comparison bar
+            yourFractionBar.style.width = `${percentage}%`;
+            yourFractionLabel.textContent = numerator + '/' + denominator;
+            
+            // Update feedback text
+            updateFeedbackText(numerator, denominator);
+        }
+
+        // Generate feedback text
+        function updateFeedbackText(numerator, denominator) {
+            let text = '';
+            
+            if (denominator === 1) {
+                text = 'Choose how many parts to divide the circle into, then click the slices to select them.';
+            } else if (numerator === 0) {
+                text = `You have divided the whole into <strong>${denominator} equal parts</strong>. Click any slice to select it.`;
+            } else if (numerator === denominator) {
+                text = `You have selected <strong>all ${denominator} parts</strong>. That's the whole thing! This equals <strong>1</strong>.`;
+            } else {
+                const partWord = numerator === 1 ? 'part' : 'parts';
+                text = `You have divided the whole into <strong>${denominator} equal parts</strong> and selected <strong>${numerator}</strong> of them. `;
+                
+                // Add helpful context
+                if (numerator === 1 && denominator === 2) {
+                    text += 'This is called "one half."';
+                } else if (numerator === 1 && denominator === 4) {
+                    text += 'This is called "one quarter."';
+                } else if (numerator === 3 && denominator === 4) {
+                    text += 'This is called "three quarters."';
+                } else if (numerator < denominator / 2) {
+                    text += 'That\'s <strong>less than half</strong> of the whole.';
+                } else if (numerator === denominator / 2) {
+                    text += 'That\'s <strong>exactly half</strong> of the whole.';
+                } else {
+                    text += 'That\'s <strong>more than half</strong> of the whole.';
+                }
+            }
+            
+            feedbackText.innerHTML = text;
+        }
+
+        // Set denominator
+        function setDenominator(num) {
+            if (state.animating) return;
+            state.animating = true;
+            
+            state.denominator = num;
+            state.filledSlices.clear();
+            
+            // Update button states
+            sliceButtons.forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.slices) === num);
+            });
+            
+            // Clear example active states
+            exampleCards.forEach(card => card.classList.remove('active'));
+            
+            // Animate new slices
+            createSlices(slicesGroup, num, 100, true);
+            
+            setTimeout(() => {
+                state.animating = false;
+            }, 500);
+            
+            updateDisplay();
+        }
+
+        // Animate to a preset example
+        function animateToExample(numerator, denominator) {
+            if (state.animating) return;
+            state.animating = true;
+            
+            state.denominator = denominator;
+            state.filledSlices.clear();
+            
+            // Update button states
+            sliceButtons.forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.slices) === denominator);
+            });
+            
+            // Update example card states
+            exampleCards.forEach(card => {
+                const cardNum = parseInt(card.dataset.numerator);
+                const cardDen = parseInt(card.dataset.denominator);
+                card.classList.toggle('active', cardNum === numerator && cardDen === denominator);
+            });
+            
+            // Create slices
+            createSlices(slicesGroup, denominator, 100, true);
+            
+            // Animate filling slices one by one
+            let filled = 0;
+            const fillInterval = setInterval(() => {
+                if (filled < numerator) {
+                    const slice = slicesGroup.querySelector(`[data-index="${filled}"]`);
+                    state.filledSlices.add(filled);
+                    slice.classList.remove('empty');
+                    slice.classList.add('filled');
+                    slice.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        slice.style.transform = 'scale(1)';
+                    }, 150);
+                    filled++;
+                    updateDisplay();
+                } else {
+                    clearInterval(fillInterval);
+                    state.animating = false;
+                }
+            }, 200);
+        }
+
+        // Reset selection
+        function resetSelection() {
+            state.filledSlices.clear();
+            
+            const slices = slicesGroup.querySelectorAll('.slice');
+            slices.forEach(slice => {
+                slice.classList.remove('filled');
+                slice.classList.add('empty');
+            });
+            
+            exampleCards.forEach(card => card.classList.remove('active'));
+            
+            updateDisplay();
+        }
+
+        // Initialize mini examples
+        function initializeExamples() {
+            // Example 1: 1/2
+            createSlices(document.getElementById('example1'), 2, 20, false, 1);
+            
+            // Example 2: 3/4
+            createSlices(document.getElementById('example2'), 4, 20, false, 3);
+            
+            // Example 3: 5/8
+            createSlices(document.getElementById('example3'), 8, 20, false, 5);
+        }
+
+        // Event Listeners
+        sliceButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setDenominator(parseInt(btn.dataset.slices));
+            });
+        });
+
+        exampleCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const numerator = parseInt(card.dataset.numerator);
+                const denominator = parseInt(card.dataset.denominator);
+                animateToExample(numerator, denominator);
+            });
+        });
+
+        resetBtn.addEventListener('click', resetSelection);
+
+        // Initialize
+        function init() {
+            initializeExamples();
+            
+            // Create initial circle (whole)
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("r", 100);
+            circle.setAttribute("fill", "var(--slate-700)");
+            circle.setAttribute("stroke", "var(--slate-500)");
+            circle.setAttribute("stroke-width", "2");
+            slicesGroup.appendChild(circle);
+            
+            updateDisplay();
+        }
+
+        init();
+    </script>
+</body>
+</html>

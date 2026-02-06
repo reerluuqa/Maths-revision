@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 6 Maths Challenge - SATs Prep</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4ECDC4;
+            --secondary: #FF6B6B;
+            --success: #96CEB4;
+            --warning: #FFEAA7;
+            --dark: #2C3E50;
+            --light: #F7F9FC;
+            --gradient-1: #667eea;
+            --gradient-2: #764ba2;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            color: var(--dark);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        /* Start Screen */
+        .start-screen {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .mascot {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--gradient-1));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), #44A08D);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Quiz Container */
+        .quiz-container {
+            display: none;
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 8px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Question Card */
+        .question-card {
+            margin-bottom: 20px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: var(--warning);
+            color: var(--dark);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .question-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .emoji-hint {
+            font-size: 2em;
+            text-align: center;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .answer-section {
+            margin-top: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .answer-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 20px;
+            font-size: 1.2em;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            font-family: 'Nunito', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(78, 205, 196, 0.1);
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #3DB9B0;
+            transform: scale(1.05);
+        }
+
+        /* Feedback Section */
+        .feedback {
+            display: none;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 20px;
+            animation: slideUp 0.4s ease;
+        }
+
+        .feedback.correct {
+            display: block;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid var(--success);
+        }
+
+        .feedback.incorrect {
+            display: block;
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 2px solid var(--secondary);
+        }
+
+        .feedback-icon {
+            font-size: 50px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .feedback-title {
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .feedback.correct .feedback-title { color: #155724; }
+        .feedback.incorrect .feedback-title { color: #721c24; }
+
+        .explanation {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        .next-btn {
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .next-btn:hover {
+            background: #1a252f;
+            transform: translateY(-2px);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: zoomIn 0.5s ease;
+        }
+
+        .results-screen.active {
+            display: block;
+        }
+
+        .trophy {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: rotate 2s ease-in-out;
+        }
+
+        .final-score {
+            font-size: 3em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--gradient-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 20px 0;
+        }
+
+        .message {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, var(--secondary), #ee5a6f);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg) scale(0); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Streak Counter */
+        .streak {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 800;
+            display: none;
+            animation: slideUp 0.3s ease;
+            z-index: 100;
+        }
+
+        .streak.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 { font-size: 2em; }
+            .question-text { font-size: 1.2em; }
+            .container { width: 95%; padding: 10px; }
+            .quiz-container, .start-screen, .results-screen { padding: 20px; }
+        }
+
+        /* Hint Button */
+        .hint-btn {
+            background: #FFEAA7;
+            color: var(--dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            margin-top: 10px;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .hint-btn:hover {
+            background: #FDCB6E;
+            transform: scale(1.05);
+        }
+
+        .hint-text {
+            display: none;
+            background: #FFF3CD;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-style: italic;
+            color: #856404;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .hint-text.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="confetti-canvas"></canvas>
+    <div class="streak" id="streak">🔥 Streak: <span id="streak-count">0</span></div>
+
+    <div class="container">
+        <!-- Start Screen -->
+        <div class="start-screen" id="start-screen">
+            <div class="mascot">🦊</div>
+            <h1>Maths Challenge</h1>
+            <p class="subtitle">Year 6 SATs Practice • 12 Word Problems</p>
+            <p style="margin-bottom: 30px; color: #666;">Join Finn the Fox to test your skills!<br>Can you get all 12 stars? ⭐</p>
+            <button class="btn" onclick="startQuiz()">Start Challenge</button>
+        </div>
+
+        <!-- Quiz Container -->
+        <div class="quiz-container" id="quiz-container">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text">Question <span id="current-q">1</span> of <span id="total-q">12</span></div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number" id="q-number">Question 1</span>
+                    <span class="score-display">⭐ <span id="score">0</span></span>
+                </div>
+
+                <div class="emoji-hint" id="emoji">🎮</div>
+                
+                <div class="question-text" id="question-text">
+                    Loading question...
+                </div>
+
+                <button class="hint-btn" onclick="toggleHint()">💡 Need a hint?</button>
+                <div class="hint-text" id="hint-text"></div>
+
+                <div class="answer-section">
+                    <div class="input-group">
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Type your answer here..." autocomplete="off">
+                        <button class="submit-btn" onclick="checkAnswer()">Check Answer</button>
+                    </div>
+                </div>
+
+                <div class="feedback" id="feedback">
+                    <div class="feedback-icon" id="feedback-icon">✅</div>
+                    <div class="feedback-title" id="feedback-title">Correct!</div>
+                    <div class="explanation" id="explanation"></div>
+                    <button class="next-btn" onclick="nextQuestion()">Next Question →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="results-screen">
+            <div class="trophy" id="trophy">🏆</div>
+            <h2>Challenge Complete!</h2>
+            <div class="final-score"><span id="final-score">0</span>/12</div>
+            <div class="message" id="message"></div>
+            <button class="restart-btn" onclick="restartQuiz()">Try Again ↺</button>
+        </div>
+    </div>
+
+    <script>
+        // Question Database - Year 6 SATs Style Word Problems
+        const questions = [
+            {
+                emoji: "🎮",
+                question: "You have 3,250 points in a video game. You earn 1,750 more points, but then lose 890 points. How many points do you have now?",
+                answer: ["4110", "4,110"],
+                explanation: "First add: 3,250 + 1,750 = 5,000<br>Then subtract: 5,000 - 890 = 4,110 points",
+                hint: "Do the addition first, then the subtraction!",
+                unit: "points"
+            },
+            {
+                emoji: "🎂",
+                question: "You are making party bags. Each bag needs 6 sweets. You have 47 guests coming. How many sweets do you need in total? (Remember to round up to complete bags!)",
+                answer: ["282"],
+                explanation: "47 × 6 = 282 sweets<br>You multiply because you need 6 sweets for every guest.",
+                hint: "Multiply the number of guests by the sweets per bag.",
+                unit: "sweets"
+            },
+            {
+                emoji: "🏃",
+                question: "On Monday you run 2.4 km. On Wednesday you run 3.8 km. How much further did you run on Wednesday?",
+                answer: ["1.4", "1.4km", "1.4 km"],
+                explanation: "3.8 - 2.4 = 1.4 km<br>Subtract the smaller distance from the larger distance to find the difference.",
+                hint: "Subtract Monday's distance from Wednesday's distance.",
+                unit: "km"
+            },
+            {
+                emoji: "🧁",
+                question: "A cake recipe needs 3/4 cup of sugar. You only want to make half of the recipe. How much sugar do you need?",
+                answer: ["3/8", "0.375", "0.375 cup"],
+                explanation: "Half of 3/4 = 3/8 cup<br>Or as a decimal: 0.375 cups<br>To find half, you divide both numbers by 2: (3÷2)/(4÷2) = 1.5/4 = 3/8",
+                hint: "Half means divide by 2. What's half of 3? What's half of 4?",
+                unit: "cups"
+            },
+            {
+                emoji: "⏰",
+                question: "School starts at 8:55 am. Your first lesson lasts 45 minutes, then you have a 15-minute break. What time does break end?",
+                answer: ["9:55", "9:55 am", "0955"],
+                explanation: "8:55 am + 45 minutes = 9:40 am<br>9:40 am + 15 minutes = 9:55 am<br>Add the lesson time and break time together (45 + 15 = 60 minutes = 1 hour)",
+                hint: "Add 45 minutes and 15 minutes together first!",
+                unit: "time"
+            },
+            {
+                emoji: "🛍️",
+                question: "You buy a book for £4.99 and a pencil case for £2.49. You pay with a £10 note. How much change do you get?",
+                answer: ["2.52", "£2.52", "2.52p"],
+                explanation: "£4.99 + £2.49 = £7.48<br>£10.00 - £7.48 = £2.52<br>First add the costs, then subtract from £10.",
+                hint: "Add first, then subtract from 10.",
+                unit: "£"
+            },
+            {
+                emoji: "🪑",
+                question: "Classroom tables seat 6 children each. There are 34 children in your class. How many tables are needed so everyone has a seat?",
+                answer: ["6"],
+                explanation: "34 ÷ 6 = 5 remainder 4<br>You need 6 tables because 5 tables would only seat 30 children, leaving 4 children without seats. We round up!",
+                hint: "34 divided by 6... do you need to round up or down?",
+                unit: "tables"
+            },
+            {
+                emoji: "🌱",
+                question: "Your garden flower bed is a rectangle measuring 3.5 metres long and 2.4 metres wide. What is the area of the flower bed?",
+                answer: ["8.4", "8.4m2", "8.4 m2", "8.4m²", "8.4 m²"],
+                explanation: "Area = length × width<br>3.5 × 2.4 = 8.4 m²<br>Remember: Area is always in square units (m²)",
+                hint: "Multiply length by width. Don't forget it's square metres!",
+                unit: "m²"
+            },
+            {
+                emoji: "💰",
+                question: "You are saving £2.50 every week. How many weeks will it take you to save £30?",
+                answer: ["12"],
+                explanation: "£30 ÷ £2.50 = 12 weeks<br>You divide the total amount by the amount saved each week.",
+                hint: "Divide 30 by 2.50",
+                unit: "weeks"
+            },
+            {
+                emoji: "📏",
+                question: "You have a ribbon that is 4.8 metres long. You cut off 1.95 metres to wrap a present. How much ribbon is left?",
+                answer: ["2.85", "2.85m", "2.85 m", "2.85 metres"],
+                explanation: "4.8 - 1.95 = 2.85 metres<br>Be careful with the decimal subtraction! You can think of it as 4.80 - 1.95.",
+                hint: "Write 4.8 as 4.80 to help with the subtraction.",
+                unit: "m"
+            },
+            {
+                emoji: "🎨",
+                question: "To make green paint, you mix blue and yellow in a ratio of 2:3. If you use 8 cups of blue paint, how many cups of yellow do you need?",
+                answer: ["12"],
+                explanation: "The ratio 2:3 means for every 2 cups blue, you need 3 cups yellow.<br>8 cups blue is 4 times bigger than 2 (because 8 ÷ 2 = 4)<br>So yellow needed: 3 × 4 = 12 cups",
+                hint: "How many times bigger is 8 than 2? Multiply that by 3.",
+                unit: "cups"
+            },
+            {
+                emoji: "📚",
+                question: "Your book has 240 pages. On Monday you read 1/5 of it. On Tuesday you read 1/4 of it. How many pages are left to read?",
+                answer: ["132"],
+                explanation: "Monday: 240 ÷ 5 = 48 pages<br>Tuesday: 240 ÷ 4 = 60 pages<br>Total read: 48 + 60 = 108 pages<br>Left: 240 - 108 = 132 pages",
+                hint: "Calculate 1/5 of 240, then 1/4 of 240. Add them, then subtract from 240.",
+                unit: "pages"
+            }
+        ];
+
+        // State Variables
+        let currentQuestion = 0;
+        let score = 0;
+        let streak = 0;
+        let answered = false;
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsScreen = document.getElementById('results-screen');
+        const questionText = document.getElementById('question-text');
+        const answerInput = document.getElementById('answer-input');
+        const feedback = document.getElementById('feedback');
+        const scoreDisplay = document.getElementById('score');
+        const progressFill = document.getElementById('progress-fill');
+        const currentQDisplay = document.getElementById('current-q');
+        const totalQDisplay = document.getElementById('total-q');
+        const qNumberDisplay = document.getElementById('q-number');
+        const emojiDisplay = document.getElementById('emoji');
+        const hintText = document.getElementById('hint-text');
+        const streakDisplay = document.getElementById('streak');
+        const streakCount = document.getElementById('streak-count');
+
+        // Initialize
+        totalQDisplay.textContent = questions.length;
+
+        function startQuiz() {
+            startScreen.style.display = 'none';
+            quizContainer.classList.add('active');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const q = questions[currentQuestion];
+            
+            // Reset UI
+            answerInput.value = '';
+            answerInput.disabled = false;
+            feedback.className = 'feedback';
+            feedback.style.display = 'none';
+            hintText.classList.remove('show');
+            
+            // Update content
+            currentQDisplay.textContent = currentQuestion + 1;
+            qNumberDisplay.textContent = `Question ${currentQuestion + 1}`;
+            emojiDisplay.textContent = q.emoji;
+            questionText.textContent = q.question;
+            hintText.textContent = q.hint;
+            
+            // Update progress
+            const progress = ((currentQuestion) / questions.length) * 100;
+            progressFill.style.width = progress + '%';
+            
+            // Focus input
+            setTimeout(() => answerInput.focus(), 100);
+        }
+
+        function toggleHint() {
+            hintText.classList.toggle('show');
+        }
+
+        function checkAnswer() {
+            if (answered) return;
+            
+            const userAnswer = answerInput.value.trim().toLowerCase().replace(/\s/g, '');
+            const q = questions[currentQuestion];
+            
+            // Check if answer is correct (accept multiple formats)
+            const isCorrect = q.answer.some(ans => 
+                userAnswer === ans.toLowerCase().replace(/\s/g, '') ||
+                parseFloat(userAnswer) === parseFloat(ans)
+            );
+            
+            answered = true;
+            answerInput.disabled = true;
+            
+            if (isCorrect) {
+                handleCorrect(q);
+            } else {
+                handleIncorrect(q);
+            }
+        }
+
+        function handleCorrect(q) {
+            score++;
+            streak++;
+            scoreDisplay.textContent = score;
+            
+            // Update UI
+            feedback.className = 'feedback correct';
+            document.getElementById('feedback-icon').textContent = '🎉';
+            document.getElementById('feedback-title').textContent = 'Correct! Well done!';
+            document.getElementById('explanation').innerHTML = q.explanation;
+            feedback.style.display = 'block';
+            
+            // Streak display
+            if (streak > 2) {
+                streakDisplay.classList.add('active');
+                streakCount.textContent = streak;
+            }
+            
+            // Confetti animation
+            createConfetti();
+            
+            // Bounce animation on emoji
+            emojiDisplay.style.animation = 'bounce 0.5s ease 3';
+            setTimeout(() => {
+                emojiDisplay.style.animation = 'pulse 2s infinite';
+            }, 1500);
+        }
+
+        function handleIncorrect(q) {
+            streak = 0;
+            streakDisplay.classList.remove('active');
+            
+            // Shake animation
+            quizContainer.classList.add('shake');
+            setTimeout(() => quizContainer.classList.remove('shake'), 500);
+            
+            // Update UI
+            feedback.className = 'feedback incorrect';
+            document.getElementById('feedback-icon').textContent = '💪';
+            document.getElementById('feedback-title').textContent = 'Not quite, but keep trying!';
+            document.getElementById('explanation').innerHTML = 
+                `<strong>The correct answer was:</strong> ${q.answer[0]}<br><br>${q.explanation}`;
+            feedback.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizContainer.classList.remove('active');
+            resultsScreen.classList.add('active');
+            progressFill.style.width = '100%';
+            
+            document.getElementById('final-score').textContent = score;
+            
+            const percentage = (score / questions.length) * 100;
+            const trophy = document.getElementById('trophy');
+            const message = document.getElementById('message');
+            
+            if (percentage === 100) {
+                trophy.textContent = '👑';
+                message.innerHTML = "Perfect score! You're a Maths Master!<br>Ready for those SATs! 🌟";
+                createConfetti();
+                setTimeout(createConfetti, 500);
+                setTimeout(createConfetti, 1000);
+            } else if (percentage >= 75) {
+                trophy.textContent = '🏆';
+                message.innerHTML = "Amazing work! You really know your stuff!<br>Just a bit more practice for perfection! ✨";
+                createConfetti();
+            } else if (percentage >= 50) {
+                trophy.textContent = '🥈';
+                message.innerHTML = "Good job! You're getting there!<br>Keep practicing those word problems! 📚";
+            } else {
+                trophy.textContent = '🌱';
+                message.innerHTML = "Keep practicing! Every mistake helps you learn.<br>Try again and beat your score! 💪";
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            streak = 0;
+            scoreDisplay.textContent = '0';
+            streakDisplay.classList.remove('active');
+            
+            resultsScreen.classList.remove('active');
+            quizContainer.classList.add('active');
+            
+            loadQuestion();
+        }
+
+        // Enter key support
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !answered) {
+                checkAnswer();
+            }
+        });
+
+        // Confetti Effect
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function createConfetti() {
+            const colors = ['#FF6B6B', '#4ECDC4', '#FFEAA7', '#96CEB4', '#DDA0DD', '#FFD93D'];
+            
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    vx: (Math.random() - 0.5) * 10,
+                    vy: (Math.random() - 0.5) * 10 - 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 8 + 4,
+                    life: 100
+                });
+            }
+            
+            if (!animationRunning) {
+                animateConfetti();
+            }
+        }
+
+        let animationRunning = false;
+
+        function animateConfetti() {
+            animationRunning = true;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles = particles.filter(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.2; // gravity
+                p.life--;
+                
+                if (p.life > 0) {
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                    return true;
+                }
+                return false;
+            });
+            
+            if (particles.length > 0) {
+                requestAnimationFrame(animateConfetti);
+            } else {
+                animationRunning = false;
+            }
+        }
+    </script>
+</body>
+</html>

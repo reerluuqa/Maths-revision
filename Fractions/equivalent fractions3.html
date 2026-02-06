@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebraic Fractions Master</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #ec4899;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --success: #10b981;
+            --error: #ef4444;
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Layout & Container */
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.2);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-bar {
+            background: var(--secondary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        main {
+            padding: 30px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Math Typography */
+        .math-problem {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            line-height: 1.5;
+        }
+
+        /* Fraction Styling */
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 5px;
+        }
+
+        .numerator {
+            border-bottom: 2px solid var(--text-main);
+            padding: 2px 8px;
+            display: block;
+            text-align: center;
+            min-width: 40px;
+        }
+
+        .denominator {
+            padding: 2px 8px;
+            display: block;
+            text-align: center;
+            min-width: 40px;
+        }
+
+        .variable-input {
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            text-align: center;
+            width: 100px;
+            font-family: monospace;
+            font-size: 1.2rem;
+            padding: 5px;
+            outline: none;
+            transition: border-color 0.2s;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .variable-input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
+        }
+
+        /* Interaction Areas */
+        .interaction-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .feedback-box {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none; /* Hidden by default */
+            animation: slideUp 0.3s ease-out;
+            line-height: 1.6;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-box.correct {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 5px solid var(--success);
+        }
+
+        .feedback-box.incorrect {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 5px solid var(--error);
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .steps {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #374151;
+        }
+
+        /* Buttons */
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--text-main);
+            border: 2px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .hint-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* Result Screen */
+        .result-screen {
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .math-problem {
+                font-size: 1.4rem;
+            }
+            .variable-input {
+                width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>Equivalent Fractions</h1>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </header>
+
+        <main id="quizArea">
+            <!-- Question injected here via JS -->
+        </main>
+
+        <div id="resultScreen" class="result-screen">
+            <div class="score-circle" id="finalScore">0/0</div>
+            <h2>Practice Complete!</h2>
+            <p style="margin: 10px 0 20px 0; color: var(--text-muted);">Great job working through these algebraic fraction problems.</p>
+            <button class="btn" onclick="restartQuiz()">Try Again</button>
+        </div>
+
+        <footer>
+            Algebraic Learning Tool &copy; 2023
+        </footer>
+    </div>
+
+    <script>
+        // Question Data
+        // Type: 'input' implies the user fills in the ?.
+        // correctAnswers: Array of string variations accepted.
+        const questions = [
+            {
+                leftTop: "15mn",
+                leftBottom: "3m",
+                rightTop: "?",
+                rightBottom: "1",
+                correctAnswers: ["5n", "5*n"],
+                explanation: "Simplify the left side: 15 divided by 3 equals 5. The 'm' in the numerator and denominator cancel out. This leaves 5n over 1, which is simply 5n."
+            },
+            {
+                leftTop: "bm",
+                leftBottom: "?",
+                rightTop: "b",
+                rightBottom: "xy",
+                correctAnswers: ["mxy", "xym", "xmy", "xy*m", "x*y*m", "m*xy"],
+                explanation: "Cross-multiply to solve: bm * xy = b * ?. Dividing both sides by 'b' leaves ? = mxy."
+            },
+            {
+                leftTop: "x",
+                leftBottom: "am",
+                rightTop: "?",
+                rightBottom: "am*x",
+                correctAnswers: ["x^2", "xx", "x*x", "x*x"],
+                explanation: "Look at the denominators: To get from 'am' to 'am*x', we multiplied by 'x'. We must do the same to the numerator. x * x = x² (or xx)."
+            },
+            {
+                leftTop: "3h",
+                leftBottom: "2k",
+                rightTop: "9ah",
+                rightBottom: "?",
+                correctAnswers: ["6ak", "6ka", "6*a*k", "6k*a"],
+                explanation: "Look at the numerators: To get from 3h to 9ah, we multiplied by 3a. Multiply the denominator (2k) by 3a to get 6ak."
+            },
+            {
+                leftTop: "12aa",
+                leftBottom: "?",
+                rightTop: "4a",
+                rightBottom: "5b",
+                correctAnswers: ["15ab", "15ba", "15*a*b"],
+                explanation: "Simplify 12aa to 12a². To get from 12a² to 4a, we divided by 3a. We must divide the unknown denominator (represented as ?) by 3a to equal 5b. So, ? / 3a = 5b. Therefore, ? = 15ab."
+            },
+            {
+                leftTop: "?",
+                leftBottom: "7d",
+                rightTop: "9cd",
+                rightBottom: "21d*d",
+                correctAnswers: ["3c", "3*c"],
+                explanation: "Simplify the right side denominator: 21d*d is 21d². The right side fraction becomes 9cd / 21d². Simplify by dividing top and bottom by 3d. Result: 3c / 7d. Therefore, the left numerator must be 3c."
+            },
+            {
+                leftTop: "5ammm",
+                leftBottom: "24a",
+                rightTop: "?",
+                rightBottom: "8a*m",
+                correctAnswers: ["5ammmm/3", "(5ammmm)/3", "5/3ammmm", "1.66ammmm", "5/3*a*m^4"], 
+                // Note: last one (5/3ammmm) is tricky to validate perfectly without a math parser, 
+                // so we will rely on a smart normalizer in the code.
+                explanation: "First simplify left side: (5am³) / (24a) -> cancel 'a' -> 5m³/24.<br>Set up proportion: ? / (8am) = 5m³ / 24.<br>Cross-multiply: ? * 24 = 5m³ * 8am.<br>? * 24 = 40am⁴.<br>Divide by 24: ? = (40am⁴) / 24 = (5am⁴) / 3.<br>In linear text: 5ammmm/3."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // DOM Elements
+        const quizArea = document.getElementById('quizArea');
+        const progressBar = document.getElementById('progressBar');
+        const resultScreen = document.getElementById('resultScreen');
+        const finalScoreEl = document.getElementById('finalScore');
+
+        // Helper: Create Fraction HTML
+        function createFraction(top, bottom) {
+            return `
+                <div class="fraction">
+                    <span class="numerator">${top}</span>
+                    <span class="denominator">${bottom}</span>
+                </div>
+            `;
+        }
+
+        // Helper: Normalize user input for better comparison
+        function normalizeInput(input) {
+            return input
+                .toLowerCase()
+                .replace(/\s+/g, '') // remove spaces
+                .replace(/\*/g, '')  // remove multiplication symbols
+                .replace(/\^2/g, 'xx') // handle simple squares
+                .replace(/\^3/g, 'xxx')
+                .replace(/\^4/g, 'xxxx');
+        }
+
+        // Render Question
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+            
+            // Update Progress
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Build HTML
+            let leftSide = createFraction(q.leftTop, q.leftBottom);
+            let rightSide = createFraction(`<input type="text" class="variable-input" id="userAnswer" placeholder="?">`, q.rightBottom);
+
+            // If the question is the last one (tricky format), adjust placeholder hint
+            let hintText = "e.g. 5n or xy";
+            if(currentQuestionIndex === 6) hintText = "e.g. 5x/2 or 5x/2";
+
+            quizArea.innerHTML = `
+                <div class="math-problem">
+                    ${leftSide}
+                    <span>=</span>
+                    ${rightSide}
+                </div>
+                
+                <div class="interaction-area">
+                    <p class="hint-text">${hintText}</p>
+                    <div class="controls">
+                        <button class="btn" onclick="checkAnswer()">Check Answer</button>
+                    </div>
+                </div>
+
+                <div id="feedbackArea" class="feedback-box">
+                    <span id="feedbackTitle" class="feedback-title"></span>
+                    <div id="feedbackText"></div>
+                </div>
+            `;
+
+            // Auto-focus input
+            setTimeout(() => document.getElementById('userAnswer').focus(), 100);
+
+            // Add "Enter" key support
+            document.getElementById('userAnswer').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    // If feedback is already visible, Enter acts as Next
+                    const feedbackArea = document.getElementById('feedbackArea');
+                    if(feedbackArea.style.display === 'block' && feedbackArea.classList.contains('incorrect')) {
+                         // If incorrect, maybe they want to fix it? 
+                         // Logic: If incorrect, allow re-typing. If correct, allow next.
+                         const nextBtn = document.getElementById('nextBtn');
+                         if(nextBtn) nextBtn.click();
+                    } else if (feedbackArea.style.display === 'block' && feedbackArea.classList.contains('correct')) {
+                        const nextBtn = document.getElementById('nextBtn');
+                        if(nextBtn) nextBtn.click();
+                    } else {
+                        checkAnswer();
+                    }
+                }
+            });
+        }
+
+        // Check Logic
+        function checkAnswer() {
+            const q = questions[currentQuestionIndex];
+            const inputEl = document.getElementById('userAnswer');
+            const userVal = inputEl.value.trim();
+            
+            if (!userVal) {
+                showFeedback(false, "Please enter an answer.", "", false);
+                return;
+            }
+
+            // Special Handling for Question 7 (Complex Fraction)
+            let isCorrect = false;
+            const normalizedUser = normalizeInput(userVal);
+
+            if (currentQuestionIndex === 6) {
+                // Q7: 5am^4 / 3
+                // Accept formats: "5ammmm/3", "(5ammmm)/3", "5/3ammmm"
+                // We verify if the mathematical concept is there.
+                // Must contain: 5, a, mmmm (4 m's), divided by 3.
+                
+                // Remove parens for checking
+                let clean = normalizedUser.replace(/[()]/g, '');
+                
+                // Check if it's roughly 5/3 * a * m^4
+                // This is a loose check to be helpful
+                if (clean.includes('5') && clean.includes('3') && clean.includes('a') && (clean.includes('mmmm') || clean.includes('m4'))) {
+                    // Check division placement
+                    if (clean.includes('/3') || clean.includes('3/')) { 
+                        // Just verify it doesn't look totally wrong
+                         isCorrect = true;
+                    }
+                }
+                
+                // Strict check against provided list just in case
+                if (q.correctAnswers.includes(userVal) || q.correctAnswers.includes(normalizedUser)) {
+                    isCorrect = true;
+                }
+            } else {
+                // Standard checks for other questions
+                if (q.correctAnswers.includes(userVal) || q.correctAnswers.includes(normalizedUser)) {
+                    isCorrect = true;
+                }
+            }
+
+            if (isCorrect) {
+                score++;
+                showFeedback(true, "Correct!", q.explanation, true);
+            } else {
+                showFeedback(false, "Incorrect", q.explanation, true);
+            }
+        }
+
+        function showFeedback(isSuccess, title, text, showNextBtn) {
+            const fbArea = document.getElementById('feedbackArea');
+            const fbTitle = document.getElementById('feedbackTitle');
+            const fbText = document.getElementById('feedbackText');
+            const controls = document.querySelector('.controls');
+
+            fbArea.style.display = 'block';
+            fbArea.className = `feedback-box ${isSuccess ? 'correct' : 'incorrect'}`;
+            
+            // Capitalize first letter
+            fbTitle.textContent = title;
+            
+            // Add correct answer text if incorrect
+            let fullText = text;
+            if (!isSuccess) {
+                const q = questions[currentQuestionIndex];
+                // We construct a readable answer string
+                let ans = q.correctAnswers[0];
+                if(currentQuestionIndex === 6) ans = "5ammmm/3 (or 5am⁴/3)";
+                fullText += `<br><strong>The correct answer is: ${ans}</strong>`;
+            }
+            fbText.innerHTML = fullText;
+
+            // Update buttons
+            if (showNextBtn) {
+                const nextBtn = document.createElement('button');
+                nextBtn.id = 'nextBtn';
+                nextBtn.className = 'btn btn-secondary';
+                nextBtn.textContent = (currentQuestionIndex === questions.length - 1) ? 'See Results' : 'Next Question';
+                nextBtn.onclick = nextStep;
+                
+                // Clear previous controls
+                controls.innerHTML = ''; 
+                controls.appendChild(nextBtn);
+            }
+        }
+
+        function nextStep() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizArea.style.display = 'none';
+            resultScreen.style.display = 'flex';
+            progressBar.style.width = '100%';
+            finalScoreEl.textContent = `${score}/${questions.length}`;
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            quizArea.style.display = 'block';
+            resultScreen.style.display = 'none';
+            loadQuestion();
+        }
+
+        // Initialize
+        loadQuestion();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraction Simplifier: Learn Canonical Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom-left-radius: 50% 20%;
+            border-bottom-right-radius: 50% 20%;
+        }
+
+        .header h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .app-content {
+            padding: 30px;
+        }
+
+        .progress-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .progress-bar {
+            width: 70%;
+            height: 12px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .score {
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: #182848;
+        }
+
+        .question-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border-left: 6px solid #4b6cb7;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .question-number {
+            font-size: 1.1rem;
+            color: #4b6cb7;
+            font-weight: 600;
+            background-color: #eef2ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .question-type {
+            font-size: 0.9rem;
+            color: #666;
+            background-color: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 15px;
+        }
+
+        .question-text {
+            font-size: 1.8rem;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 500;
+            color: #222;
+        }
+
+        .input-section {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 500;
+            color: #444;
+            font-size: 1.1rem;
+        }
+
+        .answer-input {
+            width: 80%;
+            max-width: 400px;
+            padding: 16px 20px;
+            font-size: 1.3rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .answer-input:focus {
+            border-color: #4b6cb7;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background-color: #4b6cb7;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3a5795;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        .feedback-section {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-correct {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4CAF50;
+        }
+
+        .feedback-incorrect {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .feedback-header i {
+            margin-right: 12px;
+            font-size: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            line-height: 1.7;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        .hint {
+            font-size: 0.9rem;
+            color: #4b6cb7;
+            margin-top: 10px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .question-text {
+                font-size: 1.5rem;
+            }
+            
+            .answer-input {
+                width: 100%;
+                font-size: 1.1rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Fraction Simplifier</h1>
+            <p>Learn to simplify fractions and expressions to their canonical form. Solve one problem at a time with immediate feedback.</p>
+        </div>
+        
+        <div class="app-content">
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span>Progress: <span id="current">1</span> of <span id="total">13</span></span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="score">Score: <span id="score">0</span></div>
+            </div>
+            
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number">Question <span id="q-number">1</span></div>
+                    <div class="question-type" id="q-type">Simple Fractions</div>
+                </div>
+                
+                <div class="question-text" id="question">[(1 + 1/15) - 2/3]</div>
+                
+                <div class="input-section">
+                    <label for="answer" class="input-label">Enter your answer in simplest form:</label>
+                    <input type="text" id="answer" class="answer-input" placeholder="e.g. 2/5, 11x/12, (10m-9n)/15">
+                    <div class="hint">Use '/' for fractions, '*' for multiplication. For expressions with variables, use format like: (10m-9n)/15</div>
+                </div>
+                
+                <div class="buttons">
+                    <button id="check-btn" class="btn btn-primary">
+                        <i class="fas fa-check-circle"></i> Check Answer
+                    </button>
+                    <button id="next-btn" class="btn btn-secondary" disabled>
+                        <i class="fas fa-arrow-right"></i> Next Question
+                    </button>
+                </div>
+                
+                <div id="feedback" class="feedback-section">
+                    <div class="feedback-header">
+                        <i id="feedback-icon"></i>
+                        <span id="feedback-title"></span>
+                    </div>
+                    <div id="feedback-message"></div>
+                    <div class="correct-answer">
+                        Correct answer: <span id="correct-answer"></span>
+                    </div>
+                    <div class="explanation" id="explanation"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Educational Fraction Simplifier | Learn how to simplify fractions to canonical form</p>
+        </div>
+    </div>
+
+    <script>
+        // Questions data: each question has the expression, answer, explanation, and type
+        const questions = [
+            {
+                expression: "[(1 + 1/15) - 2/3]",
+                answer: "2/5",
+                explanation: "First, convert 1 to 15/15. Then 1 + 1/15 = 15/15 + 1/15 = 16/15. Next, convert 2/3 to 10/15 (multiply numerator and denominator by 5). Now subtract: 16/15 - 10/15 = 6/15. Simplify by dividing numerator and denominator by 3 to get 2/5.",
+                type: "Simple Fractions"
+            },
+            {
+                expression: "[3*x/4 + x/6]",
+                answer: "11x/12",
+                explanation: "Find common denominator for 4 and 6, which is 12. Convert 3x/4 to 9x/12 (multiply numerator and denominator by 3). Convert x/6 to 2x/12 (multiply numerator and denominator by 2). Add: 9x/12 + 2x/12 = 11x/12.",
+                type: "Algebraic Fractions"
+            },
+            {
+                expression: "[2*m/3 - 3*n/5]",
+                answer: "(10m - 9n)/15",
+                explanation: "Find common denominator for 3 and 5, which is 15. Convert 2m/3 to 10m/15 (multiply numerator and denominator by 5). Convert 3n/5 to 9n/15 (multiply numerator and denominator by 3). Subtract: 10m/15 - 9n/15 = (10m - 9n)/15.",
+                type: "Algebraic Fractions"
+            },
+            {
+                expression: "[11/16 - 5/12]",
+                answer: "13/48",
+                explanation: "Find common denominator for 16 and 12, which is 48. Convert 11/16 to 33/48 (multiply numerator and denominator by 3). Convert 5/12 to 20/48 (multiply numerator and denominator by 4). Subtract: 33/48 - 20/48 = 13/48.",
+                type: "Simple Fractions"
+            },
+            {
+                expression: "[(1 + 1/2) + 3/4]",
+                answer: "9/4",
+                explanation: "Convert mixed number: 1 + 1/2 = 3/2. Find common denominator for 2 and 4, which is 4. Convert 3/2 to 6/4 (multiply numerator and denominator by 2). Now add: 6/4 + 3/4 = 9/4.",
+                type: "Mixed Numbers"
+            },
+            {
+                expression: "[(1 + 3/4) - 1/2]",
+                answer: "5/4",
+                explanation: "Convert mixed number: 1 + 3/4 = 7/4. Convert 1/2 to 2/4 (multiply numerator and denominator by 2). Subtract: 7/4 - 2/4 = 5/4.",
+                type: "Mixed Numbers"
+            },
+            {
+                expression: "[(1 + 1/2) + (2 + 1/3)]",
+                answer: "23/6",
+                explanation: "Convert mixed numbers: 1 + 1/2 = 3/2, and 2 + 1/3 = 7/3. Find common denominator for 2 and 3, which is 6. Convert 3/2 to 9/6 (multiply by 3). Convert 7/3 to 14/6 (multiply by 2). Add: 9/6 + 14/6 = 23/6.",
+                type: "Mixed Numbers"
+            },
+            {
+                expression: "[(1 + 1/4) - 3/4]",
+                answer: "1/2",
+                explanation: "Convert mixed number: 1 + 1/4 = 5/4. Subtract: 5/4 - 3/4 = 2/4. Simplify by dividing numerator and denominator by 2 to get 1/2.",
+                type: "Mixed Numbers"
+            },
+            {
+                expression: "[(3 + 7/8) + (2 + 3/4)]",
+                answer: "53/8",
+                explanation: "Convert mixed numbers: 3 + 7/8 = 31/8, and 2 + 3/4 = 11/4. Convert 11/4 to 22/8 (multiply by 2). Add: 31/8 + 22/8 = 53/8.",
+                type: "Mixed Numbers"
+            },
+            {
+                expression: "[(2 + 5/6) + (5 + 7/9)]",
+                answer: "155/18",
+                explanation: "Convert mixed numbers: 2 + 5/6 = 17/6, and 5 + 7/9 = 52/9. Find common denominator for 6 and 9, which is 18. Convert 17/6 to 51/18 (multiply by 3). Convert 52/9 to 104/18 (multiply by 2). Add: 51/18 + 104/18 = 155/18.",
+                type: "Mixed Numbers"
+            },
+            {
+                expression: "[(5 + 3/4) - (2 + 4/5)]",
+                answer: "59/20",
+                explanation: "Convert mixed numbers: 5 + 3/4 = 23/4, and 2 + 4/5 = 14/5. Find common denominator for 4 and 5, which is 20. Convert 23/4 to 115/20 (multiply by 5). Convert 14/5 to 56/20 (multiply by 4). Subtract: 115/20 - 56/20 = 59/20.",
+                type: "Mixed Numbers"
+            },
+            {
+                expression: "[(4 + 1/6) - (1 + 5/8)]",
+                answer: "61/24",
+                explanation: "Convert mixed numbers: 4 + 1/6 = 25/6, and 1 + 5/8 = 13/8. Find common denominator for 6 and 8, which is 24. Convert 25/6 to 100/24 (multiply by 4). Convert 13/8 to 39/24 (multiply by 3). Subtract: 100/24 - 39/24 = 61/24.",
+                type: "Mixed Numbers"
+            },
+            {
+                expression: "[5*a/6 - 3*b/8]",
+                answer: "(20a - 9b)/24",
+                explanation: "Find common denominator for 6 and 8, which is 24. Convert 5a/6 to 20a/24 (multiply numerator and denominator by 4). Convert 3b/8 to 9b/24 (multiply numerator and denominator by 3). Subtract: 20a/24 - 9b/24 = (20a - 9b)/24.",
+                type: "Algebraic Fractions"
+            }
+        ];
+
+        // App state
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let totalQuestions = questions.length;
+
+        // DOM Elements
+        const questionElement = document.getElementById('question');
+        const questionNumberElement = document.getElementById('q-number');
+        const questionTypeElement = document.getElementById('q-type');
+        const answerInput = document.getElementById('answer');
+        const checkButton = document.getElementById('check-btn');
+        const nextButton = document.getElementById('next-btn');
+        const feedbackElement = document.getElementById('feedback');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const correctAnswerElement = document.getElementById('correct-answer');
+        const explanationElement = document.getElementById('explanation');
+        const currentProgressElement = document.getElementById('current');
+        const totalQuestionsElement = document.getElementById('total');
+        const scoreElement = document.getElementById('score');
+        const progressFillElement = document.getElementById('progress-fill');
+
+        // Initialize the app
+        function initApp() {
+            totalQuestionsElement.textContent = totalQuestions;
+            updateProgress();
+            loadQuestion(currentQuestionIndex);
+            
+            // Set up event listeners
+            checkButton.addEventListener('click', checkAnswer);
+            nextButton.addEventListener('click', nextQuestion);
+            answerInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        }
+
+        // Load a question by index
+        function loadQuestion(index) {
+            const question = questions[index];
+            questionElement.textContent = question.expression;
+            questionNumberElement.textContent = index + 1;
+            questionTypeElement.textContent = question.type;
+            answerInput.value = '';
+            answerInput.focus();
+            
+            // Hide feedback and reset UI
+            feedbackElement.style.display = 'none';
+            checkButton.disabled = false;
+            nextButton.disabled = true;
+            answerInput.disabled = false;
+        }
+
+        // Check the user's answer
+        function checkAnswer() {
+            const userAnswer = answerInput.value.trim();
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            
+            // Normalize answers for comparison
+            const normalizedUserAnswer = normalizeAnswer(userAnswer);
+            const normalizedCorrectAnswer = normalizeAnswer(correctAnswer);
+            
+            // Check if answer is correct
+            const isCorrect = normalizedUserAnswer === normalizedCorrectAnswer;
+            
+            // Update score
+            if (isCorrect) {
+                score++;
+                scoreElement.textContent = score;
+            }
+            
+            // Show feedback
+            showFeedback(isCorrect, correctAnswer, questions[currentQuestionIndex].explanation);
+            
+            // Update UI
+            checkButton.disabled = true;
+            nextButton.disabled = false;
+            answerInput.disabled = true;
+        }
+
+        // Normalize answer for comparison (remove spaces, standardize format)
+        function normalizeAnswer(answer) {
+            return answer
+                .toLowerCase()
+                .replace(/\s+/g, '')  // Remove all whitespace
+                .replace(/\*/g, '')   // Remove multiplication signs
+                .replace(/\(/g, '')   // Remove parentheses
+                .replace(/\)/g, '')   // Remove parentheses
+                .replace(/\[/g, '')   // Remove brackets
+                .replace(/\]/g, '');  // Remove brackets
+        }
+
+        // Show feedback with explanation
+        function showFeedback(isCorrect, correctAnswer, explanation) {
+            feedbackElement.className = `feedback-section ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+            feedbackIcon.className = isCorrect ? 'fas fa-check-circle' : 'fas fa-times-circle';
+            feedbackTitle.textContent = isCorrect ? 'Correct!' : 'Incorrect';
+            feedbackMessage.textContent = isCorrect 
+                ? 'Great job! Your answer is correct.' 
+                : "That's not quite right. Let's review the solution:";
+            correctAnswerElement.textContent = correctAnswer;
+            explanationElement.textContent = explanation;
+            feedbackElement.style.display = 'block';
+        }
+
+        // Move to the next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < totalQuestions) {
+                loadQuestion(currentQuestionIndex);
+                updateProgress();
+            } else {
+                // Show completion message
+                questionElement.textContent = "Congratulations! You've completed all the questions.";
+                questionTypeElement.textContent = "Complete";
+                answerInput.style.display = 'none';
+                checkButton.style.display = 'none';
+                nextButton.style.display = 'none';
+                feedbackElement.style.display = 'none';
+                document.querySelector('.input-label').textContent = `Final Score: ${score}/${totalQuestions}`;
+                
+                // Update progress to 100%
+                currentProgressElement.textContent = totalQuestions;
+                progressFillElement.style.width = '100%';
+            }
+        }
+
+        // Update progress bar and counter
+        function updateProgress() {
+            currentProgressElement.textContent = currentQuestionIndex + 1;
+            const progressPercentage = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            progressFillElement.style.width = `${progressPercentage}%`;
+        }
+
+        // Initialize the app when the page loads
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

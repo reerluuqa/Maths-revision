@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Adventure - Year 2</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@600;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #5a67d8;
+            font-size: 2.5em;
+            text-shadow: 3px 3px 0px #e0e7ff;
+            margin-bottom: 10px;
+        }
+        
+        .progress-container {
+            background: #e2e8f0;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        .stars {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+        }
+        
+        .question-card {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            border: 4px solid #fc8181;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .question-card.visual {
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            border-color: #38b2ac;
+        }
+        
+        .question-card.word {
+            background: linear-gradient(135deg, #fef5e7 0%, #fdebd0 100%);
+            border-color: #f6ad55;
+        }
+        
+        .question-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #5a67d8;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .question-text {
+            font-size: 1.8em;
+            color: #2d3748;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            font-weight: 800;
+        }
+        
+        .visual-container {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .emoji-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 200px;
+        }
+        
+        .emoji {
+            font-size: 2.5em;
+            animation: bounce 2s infinite;
+        }
+        
+        .emoji:nth-child(2n) { animation-delay: 0.1s; }
+        .emoji:nth-child(3n) { animation-delay: 0.2s; }
+        
+        .operator {
+            font-size: 3em;
+            color: #5a67d8;
+            font-weight: bold;
+        }
+        
+        .answer-section {
+            margin-top: 20px;
+        }
+        
+        .number-pad {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .num-btn {
+            background: #ebf8ff;
+            border: 3px solid #4299e1;
+            color: #2b6cb0;
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .num-btn:hover {
+            background: #4299e1;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+        
+        .num-btn:active {
+            transform: translateY(0);
+        }
+        
+        .selected-answer {
+            font-size: 3em;
+            color: #5a67d8;
+            margin: 20px 0;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 15px;
+            min-width: 100px;
+            border: 4px dashed #cbd5e0;
+        }
+        
+        .action-btns {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .check-btn {
+            background: #48bb78;
+            color: white;
+            box-shadow: 0 4px 0 #2f855a;
+        }
+        
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #2f855a;
+        }
+        
+        .check-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #2f855a;
+        }
+        
+        .next-btn {
+            background: #ed8936;
+            color: white;
+            box-shadow: 0 4px 0 #c05621;
+            display: none;
+        }
+        
+        /* Feedback Overlay */
+        .feedback-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .feedback-content {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .feedback-emoji {
+            font-size: 5em;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .feedback-text {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        .feedback-message {
+            font-size: 1.3em;
+            color: #4a5568;
+            margin-bottom: 25px;
+        }
+        
+        .correct .feedback-text { color: #48bb78; }
+        .incorrect .feedback-text { color: #f56565; }
+        
+        .continue-btn {
+            background: #5a67d8;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-family: 'Fredoka One', cursive;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .continue-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(0) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+        
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 999;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            animation: fall linear forwards;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .mascot {
+            font-size: 6em;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+            display: inline-block;
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 60px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            box-shadow: 0 6px 0 #553c9a;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 #553c9a;
+        }
+        
+        .start-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #553c9a;
+        }
+        
+        /* Completion Screen */
+        .completion-screen {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .trophy {
+            font-size: 8em;
+            animation: celebrate 1s ease;
+            display: inline-block;
+        }
+        
+        .final-score {
+            font-size: 2em;
+            color: #5a67d8;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        
+        .restart-btn {
+            background: #48bb78;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            margin-top: 20px;
+            box-shadow: 0 4px 0 #2f855a;
+        }
+        
+        .hidden { display: none !important; }
+        
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8em; }
+            .question-text { font-size: 1.3em; }
+            .emoji { font-size: 2em; }
+            .number-pad { grid-template-columns: repeat(4, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Start Screen -->
+    <div class="start-screen" id="startScreen">
+        <div class="mascot">🦁</div>
+        <h1>Maths Adventure!</h1>
+        <p style="font-size: 1.3em; color: #4a5568; margin-bottom: 20px;">
+            Help Leo the Lion solve 12 fun maths puzzles!<br>
+            You'll count toys, sweets, and animals. 🎯
+        </p>
+        <button class="start-btn" onclick="startGame()">Start Adventure! 🚀</button>
+    </div>
+
+    <!-- Game Screen -->
+    <div class="game-screen hidden" id="gameScreen">
+        <div class="header">
+            <h1>🌟 Maths Challenge 🌟</h1>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="stars" id="stars">⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐</div>
+        </div>
+
+        <div class="question-card" id="questionCard">
+            <div class="question-number">Question <span id="qNumber">1</span></div>
+            <div class="question-text" id="questionText"></div>
+            <div class="visual-container" id="visualContainer"></div>
+            
+            <div class="answer-section">
+                <div class="selected-answer" id="selectedAnswer">?</div>
+                <div class="number-pad" id="numberPad"></div>
+                <div class="action-btns">
+                    <button class="btn check-btn" id="checkBtn" onclick="checkAnswer()">Check Answer ✓</button>
+                    <button class="btn next-btn" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Screen -->
+    <div class="completion-screen" id="completionScreen">
+        <div class="trophy">🏆</div>
+        <h1 style="color: #5a67d8; font-family: 'Fredoka One', cursive; font-size: 3em; margin: 20px 0;">
+            Amazing Work!
+        </h1>
+        <div class="final-score" id="finalScore"></div>
+        <p style="font-size: 1.3em; color: #4a5568; margin-bottom: 30px;">
+            You're a maths superstar! 🌟
+        </p>
+        <button class="restart-btn" onclick="restartGame()">Play Again 🎮</button>
+    </div>
+</div>
+
+<!-- Feedback Overlay -->
+<div class="feedback-overlay" id="feedbackOverlay">
+    <div class="feedback-content" id="feedbackContent">
+        <span class="feedback-emoji" id="feedbackEmoji">🎉</span>
+        <div class="feedback-text" id="feedbackText">Well Done!</div>
+        <div class="feedback-message" id="feedbackMessage">That's the correct answer!</div>
+        <button class="continue-btn" onclick="closeFeedback()">Continue</button>
+    </div>
+</div>
+
+<!-- Confetti Container -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+    // Game Data - 12 Questions for Year 2
+    const questions = [
+        {
+            type: 'visual',
+            text: 'How many apples are there altogether?',
+            emoji: '🍎',
+            group1: 5,
+            group2: 3,
+            operator: '+',
+            answer: 8
+        },
+        {
+            type: 'word',
+            text: 'Sam has 7 toy cars. His friend gives him 4 more. How many cars does Sam have now?',
+            emoji: '🚗',
+            visual: true,
+            group1: 7,
+            group2: 4,
+            answer: 11
+        },
+        {
+            type: 'visual',
+            text: 'If I eat 5 cakes, how many are left?',
+            emoji: '🧁',
+            group1: 12,
+            group2: 5,
+            operator: '-',
+            answer: 7
+        },
+        {
+            type: 'word',
+            text: 'There are 15 birds on a tree. 6 fly away. How many birds are still on the tree?',
+            emoji: '🐦',
+            visual: true,
+            group1: 15,
+            group2: 6,
+            answer: 9
+        },
+        {
+            type: 'visual',
+            text: 'Count the pairs of socks. How many socks altogether?',
+            emoji: '🧦',
+            group1: 6, // 6 pairs = 12 socks
+            showPairs: true,
+            answer: 12
+        },
+        {
+            type: 'word',
+            text: 'Mum buys 9 cupcakes. You eat 2. How many cupcakes are left?',
+            emoji: '🧁',
+            visual: true,
+            group1: 9,
+            group2: 2,
+            answer: 7
+        },
+        {
+            type: 'visual',
+            text: 'How many bears are there in total?',
+            emoji: '🧸',
+            group1: 8,
+            group2: 5,
+            operator: '+',
+            answer: 13
+        },
+        {
+            type: 'word',
+            text: 'You have 14 stickers. You give 6 to your best friend. How many do you have left?',
+            emoji: '⭐',
+            visual: true,
+            group1: 14,
+            group2: 6,
+            answer: 8
+        },
+        {
+            type: 'visual',
+            text: 'What is 10 + 7?',
+            emoji: '🎈',
+            group1: 10,
+            group2: 7,
+            operator: '+',
+            answer: 17
+        },
+        {
+            type: 'word',
+            text: 'There are 8 red balls and 7 blue balls. How many balls altogether?',
+            emoji: '⚽',
+            visual: true,
+            group1: 8,
+            group2: 7,
+            answer: 15
+        },
+        {
+            type: 'visual',
+            text: 'You have 16 sweets. You eat 9. How many are left?',
+            emoji: '🍬',
+            group1: 16,
+            group2: 9,
+            operator: '-',
+            answer: 7
+        },
+        {
+            type: 'word',
+            text: 'You need 20 stars to win a prize. You have 13 stars. How many more do you need?',
+            emoji: '⭐',
+            visual: true,
+            group1: 20,
+            group2: 13,
+            answer: 7
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedAnswer = null;
+    let answered = false;
+
+    function startGame() {
+        document.getElementById('startScreen').classList.add('hidden');
+        document.getElementById('gameScreen').classList.remove('hidden');
+        loadQuestion();
+        createNumberPad();
+    }
+
+    function createNumberPad() {
+        const pad = document.getElementById('numberPad');
+        pad.innerHTML = '';
+        
+        // Numbers 0-20 for Year 2 level
+        for (let i = 0; i <= 20; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'num-btn';
+            btn.textContent = i;
+            btn.onclick = () => selectNumber(i);
+            pad.appendChild(btn);
+        }
+    }
+
+    function selectNumber(num) {
+        if (answered) return;
+        selectedAnswer = num;
+        document.getElementById('selectedAnswer').textContent = num;
+        
+        // Visual feedback on selection
+        document.getElementById('selectedAnswer').style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            document.getElementById('selectedAnswer').style.transform = 'scale(1)';
+        }, 200);
+    }
+
+    function loadQuestion() {
+        answered = false;
+        selectedAnswer = null;
+        document.getElementById('selectedAnswer').textContent = '?';
+        document.getElementById('checkBtn').style.display = 'inline-block';
+        document.getElementById('nextBtn').style.display = 'none';
+        
+        const q = questions[currentQuestion];
+        const card = document.getElementById('questionCard');
+        
+        // Update styling based on type
+        card.className = 'question-card ' + q.type;
+        document.getElementById('qNumber').textContent = currentQuestion + 1;
+        document.getElementById('questionText').textContent = q.text;
+        
+        // Update progress
+        const progress = ((currentQuestion) / questions.length) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+        
+        // Render visual elements
+        const visualContainer = document.getElementById('visualContainer');
+        visualContainer.innerHTML = '';
+        
+        if (q.type === 'visual' || q.visual) {
+            if (q.showPairs) {
+                // Special handling for pairs (counting in 2s)
+                const group = document.createElement('div');
+                group.className = 'emoji-group';
+                for (let i = 0; i < q.group1; i++) {
+                    group.innerHTML += '<span class="emoji">' + q.emoji + q.emoji + '</span>';
+                }
+                visualContainer.appendChild(group);
+            } else if (q.operator) {
+                // Addition/Subtraction visualization
+                const group1 = createEmojiGroup(q.group1, q.emoji);
+                const operator = document.createElement('div');
+                operator.className = 'operator';
+                operator.textContent = q.operator;
+                const group2 = createEmojiGroup(q.group2, q.emoji);
+                
+                visualContainer.appendChild(group1);
+                visualContainer.appendChild(operator);
+                visualContainer.appendChild(group2);
+            } else {
+                // Single group for word problems
+                const group = createEmojiGroup(q.group1, q.emoji);
+                visualContainer.appendChild(group);
+            }
+        }
+    }
+
+    function createEmojiGroup(count, emoji) {
+        const group = document.createElement('div');
+        group.className = 'group';
+        const emojiContainer = document.createElement('div');
+        emojiContainer.className = 'emoji-group';
+        
+        for (let i = 0; i < count; i++) {
+            const span = document.createElement('span');
+            span.className = 'emoji';
+            span.textContent = emoji;
+            span.style.animationDelay = (i * 0.1) + 's';
+            emojiContainer.appendChild(span);
+        }
+        
+        group.appendChild(emojiContainer);
+        return group;
+    }
+
+    function checkAnswer() {
+        if (selectedAnswer === null) {
+            shakeElement(document.getElementById('selectedAnswer'));
+            return;
+        }
+        
+        answered = true;
+        const q = questions[currentQuestion];
+        const isCorrect = selectedAnswer === q.answer;
+        
+        if (isCorrect) {
+            score++;
+            showFeedback(true, q.answer);
+            createConfetti();
+        } else {
+            showFeedback(false, q.answer);
+        }
+        
+        document.getElementById('checkBtn').style.display = 'none';
+        document.getElementById('nextBtn').style.display = 'inline-block';
+    }
+
+    function showFeedback(isCorrect, correctAnswer) {
+        const overlay = document.getElementById('feedbackOverlay');
+        const content = document.getElementById('feedbackContent');
+        const emoji = document.getElementById('feedbackEmoji');
+        const text = document.getElementById('feedbackText');
+        const message = document.getElementById('feedbackMessage');
+        
+        overlay.style.display = 'flex';
+        content.className = 'feedback-content ' + (isCorrect ? 'correct' : 'incorrect');
+        
+        if (isCorrect) {
+            emoji.textContent = ['🎉', '🌟', '🎊', '🏆', '🥳'][Math.floor(Math.random() * 5)];
+            text.textContent = 'Well Done!';
+            message.textContent = selectedAnswer + ' is correct! You\'re so clever!';
+            playSound('correct');
+        } else {
+            emoji.textContent = ['💪', '🤔', '💫', '🌈'][Math.floor(Math.random() * 4)];
+            text.textContent = 'Not Quite!';
+            message.textContent = `The answer is ${correctAnswer}. Let's try the next one!`;
+            playSound('incorrect');
+        }
+    }
+
+    function closeFeedback() {
+        document.getElementById('feedbackOverlay').style.display = 'none';
+        if (currentQuestion >= questions.length - 1) {
+            showCompletion();
+        }
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+            loadQuestion();
+        } else {
+            showCompletion();
+        }
+    }
+
+    function showCompletion() {
+        document.getElementById('gameScreen').classList.add('hidden');
+        document.getElementById('completionScreen').style.display = 'block';
+        document.getElementById('finalScore').textContent = `You got ${score} out of ${questions.length} correct!`;
+        createConfetti();
+        createConfetti();
+        createConfetti();
+    }
+
+    function restartGame() {
+        currentQuestion = 0;
+        score = 0;
+        document.getElementById('completionScreen').style.display = 'none';
+        document.getElementById('startScreen').classList.remove('hidden');
+    }
+
+    function shakeElement(element) {
+        element.classList.add('shake');
+        setTimeout(() => element.classList.remove('shake'), 500);
+    }
+
+    function createConfetti() {
+        const container = document.getElementById('confettiContainer');
+        const colors = ['#f56565', '#ed8936', '#ecc94b', '#48bb78', '#4299e1', '#9f7aea', '#ed64a6'];
+        
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            confetti.style.opacity = Math.random();
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+            container.appendChild(confetti);
+            
+            setTimeout(() => confetti.remove(), 4000);
+        }
+    }
+
+    function playSound(type) {
+        // Visual feedback instead of audio since we can't rely on audio files
+        // This could be expanded with Web Audio API if needed
+        const body = document.body;
+        body.style.background = type === 'correct' 
+            ? 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)' 
+            : 'linear-gradient(135deg, #ed8936 0%, #dd6b20 100%)';
+        
+        setTimeout(() => {
+            body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        }, 500);
+    }
+
+    // Keyboard support for accessibility
+    document.addEventListener('keydown', (e) => {
+        if (document.getElementById('gameScreen').classList.contains('hidden')) return;
+        
+        if (e.key >= '0' && e.key <= '9') {
+            selectNumber(parseInt(e.key));
+        } else if (e.key === 'Enter' && !answered) {
+            checkAnswer();
+        } else if (e.key === 'Enter' && answered) {
+            closeFeedback();
+            setTimeout(nextQuestion, 300);
+        }
+    });
+</script>
+
+</body>
+</html>

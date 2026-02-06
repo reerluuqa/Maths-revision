@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equivalent Fractions Quiz</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --success: #10b981;
+            --error: #ef4444;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header & Progress */
+        .header {
+            padding: 20px 30px;
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .progress-container {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 99px;
+            height: 6px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background-color: #fff;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Equation Display */
+        .equation-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            font-weight: 500;
+            gap: 15px;
+        }
+
+        .fraction {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .numerator {
+            padding-bottom: 5px;
+            border-bottom: 3px solid var(--text-main);
+            width: 100%;
+            min-width: 40px;
+        }
+
+        .denominator {
+            padding-top: 5px;
+            width: 100%;
+            min-width: 40px;
+        }
+
+        .operator {
+            font-size: 2rem;
+            color: var(--text-sub);
+        }
+
+        /* Input Styling */
+        input[type="text"] {
+            width: 80px;
+            text-align: center;
+            font-size: 1.8rem;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 5px;
+            color: var(--primary);
+            background-color: #f5f7ff;
+            outline: none;
+            font-family: inherit;
+            font-weight: bold;
+        }
+
+        input[type="text"]:disabled {
+            background-color: #fff;
+            border-color: var(--border);
+            color: var(--text-main);
+        }
+
+        /* Feedback Section */
+        .feedback-area {
+            width: 100%;
+            min-height: 120px; /* Space reservation */
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .feedback-msg {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .feedback-msg.correct { color: var(--success); display: block; }
+        .feedback-msg.incorrect { color: var(--error); display: block; }
+
+        .explanation {
+            background-color: #f9fafb;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            line-height: 1.5;
+            display: none;
+        }
+
+        .math-highlight {
+            font-weight: bold;
+            color: var(--text-main);
+            background-color: #e5e7eb;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        /* Buttons */
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 20px;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn:disabled {
+            background-color: var(--border);
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* End Screen */
+        .end-screen {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="quiz-view">
+        <div class="header">
+            <h1>Fill in the Blank</h1>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="stats">Question <span id="q-current">1</span> of <span id="q-total">17</span></div>
+        </div>
+
+        <div class="content">
+            <div class="equation-box" id="equation-container">
+                <!-- Injected via JS -->
+            </div>
+
+            <div class="feedback-area">
+                <div id="feedback-msg" class="feedback-msg"></div>
+                <div id="explanation" class="explanation"></div>
+            </div>
+
+            <button id="submit-btn" class="btn">Check Answer</button>
+            <button id="next-btn" class="btn hidden">Next Question</button>
+        </div>
+    </div>
+
+    <div id="end-view" class="end-screen hidden">
+        <div class="score-circle" id="final-score"></div>
+        <h2>Quiz Completed!</h2>
+        <p>You have practiced equivalent fractions and algebraic proportions.</p>
+        <button onclick="location.reload()" class="btn">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    // Data Structure
+    // Type: 1 = Numerator 1 missing, 2 = Denominator 1 missing, 3 = Num 2 missing, 4 = Denom 2 missing
+    const questions = [
+        { n1: 2, d1: 3, n2: '?', d2: 18, ans: '12', explain: "To get from 3 to 18, we multiply by 6. Therefore, we must multiply the top by 6 as well: 2 × 6 = 12." },
+        { n1: 5, d1: 6, n2: 20, d2: '?', ans: '24', explain: "To get from 5 to 20, we multiply by 4. Therefore, we multiply the bottom by 4: 6 × 4 = 24." },
+        { n1: 3, d1: 5, n2: '?', d2: 15, ans: '9', explain: "5 × 3 = 15. So, multiply the top by 3: 3 × 3 = 9." },
+        { n1: 4, d1: 7, n2: 14, d2: '?', ans: '24.5', explain: "14 divided by 4 is 3.5. So multiply 7 by 3.5 to get 24.5." },
+        { n1: 3, d1: 7, n2: '?', d2: 21, ans: '9', explain: "7 × 3 = 21. Multiply the top by 3: 3 × 3 = 9." },
+        { n1: 9, d1: 11, n2: 18, d2: '?', ans: '22', explain: "9 × 2 = 18. Multiply the bottom by 2: 11 × 2 = 22." },
+        { n1: '2x', d1: 5, n2: '?', d2: 10, ans: '4x', explain: "5 × 2 = 10. Multiply the numerator (2x) by 2 to get 4x." },
+        { n1: '3a', d1: 8, n2: '6a', d2: '?', ans: '16', explain: "3a × 2 = 6a. Multiply the denominator (8) by 2 to get 16." },
+        { n1: 'a', d1: 4, n2: 15, d2: 20, ans: '3', explain: "Looking right to left: 20 ÷ 5 = 4. So, 15 ÷ 5 = 3. Therefore, a = 3." },
+        { n1: '?', d1: 18, n2: 5, d2: 6, ans: '15', explain: "Looking right to left: 6 × 3 = 18. So, 5 × 3 = 15." },
+        { n1: 3, d1: '?', n2: 12, d2: 20, ans: '5', explain: "Looking right to left: 12 ÷ 4 = 3. So, 20 ÷ 4 = 5." },
+        { n1: 4, d1: '?', n2: 12, d2: 21, ans: '7', explain: "Looking right to left: 12 ÷ 3 = 4. So, 21 ÷ 3 = 7." },
+        { n1: 3, d1: '12a', n2: '?', d2: '4a', ans: '1', explain: "12a ÷ 3 = 4a. Divide the top by 3 as well: 3 ÷ 3 = 1." },
+        { n1: 5, d1: '8b', n2: 15, d2: '?', ans: '24b', explain: "5 × 3 = 15. Multiply the bottom (8b) by 3 to get 24b." },
+        { n1: 'a', d1: 'b', n2: 'ax', d2: '?', ans: 'bx', explain: "The numerator was multiplied by x (a → ax). Multiply the denominator by x to get bx." },
+        { n1: 3, d1: 5, n2: '?', d2: 5, ans: '3', explain: "The denominators are the same (5), so the numerators must be the same." },
+        { n1: 30, d1: '?', n2: 5, d2: 8, ans: '48', explain: "Looking right to left: 5 × 6 = 30. So, 8 × 6 = 48." }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let state = 'waiting'; // waiting, answered
+
+    // DOM Elements
+    const eqContainer = document.getElementById('equation-container');
+    const feedbackMsg = document.getElementById('feedback-msg');
+    const explanation = document.getElementById('explanation');
+    const submitBtn = document.getElementById('submit-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const qCurrent = document.getElementById('q-current');
+    const qTotal = document.getElementById('q-total');
+    const progressBar = document.getElementById('progress-bar');
+    const quizView = document.getElementById('quiz-view');
+    const endView = document.getElementById('end-view');
+    const finalScore = document.getElementById('final-score');
+
+    // Initialize
+    qTotal.textContent = questions.length;
+    loadQuestion();
+
+    function loadQuestion() {
+        state = 'waiting';
+        const q = questions[currentIndex];
+        
+        // Update Progress
+        qCurrent.textContent = currentIndex + 1;
+        const pct = ((currentIndex) / questions.length) * 100;
+        progressBar.style.width = `${pct}%`;
+
+        // Clear previous feedback
+        feedbackMsg.className = 'feedback-msg';
+        feedbackMsg.textContent = '';
+        explanation.style.display = 'none';
+        
+        // Toggle Buttons
+        submitBtn.classList.remove('hidden');
+        nextBtn.classList.add('hidden');
+
+        // Render Fraction HTML
+        const renderPart = (val) => {
+            if (val === '?') return `<input type="text" id="user-input" autocomplete="off">`;
+            return val;
+        };
+
+        eqContainer.innerHTML = `
+            <div class="fraction">
+                <div class="numerator">${renderPart(q.n1)}</div>
+                <div class="denominator">${renderPart(q.d1)}</div>
+            </div>
+            <div class="operator">=</div>
+            <div class="fraction">
+                <div class="numerator">${renderPart(q.n2)}</div>
+                <div class="denominator">${renderPart(q.d2)}</div>
+            </div>
+        `;
+
+        // Focus input
+        setTimeout(() => {
+            const input = document.getElementById('user-input');
+            if(input) {
+                input.focus();
+                // Add Enter key listener
+                input.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+            }
+        }, 100);
+    }
+
+    submitBtn.addEventListener('click', checkAnswer);
+
+    function checkAnswer() {
+        if (state === 'answered') return;
+
+        const input = document.getElementById('user-input');
+        if (!input.value.trim()) return; // Don't submit empty
+
+        const userVal = input.value.replace(/\s/g, '').toLowerCase();
+        const correctVal = questions[currentIndex].ans.replace(/\s/g, '').toLowerCase();
+
+        state = 'answered';
+        input.disabled = true;
+
+        if (userVal === correctVal) {
+            score++;
+            feedbackMsg.textContent = "Correct!";
+            feedbackMsg.classList.add('correct');
+        } else {
+            feedbackMsg.textContent = "Incorrect";
+            feedbackMsg.classList.add('incorrect');
+        }
+
+        // Show explanation
+        explanation.innerHTML = `
+            <strong>Answer:</strong> <span class="math-highlight">${questions[currentIndex].ans}</span><br><br>
+            ${questions[currentIndex].explain}
+        `;
+        explanation.style.display = 'block';
+
+        // Switch buttons
+        submitBtn.classList.add('hidden');
+        nextBtn.classList.remove('hidden');
+        nextBtn.focus();
+    }
+
+    nextBtn.addEventListener('click', () => {
+        currentIndex++;
+        if (currentIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showEndScreen();
+        }
+    });
+
+    function showEndScreen() {
+        quizView.classList.add('hidden');
+        endView.classList.remove('hidden');
+        finalScore.textContent = `${score}/${questions.length}`;
+        
+        // Final progress bar fill
+        progressBar.style.width = '100%';
+    }
+</script>
+
+</body>
+</html>

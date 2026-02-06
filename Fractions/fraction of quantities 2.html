@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraction of Quantities Practice</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --primary-dark: #357abd;
+            --secondary: #f5f7fa;
+            --text: #2c3e50;
+            --success: #27ae60;
+            --error: #e74c3c;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header & Progress */
+        .header {
+            padding: 20px 30px;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-track {
+            background-color: rgba(255,255,255,0.3);
+            height: 8px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .progress-fill {
+            background-color: #2ecc71;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .score-board {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+
+        .problem-display {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 30px 0;
+            color: var(--text);
+        }
+
+        .unit-hint {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        /* Input Area */
+        .input-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 12px 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 150px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-next {
+            background-color: var(--text);
+            color: white;
+            margin-top: 20px;
+            display: none; /* Hidden initially */
+        }
+
+        /* Feedback Section */
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+            display: none; /* Hidden initially */
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .feedback.correct {
+            background-color: #d4edda;
+            border-left: 5px solid var(--success);
+            color: #155724;
+        }
+
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            border-left: 5px solid var(--error);
+            color: #721c24;
+        }
+
+        .feedback h3 {
+            margin-bottom: 10px;
+        }
+
+        .explanation-step {
+            margin-bottom: 8px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .end-screen {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile tweaks */
+        @media (max-width: 480px) {
+            .problem-display { font-size: 1.8rem; }
+            .header { padding: 15px; }
+            .content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Progress Bar -->
+        <div style="position: relative; width: 100%;">
+            <div class="progress-track"></div>
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <div id="qCount">Question 1 / 15</div>
+            <div class="score-board">Score: <span id="score">0</span></div>
+        </div>
+
+        <!-- Quiz Area -->
+        <div class="content" id="quizContent">
+            <h2>Calculate</h2>
+            <div class="problem-display" id="problemText">
+                <!-- Javascript will load text here -->
+            </div>
+            <div class="unit-hint" id="unitHint">
+                <!-- Javascript will load hint here -->
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="userAnswer" placeholder="Answer" autocomplete="off">
+                <button class="btn-submit" id="submitBtn">Check</button>
+            </div>
+
+            <div class="feedback" id="feedbackArea">
+                <h3 id="feedbackTitle"></h3>
+                <div id="feedbackText"></div>
+            </div>
+
+            <button class="btn-next" id="nextBtn">Next Question &rarr;</button>
+        </div>
+
+        <!-- End Screen -->
+        <div class="end-screen" id="endScreen">
+            <h2 style="color: var(--primary);">Great Practice!</h2>
+            <p style="font-size: 1.2rem; margin: 20px 0;">You have completed all questions.</p>
+            <p style="font-size: 1.5rem; font-weight: bold;">Final Score: <span id="finalScore"></span> / 15</p>
+            <button class="btn-submit" onclick="location.reload()" style="margin-top: 20px;">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Data Structure for Questions
+        // To handle floating point issues and specific formats, we define acceptable answers explicitly or via ranges.
+        const questions = [
+            {
+                text: "(3/8) of (£4)",
+                hint: "Enter your answer in pounds (£). Example: 1.50",
+                answer: 1.50,
+                unit: "£",
+                // Explanation variables
+                total: 4, den: 8, num: 3, step1: 0.5, step2: 1.50, format: "currency"
+            },
+            {
+                text: "(3/4) of (3 hours)",
+                hint: "It is easier to convert to minutes first. Enter answer in minutes.",
+                answer: 135,
+                unit: "min",
+                // 3h = 180min. 180/4 = 45. 45*3 = 135
+                total: 180, den: 4, num: 3, step1: 45, step2: 135, format: "time_conv", originalUnit: "3 hours", convUnit: "180 minutes"
+            },
+            {
+                text: "(7/10) of (5 kg)",
+                hint: "Enter your answer in kg.",
+                answer: 3.5,
+                unit: "kg",
+                total: 5, den: 10, num: 7, step1: 0.5, step2: 3.5, format: "standard"
+            },
+            {
+                text: "(4/5) of (3 m)",
+                hint: "Enter your answer in meters (m).",
+                answer: 2.4,
+                unit: "m",
+                total: 3, den: 5, num: 4, step1: 0.6, step2: 2.4, format: "standard"
+            },
+            {
+                text: "(3/8) of (5 lb)",
+                hint: "Enter your answer in pounds (lb).",
+                answer: 1.875,
+                unit: "lb",
+                total: 5, den: 8, num: 3, step1: 0.625, step2: 1.875, format: "standard"
+            },
+            {
+                text: "(5/6) of (4 ft)",
+                hint: "Convert to inches first (1 ft = 12 in). Enter answer in inches.",
+                answer: 40,
+                unit: "in",
+                // 4ft = 48in. 48/6 = 8. 8*5 = 40.
+                total: 48, den: 6, num: 5, step1: 8, step2: 40, format: "length_conv", originalUnit: "4 ft", convUnit: "48 inches"
+            },
+            {
+                text: "(2/3) of (£2.70)",
+                hint: "Enter your answer in pounds (£).",
+                answer: 1.80,
+                unit: "£",
+                total: 2.70, den: 3, num: 2, step1: 0.90, step2: 1.80, format: "currency"
+            },
+            {
+                text: "(3/4) of (2 h 24 min)",
+                hint: "Convert total time to minutes first. Enter answer in minutes.",
+                answer: 108,
+                unit: "min",
+                // 2h = 120m + 24m = 144m. 144/4 = 36. 36*3 = 108.
+                total: 144, den: 4, num: 3, step1: 36, step2: 108, format: "time_conv", originalUnit: "2 h 24 min", convUnit: "144 minutes"
+            },
+            {
+                text: "(2/7) of (6.3 km)",
+                hint: "Enter your answer in km.",
+                answer: 1.8,
+                unit: "km",
+                total: 6.3, den: 7, num: 2, step1: 0.9, step2: 1.8, format: "standard"
+            },
+            {
+                text: "(2/9) of (1.8 m)",
+                hint: "Enter your answer in meters (m).",
+                answer: 0.4,
+                unit: "m",
+                total: 1.8, den: 9, num: 2, step1: 0.2, step2: 0.4, format: "standard"
+            },
+            {
+                text: "(5/6) of (3 lb 6 oz)",
+                hint: "Convert to ounces first (1 lb = 16 oz). Enter answer in ounces (oz).",
+                answer: 45,
+                unit: "oz",
+                // 3*16=48+6=54. 54/6=9. 9*5=45.
+                total: 54, den: 6, num: 5, step1: 9, step2: 45, format: "weight_conv", originalUnit: "3 lb 6 oz", convUnit: "54 oz"
+            },
+            {
+                text: "(3/10) of (5.6 g)",
+                hint: "Enter your answer in grams (g).",
+                answer: 1.68,
+                unit: "g",
+                total: 5.6, den: 10, num: 3, step1: 0.56, step2: 1.68, format: "standard"
+            },
+            {
+                text: "(5/7) of (2 ft 11 in)",
+                hint: "Convert to inches first (1 ft = 12 in). Enter answer in inches.",
+                answer: 25,
+                unit: "in",
+                // 2*12=24+11=35. 35/7=5. 5*5=25.
+                total: 35, den: 7, num: 5, step1: 5, step2: 25, format: "length_conv", originalUnit: "2 ft 11 in", convUnit: "35 inches"
+            },
+            {
+                text: "(2/11) of (£3.41)",
+                hint: "Enter your answer in pounds (£).",
+                answer: 0.62,
+                unit: "£",
+                total: 3.41, den: 11, num: 2, step1: 0.31, step2: 0.62, format: "currency"
+            },
+            {
+                text: "(2/9) of (4.32 kg)",
+                hint: "Enter your answer in kg.",
+                answer: 0.96,
+                unit: "kg",
+                total: 4.32, den: 9, num: 2, step1: 0.48, step2: 0.96, format: "standard"
+            }
+        ];
+
+        let currentQIndex = 0;
+        let score = 0;
+
+        // DOM Elements
+        const problemText = document.getElementById('problemText');
+        const unitHint = document.getElementById('unitHint');
+        const userInput = document.getElementById('userAnswer');
+        const submitBtn = document.getElementById('submitBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const feedbackArea = document.getElementById('feedbackArea');
+        const feedbackTitle = document.getElementById('feedbackTitle');
+        const feedbackText = document.getElementById('feedbackText');
+        const qCount = document.getElementById('qCount');
+        const scoreDisplay = document.getElementById('score');
+        const progressBar = document.getElementById('progressBar');
+        const quizContent = document.getElementById('quizContent');
+        const endScreen = document.getElementById('endScreen');
+
+        // Initial Load
+        loadQuestion();
+
+        // Key Press Enter to Submit
+        userInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                if(submitBtn.style.display !== "none") {
+                    submitBtn.click();
+                } else {
+                    nextBtn.click();
+                }
+            }
+        });
+
+        function loadQuestion() {
+            const q = questions[currentQIndex];
+            
+            // Update UI
+            problemText.innerText = q.text;
+            unitHint.innerText = q.hint;
+            userInput.value = "";
+            userInput.disabled = false;
+            userInput.focus();
+            
+            // Reset States
+            feedbackArea.style.display = "none";
+            feedbackArea.className = "feedback";
+            submitBtn.style.display = "inline-block";
+            nextBtn.style.display = "none";
+            
+            // Update Progress
+            qCount.innerText = `Question ${currentQIndex + 1} / ${questions.length}`;
+            let progressPct = (currentQIndex / questions.length) * 100;
+            progressBar.style.width = `${progressPct}%`;
+        }
+
+        submitBtn.onclick = function() {
+            const q = questions[currentQIndex];
+            let userVal = userInput.value.trim();
+
+            // Simple cleaning: remove currency symbols or common units if user typed them
+            userVal = userVal.replace(/[£$kgmlbozftin]/gi, ''); 
+            
+            if(userVal === "") return; // Do nothing if empty
+
+            const userNum = parseFloat(userVal);
+            
+            // Precision check for floating points (epsilon check)
+            const isCorrect = Math.abs(userNum - q.answer) < 0.00001;
+
+            userInput.disabled = true;
+            submitBtn.style.display = "none";
+            nextBtn.style.display = "inline-block";
+            feedbackArea.style.display = "block";
+
+            if (isCorrect) {
+                score++;
+                scoreDisplay.innerText = score;
+                showFeedback(true, q);
+            } else {
+                showFeedback(false, q);
+            }
+            
+            // Update progress bar to include current completion
+            let progressPct = ((currentQIndex + 1) / questions.length) * 100;
+            progressBar.style.width = `${progressPct}%`;
+            
+            nextBtn.focus();
+        };
+
+        nextBtn.onclick = function() {
+            currentQIndex++;
+            if (currentQIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showEndScreen();
+            }
+        };
+
+        function showFeedback(correct, q) {
+            if (correct) {
+                feedbackArea.classList.add('correct');
+                feedbackTitle.innerText = "Correct! Well done.";
+            } else {
+                feedbackArea.classList.add('incorrect');
+                feedbackTitle.innerText = "Not quite.";
+            }
+
+            let explanationHTML = "";
+
+            // Dynamic explanation generation
+            if (q.format === "currency") {
+                explanationHTML += `<div class="explanation-step"><strong>1. Divide by the bottom number (denominator):</strong><br>£${q.total.toFixed(2)} ÷ ${q.den} = £${q.step1.toFixed(2)}</div>`;
+                explanationHTML += `<div class="explanation-step"><strong>2. Multiply by the top number (numerator):</strong><br>£${q.step1.toFixed(2)} × ${q.num} = <strong>£${q.step2.toFixed(2)}</strong></div>`;
+            } 
+            else if (q.format === "standard") {
+                explanationHTML += `<div class="explanation-step"><strong>1. Divide:</strong> ${q.total} ÷ ${q.den} = ${q.step1}</div>`;
+                explanationHTML += `<div class="explanation-step"><strong>2. Multiply:</strong> ${q.step1} × ${q.num} = <strong>${q.step2} ${q.unit}</strong></div>`;
+            }
+            else if (["time_conv", "length_conv", "weight_conv"].includes(q.format)) {
+                explanationHTML += `<div class="explanation-step"><strong>1. Convert units:</strong><br>${q.originalUnit} = ${q.convUnit}</div>`;
+                explanationHTML += `<div class="explanation-step"><strong>2. Divide by denominator:</strong><br>${q.total} ÷ ${q.den} = ${q.step1}</div>`;
+                explanationHTML += `<div class="explanation-step"><strong>3. Multiply by numerator:</strong><br>${q.step1} × ${q.num} = <strong>${q.step2} ${q.unit}</strong></div>`;
+            }
+
+            feedbackText.innerHTML = explanationHTML;
+        }
+
+        function showEndScreen() {
+            quizContent.style.display = "none";
+            document.querySelector('.header').style.display = "none";
+            document.getElementById('finalScore').innerText = score;
+            endScreen.style.display = "block";
+            
+            // Fire confetti effect logic could go here, but keeping it simple/self-contained.
+        }
+    </script>
+</body>
+</html>

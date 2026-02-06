@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 6 Maths Mission: SATs Practice</title>
+    <style>
+        /* --- CSS Variables & Reset --- */
+        :root {
+            --primary: #6C5CE7;
+            --secondary: #00CEC9;
+            --accent: #FD79A8;
+            --bg-dark: #2D3436;
+            --bg-panel: #dfe6e9;
+            --text-main: #2d3436;
+            --success: #00b894;
+            --error: #d63031;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* --- Main Container --- */
+        .app-container {
+            background: white;
+            width: 100%;
+            max-width: 700px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Header & Progress --- */
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            background: rgba(255,255,255,0.3);
+            height: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--secondary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* --- Screens --- */
+        .screen {
+            flex: 1;
+            padding: 30px;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* --- Start Screen --- */
+        .hero-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            background: #5849be;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn.secondary {
+            background: var(--secondary);
+            color: var(--bg-dark);
+        }
+
+        /* --- Quiz Screen --- */
+        .question-card {
+            background: #f9f9f9;
+            border-left: 5px solid var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        input[type="number"] {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #b2bec3;
+            border-radius: 10px;
+            width: 60%;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* --- Feedback Overlay --- */
+        .feedback-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .feedback-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .feedback-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .feedback-explanation {
+            font-size: 1.1rem;
+            color: #636e72;
+            margin-bottom: 25px;
+            max-width: 80%;
+            line-height: 1.5;
+        }
+
+        /* --- End Screen --- */
+        .score-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .badge {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .pop {
+            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Utilities */
+        .hidden { display: none !important; }
+        
+        .correct-text { color: var(--success); }
+        .wrong-text { color: var(--error); }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <h1>🚀 Mission Maths: SATs Prep</h1>
+            <div class="subtitle">Year 6 Word Problem Challenge</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </header>
+
+        <!-- Start Screen -->
+        <section id="start-screen" class="screen active">
+            <div class="hero-icon">👩‍🚀</div>
+            <h2>Ready for Lift Off?</h2>
+            <p style="margin: 15px 0 25px 0; color: #636e72; max-width: 400px;">
+                You are about to face 12 challenging word problems. 
+                Includes addition, subtraction, multiplication, division, fractions, and multi-step reasoning.
+            </p>
+            <button class="btn" onclick="app.startGame()">Start Mission</button>
+        </section>
+
+        <!-- Quiz Screen -->
+        <section id="quiz-screen" class="screen">
+            <div class="question-card">
+                <div class="question-text" id="question-text">
+                    Loading question...
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <input type="number" id="answer-input" placeholder="Type answer here..." step="0.01" onkeydown="if(event.key === 'Enter') app.checkAnswer()">
+            </div>
+            
+            <button class="btn" onclick="app.checkAnswer()">Check Answer</button>
+            <div style="margin-top: 10px; font-size: 0.9rem; color: #b2bec3;">Press Enter to submit</div>
+        </section>
+
+        <!-- Feedback Overlay (Appears over Quiz) -->
+        <div id="feedback-overlay" class="feedback-overlay">
+            <div id="feedback-icon" class="feedback-icon"></div>
+            <div id="feedback-title" class="feedback-title"></div>
+            <div id="feedback-explanation" class="feedback-explanation"></div>
+            <button id="next-btn" class="btn" onclick="app.nextQuestion()">Next Question ➜</button>
+        </div>
+
+        <!-- End Screen -->
+        <section id="end-screen" class="screen">
+            <div class="badge" id="final-badge">🏆</div>
+            <h2>Mission Complete!</h2>
+            <div class="score-display">Score: <span id="final-score">0</span> / 12</div>
+            <p id="final-message" style="margin-bottom: 20px;">Great effort!</p>
+            <button class="btn secondary" onclick="app.startGame()">Try Again ↻</button>
+        </section>
+
+        <canvas id="confetti-canvas"></canvas>
+    </div>
+
+    <script>
+        /**
+         * Question Data Bank
+         * Tailored for UK Year 6 (SATs level) covering mixed operations and reasoning.
+         */
+        const questions = [
+            {
+                text: "A shop sells apples for 35p each. Sarah buys 4 apples. How much change does she get from £2.00?",
+                answer: 0.60,
+                explanation: "Cost: 35p × 4 = 140p (£1.40). Change: £2.00 - £1.40 = 60p.",
+                unit: "£ or 0.60"
+            },
+            {
+                text: "There are 1,250 people at a concert. 420 are adults. How many are children?",
+                answer: 830,
+                explanation: "Subtract the adults from the total: 1250 - 420 = 830 children.",
+                unit: ""
+            },
+            {
+                text: "A rectangle has a length of 12cm and a width of 5cm. What is the area of the rectangle?",
+                answer: 60,
+                explanation: "Area = Length × Width. 12 × 5 = 60cm².",
+                unit: "cm²"
+            },
+            {
+                text: "A baker bakes 240 muffins. He packs them into boxes of 6. How many boxes does he need?",
+                answer: 40,
+                explanation: "240 ÷ 6 = 40 boxes.",
+                unit: "boxes"
+            },
+            {
+                text: "Ali had £15.50. He spent £8.75 on a book and £2.50 on a pen. How much money does he have left?",
+                answer: 4.25,
+                explanation: "Total spent: £8.75 + £2.50 = £11.25. Remaining: £15.50 - £11.25 = £4.25.",
+                unit: "£"
+            },
+            {
+                text: "What is 3/4 of 48?",
+                answer: 36,
+                explanation: "First find 1/4 (48 ÷ 4 = 12). Then multiply by 3 (12 × 3 = 36).",
+                unit: ""
+            },
+            {
+                text: "A train leaves at 14:45 and arrives at 16:20. How many minutes does the journey take?",
+                answer: 95,
+                explanation: "From 14:45 to 15:45 is 60 mins. From 15:45 to 16:20 is 35 mins. Total = 60 + 35 = 95 minutes.",
+                unit: "mins"
+            },
+            {
+                text: "A bottle holds 1.5 litres of juice. Sam pours 300ml into a glass. How many millilitres are left in the bottle?",
+                answer: 1200,
+                explanation: "Convert 1.5L to 1500ml. 1500 - 300 = 1200ml.",
+                unit: "ml"
+            },
+            {
+                text: "There are 25 red marbles and 35 blue marbles in a bag. What fraction of the marbles are red? (Give your answer in simplest form, e.g. 1/2)",
+                // This is a text input question handled specially
+                type: "text",
+                answer: ["5/12", "5 / 12"], // Allow variations
+                explanation: "Total marbles = 25 + 35 = 60. Fraction red = 25/60. Divide both by 5 = 5/12.",
+                unit: ""
+            },
+            {
+                text: "A square playground has a perimeter of 80m. What is the length of one side?",
+                answer: 20,
+                explanation: "A square has 4 equal sides. 80m ÷ 4 = 20m.",
+                unit: "m"
+            },
+            {
+                text: "Tom buys 3 packs of stickers. Each pack has 24 stickers. He gives 15 to his friend. How many stickers does Tom have left?",
+                answer: 57,
+                explanation: "Total stickers: 3 × 24 = 72. Leftover: 72 - 15 = 57.",
+                unit: ""
+            },
+            {
+                text: "A pizza is cut into 8 equal slices. If Jack eats 3 slices and Jill eats 2 slices, what fraction of the pizza is left? (e.g. 1/4)",
+                type: "text",
+                answer: ["3/8", "3 / 8"],
+                explanation: "Total eaten: 3 + 2 = 5 slices. Left: 8 - 5 = 3 slices. Fraction = 3/8.",
+                unit: ""
+            }
+        ];
+
+        /**
+         * App Logic
+         */
+        const app = {
+            currentQuestionIndex: 0,
+            score: 0,
+            
+            // DOM Elements
+            screens: {
+                start: document.getElementById('start-screen'),
+                quiz: document.getElementById('quiz-screen'),
+                end: document.getElementById('end-screen')
+            },
+            elements: {
+                questionText: document.getElementById('question-text'),
+                input: document.getElementById('answer-input'),
+                progressBar: document.getElementById('progress-bar'),
+                feedbackOverlay: document.getElementById('feedback-overlay'),
+                feedbackIcon: document.getElementById('feedback-icon'),
+                feedbackTitle: document.getElementById('feedback-title'),
+                feedbackExplanation: document.getElementById('feedback-explanation'),
+                nextBtn: document.getElementById('next-btn'),
+                finalScore: document.getElementById('final-score'),
+                finalBadge: document.getElementById('final-badge'),
+                finalMessage: document.getElementById('final-message'),
+                canvas: document.getElementById('confetti-canvas')
+            },
+
+            startGame: function() {
+                this.currentQuestionIndex = 0;
+                this.score = 0;
+                this.switchScreen('quiz');
+                this.loadQuestion();
+                this.clearConfetti();
+            },
+
+            switchScreen: function(screenName) {
+                Object.values(this.screens).forEach(s => s.classList.remove('active'));
+                this.screens[screenName].classList.add('active');
+            },
+
+            loadQuestion: function() {
+                const q = questions[this.currentQuestionIndex];
+                this.elements.questionText.textContent = `${this.currentQuestionIndex + 1}. ${q.text}`;
+                this.elements.input.value = '';
+                this.elements.input.type = (q.type === 'text') ? 'text' : 'number';
+                this.elements.input.focus();
+                this.updateProgress();
+                this.elements.feedbackOverlay.style.display = 'none';
+            },
+
+            updateProgress: function() {
+                const percentage = ((this.currentQuestionIndex) / questions.length) * 100;
+                this.elements.progressBar.style.width = `${percentage}%`;
+            },
+
+            checkAnswer: function() {
+                const q = questions[this.currentQuestionIndex];
+                const userVal = this.elements.input.value.trim();
+                
+                if (userVal === '') return; // Do nothing if empty
+
+                let isCorrect = false;
+
+                if (q.type === 'text') {
+                    // Handle text answers (fractions)
+                    if (q.answer.includes(userVal)) {
+                        isCorrect = true;
+                    }
+                } else {
+                    // Handle numeric answers
+                    // Allow small margin of error for floating point math
+                    if (Math.abs(parseFloat(userVal) - q.answer) < 0.01) {
+                        isCorrect = true;
+                    }
+                }
+
+                this.showFeedback(isCorrect, q);
+            },
+
+            showFeedback: function(isCorrect, q) {
+                const overlay = this.elements.feedbackOverlay;
+                const icon = this.elements.feedbackIcon;
+                const title = this.elements.feedbackTitle;
+                const explanation = this.elements.feedbackExplanation;
+                const btn = this.elements.nextBtn;
+                const quizCard = document.querySelector('.question-card');
+
+                overlay.style.display = 'flex';
+                explanation.textContent = q.explanation;
+
+                if (isCorrect) {
+                    this.score++;
+                    icon.textContent = '🌟';
+                    title.textContent = 'Correct!';
+                    title.className = 'feedback-title correct-text pop';
+                    btn.className = 'btn secondary';
+                    this.fireConfetti();
+                } else {
+                    icon.textContent = '🤔';
+                    title.textContent = 'Not quite!';
+                    title.className = 'feedback-title wrong-text';
+                    btn.className = 'btn';
+                    // Shake effect on the card
+                    quizCard.classList.remove('shake');
+                    void quizCard.offsetWidth; // trigger reflow
+                    quizCard.classList.add('shake');
+                }
+
+                // Update button text if last question
+                if (this.currentQuestionIndex === questions.length - 1) {
+                    btn.textContent = 'Finish Mission 🏁';
+                } else {
+                    btn.textContent = 'Next Question ➜';
+                }
+            },
+
+            nextQuestion: function() {
+                this.currentQuestionIndex++;
+                if (this.currentQuestionIndex < questions.length) {
+                    this.loadQuestion();
+                } else {
+                    this.endGame();
+                }
+            },
+
+            endGame: function() {
+                this.switchScreen('end');
+                this.elements.finalScore.textContent = this.score;
+                this.elements.progressBar.style.width = '100%';
+
+                // Set badge and message based on score
+                if (this.score === questions.length) {
+                    this.elements.finalBadge.textContent = '🥇';
+                    this.elements.finalMessage.textContent = "Perfect Score! You're a Maths Genius!";
+                    this.fireConfetti(); // Big finish
+                } else if (this.score >= questions.length * 0.7) {
+                    this.elements.finalBadge.textContent = '🥈';
+                    this.elements.finalMessage.textContent = "Great Job! You're well prepared for SATs!";
+                } else {
+                    this.elements.finalBadge.textContent = '🥉';
+                    this.elements.finalMessage.textContent = "Good effort! Keep practising to master these topics.";
+                }
+            },
+
+            /* --- Confetti Effect (Simple Implementation) --- */
+            confettiCtx: null,
+            confettiParticles: [],
+            animationId: null,
+
+            clearConfetti: function() {
+                if (this.animationId) cancelAnimationFrame(this.animationId);
+                const ctx = this.elements.canvas.getContext('2d');
+                ctx.clearRect(0, 0, this.elements.canvas.width, this.elements.canvas.height);
+                this.confettiParticles = [];
+            },
+
+            fireConfetti: function() {
+                const canvas = this.elements.canvas;
+                canvas.width = canvas.parentElement.offsetWidth;
+                canvas.height = canvas.parentElement.offsetHeight;
+                const ctx = canvas.getContext('2d');
+                
+                const colors = ['#6C5CE7', '#00CEC9', '#FD79A8', '#FAB1A0', '#FFEAA7'];
+                
+                // Create particles
+                for(let i=0; i<50; i++) {
+                    this.confettiParticles.push({
+                        x: canvas.width / 2,
+                        y: canvas.height / 2,
+                        w: Math.random() * 10 + 5,
+                        h: Math.random() * 5 + 5,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        vx: (Math.random() - 0.5) * 10,
+                        vy: (Math.random() - 0.5) * 10 - 5,
+                        gravity: 0.2
+                    });
+                }
+
+                const animate = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    let active = false;
+                    
+                    this.confettiParticles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += p.gravity;
+                        
+                        if (p.y < canvas.height) active = true;
+
+                        ctx.fillStyle = p.color;
+                        ctx.fillRect(p.x, p.y, p.w, p.h);
+                    });
+
+                    if (active) {
+                        this.animationId = requestAnimationFrame(animate);
+                    }
+                };
+                
+                animate();
+            }
+        };
+
+        // Initialize app on load (optional, but good practice)
+        window.addEventListener('DOMContentLoaded', () => {
+            // Pre-warm canvas size
+            app.elements.canvas.width = app.elements.canvas.parentElement.offsetWidth;
+            app.elements.canvas.height = app.elements.canvas.parentElement.offsetHeight;
+        });
+
+    </script>
+</body>
+</html>

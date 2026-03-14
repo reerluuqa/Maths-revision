@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>11 Times Table Practice</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        h1 { font-size: 1.5rem; margin-bottom: 20px; color: #333; }
+        .question { font-size: 2rem; margin: 20px 0; font-weight: bold; }
+        input { 
+            width: 80%; 
+            padding: 10px; 
+            font-size: 1.5rem; 
+            text-align: center; 
+            border: 2px solid #ddd; 
+            border-radius: 4px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+        }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        
+        .feedback { margin-top: 15px; font-weight: bold; min-height: 24px;}
+        .score-board { margin-top: 20px; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Practice 11s</h1>
+    
+    <div class="question">11 x <span id="num">?</span> = ?</div>
+    
+    <input type="number" id="answer" placeholder="?" disabled>
+    
+    <button id="checkBtn">CHECK</button>
+    <button id="nextBtn" style="display:none;">NEXT</button>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="score-board">Correct: <span id="count">0</span></div>
+</div>
+
+<script>
+    let currentNum = 0;
+    let correctCount = 0;
+    
+    const numSpan = document.getElementById('num');
+    const inputField = document.getElementById('answer');
+    const checkBtn = document.getElementById('checkBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const feedbackEl = document.getElementById('feedback');
+    const countEl = document.getElementById('count');
+
+    function generateQuestion() {
+        // Generate random number 1-12
+        currentNum = Math.floor(Math.random() * 12) + 1;
+        
+        numSpan.textContent = currentNum;
+        inputField.value = '';
+        inputField.disabled = false;
+        checkBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'none';
+        feedbackEl.textContent = '';
+    }
+
+    function checkAnswer() {
+        const userVal = parseInt(inputField.value);
+        const correctVal = 11 * currentNum;
+
+        if (userVal === correctVal) {
+            feedbackEl.textContent = "Correct!";
+            feedbackEl.style.color = "green";
+            correctCount++;
+            countEl.textContent = correctCount;
+            
+            // Disable input and show next button immediately for flow
+            inputField.disabled = true;
+            checkBtn.style.display = 'none';
+            nextBtn.style.display = 'inline-block';
+        } else {
+            feedbackEl.textContent = "Try again";
+            feedbackEl.style.color = "red";
+        }
+    }
+
+    // Initialize first question
+    generateQuestion();
+
+    // Event Listeners
+    checkBtn.addEventListener('click', checkAnswer);
+    
+    nextBtn.addEventListener('click', () => {
+        inputField.value = '';
+        generateQuestion();
+    });
+
+    // Allow pressing "Enter" to submit
+    inputField.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+
+</script>
+
+</body>
+</html>

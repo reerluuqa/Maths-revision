@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2 Times Table Practice</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        h1 { margin-top: 0; font-size: 1.5rem; color: #333; }
+
+        .question-box {
+            font-size: 2rem;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input[type="number"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            margin: 5px;
+            transition: background 0.2s;
+        }
+
+        #check-btn { background-color: #007bff; color: white; width: 100%; }
+        #check-btn:hover { background-color: #0056b3; }
+
+        #next-btn { 
+            background-color: #28a745; 
+            color: white; 
+            display: none; /* Hidden by default */
+        }
+        
+        .message { font-weight: bold; margin-bottom: 10px; min-height: 1.5em;}
+        .correct { color: green; }
+        .wrong { color: red; }
+
+        #counter { margin-top: 20px; font-size: 0.9rem; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>2 Times Table</h1>
+    
+    <div id="question" class="question-box"></div>
+    
+    <input type="number" id="answer-input" placeholder="?">
+    
+    <button id="check-btn" onclick="checkAnswer()">CHECK</button>
+    <button id="next-btn" onclick="generateQuestion()">NEXT</button>
+    
+    <div id="message" class="message"></div>
+
+    <div id="counter">Correct: 0</div>
+</div>
+
+<script>
+    let correctAnswer;
+    let currentNumber;
+    let score = 0;
+
+    function generateQuestion() {
+        // Reset UI state
+        document.getElementById('answer-input').value = '';
+        document.getElementById('message').innerHTML = '';
+        document.getElementById('check-btn').style.display = 'block';
+        document.getElementById('next-btn').style.display = 'none';
+        
+        // Generate random number 1-12
+        currentNumber = Math.floor(Math.random() * 12) + 1;
+        correctAnswer = currentNumber * 2;
+
+        // Update DOM
+        document.getElementById('question').textContent = `2 x ${currentNumber} = ?`;
+    }
+
+    function checkAnswer() {
+        const input = document.getElementById('answer-input');
+        const userVal = parseInt(input.value);
+        const msgDiv = document.getElementById('message');
+
+        if (isNaN(userVal)) {
+            msgDiv.textContent = "Please enter a number";
+            msgDiv.className = "message wrong";
+            return;
+        }
+
+        if (userVal === correctAnswer) {
+            // Correct Logic
+            score++;
+            document.getElementById('counter').textContent = `Correct: ${score}`;
+            
+            msgDiv.textContent = "Correct!";
+            msgDiv.className = "message correct";
+            
+            // Enable Next, Disable Check
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        } else {
+            // Incorrect Logic
+            msgDiv.textContent = "Try again";
+            msgDiv.className = "message wrong";
+            
+            // Keep check button visible, clear input for new attempt
+            input.value = '';
+            input.focus();
+        }
+    }
+
+    // Initialize on load
+    generateQuestion();
+</script>
+
+</body>
+</html>

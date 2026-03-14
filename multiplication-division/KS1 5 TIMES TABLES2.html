@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Times Table Practice</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: reset; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.05);
+        }
+        
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d3c58;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #6c7a8b;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        
+        .question-box {
+            background: #e3f2fd;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+        
+        .question-text {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1976d2;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+        
+        input[type="number"] {
+            flex: 1;
+            font-size: 24px;
+            padding: 16px 12px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        
+        input[type="number"]:focus {
+            border-color: #1976d2;
+            box-shadow: 0 0 0 4px #1976d2, 0 3px 6px rgba(0,0,0,0.1);
+        }
+        
+        /* Remove spin buttons from number input */
+        input[type="number"]::-webkit-inner-spin-button { display: none; }
+        input[type="number"]::-webkit-outer-spin-box { display: none; }
+        
+        .buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        button {
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+        
+        .check-btn {
+            background: #1976d2;
+            color: white;
+        }
+        
+        .check-btn:hover:not(:disabled) {
+            background: #2196f3;
+            transform: translateY(-2px);
+        }
+        
+        .next-btn {
+            background: #e0e6ed;
+            color: #5c6874;
+        }
+        
+        .next-btn:hover:not(:disabled) {
+            background: #f0f5ff;
+            transform: translateY(-2px);
+        }
+        
+        .next-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .feedback {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            min-height: 64px;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #a94445;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f5ff;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 8px 16px;
+            background: #fafbff;
+            border-radius: 8px;
+            min-width: 80px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1976d2;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #6c7a8b;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Answer display (hidden by default) */
+        .answer-display {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1976d2;
+            text-align: center;
+            margin-top: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .answer-display.visible {
+            opacity: 1;
+        }
+        
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        
+        .shake {
+            animation: shake 0.4s ease;
+        }
+        
+        .answer-display.correct {
+            color: #2e7d33;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="title">5 Times Table Practice</h1>
+        <p class="subtitle">Practice your multiplication skills!</p>
+        
+        <!-- Question Display -->
+        <div class="question-box" id="questionBox">
+            <div class="question-text" id="questionText">Loading...</div>
+        </div>
+        
+        <!-- Answer Input and Buttons -->
+        <div class="input-wrapper">
+            <input type="number" id="answerInput" placeholder="?"/>
+            
+            <button class="check-btn" id="checkBtn" disabled>Check</button>
+            <button class="next-btn" id="nextBtn" disabled>Next</button>
+        </div>
+        
+        <!-- Feedback Message -->
+        <div class="feedback" id="feedback"></div>
+        
+        <!-- Stats Counter -->
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-value" id="correctCount">0</span>
+                <span class="stat-label">Correct</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="incorrectCount">0</span>
+                <span class="stat-label">Wrong</span>
+            </div>
+        </div>
+        
+        <!-- Show answer after correct response -->
+        <div class="answer-display" id="answerDisplay"></div>
+    </div>
+
+    <script>
+        // App State
+        let currentMultiplier = 5;
+        let currentQuestionNumber;
+        let currentAnswer;
+        let correctAttempts = 0;
+        let incorrectAttempts = 0;
+        
+        // DOM Elements
+        const questionText = document.getElementById('questionText');
+        const answerInput = document.getElementById('answerInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const feedback = document.getElementById('feedback');
+        const questionBox = document.getElementById('questionBox');
+        const answerDisplay = document.getElementById('answerDisplay');
+        
+        // State indicators for buttons
+        let isAnswered = false;
+
+        function generateQuestion() {
+            // Generate random number 1-12
+            currentQuestionNumber = Math.floor(Math.random() * 12) + 1;
+            
+            // Calculate answer (5 x questionNumber)
+            currentAnswer = 5 * currentQuestionNumber;
+            
+            // Update UI
+            questionText.textContent = `5 × ${currentQuestionNumber} = ?`;
+            answerInput.value = '';
+            answerDisplay.classList.remove('visible');
+            
+            // Reset states for new question
+            isAnswered = false;
+            
+            // Enable input and buttons
+            answerInput.disabled = false;
+            answerInput.focus();
+            checkBtn.disabled = false;
+            nextBtn.disabled = true;
+            
+            // Hide previous answer display
+            answerDisplay.classList.remove('visible');
+        }
+
+        function showFeedback(isCorrect, attemptNumber) {
+            if (isCorrect) {
+                feedback.textContent = "Correct! Great job!";
+                feedback.className = "feedback correct";
+                isAnswered = true;          // ← ADD HERE
+                nextBtn.disabled = false;   // ← AND HERE
+                
+                // Show the actual answer
+                answerDisplay.textContent = `Answer: ${currentAnswer}`;
+                answerDisplay.classList.add('visible');
+                
+                // Update counters
+                correctAttempts++;
+                
+            } else {
+                feedback.textContent = "Try again! The answer is different.";
+                feedback.className = "feedback incorrect";
+                
+                // Show the correct answer (reveal)
+                answerDisplay.textContent = `Answer: ${currentAnswer}`;
+                answerDisplay.classList.add('visible');
+                
+                // Update counters
+                incorrectAttempts++;
+                
+                // Shake animation on input box
+                questionBox.classList.remove('shake');
+                void questionBox.offsetWidth; // Trigger reflow to restart animation
+                questionBox.classList.add('shake');
+            }
+            
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('correctCount').textContent = correctAttempts;
+            document.getElementById('incorrectCount').textContent = incorrectAttempts;
+        }
+
+        // Input handler - auto-advance on Enter key
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        function checkAnswer() {
+            const userAnswer = parseInt(answerInput.value);
+            
+            // Validate input - must be a valid number
+            if (isNaN(userAnswer)) return;
+            
+            if (userAnswer === currentAnswer) {
+                showFeedback(true, 0);
+            } else {
+                showFeedback(false, 0);
+            }
+        }
+
+        function nextQuestion() {
+            // Generate a new random question
+            generateQuestion();
+        }
+
+        // Button event listeners
+        checkBtn.addEventListener('click', checkAnswer);
+        
+        nextBtn.addEventListener('click', () => {
+            // Only allow next if answer is correct
+            if (isAnswered) {
+                nextQuestion();
+            } else {
+                // Allow retry before answering correctly
+                answerInput.value = '';
+                feedback.textContent = "Not quite right. Try again!";
+                feedback.className = "feedback incorrect";
+                
+                // Show the correct answer (reveal after multiple wrong attempts)
+                answerDisplay.classList.add('visible');
+            }
+        });
+
+        // Initialize - generate first question on load
+        window.onload = generateQuestion;
+    </script>
+</body>
+</html>

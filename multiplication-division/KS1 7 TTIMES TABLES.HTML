@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7 Times Table Practice</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        h1 { margin-top: 0; color: #333; font-size: 1.5rem; }
+
+        .question-box {
+            font-size: 2rem;
+            margin: 1rem 0;
+            color: #2c3e50;
+        }
+
+        input[type="number"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            margin: 5px;
+            transition: background 0.2s;
+        }
+
+        #checkBtn { background-color: #3498db; color: white; width: 100%; }
+        #checkBtn:hover { background-color: #2980b9; }
+        
+        #nextBtn { 
+            background-color: #27ae60; 
+            color: white; 
+            display: none; /* Hidden by default */
+        }
+        #nextBtn:hover { background-color: #1e8449; }
+
+        .feedback {
+            height: 1.5rem;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .counter {
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>7 Times Table</h1>
+    
+    <div class="question-box" id="questionDisplay">7 x ? = ?</div>
+    
+    <input type="number" id="answerInput" placeholder="?" autocomplete="off">
+    
+    <button id="checkBtn" onclick="checkAnswer()">CHECK</button>
+    <button id="nextBtn" onclick="generateQuestion()">NEXT</button>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="counter">Attempts: <span id="attemptCount">0</span></div>
+</div>
+
+<script>
+    let currentNumber = 1;
+    let attemptCount = 0;
+    
+    function generateQuestion() {
+        // Reset UI state
+        document.getElementById('answerInput').value = '';
+        document.getElementById('checkBtn').style.display = 'block';
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('feedback').innerText = '';
+        
+        // Generate random number 1-12
+        currentNumber = Math.floor(Math.random() * 12) + 1;
+        
+        // Update question display (e.g., "7 x 5 = ?")
+        const questionText = `7 x ${currentNumber} = ?`;
+        document.getElementById('questionDisplay').innerText = questionText;
+    }
+
+    function checkAnswer() {
+        let userAnswer = parseInt(document.getElementById('answerInput').value);
+        
+        if (isNaN(userAnswer)) return; // Do nothing if empty
+
+        attemptCount++;
+        document.getElementById('attemptCount').innerText = attemptCount;
+
+        const correctAnswer = 7 * currentNumber;
+
+        if (userAnswer === correctAnswer) {
+            document.getElementById('feedback').style.color = 'green';
+            document.getElementById('feedback').innerText = "Correct!";
+            
+            // Enable Next, Disable Check
+            document.getElementById('checkBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        } else {
+            document.getElementById('feedback').style.color = 'red';
+            document.getElementById('feedback').innerText = "Try again";
+            
+            // Keep buttons enabled to retry immediately
+            document.getElementById('checkBtn').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+    }
+
+    // Allow pressing "Enter" key to submit
+    document.getElementById("answerInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            checkAnswer();
+        }
+    });
+
+    // Start the app on load
+    generateQuestion();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12 Times Table Practice</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #87CEEB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        h1 { margin-top: 0; font-size: 1.5rem; color: #333; }
+        
+        .stats { font-size: 0.9rem; color: #666; margin-bottom: 20px; }
+
+        .question-box {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #2c3e50;
+        }
+
+        input[type="number"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            margin: 5px;
+            transition: background 0.2s;
+        }
+
+        #check-btn { background-color: #3498db; color: white; width: 100%; }
+        #check-btn:hover { background-color: #2980b9; }
+        
+        #next-btn { background-color: #27ae60; color: white; display: none; }
+        #next-btn:hover { background-color: #219150; }
+
+        .feedback { margin-top: 15px; font-weight: bold; min-height: 1.2em; }
+        .correct { color: #27ae60; }
+        .incorrect { color: #c0392b; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>12 Times Table</h1>
+    
+    <div class="stats">Attempts: <span id="counter">0</span></div>
+
+    <div class="question-box" id="question"></div>
+    
+    <input type="number" id="answer-input" placeholder="?" autocomplete="off">
+    
+    <button id="check-btn">Check</button>
+    <button id="next-btn">Next Question</button>
+
+    <p class="feedback" id="message"></p>
+</div>
+
+<script>
+    // State variables
+    let currentMultiplier = 0;
+    let attempts = 0;
+
+    // DOM Elements
+    const questionEl = document.getElementById('question');
+    const inputEl = document.getElementById('answer-input');
+    const checkBtn = document.getElementById('check-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const msgEl = document.getElementById('message');
+    const counterEl = document.getElementById('counter');
+
+    // Generate Random Number (1-12)
+    function generateQuestion() {
+        currentMultiplier = Math.floor(Math.random() * 12) + 1;
+        questionEl.textContent = `12 x ${currentMultiplier} = ?`;
+        inputEl.value = '';
+        inputEl.focus();
+        
+        // Reset UI state
+        msgEl.textContent = '';
+        msgEl.className = 'feedback';
+        checkBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'none';
+    }
+
+    // Check Answer Logic
+    function checkAnswer() {
+        const userVal = parseInt(inputEl.value);
+        
+        if (isNaN(userVal)) return; // Do nothing if empty
+
+        attempts++;
+        counterEl.textContent = attempts;
+
+        const correctAnswer = 12 * currentMultiplier;
+
+        if (userVal === correctAnswer) {
+            msgEl.textContent = "Correct!";
+            msgEl.classList.add('correct');
+            
+            checkBtn.style.display = 'none'; // Hide check button after success
+            nextBtn.style.display = 'inline-block'; // Show next button
+        } else {
+            msgEl.textContent = "Try again";
+            msgEl.classList.add('incorrect');
+            inputEl.value = ''; // Clear input to try again
+            inputEl.focus();
+        }
+    }
+
+    // Initialize App
+    generateQuestion();
+
+    // Event Listeners
+    checkBtn.addEventListener('click', checkAnswer);
+    
+    nextBtn.addEventListener('click', () => {
+        generateQuestion();
+    });
+
+    // Allow "Enter" key to submit
+    inputEl.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+
+</script>
+
+</body>
+</html>

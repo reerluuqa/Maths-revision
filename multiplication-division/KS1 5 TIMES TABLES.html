@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>5 Times Table Practice</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f5f5f5; }
+        .container { text-align: center; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 300px; }
+        h1 { margin-bottom: 1rem; color: #333; font-size: 24px; }
+        
+        /* Question Area */
+        .question-box { font-size: 48px; font-weight: bold; color: #2c3e50; margin-bottom: 1.5rem; }
+        
+        /* Input & Buttons */
+        .input-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 1rem; }
+        input[type="number"] { padding: 10px; font-size: 20px; width: 80px; border: 2px solid #ddd; outline: none; }
+        
+        /* Button Styling */
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 4px; transition: background 0.2s; }
+        #checkBtn { background-color: #3498db; color: white; }
+        #checkBtn:hover { background-color: #2980b9; }
+        
+        /* Feedback & Counter */
+        #feedback { height: 24px; margin-top: 10px; font-weight: bold; }
+        .stats { display: flex; justify-content: center; gap: 15px; color: #7f8c8d; font-size: 14px; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+
+        /* Utility classes for states */
+        .correct { color: #2ecc71 !important; }
+        .wrong { color: #e74c3c !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>5 Times Table</h1>
+    
+    <!-- The Question -->
+    <div id="questionBox" class="question-box">Loading...</div>
+
+    <!-- Input and Check Button -->
+    <div class="input-group">
+        <input type="number" id="answerInput" placeholder "?" autocomplete="off">
+        <button id="checkBtn">Check</button>
+    </div>
+
+    <!-- Feedback Message -->
+    <div id="feedback"></div>
+
+    <!-- Stats Counter -->
+    <div class="stats">
+        <span>Correct: <span id="correctCount">0</span></span> | 
+        Incorrect: <span id="incorrectCount">0</span>
+    </div>
+    
+    <!-- Next Button (Hidden initially) -->
+    <button id="nextBtn" style="display:none; background-color: #f1c40f; color: white;">Next Question &rarr;</button>
+</div>
+
+<script>
+    // State variables
+    let currentMultiplier = 0; // Stores the random number (e.g., 5 x 3)
+    let correctAttempts = 0;
+    let incorrectAttempts = 0;
+
+    // DOM Elements
+    const questionBox = document.getElementById('questionBox');
+    const answerInput = document.getElementById('answerInput');
+    const checkBtn = document.getElementById('checkBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const feedbackEl = document.getElementById('feedback');
+    
+    // Stats counters elements
+    const correctCountEl = document.getElementById('correctCount');
+    const incorrectCountEl = document.getElementById('incorrectCount');
+
+    // 1. Initialize the first question on load
+    function initGame() {
+        // Generate random number between 1 and 12
+        currentMultiplier = Math.floor(Math.random() * 12) + 1; 
+        
+        // Update UI text (e.g., "5 x 3 = ?")
+        questionBox.textContent = `5 x ${currentMultiplier} = ?`;
+        
+        // Reset input and feedback
+        answerInput.value = '';
+        answerInput.focus();
+        feedbackEl.textContent = '';
+        nextBtn.style.display = 'none';
+    }
+
+    // 2. Check Answer Logic
+    function checkAnswer() {
+        const userAnswer = parseInt(answerInput.value);
+        
+        if (isNaN(userAnswer)) return; // Do nothing if empty
+
+        const correctAnswer = 5 * currentMultiplier;
+
+        if (userAnswer === correctAnswer) {
+            // Correct!
+            feedbackEl.textContent = "Correct!";
+            feedbackEl.className = "correct";
+            
+            // Update counters
+            correctAttempts++;
+            updateStats();
+
+            // Enable Next button
+            nextBtn.style.display = 'inline-block';
+            
+            // Disable input so user can't type while typing answer
+            answerInput.disabled = true;
+
+        } else {
+            // Incorrect
+            feedbackEl.textContent = "Try again.";
+            feedbackEl.className = "wrong";
+            incorrectAttempts++;
+            updateStats();
+            
+            // Keep input enabled? Requirement says "Try again", usually implies you can try again.
+            // We will keep it enabled, but clear the value so they type a new number.
+            answerInput.value = ''; 
+        }
+
+        updateStats();
+    }
+
+    function updateStats() {
+        correctCountEl.textContent = correctAttempts;
+        incorrectCountEl.textContent = incorrectAttempts;
+    }
+
+    // 3. Next Question Logic
+    function nextQuestion() {
+        // Generate new random multiplier
+        currentMultiplier = Math.floor(Math.random() * 12) + 1;
+        
+        questionBox.textContent = `5 x ${currentMultiplier} = ?`;
+        answerInput.value = '';
+        answerInput.disabled = false;
+        feedbackEl.textContent = "";
+
+        // If we cycled back to the first question, maybe show a message? 
+        // For simplicity, just reset.
+    }
+
+    // Event Listeners
+    initGame();
+
+    checkBtn.addEventListener('click', checkAnswer);
+    
+    nextBtn.addEventListener('click', nextQuestion);
+
+    // Allow pressing "Enter" key to submit
+    answerInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+
+</script>
+
+</body>
+</html>

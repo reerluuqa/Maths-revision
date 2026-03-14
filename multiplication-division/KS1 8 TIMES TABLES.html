@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice 8 Times Table</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+
+        h1 { margin-top: 0; font-size: 1.5rem; color: #333; }
+        
+        .score-board {
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .question-box {
+            font-size: 2rem;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace; /* Monospaced for math */
+        }
+
+        input[type="number"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+
+        #checkBtn { background-color: #007bff; color: white; width: 100%; }
+        #nextBtn { background-color: #28a745; color: white; display: none; }
+        
+        .feedback { margin-top: 15px; font-weight: bold; height: 20px;}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>8 Times Table</h1>
+    
+    <div class="score-board">Correct: <span id="score">0</span></div>
+
+    <!-- Question Display -->
+    <div class="question-box" id="questionDisplay"></div>
+
+    <!-- Input Field -->
+    <input type="number" id="answerInput" placeholder="?">
+
+    <!-- Buttons -->
+    <button id="checkBtn">CHECK</button>
+    <button id="nextBtn">NEXT</button>
+
+    <!-- Feedback Message -->
+    <p class="feedback" id="feedback"></p>
+</div>
+
+<script>
+    // State variables
+    let correctCount = 0;
+    let currentNumber = 0;
+    
+    // DOM Elements
+    const questionDisplay = document.getElementById('questionDisplay');
+    const answerInput = document.getElementById('answerInput');
+    const checkBtn = document.getElementById('checkBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const feedbackEl = document.getElementById('feedback');
+    const scoreEl = document.getElementById('score');
+
+    // Initialize the first question on load
+    generateQuestion();
+
+    function generateQuestion() {
+        // Reset UI state for new round
+        answerInput.value = '';
+        answerInput.disabled = false;
+        checkBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'none';
+        feedbackEl.textContent = '';
+        
+        // Generate random number 1-12
+        currentNumber = Math.floor(Math.random() * 12) + 1;
+        
+        // Update display: "8 x [number] = ?"
+        questionDisplay.innerHTML = `8 x ${currentNumber} = ?`;
+    }
+
+    function checkAnswer() {
+        const userAnswer = parseInt(answerInput.value);
+        
+        if (isNaN(userAnswer)) return; // Do nothing if empty
+
+        const correctAnswer = currentNumber * 8;
+
+        if (userAnswer === correctAnswer) {
+            feedbackEl.textContent = "Correct!";
+            feedbackEl.style.color = "green";
+            correctCount++;
+            scoreEl.textContent = correctCount;
+            
+            // Enable Next button, disable input
+            answerInput.disabled = true;
+            checkBtn.style.display = 'none';
+            nextBtn.style.display = 'inline-block';
+        } else {
+            feedbackEl.textContent = "Try again";
+            feedbackEl.style.color = "red";
+        }
+    }
+
+    function handleNext() {
+        generateQuestion();
+    }
+
+    // Event Listeners
+    checkBtn.addEventListener('click', checkAnswer);
+    
+    nextBtn.addEventListener('click', handleNext);
+    
+    // Allow pressing Enter to submit answer
+    answerInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+
+</script>
+
+</body>
+</html>

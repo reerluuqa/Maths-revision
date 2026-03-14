@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 Times Table Practice</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            width: 320px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin-top: 0; font-size: 1.5rem; color: #2c3e50; }
+        
+        .stats { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; }
+        .stat-box span { font-size: 1.2em; }
+
+        #question { font-size: 1.8rem; margin: 30px 0 15px 0; letter-spacing: 2px; }
+
+        input[type="number"] {
+            width: 70%;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .buttons { display: flex; gap: 10px; justify-content: center; }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #checkBtn { background-color: #3498db; color: white; width: 50%; }
+        #checkBtn:hover { background-color: #2980b9; }
+        
+        #nextBtn { background-color: #27ae60; color: white; width: 50%; display: none; }
+        #nextBtn:hover { background-color: #1e8449; }
+
+        .feedback { margin-top: 20px; font-weight: bold; min-height: 1.5em; }
+        .correct { color: #27ae60; }
+        .incorrect { color: #c0392b; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>4 Times Table</h1>
+    
+    <div class="stats">
+        <div class="stat-box" style="color:#27ae60">Correct: <span id="correctCount">0</span></div>
+        <div class="stat-box" style="color:#c0392b">Incorrect: <span id="incorrectCount">0</span></div>
+    </div>
+
+    <p id="question"></p>
+    
+    <input type="number" id="answerInput" placeholder="?">
+    
+    <div class="buttons">
+        <button id="checkBtn">CHECK</button>
+        <button id="nextBtn">NEXT</button>
+    </div>
+
+    <div id="feedback"></div>
+</div>
+
+<script>
+    let correct = 0;
+    let incorrect = 0;
+    let currentAnswer = 0;
+
+    const questionEl = document.getElementById('question');
+    const answerInput = document.getElementById('answerInput');
+    const checkBtn = document.getElementById('checkBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    // Stats elements
+    const correctCountEl = document.getElementById('correctCount');
+    const incorrectCountEl = document.getElementById('incorrectCount');
+    const feedbackEl = document.getElementById('feedback');
+
+    function generateQuestion() {
+        const num = Math.floor(Math.random() * 12) + 1; // Random 1-12
+        currentAnswer = num * 4;
+        
+        questionEl.textContent = `4 x ${num} = ?`;
+        answerInput.value = '';
+        answerInput.focus();
+    }
+
+    function checkAnswer() {
+        const userVal = parseInt(answerInput.value);
+        
+        if (isNaN(userVal)) return; // Do nothing if empty
+
+        if (userVal === currentAnswer) {
+            correct++;
+            feedbackEl.textContent = "Correct!";
+            feedbackEl.className = "feedback correct";
+            checkBtn.style.display = 'none';
+            nextBtn.style.display = 'inline-block';
+        } else {
+            incorrect++;
+            feedbackEl.textContent = `Try again! The answer is ${currentAnswer}.`;
+            feedbackEl.className = "feedback incorrect";
+            // Keep Check button visible to retry immediately without waiting for Next
+            checkBtn.style.display = 'inline-block'; 
+            nextBtn.style.display = 'none';
+        }
+
+        correctCountEl.textContent = correct;
+        incorrectCountEl.textContent = incorrect;
+    }
+
+    function resetState() {
+        feedbackEl.textContent = '';
+        answerInput.value = '';
+        checkBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'none';
+        generateQuestion();
+    }
+
+    // Initialize on load
+    generateQuestion();
+
+    // Event Listeners
+    checkBtn.addEventListener('click', checkAnswer);
+    
+    nextBtn.addEventListener('click', () => {
+        resetState();
+    });
+
+    // Allow pressing Enter to submit
+    answerInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+</script>
+
+</body>
+</html>

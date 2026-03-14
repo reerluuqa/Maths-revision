@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 Times Table Practice</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+
+        h1 { margin-top: 0; color: #333; font-size: 1.5rem; }
+
+        .question-box {
+            font-size: 2rem;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        input[type="number"] {
+            font-size: 1.5rem;
+            padding: 10px;
+            width: 80%;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            color: white;
+        }
+
+        #check-btn { background-color: #3498db; width: 100%; margin-bottom: 5px;}
+        
+        #next-btn { 
+            display: none; /* Hidden by default */
+            background-color: #27ae60; 
+            width: 100%;
+        }
+
+        .feedback {
+            height: 30px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .correct { color: green; }
+        .incorrect { color: red; }
+
+        #counter {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>3 Times Table</h1>
+    
+    <div id="question" class="question-box"></div>
+    
+    <input type="number" id="answer-input" placeholder="?">
+    
+    <button id="check-btn" onclick="checkAnswer()">CHECK</button>
+    <button id="next-btn" onclick="nextQuestion()">NEXT</button>
+
+    <div id="feedback" class="feedback"></div>
+    
+    <div id="counter">Attempts: 0</div>
+</div>
+
+<script>
+    let currentNumber = 0;
+    let attempts = 0;
+
+    function generateRandomNumber() {
+        return Math.floor(Math.random() * 12) + 1; // Random int between 1 and 12
+    }
+
+    function startGame() {
+        currentNumber = generateRandomNumber();
+        document.getElementById('question').innerText = `3 x ${currentNumber} = ?`;
+        document.getElementById('answer-input').value = '';
+        document.getElementById('check-btn').disabled = false;
+        document.getElementById('next-btn').style.display = 'none';
+    }
+
+    function checkAnswer() {
+        let userVal = parseInt(document.getElementById('answer-input').value);
+        
+        if (isNaN(userVal)) return; // Do nothing if empty
+
+        attempts++;
+        document.getElementById('counter').innerText = `Attempts: ${attempts}`;
+
+        const feedbackEl = document.getElementById('feedback');
+        feedbackEl.innerText = ""; // Clear previous text
+
+        if (userVal === currentNumber * 3) {
+            feedbackEl.innerText = "Correct!";
+            feedbackEl.className = "feedback correct";
+            
+            // Disable check, enable next
+            document.getElementById('check-btn').disabled = true;
+            document.getElementById('next-btn').style.display = 'inline-block';
+        } else {
+            feedbackEl.innerText = "Try again";
+            feedbackEl.className = "feedback incorrect";
+        }
+    }
+
+    function nextQuestion() {
+        startGame(); // Generates new random number and resets UI
+    }
+
+    // Initialize on load
+    window.onload = startGame;
+</script>
+
+</body>
+</html>

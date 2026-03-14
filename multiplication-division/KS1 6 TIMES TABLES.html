@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>6 Times Table Practice</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f9; }
+        .container { text-align: center; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 300px; }
+        h1 { margin-top: 0; font-size: 1.5rem; color: #333; }
+        .stats { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; }
+        .question-box { font-size: 1.8rem; margin: 20px 0; letter-spacing: 2px; }
+        input[type="number"] { padding: 5px; width: 60px; text-align: center; font-size: 1.2rem; }
+        button { cursor: pointer; border: none; padding: 8px 16px; margin: 5px; border-radius: 4px; font-weight: bold; transition: background 0.2s; }
+        #btn-check { background-color: #3b82f6; color: white; width: 100%; padding: 10px; }
+        #btn-next { background-color: #10b981; color: white; display: none; }
+        .feedback { font-size: 1.2rem; margin-top: 15px; min-height: 1.5em; }
+        .correct { color: green; }
+        .wrong { color: red; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>6 Times Table</h1>
+    
+    <div class="stats">
+        <span style="color:green">Correct: <span id="score-correct">0</span></span>
+        <span style="color:red">Incorrect: <span id="score-wrong">0</span></span>
+    </div>
+
+    <div class="question-box">
+        6 × <span id="num-display"></span> = 
+        <input type="number" id="answer-input">
+    </div>
+
+    <button id="btn-check">CHECK</button>
+    <button id="btn-next">NEXT</button>
+    
+    <p class="feedback" id="feedback-msg"></p>
+</div>
+
+<script>
+    // State
+    let correctCount = 0;
+    let wrongCount = 0;
+    let currentAnswer = 0;
+
+    // DOM Elements
+    const numDisplay = document.getElementById('num-display');
+    const inputField = document.getElementById('answer-input');
+    const feedbackMsg = document.getElementById('feedback-msg');
+    const btnCheck = document.getElementById('btn-check');
+    const btnNext = document.getElementById('btn-next');
+    
+    // Update Scoreboard
+    function updateScore() {
+        document.getElementById('score-correct').innerText = correctCount;
+        document.getElementById('score-wrong').innerText = wrongCount;
+    }
+
+    // Generate Random Question (1-12)
+    function generateQuestion() {
+        const num = Math.floor(Math.random() * 12) + 1;
+        currentAnswer = num * 6;
+        numDisplay.innerText = num;
+        inputField.value = '';
+        feedbackMsg.className = 'feedback'; // Remove colors
+        feedbackMsg.innerText = '';
+        
+        // Reset buttons
+        btnCheck.disabled = false;
+        btnNext.style.display = 'none';
+        inputField.focus();
+    }
+
+    function checkAnswer() {
+        const userVal = parseInt(inputField.value);
+        
+        if (userVal === currentAnswer) {
+            feedbackMsg.innerText = "Correct!";
+            feedbackMsg.classList.add('correct');
+            correctCount++;
+            
+            // Disable check, enable next
+            btnCheck.disabled = true;
+            btnNext.style.display = 'inline-block';
+        } else {
+            feedbackMsg.innerText = "Try again";
+            feedbackMsg.classList.add('wrong');
+            wrongCount++;
+            inputField.value = ''; // Clear for next try
+        }
+        updateScore();
+    }
+
+    function handleNext() {
+        generateQuestion();
+    }
+
+    // Event Listeners
+    btnCheck.addEventListener('click', checkAnswer);
+    
+    btnNext.addEventListener('click', () => {
+        handleNext();
+    });
+
+    inputField.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkAnswer();
+    });
+
+    // Start App
+    generateQuestion();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice x1</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        h1 { margin-top: 0; font-size: 1.5rem; color: #333; }
+
+        .question-box {
+            font-size: 2rem;
+            margin: 20px 0;
+            letter-spacing: 2px;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            font-size: 1.2rem;
+            width: 60%;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            cursor: pointer;
+            padding: 8px 15px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .btn-check { background-color: #007bff; color: white; width: 100%; }
+        .btn-next { background-color: #28a745; color: white; display: none; width: 100%; margin-top: 5px;}
+
+        .feedback { height: 30px; font-weight: bold; margin-bottom: 10px; }
+        .correct { color: green; }
+        .incorrect { color: red; }
+
+        #counter { margin-top: 20px; font-size: 0.9rem; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>x1 Table Practice</h1>
+    
+    <div class="question-box" id="questionDisplay">
+        1 x ? = ?
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <input type="number" id="answerInput" placeholder="?">
+    
+    <button class="btn-check" onclick="checkAnswer()">CHECK</button>
+    <button class="btn-next" id="nextBtn" onclick="generateQuestion()">NEXT</button>
+    
+    <div id="counter">Attempts: 0</div>
+</div>
+
+<script>
+    let currentNumber;
+    let attempts = 0;
+
+    function generateQuestion() {
+        // Generate random number 1-12
+        currentNumber = Math.floor(Math.random() * 12) + 1;
+        
+        // Update UI
+        document.getElementById('questionDisplay').innerHTML = `1 x ${currentNumber} = ?`;
+        document.getElementById('answerInput').value = '';
+        document.getElementById('feedback').textContent = '';
+        document.getElementById('feedback').className = 'feedback';
+        
+        // Reset buttons and state
+        document.querySelector('.btn-check').style.display = 'block';
+        document.getElementById('nextBtn').style.display = 'none';
+    }
+
+    function checkAnswer() {
+        const userVal = parseInt(document.getElementById('answerInput').value);
+        const feedbackEl = document.getElementById('feedback');
+
+        if (isNaN(userVal)) return; // Do nothing if empty
+
+        attempts++;
+        
+        if (userVal === currentNumber) {
+            feedbackEl.textContent = "Correct!";
+            feedbackEl.className = 'feedback correct';
+            
+            document.querySelector('.btn-check').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'block';
+        } else {
+            feedbackEl.textContent = "Try again";
+            feedbackEl.className = 'feedback incorrect';
+        }
+
+        // Update counter display
+        document.getElementById('counter').textContent = `Attempts: ${attempts}`;
+    }
+
+    // Initialize on load
+    generateQuestion();
+</script>
+
+</body>
+</html>

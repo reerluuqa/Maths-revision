@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 2 Maths: Inverse Operations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 800px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 50px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 0 #feca57;
+        }
+
+        .progress-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #48dbfb;
+            padding: 15px 25px;
+            border-radius: 60px;
+            margin-bottom: 30px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .stars {
+            display: flex;
+            gap: 5px;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: #ffd966;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .star.filled {
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffb347;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        .question-box {
+            background: #f9ca24;
+            border-radius: 40px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 0 #f0932b;
+        }
+
+        .question-text {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .input-area {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .answer-input {
+            font-size: 2.5rem;
+            width: 200px;
+            padding: 15px 25px;
+            border: 5px solid #6c5ce7;
+            border-radius: 60px;
+            text-align: center;
+            font-weight: bold;
+            outline: none;
+        }
+
+        .answer-input:focus {
+            border-color: #00b894;
+            box-shadow: 0 0 20px #00b894;
+        }
+
+        .check-btn {
+            background: #6c5ce7;
+            color: white;
+            font-size: 2rem;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            box-shadow: 0 5px 0 #4834d4;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #4834d4;
+        }
+
+        .check-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #4834d4;
+        }
+
+        .check-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 5px 0 #4834d4;
+        }
+
+        .hint-section {
+            background: #a8e6cf;
+            border-radius: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #2c3e50;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #00b894;
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 2rem;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .feedback.correct {
+            background: #55efc4;
+            color: #00b894;
+        }
+
+        .feedback.incorrect {
+            background: #ff7675;
+            color: #d63031;
+        }
+
+        .next-btn {
+            background: #00b894;
+            color: white;
+            font-size: 2rem;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.2s;
+            box-shadow: 0 5px 0 #009975;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #009975;
+        }
+
+        .next-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #009975;
+        }
+
+        .next-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 5px 0 #009975;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #636e72;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>🌟 Inverse Explorers 🌟</h1>
+        
+        <div class="progress-section">
+            <span>⭐ Progress: <span id="progress-count">1</span>/10</span>
+            <div class="stars" id="stars-container">
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+            </div>
+        </div>
+
+        <div class="question-box">
+            <div class="question-text" id="question">2 × 3 = ?</div>
+            <div class="input-area">
+                <input type="number" id="answer" class="answer-input" placeholder="?" min="0" max="20">
+                <button class="check-btn" id="checkBtn">✓ Check</button>
+            </div>
+        </div>
+
+        <div class="hint-section" id="hint">
+            💡 Click the star to see a hint!
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+
+        <button class="next-btn" id="nextBtn" disabled>Next Question →</button>
+        
+        <div class="footer">
+            ✨ Learn: Multiplication and Division are Best Friends! ✨
+        </div>
+    </div>
+
+    <script>
+        class InverseMathsGame {
+            constructor() {
+                this.currentFactor = 1;
+                this.correctAnswers = 0;
+                this.currentQuestion = null;
+                this.questionType = 'multiplication'; // 'multiplication' or 'division'
+                this.answered = false;
+                this.showingFullInverse = false;
+                
+                this.initElements();
+                this.initEventListeners();
+                this.generateQuestion();
+                this.updateProgress();
+            }
+
+            initElements() {
+                this.questionEl = document.getElementById('question');
+                this.answerInput = document.getElementById('answer');
+                this.checkBtn = document.getElementById('checkBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.feedbackEl = document.getElementById('feedback');
+                this.hintEl = document.getElementById('hint');
+                this.stars = document.querySelectorAll('.star');
+                this.progressCount = document.getElementById('progress-count');
+            }
+
+            initEventListeners() {
+                this.checkBtn.addEventListener('click', () => this.checkAnswer());
+                this.nextBtn.addEventListener('click', () => this.nextQuestion());
+                this.answerInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.checkAnswer();
+                });
+                
+                // Star hints
+                this.stars.forEach((star, index) => {
+                    star.addEventListener('click', () => {
+                        if (index < this.correctAnswers) {
+                            this.showHint();
+                        } else if (index === this.correctAnswers) {
+                            this.showHint();
+                        } else {
+                            this.showMessage('✨ Keep going to unlock more hints!', '#fdcb6e');
+                        }
+                    });
+                });
+            }
+
+            generateQuestion() {
+                // Alternate between multiplication and division
+                this.questionType = Math.random() < 0.5 ? 'multiplication' : 'division';
+                
+                if (this.questionType === 'multiplication') {
+                    this.currentQuestion = {
+                        factor1: 2,
+                        factor2: this.currentFactor,
+                        answer: 2 * this.currentFactor,
+                        text: `2 × ${this.currentFactor} = ?`
+                    };
+                } else {
+                    const product = 2 * this.currentFactor;
+                    this.currentQuestion = {
+                        dividend: product,
+                        divisor: 2,
+                        answer: this.currentFactor,
+                        text: `${product} ÷ 2 = ?`
+                    };
+                }
+                
+                this.questionEl.textContent = this.currentQuestion.text;
+                this.answerInput.value = '';
+                this.answerInput.focus();
+                this.feedbackEl.textContent = '';
+                this.feedbackEl.className = 'feedback';
+                this.hintEl.textContent = '💡 Click the star to see a hint!';
+                this.showingFullInverse = false;
+                this.answered = false;
+            }
+
+            checkAnswer() {
+                if (this.answered) return;
+                
+                const userAnswer = parseInt(this.answerInput.value);
+                if (isNaN(userAnswer)) {
+                    this.showFeedback('Please enter a number!', 'incorrect');
+                    return;
+                }
+                
+                const correct = userAnswer === this.currentQuestion.answer;
+                
+                if (correct) {
+                    this.handleCorrectAnswer();
+                } else {
+                    this.showFeedback('❌ Oops! Try again!', 'incorrect');
+                    this.answerInput.value = '';
+                    this.answerInput.focus();
+                }
+            }
+
+            handleCorrectAnswer() {
+                this.answered = true;
+                this.showFeedback('✅ Correct! Well done!', 'correct');
+                
+                // Mark this fact as learned
+                this.correctAnswers = Math.max(this.correctAnswers, this.currentFactor);
+                
+                // Update stars
+                this.updateStars();
+                this.updateProgress();
+                
+                // Show full inverse relationship
+                this.showFullInverse();
+                
+                // Enable next button
+                this.nextBtn.disabled = false;
+                
+                // If this was the last fact, show celebration
+                if (this.correctAnswers === 10) {
+                    this.showCelebration();
+                }
+            }
+
+            showHint() {
+                if (this.showingFullInverse) return;
+                
+                if (this.questionType === 'multiplication') {
+                    this.hintEl.textContent = `💡 ${this.currentQuestion.text} → ? ÷ 2 = ${this.currentQuestion.factor2}`;
+                } else {
+                    this.hintEl.textContent = `💡 ${this.currentQuestion.text} → 2 × ? = ${this.currentQuestion.dividend}`;
+                }
+            }
+
+            showFullInverse() {
+                this.showingFullInverse = true;
+                
+                if (this.questionType === 'multiplication') {
+                    this.hintEl.textContent = `🎉 ${this.currentQuestion.text} = ${this.currentQuestion.answer} → ${this.currentQuestion.answer} ÷ 2 = ${this.currentQuestion.factor2}`;
+                } else {
+                    this.hintEl.textContent = `🎉 ${this.currentQuestion.text} = ${this.currentQuestion.answer} → 2 × ${this.currentQuestion.answer} = ${this.currentQuestion.dividend}`;
+                }
+            }
+
+            nextQuestion() {
+                if (this.currentFactor < 10) {
+                    this.currentFactor++;
+                    this.generateQuestion();
+                    this.nextBtn.disabled = true;
+                } else {
+                    // Completed all facts, start over for practice
+                    this.currentFactor = 1;
+                    this.correctAnswers = 10; // Keep stars filled
+                    this.generateQuestion();
+                    this.nextBtn.disabled = true;
+                    this.showMessage('🎯 Great job! Let\'s practice again!', '#00b894');
+                }
+            }
+
+            showFeedback(message, type) {
+                this.feedbackEl.textContent = message;
+                this.feedbackEl.className = `feedback ${type}`;
+            }
+
+            showMessage(message, color) {
+                this.feedbackEl.textContent = message;
+                this.feedbackEl.style.background = color;
+                this.feedbackEl.style.color = 'white';
+                setTimeout(() => {
+                    this.feedbackEl.style.background = '';
+                    this.feedbackEl.style.color = '';
+                }, 2000);
+            }
+
+            updateStars() {
+                this.stars.forEach((star, index) => {
+                    if (index < this.correctAnswers) {
+                        star.textContent = '★';
+                        star.classList.add('filled');
+                    } else {
+                        star.textContent = '☆';
+                        star.classList.remove('filled');
+                    }
+                });
+            }
+
+            updateProgress() {
+                this.progressCount.textContent = this.currentFactor;
+            }
+
+            showCelebration() {
+                this.feedbackEl.textContent = '🎉🎉 AMAZING! You mastered the 2 times table! 🎉🎉';
+                this.feedbackEl.className = 'feedback correct';
+                this.feedbackEl.style.fontSize = '1.5rem';
+            }
+        }
+
+        // Initialize the game
+        const game = new InverseMathsGame();
+    </script>
+</body>
+</html>

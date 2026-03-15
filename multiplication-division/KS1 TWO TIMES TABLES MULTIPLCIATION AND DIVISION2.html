@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2× table – inverse explorers ✖️➗</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f7ff 0%, #e6f0fa 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', cursive, sans-serif;
+            padding: 1rem;
+        }
+
+        .game-card {
+            max-width: 700px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 70px 70px 70px 70px;
+            box-shadow: 0 25px 40px rgba(0, 100, 150, 0.2), 0 10px 15px rgba(0,0,0,0.1);
+            padding: 2rem 2rem 2.5rem;
+            border: 6px solid #ffb347;
+            text-align: center;
+            position: relative;
+            background: #fff9f0;
+        }
+
+        .game-card:before {
+            content: '✨';
+            font-size: 2rem;
+            position: absolute;
+            top: -15px;
+            left: 30px;
+            background: #ffd966;
+            padding: 5px 20px;
+            border-radius: 50px;
+            border: 3px solid white;
+        }
+
+        .game-card:after {
+            content: '⭐';
+            font-size: 2rem;
+            position: absolute;
+            top: -15px;
+            right: 30px;
+            background: #ffd966;
+            padding: 5px 20px;
+            border-radius: 50px;
+            border: 3px solid white;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #2c5f8a;
+            font-weight: 800;
+            text-shadow: 4px 4px 0 #ffd966;
+            margin-bottom: 0.2rem;
+            word-break: break-word;
+            letter-spacing: 2px;
+        }
+
+        .subhead {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #e67e22;
+            background: #fff2cc;
+            display: inline-block;
+            padding: 0.4rem 2.5rem;
+            border-radius: 60px;
+            margin-bottom: 1.5rem;
+            border: 4px solid #f9b83c;
+        }
+
+        .question-badge {
+            background: #e6f3ff;
+            border-radius: 120px;
+            padding: 2rem 1rem;
+            margin: 0.5rem 0 1rem;
+            border: 8px solid #90caf9;
+            box-shadow: 0 10px 0 #5a9bd4;
+        }
+
+        .question {
+            font-size: 6rem;
+            line-height: 1.2;
+            font-weight: 800;
+            color: #1e3c5c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .question span {
+            background: #ffffff;
+            padding: 0.2rem 1rem;
+            border-radius: 60px;
+            font-size: 5rem;
+            min-width: 120px;
+            box-shadow: inset 0 -4px 0 #b0bec5;
+            border: 3px solid #ffb74d;
+        }
+
+        .question .operator {
+            background: #ffecb3;
+            min-width: auto;
+            padding: 0.2rem 0.8rem;
+        }
+
+        .inverse-hint {
+            font-size: 1.5rem;
+            color: #1e5f74;
+            background: #c9e9ff;
+            padding: 1rem 2rem;
+            border-radius: 60px;
+            display: inline-block;
+            margin: 1rem 0 1.5rem;
+            font-weight: 600;
+            border: 4px dashed #4a9fd8;
+            min-height: 5rem;
+            width: 100%;
+        }
+
+        .answer-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1.2rem;
+            width: 100%;
+        }
+
+        input {
+            font-size: 3.5rem;
+            width: 220px;
+            text-align: center;
+            padding: 0.5rem 0.2rem;
+            border: 6px solid #ffaa5e;
+            border-radius: 60px;
+            background: #ffffff;
+            font-weight: 700;
+            color: #1e3c5c;
+            outline: none;
+            box-shadow: 0 8px 0 #cc7f3a;
+            transition: all 0.07s;
+        }
+
+        input:focus {
+            border-color: #ff7b00;
+            background: #fff9e6;
+            transform: scale(1.02);
+        }
+
+        button {
+            background: #ff8c42;
+            border: none;
+            font-size: 2.4rem;
+            font-weight: bold;
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 80px;
+            cursor: pointer;
+            border-bottom: 8px solid #b35e1f;
+            transition: 0.08s linear;
+            box-shadow: 0 8px 0 #b35e1f;
+            letter-spacing: 2px;
+        }
+
+        button:active {
+            transform: translateY(8px);
+            border-bottom-width: 2px;
+            box-shadow: 0 2px 0 #b35e1f;
+        }
+
+        .feedback {
+            min-height: 5rem;
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 80px;
+            width: 100%;
+        }
+
+        .correct {
+            background: #b9f6ca;
+            color: #1b5e20;
+            border: 6px solid #2e7d32;
+        }
+
+        .wrong {
+            background: #ffcdd2;
+            color: #b71c1c;
+            border: 6px solid #d32f2f;
+        }
+
+        .next-btn {
+            background: #4caf50;
+            border-bottom-color: #2e7d32;
+            box-shadow: 0 8px 0 #2e7d32;
+            margin-top: 1rem;
+            font-size: 2.4rem;
+            padding: 1rem 3rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress {
+            font-size: 1.8rem;
+            background: #ffd966;
+            padding: 0.6rem 1.8rem;
+            border-radius: 60px;
+            display: inline-block;
+            margin: 0.5rem 0 0.8rem;
+            color: #2c3e50;
+            font-weight: 600;
+            border: 4px solid white;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.5rem 0;
+            font-size: 1.4rem;
+            color: #2c5f8a;
+            background: #f0f9ff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            border: 3px solid #a0c4ff;
+        }
+
+        .badge {
+            background: #ffb3ba;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            color: #9b1d2c;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 1.4rem;
+            color: #6b4f3c;
+        }
+
+        .refresh-btn {
+            background: #a5d6ff;
+            color: #01497c;
+            font-size: 1.5rem;
+            padding: 0.6rem 1.5rem;
+            border-bottom: 5px solid #5a8ec9;
+            box-shadow: 0 5px 0 #3a5f8b;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-card" role="main">
+        <h1>🔢 2× FAMILY 🔢</h1>
+        <div class="subhead">multiplication ↔ division</div>
+
+        <!-- progress stats -->
+        <div class="stats">
+            <span id="factCounter">fact 1/20</span>
+            <span class="badge" id="questionType">mixed</span>
+        </div>
+
+        <!-- main question area -->
+        <div class="question-badge">
+            <div class="question" id="questionText">
+                <span id="num1">2</span>
+                <span class="operator" id="operatorSymbol">×</span>
+                <span id="num2">2</span>
+                <span>=</span>
+                <span>❓</span>
+            </div>
+        </div>
+
+        <!-- hint shows relationship with ? -->
+        <div class="inverse-hint" id="inverseHint">2 × 2 = ?  →  ? ÷ 2 = 2</div>
+
+        <!-- answer area -->
+        <div class="answer-area">
+            <div class="input-group">
+                <input type="number" id="answerInput" placeholder="?" value="" inputmode="numeric">
+                <button id="checkBtn">check</button>
+            </div>
+
+            <div id="feedbackMessage" class="feedback"></div>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <button id="nextBtn" class="next-btn hidden">next ➡️</button>
+                <button id="newQuestionBtn" class="refresh-btn">🎲 new question</button>
+            </div>
+        </div>
+
+        <footer>keep exploring — every fact is a new adventure!</footer>
+    </div>
+
+    <script>
+        (function() {
+            // We'll generate questions dynamically
+            let availableMultiplications = [];
+            let availableDivisions = [];
+            let usedQuestions = new Set(); // track asked questions
+            let totalAnswered = 0;
+            
+            // UI elements
+            const questionNum1 = document.getElementById('num1');
+            const questionNum2 = document.getElementById('num2');
+            const operatorSymbol = document.getElementById('operatorSymbol');
+            const inverseHintDiv = document.getElementById('inverseHint');
+            const factCounter = document.getElementById('factCounter');
+            const questionType = document.getElementById('questionType');
+            const answerInput = document.getElementById('answerInput');
+            const checkBtn = document.getElementById('checkBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const newQuestionBtn = document.getElementById('newQuestionBtn');
+            const feedbackDiv = document.getElementById('feedbackMessage');
+
+            // state
+            let currentQuestion = null;
+            let lastAnswerWasCorrect = false;
+            let currentAnswerValue = null;
+
+            // Initialize all possible facts (2× table 1-10)
+            function initializePools() {
+                availableMultiplications = [];
+                availableDivisions = [];
+                for (let i = 1; i <= 10; i++) {
+                    availableMultiplications.push({
+                        type: 'mult',
+                        a: 2,
+                        b: i,
+                        product: 2 * i,
+                        factString: `2×${i}`
+                    });
+                    
+                    availableDivisions.push({
+                        type: 'div',
+                        dividend: 2 * i,
+                        divisor: 2,
+                        quotient: i,
+                        factString: `${2*i}÷2`
+                    });
+                }
+            }
+
+            // Get random question (alternates between mult and div, but can be random)
+            function getRandomQuestion() {
+                // 50/50 chance between multiplication and division
+                const useMultiplication = Math.random() < 0.5;
+                
+                if (useMultiplication && availableMultiplications.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * availableMultiplications.length);
+                    return { ...availableMultiplications[randomIndex] };
+                } 
+                else if (!useMultiplication && availableDivisions.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * availableDivisions.length);
+                    return { ...availableDivisions[randomIndex] };
+                }
+                else {
+                    // If one pool is empty, use the other
+                    if (availableMultiplications.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * availableMultiplications.length);
+                        return { ...availableMultiplications[randomIndex] };
+                    } else {
+                        const randomIndex = Math.floor(Math.random() * availableDivisions.length);
+                        return { ...availableDivisions[randomIndex] };
+                    }
+                }
+            }
+
+            // Mark a question as used (remove from available pools)
+            function markAsUsed(question) {
+                if (question.type === 'mult') {
+                    availableMultiplications = availableMultiplications.filter(
+                        q => !(q.a === question.a && q.b === question.b && q.type === question.type)
+                    );
+                } else {
+                    availableDivisions = availableDivisions.filter(
+                        q => !(q.dividend === question.dividend && q.divisor === question.divisor && q.type === question.type)
+                    );
+                }
+                
+                // Add to used set for tracking
+                const factId = question.type === 'mult' 
+                    ? `mult-${question.a}-${question.b}`
+                    : `div-${question.dividend}-${question.divisor}`;
+                usedQuestions.add(factId);
+            }
+
+            // Reset all progress (for when they've done all facts)
+            function resetIfNeeded() {
+                if (availableMultiplications.length === 0 && availableDivisions.length === 0) {
+                    // Show celebration message
+                    feedbackDiv.textContent = "🎉 WOW! You've done them all! Starting again! 🎉";
+                    feedbackDiv.className = 'feedback correct';
+                    
+                    // Reset
+                    initializePools();
+                    usedQuestions.clear();
+                    totalAnswered = 0;
+                    
+                    // Clear any correct state
+                    lastAnswerWasCorrect = false;
+                    nextBtn.classList.add('hidden');
+                    answerInput.disabled = false;
+                    checkBtn.disabled = false;
+                }
+            }
+
+            // Render current question
+            function renderQuestion(question) {
+                // Clear feedback
+                feedbackDiv.innerHTML = '';
+                feedbackDiv.className = 'feedback';
+                nextBtn.classList.add('hidden');
+                answerInput.value = '';
+                answerInput.disabled = false;
+                checkBtn.disabled = false;
+                lastAnswerWasCorrect = false;
+
+                currentQuestion = question;
+                
+                if (question.type === 'mult') {
+                    // Multiplication display
+                    questionNum1.textContent = question.a;
+                    operatorSymbol.textContent = '×';
+                    questionNum2.textContent = question.b;
+                    currentAnswerValue = question.product;
+                    
+                    // Hint shows relationship with ?
+                    inverseHintDiv.textContent = `✨ ${question.a} × ${question.b} = ?  →  ? ÷ 2 = ${question.b}`;
+                    questionType.textContent = 'multiplication';
+                } else {
+                    // Division display
+                    questionNum1.textContent = question.dividend;
+                    operatorSymbol.textContent = '÷';
+                    questionNum2.textContent = question.divisor;
+                    currentAnswerValue = question.quotient;
+                    
+                    // Hint shows relationship with ?
+                    inverseHintDiv.textContent = `✨ ${question.dividend} ÷ 2 = ?  →  2 × ? = ${question.dividend}`;
+                    questionType.textContent = 'division';
+                }
+
+                // Update progress counter
+                const totalPossible = 20; // 10 mult + 10 div
+                const remaining = availableMultiplications.length + availableDivisions.length;
+                const answered = totalPossible - remaining;
+                factCounter.textContent = `fact ${answered + 1}/${totalPossible}`;
+            }
+
+            // Load new random question
+            function loadNewQuestion() {
+                resetIfNeeded();
+                
+                if (availableMultiplications.length === 0 && availableDivisions.length === 0) {
+                    initializePools();
+                }
+                
+                const newQuestion = getRandomQuestion();
+                if (newQuestion) {
+                    renderQuestion(newQuestion);
+                } else {
+                    // Fallback if something goes wrong
+                    initializePools();
+                    renderQuestion(getRandomQuestion());
+                }
+            }
+
+            // Check answer
+            function checkAnswer() {
+                if (lastAnswerWasCorrect) return;
+
+                const rawValue = answerInput.value.trim();
+                if (rawValue === '') {
+                    feedbackDiv.textContent = '🔍 type a number!';
+                    feedbackDiv.className = 'feedback wrong';
+                    return;
+                }
+                
+                const userNumber = Number(rawValue);
+                if (isNaN(userNumber)) {
+                    feedbackDiv.textContent = '🔢 numbers only please';
+                    feedbackDiv.className = 'feedback wrong';
+                    return;
+                }
+
+                const isCorrect = (userNumber === currentAnswerValue);
+
+                if (isCorrect) {
+                    feedbackDiv.textContent = '✅ ⭐ CORRECT! ⭐ ✅';
+                    feedbackDiv.className = 'feedback correct';
+                    lastAnswerWasCorrect = true;
+                    answerInput.disabled = true;
+                    checkBtn.disabled = true;
+                    
+                    // Mark as used and show full inverse
+                    markAsUsed(currentQuestion);
+                    
+                    if (currentQuestion.type === 'mult') {
+                        inverseHintDiv.textContent = `🎉 ${currentQuestion.a} × ${currentQuestion.b} = ${currentQuestion.product}  →  ${currentQuestion.product} ÷ 2 = ${currentQuestion.b}`;
+                    } else {
+                        inverseHintDiv.textContent = `🎉 ${currentQuestion.dividend} ÷ 2 = ${currentQuestion.quotient}  →  2 × ${currentQuestion.quotient} = ${currentQuestion.dividend}`;
+                    }
+                    
+                    nextBtn.classList.remove('hidden');
+                } else {
+                    feedbackDiv.textContent = '❌ try again, you can do it! ❌';
+                    feedbackDiv.className = 'feedback wrong';
+                    answerInput.focus();
+                }
+            }
+
+            // Next question
+            function nextQuestion() {
+                if (availableMultiplications.length === 0 && availableDivisions.length === 0) {
+                    initializePools();
+                }
+                loadNewQuestion();
+            }
+
+            // Initialize
+            initializePools();
+            loadNewQuestion();
+
+            // Event listeners
+            checkBtn.addEventListener('click', checkAnswer);
+
+            answerInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    checkAnswer();
+                }
+            });
+
+            nextBtn.addEventListener('click', nextQuestion);
+            
+            // New random question at any time (good for skipping or extra practice)
+            newQuestionBtn.addEventListener('click', function() {
+                // Don't mark current as used, just get a new one
+                if (availableMultiplications.length === 0 && availableDivisions.length === 0) {
+                    initializePools();
+                }
+                loadNewQuestion();
+            });
+
+            // Focus input on load
+            answerInput.focus();
+        })();
+    </script>
+</body>
+</html>

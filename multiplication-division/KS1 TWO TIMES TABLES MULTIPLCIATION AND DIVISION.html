@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2× table – inverse helpers ✖️➗</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f9f3e8 0%, #fff5e6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            padding: 1rem;
+        }
+
+        .game-card {
+            max-width: 600px;
+            width: 100%;
+            background: #ffffffdd;
+            backdrop-filter: blur(4px);
+            background: rgba(255, 250, 240, 0.9);
+            border-radius: 56px;
+            box-shadow: 0 20px 35px rgba(180, 130, 80, 0.25), 0 8px 12px rgba(0,0,0,0.1);
+            padding: 2.2rem 2rem 2.8rem;
+            border: 3px solid #ffe3c9;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            letter-spacing: 2px;
+            color: #b45f2a;
+            font-weight: 600;
+            text-shadow: 2px 2px 0 #ffe3b0;
+            margin-bottom: 0.4rem;
+            word-break: break-word;
+        }
+
+        .subhead {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #9b6b43;
+            background: #f7e1ce;
+            display: inline-block;
+            padding: 0.3rem 2rem;
+            border-radius: 60px;
+            margin-bottom: 2rem;
+            border: 2px dashed #cc9f76;
+        }
+
+        .question-badge {
+            background: white;
+            border-radius: 120px;
+            padding: 2rem 1rem;
+            margin: 1rem 0 1.5rem;
+            border: 4px solid #fbc49e;
+            box-shadow: inset 0 -4px 0 #dbaa7a;
+        }
+
+        .question {
+            font-size: 5.5rem;
+            line-height: 1.2;
+            font-weight: 800;
+            color: #4b2e1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .question span {
+            background: #fee3cb;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 4rem;
+            min-width: 100px;
+        }
+
+        .inverse-hint {
+            font-size: 1.3rem;
+            color: #b7622c;
+            background: #ffdbbf;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin: 1rem 0 1.8rem;
+            font-weight: 500;
+            border: 2px solid #f5b585;
+        }
+
+        .answer-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        input {
+            font-size: 2.8rem;
+            width: 200px;
+            text-align: center;
+            padding: 0.5rem 0.2rem;
+            border: 5px solid #f8b37f;
+            border-radius: 50px;
+            background: white;
+            font-weight: 700;
+            color: #2f1d0e;
+            outline: none;
+            box-shadow: 0 6px 0 #c07d50;
+            transition: all 0.07s;
+        }
+
+        input:focus {
+            border-color: #ff964f;
+            background: #fff8e7;
+            transform: scale(1.02);
+        }
+
+        button {
+            background: #fea82f;
+            border: none;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: white;
+            padding: 0.8rem 2.2rem;
+            border-radius: 60px;
+            cursor: pointer;
+            border-bottom: 7px solid #a45d28;
+            transition: 0.08s linear;
+            box-shadow: 0 7px 0 #8f4e20;
+            letter-spacing: 1px;
+        }
+
+        button:active {
+            transform: translateY(6px);
+            border-bottom-width: 2px;
+            box-shadow: 0 2px 0 #8f4e20;
+        }
+
+        .feedback {
+            min-height: 4rem;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 50px;
+        }
+
+        .correct {
+            background: #b5e6b5;
+            color: #155c15;
+            border: 4px solid #1e8f1e;
+        }
+
+        .wrong {
+            background: #ffd1d1;
+            color: #a0002a;
+            border: 4px solid #ff5e5e;
+        }
+
+        .next-btn {
+            background: #6ec06e;
+            border-bottom-color: #2a752a;
+            box-shadow: 0 7px 0 #1d5b1d;
+            margin-top: 1rem;
+            font-size: 2rem;
+            padding: 0.7rem 2.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress {
+            font-size: 1.6rem;
+            background: #f7dbb5;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+            color: #5f3f21;
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 1.2rem;
+            color: #ad7a58;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-card" role="main">
+        <h1>✖️ 2️⃣ ➗</h1>
+        <div class="subhead">inverse family</div>
+
+        <!-- progress (shows which fact) -->
+        <div class="progress" id="progressDisplay">fact 1 / 8</div>
+
+        <!-- main question area -->
+        <div class="question-badge">
+            <div class="question" id="questionText">
+                <span id="num1">2</span>
+                <span id="operatorSymbol">×</span>
+                <span id="num2">2</span>
+                <span>=</span>
+                <span>❓</span>
+            </div>
+        </div>
+
+        <!-- hint: shows inverse relationship without numbers -->
+        <div class="inverse-hint" id="inverseHint">multiplication ↔ division</div>
+
+        <!-- answer & control area -->
+        <div class="answer-area">
+            <div class="input-group">
+                <input type="number" id="answerInput" placeholder="?" value="" inputmode="numeric">
+                <button id="checkBtn">check</button>
+            </div>
+
+            <div id="feedbackMessage" class="feedback"></div>
+
+            <button id="nextBtn" class="next-btn hidden">next ➡️</button>
+        </div>
+
+        <footer>two times table & turn‑around division</footer>
+    </div>
+
+    <script>
+        (function() {
+            // all questions: multiplication (2 times table) + inverse division
+            const facts = [
+                // multiplication facts 2×1 .. 2×10
+                { type: 'mult', a: 2, b: 1, product: 2 },
+                { type: 'mult', a: 2, b: 2, product: 4 },
+                { type: 'mult', a: 2, b: 3, product: 6 },
+                { type: 'mult', a: 2, b: 4, product: 8 },
+                { type: 'mult', a: 2, b: 5, product: 10 },
+                { type: 'mult', a: 2, b: 6, product: 12 },
+                { type: 'mult', a: 2, b: 7, product: 14 },
+                { type: 'mult', a: 2, b: 8, product: 16 },
+                { type: 'mult', a: 2, b: 9, product: 18 },
+                { type: 'mult', a: 2, b: 10, product: 20 },
+
+                // division facts (inverse of above)
+                { type: 'div', dividend: 2, divisor: 2, quotient: 1 },
+                { type: 'div', dividend: 4, divisor: 2, quotient: 2 },
+                { type: 'div', dividend: 6, divisor: 2, quotient: 3 },
+                { type: 'div', dividend: 8, divisor: 2, quotient: 4 },
+                { type: 'div', dividend: 10, divisor: 2, quotient: 5 },
+                { type: 'div', dividend: 12, divisor: 2, quotient: 6 },
+                { type: 'div', dividend: 14, divisor: 2, quotient: 7 },
+                { type: 'div', dividend: 16, divisor: 2, quotient: 8 },
+                { type: 'div', dividend: 18, divisor: 2, quotient: 9 },
+                { type: 'div', dividend: 20, divisor: 2, quotient: 10 }
+            ];
+
+            // UI elements
+            const questionNum1 = document.getElementById('num1');
+            const questionNum2 = document.getElementById('num2');
+            const operatorSymbol = document.getElementById('operatorSymbol');
+            const inverseHintDiv = document.getElementById('inverseHint');
+            const progressDisplay = document.getElementById('progressDisplay');
+            const answerInput = document.getElementById('answerInput');
+            const checkBtn = document.getElementById('checkBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const feedbackDiv = document.getElementById('feedbackMessage');
+
+            // state
+            let currentIndex = 0;
+            let totalFacts = facts.length;
+            let lastAnswerWasCorrect = false;
+            let currentAnswerValue = null;
+            let currentFact = null;
+
+            // helper: update UI based on currentIndex
+            function renderQuestion() {
+                // clear feedback and hide next button
+                feedbackDiv.innerHTML = '';
+                feedbackDiv.className = 'feedback';
+                nextBtn.classList.add('hidden');
+                answerInput.value = '';
+                answerInput.disabled = false;
+                checkBtn.disabled = false;
+                lastAnswerWasCorrect = false;
+
+                currentFact = facts[currentIndex];
+                
+                if (currentFact.type === 'mult') {
+                    // multiplication display
+                    questionNum1.textContent = currentFact.a;
+                    operatorSymbol.textContent = '×';
+                    questionNum2.textContent = currentFact.b;
+                    currentAnswerValue = currentFact.product;
+
+                    // hint shows the relationship without numbers
+                    inverseHintDiv.textContent = `✨ ${currentFact.a} × ${currentFact.b} = ?  →  ? ÷ 2 = ${currentFact.b}`;
+                } else {
+                    // division display
+                    questionNum1.textContent = currentFact.dividend;
+                    operatorSymbol.textContent = '÷';
+                    questionNum2.textContent = currentFact.divisor;
+                    currentAnswerValue = currentFact.quotient;
+
+                    // hint shows the relationship without numbers
+                    inverseHintDiv.textContent = `✨ ${currentFact.dividend} ÷ 2 = ?  →  2 × ? = ${currentFact.dividend}`;
+                }
+
+                // update progress
+                progressDisplay.textContent = `fact ${currentIndex + 1} / ${totalFacts}`;
+            }
+
+            // handle check answer
+            function checkAnswer() {
+                if (lastAnswerWasCorrect) return;
+
+                const rawValue = answerInput.value.trim();
+                if (rawValue === '') {
+                    feedbackDiv.textContent = '🔍 type a number!';
+                    feedbackDiv.className = 'feedback wrong';
+                    return;
+                }
+                const userNumber = Number(rawValue);
+                if (isNaN(userNumber)) {
+                    feedbackDiv.textContent = '🔢 numbers only please';
+                    feedbackDiv.className = 'feedback wrong';
+                    return;
+                }
+
+                const isCorrect = (userNumber === currentAnswerValue);
+
+                if (isCorrect) {
+                    feedbackDiv.textContent = '✅ brilliant! correct!';
+                    feedbackDiv.className = 'feedback correct';
+                    lastAnswerWasCorrect = true;
+                    answerInput.disabled = true;
+                    checkBtn.disabled = true;
+                    
+                    // update hint to show the full inverse now that they've answered
+                    if (currentFact.type === 'mult') {
+                        inverseHintDiv.textContent = `🎉 ${currentFact.a} × ${currentFact.b} = ${currentFact.product}  →  ${currentFact.product} ÷ 2 = ${currentFact.b}`;
+                    } else {
+                        inverseHintDiv.textContent = `🎉 ${currentFact.dividend} ÷ 2 = ${currentFact.quotient}  →  2 × ${currentFact.quotient} = ${currentFact.dividend}`;
+                    }
+                    
+                    nextBtn.classList.remove('hidden');
+                } else {
+                    feedbackDiv.textContent = '❌ oops, try again';
+                    feedbackDiv.className = 'feedback wrong';
+                    answerInput.focus();
+                }
+            }
+
+            // go to next question
+            function nextQuestion() {
+                currentIndex = (currentIndex + 1) % totalFacts;
+                renderQuestion();
+            }
+
+            // event listeners
+            checkBtn.addEventListener('click', checkAnswer);
+
+            answerInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    checkAnswer();
+                }
+            });
+
+            nextBtn.addEventListener('click', nextQuestion);
+
+            // initial render
+            renderQuestion();
+            answerInput.focus();
+        })();
+    </script>
+</body>
+</html>

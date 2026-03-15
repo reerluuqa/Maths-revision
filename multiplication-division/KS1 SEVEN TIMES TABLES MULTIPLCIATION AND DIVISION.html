@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7 Times Table - Inverse Operations Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 5px solid #ffd700;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            padding: 20px;
+            border-radius: 40px;
+            color: white;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 10px;
+            margin-top: 15px;
+        }
+
+        .progress-title {
+            font-size: 1.2em;
+            margin-bottom: 8px;
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+        }
+
+        .progress-item {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 8px 2px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .progress-item.completed {
+            background: #4caf50;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .progress-item.current {
+            background: #ffd700;
+            color: #333;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .question-box {
+            background: white;
+            border-radius: 40px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid #ffd700;
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0 #ffd700;
+        }
+
+        .hint-box {
+            background: #e3f2fd;
+            border-radius: 20px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px dashed #2196f3;
+            font-size: 1.4em;
+            color: #1565c0;
+        }
+
+        .inverse-box {
+            background: #c8e6c9;
+            border-radius: 20px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid #4caf50;
+            font-size: 1.4em;
+            color: #2e7d32;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .answer-input {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        input[type="number"] {
+            font-size: 2em;
+            padding: 15px 20px;
+            width: 150px;
+            text-align: center;
+            border: 4px solid #ffd700;
+            border-radius: 30px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-size: 1.4em;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 40px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .check-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .check-btn:hover {
+            background: #66bb6a;
+            transform: scale(1.05);
+        }
+
+        .next-btn {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .next-btn:hover {
+            background: #ffeb3b;
+            transform: scale(1.05);
+        }
+
+        .hint-btn {
+            background: #2196f3;
+            color: white;
+        }
+
+        .hint-btn:hover {
+            background: #42a5f5;
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            font-size: 1.5em;
+            padding: 15px;
+            border-radius: 30px;
+            margin: 20px 0;
+            font-weight: bold;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .feedback.correct {
+            background: #c8e6c9;
+            color: #2e7d32;
+            border: 3px solid #4caf50;
+        }
+
+        .feedback.incorrect {
+            background: #ffcdd2;
+            color: #c62828;
+            border: 3px solid #f44336;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>🌈 7 Times Table Adventure 🌈</h1>
+            <p>Multiplication & Division are Best Friends!</p>
+            <div class="progress-container">
+                <div class="progress-title">Your Progress</div>
+                <div class="progress-grid" id="progressGrid"></div>
+            </div>
+        </div>
+
+        <div class="question-box">
+            <div class="question-text" id="questionText">7 × 5 = ?</div>
+            
+            <div id="hintContainer" class="hint-box" style="display: none;"></div>
+            <div id="inverseContainer" class="inverse-box" style="display: none;"></div>
+
+            <div class="answer-input">
+                <input type="number" id="answerInput" placeholder="?" min="0" max="100">
+                <div class="button-group">
+                    <button class="check-btn" id="checkBtn">Check ✓</button>
+                    <button class="hint-btn" id="hintBtn">Need a Hint? 🔍</button>
+                </div>
+            </div>
+
+            <div id="feedback" class="feedback" style="display: none;"></div>
+
+            <button class="next-btn" id="nextBtn" disabled>Next Question →</button>
+        </div>
+
+        <div class="footer">
+            <p>✨ Learn the magic of 7 times table! ✨</p>
+        </div>
+    </div>
+
+    <script>
+        class TimesTableApp {
+            constructor() {
+                this.currentFactor = 1;
+                this.currentType = 'multiplication'; // 'multiplication' or 'division'
+                this.questionAnswered = false;
+                this.showingHint = false;
+                this.showingInverse = false;
+                this.completedFactors = new Array(10).fill(false);
+                this.questionCount = 0;
+                
+                this.initializeElements();
+                this.attachEventListeners();
+                this.updateProgressGrid();
+                this.generateQuestion();
+            }
+
+            initializeElements() {
+                this.questionText = document.getElementById('questionText');
+                this.hintContainer = document.getElementById('hintContainer');
+                this.inverseContainer = document.getElementById('inverseContainer');
+                this.answerInput = document.getElementById('answerInput');
+                this.checkBtn = document.getElementById('checkBtn');
+                this.hintBtn = document.getElementById('hintBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.feedback = document.getElementById('feedback');
+                this.progressGrid = document.getElementById('progressGrid');
+            }
+
+            attachEventListeners() {
+                this.checkBtn.addEventListener('click', () => this.checkAnswer());
+                this.hintBtn.addEventListener('click', () => this.showHint());
+                this.nextBtn.addEventListener('click', () => this.nextQuestion());
+                this.answerInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.checkAnswer();
+                });
+            }
+
+            generateQuestion() {
+                // Randomly choose between multiplication and division
+                this.currentType = Math.random() < 0.5 ? 'multiplication' : 'division';
+                
+                // Ensure we have a good mix by alternating after 3 questions
+                this.questionCount++;
+                if (this.questionCount % 3 === 0) {
+                    this.currentType = this.currentType === 'multiplication' ? 'division' : 'multiplication';
+                }
+
+                // Generate the question
+                if (this.currentType === 'multiplication') {
+                    this.questionText.textContent = `7 × ${this.currentFactor} = ?`;
+                } else {
+                    const product = 7 * this.currentFactor;
+                    this.questionText.textContent = `${product} ÷ 7 = ?`;
+                }
+
+                // Reset UI state for new question
+                this.questionAnswered = false;
+                this.showingHint = false;
+                this.showingInverse = false;
+                this.hintContainer.style.display = 'none';
+                this.inverseContainer.style.display = 'none';
+                this.feedback.style.display = 'none';
+                this.answerInput.value = '';
+                this.answerInput.disabled = false;
+                this.checkBtn.disabled = false;
+                this.hintBtn.disabled = false;
+                this.nextBtn.disabled = true;
+                this.answerInput.focus();
+
+                // Update progress grid to highlight current factor
+                this.updateProgressGrid();
+            }
+
+            checkAnswer() {
+                if (this.questionAnswered) return;
+
+                const answer = parseInt(this.answerInput.value);
+                if (isNaN(answer)) {
+                    this.showFeedback('Please enter a number!', 'incorrect');
+                    return;
+                }
+
+                const correctAnswer = this.getCorrectAnswer();
+                const isCorrect = answer === correctAnswer;
+
+                if (isCorrect) {
+                    this.showFeedback('✨ Correct! Amazing job! ✨', 'correct');
+                    this.questionAnswered = true;
+                    this.answerInput.disabled = true;
+                    this.checkBtn.disabled = true;
+                    this.hintBtn.disabled = true;
+                    this.nextBtn.disabled = false;
+                    
+                    // Mark this factor as completed
+                    this.completedFactors[this.currentFactor - 1] = true;
+                    
+                    // Show the inverse relationship
+                    this.showInverseRelationship();
+                    
+                    // Update progress grid
+                    this.updateProgressGrid();
+                } else {
+                    this.showFeedback('❌ Try again! You can do it! ❌', 'incorrect');
+                    this.answerInput.value = '';
+                    this.answerInput.focus();
+                }
+            }
+
+            getCorrectAnswer() {
+                if (this.currentType === 'multiplication') {
+                    return 7 * this.currentFactor;
+                } else {
+                    return this.currentFactor; // For division: (7 * n) ÷ 7 = n
+                }
+            }
+
+            showHint() {
+                if (this.questionAnswered) return;
+
+                let hint = '';
+                if (this.currentType === 'multiplication') {
+                    const product = 7 * this.currentFactor;
+                    hint = `💡 Hint: 7 × ${this.currentFactor} = ? → ${product} ÷ ${this.currentFactor} = 7`;
+                } else {
+                    const product = 7 * this.currentFactor;
+                    hint = `💡 Hint: ${product} ÷ 7 = ? → 7 × ${this.currentFactor} = ${product}`;
+                }
+
+                this.hintContainer.textContent = hint;
+                this.hintContainer.style.display = 'block';
+                this.showingHint = true;
+            }
+
+            showInverseRelationship() {
+                let inverse = '';
+                if (this.currentType === 'multiplication') {
+                    inverse = `🌟 Inverse: 7 × ${this.currentFactor} = ${7 * this.currentFactor} → ${7 * this.currentFactor} ÷ ${this.currentFactor} = 7`;
+                } else {
+                    const product = 7 * this.currentFactor;
+                    inverse = `🌟 Inverse: ${product} ÷ 7 = ${this.currentFactor} → 7 × ${this.currentFactor} = ${product}`;
+                }
+
+                this.inverseContainer.textContent = inverse;
+                this.inverseContainer.style.display = 'block';
+                this.showingInverse = true;
+            }
+
+            showFeedback(message, type) {
+                this.feedback.textContent = message;
+                this.feedback.className = `feedback ${type}`;
+                this.feedback.style.display = 'block';
+            }
+
+            nextQuestion() {
+                // Move to next factor (1-10, then loop)
+                this.currentFactor = (this.currentFactor % 10) + 1;
+                this.generateQuestion();
+            }
+
+            updateProgressGrid() {
+                let html = '';
+                for (let i = 1; i <= 10; i++) {
+                    let className = 'progress-item';
+                    if (this.completedFactors[i - 1]) {
+                        className += ' completed';
+                    } else if (i === this.currentFactor) {
+                        className += ' current';
+                    }
+                    html += `<div class="${className}">7×${i}</div>`;
+                }
+                this.progressGrid.innerHTML = html;
+            }
+        }
+
+        // Start the app when page loads
+        window.addEventListener('load', () => {
+            new TimesTableApp();
+        });
+    </script>
+</body>
+</html>

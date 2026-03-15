@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3× Table Explorer - Inverse Operations</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .app-container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 60px 60px 40px 40px;
+            padding: 30px 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 5px solid #ffd966;
+        }
+
+        /* Header with progress */
+        .progress-section {
+            background: #ffb6c1;
+            border-radius: 40px;
+            padding: 15px;
+            margin-bottom: 25px;
+            border: 4px solid white;
+            box-shadow: inset 0 -4px 0 #ff8da1;
+        }
+
+        .progress-title {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0 #ff8da1;
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+        }
+
+        .progress-star {
+            background: white;
+            border-radius: 50%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #666;
+            border: 3px solid #ff8da1;
+            transition: all 0.3s ease;
+        }
+
+        .progress-star.completed {
+            background: #ffd700;
+            border-color: #ffa500;
+            color: #fff;
+            box-shadow: 0 0 15px #ffd700;
+            transform: scale(1.1);
+        }
+
+        /* Question area */
+        .question-box {
+            background: #87ceeb;
+            border-radius: 50px;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+            border: 5px solid white;
+            box-shadow: 0 8px 0 #5f9ea0;
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 4rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 4px 4px 0 #4682b4;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        /* Hint section */
+        .hint-box {
+            background: #fffacd;
+            border-radius: 30px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 4px solid #ffd700;
+            font-size: 1.3rem;
+            color: #8b4513;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 -4px 0 #e6c300;
+        }
+
+        .hint-text {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .inverse-full {
+            background: #90ee90;
+            border-radius: 30px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 4px solid #32cd32;
+            font-size: 1.4rem;
+            color: #006400;
+            font-weight: bold;
+        }
+
+        /* Answer input */
+        .answer-area {
+            margin: 20px 0;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 2.5rem;
+            text-align: center;
+            border: 5px solid #98fb98;
+            border-radius: 50px;
+            font-family: inherit;
+            background: white;
+            outline: none;
+        }
+
+        .answer-input:focus {
+            border-color: #32cd32;
+            box-shadow: 0 0 20px #98fb98;
+        }
+
+        /* Buttons */
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0 15px;
+        }
+
+        .btn {
+            padding: 20px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.1s ease;
+            border: 4px solid white;
+        }
+
+        .btn:active {
+            transform: translateY(5px);
+        }
+
+        .btn-primary {
+            background: #ffa07a;
+            box-shadow: 0 8px 0 #cd5c5c;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #b0c4de;
+            box-shadow: 0 8px 0 #778899;
+            color: white;
+        }
+
+        .btn-hint {
+            background: #ffd700;
+            box-shadow: 0 8px 0 #b8860b;
+            color: white;
+            font-size: 1.5rem;
+            padding: 15px;
+        }
+
+        .btn-next {
+            background: #3cb371;
+            box-shadow: 0 8px 0 #2e8b57;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            transform: none;
+            box-shadow: 0 8px 0 #2e8b57;
+            cursor: not-allowed;
+        }
+
+        /* Feedback */
+        .feedback {
+            text-align: center;
+            font-size: 1.5rem;
+            padding: 15px;
+            border-radius: 40px;
+            margin: 15px 0;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #98fb98;
+            color: #006400;
+            display: block;
+            border: 4px solid #32cd32;
+        }
+
+        .feedback.incorrect {
+            background: #ffb6c1;
+            color: #8b0000;
+            display: block;
+            border: 4px solid #ff69b4;
+        }
+
+        /* Animal decorations */
+        .animal-decor {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .animal {
+            font-size: 3rem;
+            filter: drop-shadow(2px 4px 6px black);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="progress-section">
+            <div class="progress-title">🌟 3× Table Explorers 🌟</div>
+            <div class="progress-grid" id="progressGrid">
+                <!-- Filled by JavaScript -->
+            </div>
+        </div>
+
+        <div class="question-box">
+            <div class="question-text" id="question">3 × 4 = ?</div>
+        </div>
+
+        <div class="hint-box" id="hintBox">
+            <div class="hint-text" id="hintText">💡 Click the hint button!</div>
+        </div>
+
+        <div id="inverseFull" class="inverse-full" style="display: none;"></div>
+
+        <div class="answer-area">
+            <input type="number" id="answerInput" class="answer-input" placeholder="?" min="0" max="30">
+        </div>
+
+        <div class="button-grid">
+            <button class="btn btn-primary" id="checkBtn">Check ✓</button>
+            <button class="btn btn-secondary" id="clearBtn">Clear ✗</button>
+        </div>
+
+        <button class="btn btn-hint" id="hintBtn">🔍 Show Hint</button>
+        
+        <div class="feedback" id="feedback"></div>
+
+        <button class="btn btn-next" id="nextBtn" disabled>Next Question →</button>
+
+        <div class="animal-decor">
+            <span class="animal">🐼</span>
+            <span class="animal">🐨</span>
+            <span class="animal">🦊</span>
+            <span class="animal">🐸</span>
+            <span class="animal">🐧</span>
+        </div>
+    </div>
+
+    <script>
+        class MathsApp {
+            constructor() {
+                this.currentFact = 1;
+                this.isMultiplication = true;
+                this.showingInverseFull = false;
+                this.completedFacts = new Array(10).fill(false);
+                
+                this.initializeElements();
+                this.initializeProgressGrid();
+                this.generateNewQuestion();
+                this.attachEventListeners();
+            }
+
+            initializeElements() {
+                this.questionEl = document.getElementById('question');
+                this.hintTextEl = document.getElementById('hintText');
+                this.hintBoxEl = document.getElementById('hintBox');
+                this.inverseFullEl = document.getElementById('inverseFull');
+                this.answerInput = document.getElementById('answerInput');
+                this.feedbackEl = document.getElementById('feedback');
+                this.checkBtn = document.getElementById('checkBtn');
+                this.clearBtn = document.getElementById('clearBtn');
+                this.hintBtn = document.getElementById('hintBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.progressGrid = document.getElementById('progressGrid');
+            }
+
+            initializeProgressGrid() {
+                this.updateProgressDisplay();
+            }
+
+            updateProgressDisplay() {
+                this.progressGrid.innerHTML = '';
+                for (let i = 1; i <= 10; i++) {
+                    const star = document.createElement('div');
+                    star.className = `progress-star ${this.completedFacts[i-1] ? 'completed' : ''}`;
+                    star.textContent = i;
+                    this.progressGrid.appendChild(star);
+                }
+            }
+
+            generateNewQuestion() {
+                // Alternate between multiplication and division
+                this.isMultiplication = !this.isMultiplication;
+                
+                // Randomly select an uncompleted fact if possible
+                const uncompleted = this.completedFacts.reduce((acc, completed, index) => {
+                    if (!completed) acc.push(index + 1);
+                    return acc;
+                }, []);
+
+                if (uncompleted.length > 0) {
+                    this.currentFact = uncompleted[Math.floor(Math.random() * uncompleted.length)];
+                } else {
+                    // All completed - reset for more practice
+                    this.completedFacts.fill(false);
+                    this.currentFact = Math.floor(Math.random() * 10) + 1;
+                }
+
+                this.updateQuestion();
+                this.showingInverseFull = false;
+                this.inverseFullEl.style.display = 'none';
+                this.nextBtn.disabled = true;
+                this.feedbackEl.style.display = 'none';
+                this.answerInput.value = '';
+                this.answerInput.focus();
+            }
+
+            updateQuestion() {
+                const number = this.currentFact;
+                if (this.isMultiplication) {
+                    this.questionEl.textContent = `3 × ${number} = ?`;
+                } else {
+                    const product = 3 * number;
+                    this.questionEl.textContent = `${product} ÷ 3 = ?`;
+                }
+                
+                // Reset hint to default
+                this.hintTextEl.textContent = '💡 Click the hint button!';
+            }
+
+            getCorrectAnswer() {
+                if (this.isMultiplication) {
+                    return 3 * this.currentFact;
+                } else {
+                    return this.currentFact; // For division, answer is the multiplier
+                }
+            }
+
+            showHint() {
+                const number = this.currentFact;
+                let hint = '';
+                
+                if (this.isMultiplication) {
+                    const product = 3 * number;
+                    hint = `💡 3 × ${number} = ?  →  ${product} ÷ 3 = ${number}`;
+                } else {
+                    const product = 3 * number;
+                    hint = `💡 ${product} ÷ 3 = ?  →  3 × ${number} = ${product}`;
+                }
+                
+                this.hintTextEl.textContent = hint;
+            }
+
+            showFullInverse() {
+                const number = this.currentFact;
+                const product = 3 * number;
+                let inverseText = '';
+                
+                if (this.isMultiplication) {
+                    inverseText = `✨ 3 × ${number} = ${product}  ↔  ${product} ÷ 3 = ${number} ✨`;
+                } else {
+                    inverseText = `✨ ${product} ÷ 3 = ${number}  ↔  3 × ${number} = ${product} ✨`;
+                }
+                
+                this.inverseFullEl.textContent = inverseText;
+                this.inverseFullEl.style.display = 'block';
+                this.showingInverseFull = true;
+            }
+
+            checkAnswer() {
+                const userAnswer = parseInt(this.answerInput.value);
+                const correctAnswer = this.getCorrectAnswer();
+                
+                if (isNaN(userAnswer)) {
+                    this.feedbackEl.className = 'feedback incorrect';
+                    this.feedbackEl.textContent = '❌ Please enter a number!';
+                    return;
+                }
+
+                if (userAnswer === correctAnswer) {
+                    this.feedbackEl.className = 'feedback correct';
+                    this.feedbackEl.textContent = '✅ Correct! Well done! 🌟';
+                    
+                    // Mark fact as completed
+                    if (!this.completedFacts[this.currentFact - 1]) {
+                        this.completedFacts[this.currentFact - 1] = true;
+                        this.updateProgressDisplay();
+                    }
+                    
+                    // Show full inverse relationship
+                    if (!this.showingInverseFull) {
+                        this.showFullInverse();
+                    }
+                    
+                    this.nextBtn.disabled = false;
+                    this.checkBtn.disabled = true;
+                } else {
+                    this.feedbackEl.className = 'feedback incorrect';
+                    this.feedbackEl.textContent = '❌ Try again! Use the hint if you need help.';
+                }
+            }
+
+            clearInput() {
+                this.answerInput.value = '';
+                this.answerInput.focus();
+            }
+
+            nextQuestion() {
+                this.checkBtn.disabled = false;
+                this.generateNewQuestion();
+            }
+
+            attachEventListeners() {
+                this.checkBtn.addEventListener('click', () => this.checkAnswer());
+                this.clearBtn.addEventListener('click', () => this.clearInput());
+                this.hintBtn.addEventListener('click', () => this.showHint());
+                this.nextBtn.addEventListener('click', () => this.nextQuestion());
+                
+                this.answerInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.checkAnswer();
+                    }
+                });
+            }
+        }
+
+        // Start the app when page loads
+        window.addEventListener('load', () => {
+            new MathsApp();
+        });
+    </script>
+</body>
+</html>

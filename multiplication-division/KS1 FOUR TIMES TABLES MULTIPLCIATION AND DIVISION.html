@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 Times Table - Inverse Ops</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 800px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 60px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 5px solid #ffd966;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            padding: 20px;
+            border-radius: 40px;
+            color: white;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .progress-section {
+            background-color: #fff3bf;
+            padding: 15px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            border: 3px solid #ffa94d;
+        }
+
+        .progress-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #e67700;
+            margin-bottom: 10px;
+        }
+
+        .progress-bars {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .fact-progress {
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            border: 2px solid #dee2e6;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .fact-progress.completed {
+            background-color: #51cf66;
+            border-color: #2b8e3c;
+            color: white;
+            text-decoration: none;
+        }
+
+        .fact-progress.current {
+            border: 4px solid #ff6b6b;
+            transform: scale(1.1);
+            background-color: #fff5f5;
+        }
+
+        .main-game-area {
+            background-color: #f8f0fc;
+            border-radius: 50px;
+            padding: 30px;
+            border: 4px solid #9775fa;
+            margin-bottom: 20px;
+        }
+
+        .question-box {
+            text-align: center;
+            font-size: 5em;
+            font-weight: bold;
+            color: #364fc7;
+            background-color: white;
+            padding: 30px;
+            border-radius: 40px;
+            margin-bottom: 20px;
+            border: 4px dashed #ff8787;
+            box-shadow: 0 10px 0 #ced4da;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .answer-input {
+            font-size: 2.5em;
+            width: 150px;
+            padding: 15px;
+            text-align: center;
+            border: 4px solid #4ecdc4;
+            border-radius: 30px;
+            outline: none;
+            font-weight: bold;
+        }
+
+        .answer-input:focus {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.3);
+        }
+
+        .button {
+            font-size: 1.5em;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 5px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .button:active {
+            transform: translateY(4px);
+            border-bottom-width: 1px;
+        }
+
+        .button-check {
+            background-color: #51cf66;
+            color: white;
+        }
+
+        .button-hint {
+            background-color: #ffd43b;
+            color: #2b8e3c;
+        }
+
+        .button-next {
+            background-color: #339af0;
+            color: white;
+        }
+
+        .hint-box {
+            background-color: #fff9db;
+            padding: 20px;
+            border-radius: 30px;
+            border: 3px solid #ffd43b;
+            margin: 20px 0;
+            font-size: 1.5em;
+            text-align: center;
+            min-height: 100px;
+        }
+
+        .hint-title {
+            font-size: 0.8em;
+            color: #e67700;
+            margin-bottom: 10px;
+        }
+
+        .hint-content {
+            font-family: monospace;
+            font-size: 1.4em;
+            color: #2b8e3c;
+            background-color: white;
+            padding: 10px;
+            border-radius: 20px;
+        }
+
+        .feedback-message {
+            text-align: center;
+            font-size: 1.8em;
+            padding: 20px;
+            border-radius: 30px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .feedback-correct {
+            background-color: #d3f9d8;
+            color: #2b8e3c;
+            border: 4px solid #51cf66;
+        }
+
+        .feedback-incorrect {
+            background-color: #ffe3e3;
+            color: #c92a2a;
+            border: 4px solid #ff8787;
+        }
+
+        .emoji-large {
+            font-size: 2em;
+            margin-right: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #868e96;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 600px) {
+            .question-box {
+                font-size: 3em;
+            }
+            
+            .button {
+                font-size: 1.2em;
+                padding: 10px 20px;
+            }
+            
+            .answer-input {
+                font-size: 2em;
+                width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>✨ 4 Times Table Adventure ✨</h1>
+            <p>Multiplication & Division are Best Friends!</p>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-title">🌟 Your Progress 🌟</div>
+            <div class="progress-bars" id="progressBars"></div>
+        </div>
+
+        <div class="main-game-area">
+            <div class="question-box" id="questionDisplay">4 × 4 = ?</div>
+            
+            <div class="input-area">
+                <input type="number" class="answer-input" id="answerInput" placeholder="?" min="0" max="100">
+                <button class="button button-check" id="checkBtn">✅ Check</button>
+                <button class="button button-hint" id="hintBtn">💡 Hint</button>
+            </div>
+
+            <div class="hint-box" id="hintBox">
+                <div class="hint-title">💭 Helpful Hint</div>
+                <div class="hint-content" id="hintContent">Click the hint button for help!</div>
+            </div>
+
+            <div class="feedback-message" id="feedbackMessage"></div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="button button-next" id="nextBtn">➡️ Next Question</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🎯 Get it right to move on! Complete all facts to become a Times Table Hero! 🎯</p>
+        </div>
+    </div>
+
+    <script>
+        class TimesTableApp {
+            constructor() {
+                this.currentFact = 1;
+                this.questionType = 'multiplication'; // 'multiplication' or 'division'
+                this.completedFacts = new Array(10).fill(false);
+                this.currentAnswer = '';
+                this.questionAnswered = false;
+                this.correctAnswer = '';
+                this.showingInverseAfterCorrect = false;
+                this.inverseHint = '';
+                
+                this.init();
+            }
+
+            init() {
+                this.generateNewQuestion();
+                this.updateProgressBars();
+                this.attachEventListeners();
+            }
+
+            attachEventListeners() {
+                document.getElementById('checkBtn').addEventListener('click', () => this.checkAnswer());
+                document.getElementById('hintBtn').addEventListener('click', () => this.showHint());
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextQuestion());
+                document.getElementById('answerInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.checkAnswer();
+                });
+            }
+
+            generateNewQuestion() {
+                // Alternate between multiplication and division
+                const type = Math.random() < 0.5 ? 'multiplication' : 'division';
+                this.questionType = type;
+                
+                if (type === 'multiplication') {
+                    this.currentFact = Math.floor(Math.random() * 10) + 1;
+                    const multiplier = this.currentFact;
+                    this.currentAnswer = (4 * multiplier).toString();
+                    document.getElementById('questionDisplay').textContent = `4 × ${multiplier} = ?`;
+                    this.correctAnswer = `4 × ${multiplier} = ${4 * multiplier}`;
+                    this.inverseHint = `${4 * multiplier} ÷ 4 = ${multiplier}`;
+                } else {
+                    this.currentFact = Math.floor(Math.random() * 10) + 1;
+                    const dividend = this.currentFact * 4;
+                    this.currentAnswer = this.currentFact.toString();
+                    document.getElementById('questionDisplay').textContent = `${dividend} ÷ 4 = ?`;
+                    this.correctAnswer = `${dividend} ÷ 4 = ${this.currentFact}`;
+                    this.inverseHint = `4 × ${this.currentFact} = ${dividend}`;
+                }
+
+                // Clear previous states
+                this.questionAnswered = false;
+                this.showingInverseAfterCorrect = false;
+                document.getElementById('answerInput').value = '';
+                document.getElementById('feedbackMessage').innerHTML = '';
+                document.getElementById('hintContent').innerHTML = 'Click the hint button for help!';
+                
+                // Highlight current fact in progress
+                this.updateProgressBars();
+            }
+
+            checkAnswer() {
+                if (this.questionAnswered) {
+                    this.showFeedback('You already got it right! Click Next for a new question!', 'incorrect');
+                    return;
+                }
+
+                const userAnswer = document.getElementById('answerInput').value.trim();
+                
+                if (userAnswer === '') {
+                    this.showFeedback('Please enter an answer!', 'incorrect');
+                    return;
+                }
+
+                const isCorrect = userAnswer === this.currentAnswer;
+
+                if (isCorrect) {
+                    // Mark as completed
+                    this.completedFacts[this.currentFact - 1] = true;
+                    this.questionAnswered = true;
+                    
+                    // Show success message with inverse relationship
+                    const inverseRel = this.questionType === 'multiplication' 
+                        ? `${this.currentFact * 4} ÷ 4 = ${this.currentFact}` 
+                        : `4 × ${this.currentFact} = ${this.currentFact * 4}`;
+                    
+                    this.showFeedback(`✅ Correct! Great job!<br><br>🎯 Inverse fact: ${inverseRel}`, 'correct');
+                    
+                    // Show the inverse relationship in hint box too
+                    document.getElementById('hintContent').innerHTML = 
+                        `✨ Complete inverse relationship!<br>${this.questionType === 'multiplication' 
+                            ? `${this.currentFact * 4} ÷ 4 = ${this.currentFact}` 
+                            : `4 × ${this.currentFact} = ${this.currentFact * 4}`}`;
+                    
+                    this.updateProgressBars();
+                } else {
+                    this.showFeedback('❌ Try again! Use the hint if you need help!', 'incorrect');
+                }
+            }
+
+            showHint() {
+                if (this.questionAnswered) {
+                    // If already answered correctly, show the full inverse relationship
+                    const fullInverse = this.questionType === 'multiplication'
+                        ? `4 × ${this.currentFact} = ${this.currentFact * 4} → ${this.currentFact * 4} ÷ 4 = ${this.currentFact}`
+                        : `${this.currentFact * 4} ÷ 4 = ${this.currentFact} → 4 × ${this.currentFact} = ${this.currentFact * 4}`;
+                    
+                    document.getElementById('hintContent').innerHTML = 
+                        `✨ You already solved it! The inverse is:<br>${fullInverse}`;
+                    return;
+                }
+
+                // Show hint without revealing answer
+                let hintMessage = '';
+                if (this.questionType === 'multiplication') {
+                    hintMessage = `💡 Hint: 4 × ${this.currentFact} = ?<br>`;
+                    hintMessage += `➡️ Think: ${this.currentFact * 4} ÷ 4 = ${this.currentFact} (but don't look at the answer!)`;
+                } else {
+                    hintMessage = `💡 Hint: ${this.currentFact * 4} ÷ 4 = ?<br>`;
+                    hintMessage += `➡️ Think: 4 × ${this.currentFact} = ${this.currentFact * 4} (but don't look at the answer!)`;
+                }
+                
+                document.getElementById('hintContent').innerHTML = hintMessage;
+            }
+
+            showFeedback(message, type) {
+                const feedbackEl = document.getElementById('feedbackMessage');
+                feedbackEl.innerHTML = message;
+                feedbackEl.className = `feedback-message feedback-${type}`;
+            }
+
+            nextQuestion() {
+                if (!this.questionAnswered && !this.allCompleted()) {
+                    this.showFeedback('✨ You need to answer the current question correctly first!', 'incorrect');
+                    return;
+                }
+
+                if (this.allCompleted()) {
+                    this.showCongratulations();
+                } else {
+                    this.generateNewQuestion();
+                }
+            }
+
+            allCompleted() {
+                return this.completedFacts.every(fact => fact === true);
+            }
+
+            showCongratulations() {
+                const questionEl = document.getElementById('questionDisplay');
+                questionEl.textContent = '🎉 WINNER! 🎉';
+                
+                document.getElementById('hintContent').innerHTML = 
+                    '🏆 AMAZING! You\'ve mastered all the 4 times table facts!<br>' +
+                    'You understand how multiplication and division are best friends!<br><br>' +
+                    '🔄 Click "New Game" to play again!';
+                
+                this.showFeedback('🎈 YOU\'RE A TIMES TABLE HERO! 🎈', 'correct');
+                
+                // Add a reset button
+                const nextBtn = document.getElementById('nextBtn');
+                nextBtn.textContent = '🔄 New Game';
+                nextBtn.onclick = () => this.resetGame();
+            }
+
+            resetGame() {
+                this.completedFacts = new Array(10).fill(false);
+                this.questionAnswered = false;
+                this.generateNewQuestion();
+                
+                const nextBtn = document.getElementById('nextBtn');
+                nextBtn.textContent = '➡️ Next Question';
+                nextBtn.onclick = () => this.nextQuestion();
+                
+                this.updateProgressBars();
+            }
+
+            updateProgressBars() {
+                const progressContainer = document.getElementById('progressBars');
+                let html = '';
+                
+                for (let i = 1; i <= 10; i++) {
+                    let classes = 'fact-progress';
+                    if (this.completedFacts[i - 1]) classes += ' completed';
+                    if (i === this.currentFact && !this.completedFacts[i - 1]) classes += ' current';
+                    
+                    html += `<div class="${classes}">${i}×4</div>`;
+                }
+                
+                progressContainer.innerHTML = html;
+            }
+        }
+
+        // Start the app when page loads
+        window.onload = () => {
+            new TimesTableApp();
+        };
+    </script>
+</body>
+</html>

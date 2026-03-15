@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 Times Table Adventures - Year 2 Maths</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 60px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 5px solid #ffd966;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: #ff9aa2;
+            padding: 20px;
+            border-radius: 50px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .progress {
+            background: white;
+            color: #ff6b6b;
+            padding: 15px 25px;
+            border-radius: 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-box {
+            background: #b5e7a0;
+            border-radius: 50px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 4px solid #5a9e4e;
+            box-shadow: inset 0 -5px 0 #3d7a33;
+        }
+
+        .question {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #2d5a27;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 0 #8fc97b;
+        }
+
+        .answer-area {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .answer-input {
+            font-size: 3rem;
+            width: 200px;
+            text-align: center;
+            padding: 15px;
+            border: 4px solid #5a9e4e;
+            border-radius: 40px;
+            font-family: inherit;
+            background: white;
+        }
+
+        .check-btn {
+            font-size: 2rem;
+            padding: 15px 40px;
+            background: #ffd966;
+            border: none;
+            border-radius: 40px;
+            font-family: inherit;
+            font-weight: bold;
+            color: #5a3e1b;
+            cursor: pointer;
+            border: 4px solid #e6b84c;
+            box-shadow: 0 6px 0 #b38f3d;
+            transition: all 0.1s ease;
+        }
+
+        .check-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #b38f3d;
+        }
+
+        .check-btn:disabled {
+            opacity: 0.5;
+            transform: translateY(0);
+            box-shadow: 0 4px 0 #b38f3d;
+            cursor: not-allowed;
+        }
+
+        .hint-box {
+            background: #ffb347;
+            border-radius: 40px;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 1.8rem;
+            color: white;
+            text-shadow: 2px 2px 0 #c44f1a;
+            border: 4px solid #ff8c42;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feedback {
+            font-size: 2rem;
+            text-align: center;
+            padding: 15px;
+            border-radius: 40px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .correct {
+            background: #90ee90;
+            color: #006400;
+            border: 4px solid #32cd32;
+        }
+
+        .incorrect {
+            background: #ffb6c1;
+            color: #8b0000;
+            border: 4px solid #ff69b4;
+        }
+
+        .numbers-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            background: #c1e1ff;
+            padding: 30px;
+            border-radius: 50px;
+            border: 4px solid #6ba6d9;
+        }
+
+        .number-btn {
+            font-size: 2rem;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #4d8fc5;
+            background: white;
+            cursor: pointer;
+            font-weight: bold;
+            color: #2b5f8a;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 0 #2b5f8a;
+        }
+
+        .number-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #2b5f8a;
+        }
+
+        .number-btn.mastered {
+            background: #90ee90;
+            border-color: #32cd32;
+            color: #006400;
+            box-shadow: 0 4px 0 #228b22;
+            position: relative;
+        }
+
+        .number-btn.mastered::after {
+            content: "✓";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: gold;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffa500;
+        }
+
+        .number-btn.current {
+            background: #ffd700;
+            border-color: #daa520;
+            color: #8b4513;
+            box-shadow: 0 4px 0 #b8860b;
+            transform: scale(1.1);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1.1); }
+        }
+
+        .next-btn {
+            font-size: 2rem;
+            padding: 20px 40px;
+            background: #ff69b4;
+            border: none;
+            border-radius: 40px;
+            font-family: inherit;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            border: 4px solid #ff1493;
+            box-shadow: 0 6px 0 #c71585;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .next-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #c71585;
+        }
+
+        .next-btn:disabled {
+            opacity: 0.5;
+            transform: translateY(0);
+            box-shadow: 0 4px 0 #c71585;
+            cursor: not-allowed;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>🌟 10 Times Table 🌟</h1>
+            <div class="progress" id="progress">0 / 12</div>
+        </div>
+
+        <div class="question-box">
+            <div class="question" id="question">10 × 1 = ?</div>
+            <div class="answer-area">
+                <input type="number" id="answerInput" class="answer-input" placeholder="?" min="0" max="120">
+                <button class="check-btn" id="checkBtn">Check ✓</button>
+            </div>
+        </div>
+
+        <div class="hint-box" id="hint">
+            💡 Need a hint? Click a number below!
+        </div>
+
+        <div id="feedback" class="feedback"></div>
+
+        <div class="numbers-grid" id="numbersGrid">
+            <!-- Numbers 1-12 will be inserted here by JavaScript -->
+        </div>
+
+        <button class="next-btn" id="nextBtn" disabled>Next Question ➡️</button>
+    </div>
+
+    <script>
+        class TimesTableApp {
+            constructor() {
+                this.currentNumber = 1;
+                this.questionType = 'multiplication'; // 'multiplication' or 'division'
+                this.masteredNumbers = new Set();
+                this.currentQuestion = null;
+                this.currentAnswer = null;
+                this.correctAnswerGiven = false;
+                this.showingFullInverse = false;
+                
+                this.initializeElements();
+                this.generateQuestion();
+                this.renderNumbersGrid();
+                this.updateProgress();
+            }
+
+            initializeElements() {
+                this.questionEl = document.getElementById('question');
+                this.answerInput = document.getElementById('answerInput');
+                this.checkBtn = document.getElementById('checkBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.hintEl = document.getElementById('hint');
+                this.feedbackEl = document.getElementById('feedback');
+                this.progressEl = document.getElementById('progress');
+                this.numbersGrid = document.getElementById('numbersGrid');
+
+                this.checkBtn.addEventListener('click', () => this.checkAnswer());
+                this.nextBtn.addEventListener('click', () => this.nextQuestion());
+                this.answerInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.checkAnswer();
+                });
+            }
+
+            generateQuestion() {
+                // Randomly select a number 1-12 that's not mastered, or if all mastered, pick any
+                const availableNumbers = [];
+                for (let i = 1; i <= 12; i++) {
+                    if (!this.masteredNumbers.has(i)) {
+                        availableNumbers.push(i);
+                    }
+                }
+                
+                if (availableNumbers.length === 0) {
+                    // All numbers mastered, pick any for review
+                    this.currentNumber = Math.floor(Math.random() * 12) + 1;
+                } else {
+                    this.currentNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+                }
+
+                // Alternate between multiplication and division
+                this.questionType = Math.random() < 0.5 ? 'multiplication' : 'division';
+                
+                if (this.questionType === 'multiplication') {
+                    this.currentQuestion = `10 × ${this.currentNumber} = ?`;
+                    this.currentAnswer = 10 * this.currentNumber;
+                } else {
+                    const dividend = 10 * this.currentNumber;
+                    this.currentQuestion = `${dividend} ÷ 10 = ?`;
+                    this.currentAnswer = this.currentNumber;
+                }
+
+                this.questionEl.textContent = this.currentQuestion;
+                this.updateHint();
+                this.renderNumbersGrid();
+            }
+
+            updateHint() {
+                if (this.showingFullInverse) {
+                    if (this.questionType === 'multiplication') {
+                        this.hintEl.textContent = `✨ Amazing! 10 × ${this.currentNumber} = ${this.currentAnswer} and ${this.currentAnswer} ÷ 10 = ${this.currentNumber} ✨`;
+                    } else {
+                        this.hintEl.textContent = `✨ Amazing! ${10 * this.currentNumber} ÷ 10 = ${this.currentNumber} and 10 × ${this.currentNumber} = ${10 * this.currentNumber} ✨`;
+                    }
+                } else {
+                    if (this.questionType === 'multiplication') {
+                        this.hintEl.textContent = `💡 Hint: 10 × ${this.currentNumber} = ? → ? ÷ 10 = ${this.currentNumber}`;
+                    } else {
+                        this.hintEl.textContent = `💡 Hint: ${10 * this.currentNumber} ÷ 10 = ? → 10 × ? = ${10 * this.currentNumber}`;
+                    }
+                }
+            }
+
+            checkAnswer() {
+                if (this.correctAnswerGiven) {
+                    this.feedbackEl.textContent = '✅ You already got it! Click Next!';
+                    this.feedbackEl.className = 'feedback correct';
+                    return;
+                }
+
+                const userAnswer = parseInt(this.answerInput.value);
+                
+                if (isNaN(userAnswer)) {
+                    this.feedbackEl.textContent = '❌ Please type a number!';
+                    this.feedbackEl.className = 'feedback incorrect';
+                    return;
+                }
+
+                if (userAnswer === this.currentAnswer) {
+                    // Correct answer!
+                    this.correctAnswerGiven = true;
+                    this.showingFullInverse = true;
+                    
+                    // Add to mastered numbers if not already mastered
+                    if (!this.masteredNumbers.has(this.currentNumber)) {
+                        this.masteredNumbers.add(this.currentNumber);
+                    }
+                    
+                    this.feedbackEl.textContent = '✅ Correct! Well done! 🌟';
+                    this.feedbackEl.className = 'feedback correct';
+                    this.updateHint();
+                    this.nextBtn.disabled = false;
+                    this.checkBtn.disabled = true;
+                    this.answerInput.disabled = true;
+                    this.renderNumbersGrid();
+                    this.updateProgress();
+                } else {
+                    this.feedbackEl.textContent = '❌ Try again! You can do it! 💪';
+                    this.feedbackEl.className = 'feedback incorrect';
+                    this.answerInput.value = '';
+                    this.answerInput.focus();
+                }
+            }
+
+            nextQuestion() {
+                this.correctAnswerGiven = false;
+                this.showingFullInverse = false;
+                this.nextBtn.disabled = true;
+                this.checkBtn.disabled = false;
+                this.answerInput.disabled = false;
+                this.answerInput.value = '';
+                this.feedbackEl.textContent = '';
+                this.feedbackEl.className = 'feedback';
+                this.generateQuestion();
+            }
+
+            renderNumbersGrid() {
+                this.numbersGrid.innerHTML = '';
+                
+                for (let i = 1; i <= 12; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'number-btn';
+                    btn.textContent = `10 × ${i}`;
+                    
+                    if (this.masteredNumbers.has(i)) {
+                        btn.classList.add('mastered');
+                    }
+                    
+                    if (i === this.currentNumber) {
+                        btn.classList.add('current');
+                    }
+                    
+                    btn.addEventListener('click', () => {
+                        if (!this.correctAnswerGiven) {
+                            this.currentNumber = i;
+                            this.generateQuestion();
+                        }
+                    });
+                    
+                    this.numbersGrid.appendChild(btn);
+                }
+            }
+
+            updateProgress() {
+                this.progressEl.textContent = `${this.masteredNumbers.size} / 12`;
+                
+                if (this.masteredNumbers.size === 12) {
+                    this.progressEl.style.background = '#90ee90';
+                    this.feedbackEl.textContent = '🎉 CONGRATULATIONS! You mastered all 10 times tables! 🎉';
+                    this.feedbackEl.className = 'feedback correct';
+                }
+            }
+        }
+
+        // Start the app when page loads
+        window.addEventListener('load', () => {
+            new TimesTableApp();
+        });
+    </script>
+</body>
+</html>

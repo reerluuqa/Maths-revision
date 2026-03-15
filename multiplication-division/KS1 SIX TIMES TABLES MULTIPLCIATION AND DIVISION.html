@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6 Times Table Adventure - Year 2 Maths</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 60px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 5px solid #ffd700;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 2.5em;
+            text-shadow: 3px 3px 0 #ffeaa7;
+            margin-bottom: 20px;
+            word-wrap: break-word;
+        }
+
+        .progress-section {
+            background: #a8e6cf;
+            padding: 15px;
+            border-radius: 50px;
+            margin-bottom: 25px;
+            border: 3px solid #3d84a8;
+        }
+
+        .progress-title {
+            text-align: center;
+            font-size: 1.2em;
+            color: #2d4059;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .facts-progress {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .fact-badge {
+            background: white;
+            border: 2px solid #3d84a8;
+            border-radius: 30px;
+            padding: 8px 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #2d4059;
+            transition: all 0.3s ease;
+        }
+
+        .fact-badge.mastered {
+            background: #4ecdc4;
+            border-color: #2ecc71;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+
+        .question-box {
+            background: #fdcb6e;
+            border-radius: 40px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 4px solid #e17055;
+            box-shadow: inset 0 -5px 0 #e17055;
+        }
+
+        .question {
+            font-size: 4.5em;
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0 #ffeaa7;
+            word-wrap: break-word;
+        }
+
+        .inverse-hint {
+            background: #74b9ff;
+            padding: 15px;
+            border-radius: 30px;
+            margin: 15px 0;
+            font-size: 1.3em;
+            color: white;
+            border: 3px solid #0984e3;
+            box-shadow: 0 4px 0 #0984e3;
+        }
+
+        .inverse-relationship {
+            background: #55efc4;
+            padding: 15px;
+            border-radius: 30px;
+            margin: 15px 0;
+            font-size: 1.3em;
+            color: #2d3436;
+            border: 3px solid #00b894;
+            box-shadow: 0 4px 0 #00b894;
+            font-weight: bold;
+        }
+
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 2em;
+            text-align: center;
+            border: 4px solid #74b9ff;
+            border-radius: 50px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .answer-input:focus {
+            border-color: #0984e3;
+            box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.3);
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            padding: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .check-btn {
+            background: #00b894;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .next-btn {
+            background: #fdcb6e;
+            color: #2d3436;
+        }
+
+        .hint-btn {
+            background: #74b9ff;
+            color: white;
+        }
+
+        .feedback {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            animation: bounce 0.3s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .feedback.correct {
+            background: #55efc4;
+            color: #00b894;
+            border: 3px solid #00b894;
+        }
+
+        .feedback.incorrect {
+            background: #ff7675;
+            color: #d63031;
+            border: 3px solid #d63031;
+        }
+
+        .emoji-large {
+            font-size: 2em;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .question {
+                font-size: 3em;
+            }
+            
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .check-btn {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>✨ 6 Times Table Adventure ✨</h1>
+        
+        <div class="progress-section">
+            <div class="progress-title">🌟 Your Progress 🌟</div>
+            <div class="facts-progress" id="progressBars">
+                <!-- Generated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="question-box">
+            <div class="question" id="question">6 × 3 = ?</div>
+            
+            <div id="hintContainer" class="inverse-hint" style="display: none;">
+                💡 <span id="hintText"></span>
+            </div>
+            
+            <div id="inverseContainer" class="inverse-relationship" style="display: none;">
+                🔄 <span id="inverseText"></span>
+            </div>
+
+            <div class="input-area">
+                <input type="number" id="answerInput" class="answer-input" placeholder="Type answer" min="0">
+                
+                <div class="button-grid">
+                    <button class="hint-btn" id="hintBtn">💡 Hint</button>
+                    <button class="next-btn" id="nextBtn" disabled>➡️ Next</button>
+                    <button class="check-btn" id="checkBtn">✅ Check Answer</button>
+                </div>
+            </div>
+
+            <div id="feedback" class="feedback" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        class TimesTableApp {
+            constructor() {
+                this.currentQuestion = null;
+                this.answered = false;
+                this.hintShown = false;
+                this.masteredFacts = new Array(11).fill(false); // Index 0 unused, 1-10 for 6×1 to 6×10
+                
+                this.initializeEventListeners();
+                this.generateNewQuestion();
+                this.updateProgress();
+            }
+
+            initializeEventListeners() {
+                document.getElementById('checkBtn').addEventListener('click', () => this.checkAnswer());
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextQuestion());
+                document.getElementById('hintBtn').addEventListener('click', () => this.showHint());
+                document.getElementById('answerInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.checkAnswer();
+                });
+            }
+
+            generateNewQuestion() {
+                // Randomly choose between multiplication and division
+                const isMultiplication = Math.random() < 0.5;
+                
+                // Generate random number between 1 and 10
+                const multiplier = Math.floor(Math.random() * 10) + 1;
+                const product = 6 * multiplier;
+
+                if (isMultiplication) {
+                    this.currentQuestion = {
+                        text: `6 × ${multiplier} = ?`,
+                        answer: product,
+                        type: 'multiplication',
+                        multiplier: multiplier,
+                        hint: `6 × ${multiplier} = ? → ${product} ÷ ${multiplier} = 6`,
+                        inverse: `6 × ${multiplier} = ${product}  →  ${product} ÷ ${multiplier} = 6`
+                    };
+                } else {
+                    this.currentQuestion = {
+                        text: `${product} ÷ ${multiplier} = ?`,
+                        answer: 6,
+                        type: 'division',
+                        multiplier: multiplier,
+                        hint: `${product} ÷ ${multiplier} = ? → 6 × ${multiplier} = ${product}`,
+                        inverse: `${product} ÷ ${multiplier} = 6  →  6 × ${multiplier} = ${product}`
+                    };
+                }
+
+                // Update display
+                document.getElementById('question').textContent = this.currentQuestion.text;
+                document.getElementById('answerInput').value = '';
+                document.getElementById('answerInput').disabled = false;
+                document.getElementById('checkBtn').disabled = false;
+                document.getElementById('hintBtn').disabled = false;
+                document.getElementById('nextBtn').disabled = true;
+                
+                // Hide hint and inverse displays
+                document.getElementById('hintContainer').style.display = 'none';
+                document.getElementById('inverseContainer').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+                
+                this.answered = false;
+                this.hintShown = false;
+            }
+
+            checkAnswer() {
+                if (this.answered) return;
+
+                const input = document.getElementById('answerInput');
+                const answer = parseInt(input.value);
+                const feedback = document.getElementById('feedback');
+
+                if (isNaN(answer)) {
+                    this.showFeedback('Please enter a number!', 'incorrect');
+                    return;
+                }
+
+                const isCorrect = answer === this.currentQuestion.answer;
+
+                if (isCorrect) {
+                    this.showFeedback('✅ Correct! Great job!', 'correct');
+                    this.answered = true;
+                    
+                    // Mark fact as mastered
+                    this.masteredFacts[this.currentQuestion.multiplier] = true;
+                    this.updateProgress();
+                    
+                    // Disable input and buttons appropriately
+                    document.getElementById('answerInput').disabled = true;
+                    document.getElementById('checkBtn').disabled = true;
+                    document.getElementById('hintBtn').disabled = true;
+                    document.getElementById('nextBtn').disabled = false;
+                    
+                    // Show the complete inverse relationship
+                    this.showInverseRelationship();
+                } else {
+                    this.showFeedback('❌ Try again! You can do it!', 'incorrect');
+                    input.value = '';
+                    input.focus();
+                }
+            }
+
+            showFeedback(message, type) {
+                const feedback = document.getElementById('feedback');
+                feedback.textContent = message;
+                feedback.className = `feedback ${type}`;
+                feedback.style.display = 'block';
+            }
+
+            showHint() {
+                if (this.answered) return;
+                
+                const hintContainer = document.getElementById('hintContainer');
+                const hintText = document.getElementById('hintText');
+                
+                hintText.textContent = this.currentQuestion.hint;
+                hintContainer.style.display = 'block';
+                this.hintShown = true;
+            }
+
+            showInverseRelationship() {
+                const inverseContainer = document.getElementById('inverseContainer');
+                const inverseText = document.getElementById('inverseText');
+                
+                inverseText.textContent = this.currentQuestion.inverse;
+                inverseContainer.style.display = 'block';
+            }
+
+            nextQuestion() {
+                this.generateNewQuestion();
+            }
+
+            updateProgress() {
+                const progressBars = document.getElementById('progressBars');
+                let html = '';
+                
+                for (let i = 1; i <= 10; i++) {
+                    const mastered = this.masteredFacts[i];
+                    html += `<div class="fact-badge ${mastered ? 'mastered' : ''}">
+                        6 × ${i} ${mastered ? '✓' : '○'}
+                    </div>`;
+                }
+                
+                progressBars.innerHTML = html;
+            }
+        }
+
+        // Initialize the app when the page loads
+        window.addEventListener('load', () => {
+            new TimesTableApp();
+        });
+    </script>
+</body>
+</html>

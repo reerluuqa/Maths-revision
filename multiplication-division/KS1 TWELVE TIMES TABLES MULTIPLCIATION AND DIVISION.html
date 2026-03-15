@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✖️➗ Year 2 Maths – 12 times table: inverse explorers 🌟</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', cursive, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: linear-gradient(145deg, #f9e8b5 0%, #f4d793 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 16px;
+        }
+        .app-container {
+            max-width: 750px;
+            width: 100%;
+            background-color: #fffef7;
+            border-radius: 70px 70px 50px 50px;
+            box-shadow: 0 25px 35px rgba(180, 120, 30, 0.25), 0 10px 15px rgba(0,0,0,0.1);
+            padding: 30px 25px 35px 25px;
+            border: 6px solid #ffba5a;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: #2d4b7c;
+            text-shadow: 4px 4px 0 #ffd966;
+            letter-spacing: 1px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+        .subhead {
+            text-align: center;
+            font-size: 1.6rem;
+            color: #b45f2b;
+            background: #ffe39b;
+            display: inline-block;
+            padding: 0.3rem 2rem;
+            margin: 0 auto 25px auto;
+            border-radius: 50px;
+            border: 3px solid #ff9020;
+            font-weight: bold;
+        }
+        .progress-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #c1e0ff;
+            padding: 15px 25px;
+            border-radius: 60px;
+            margin-bottom: 30px;
+            border: 4px solid #3282b8;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .progress-badge {
+            background: #2d4b7c;
+            color: white;
+            font-size: 1.9rem;
+            font-weight: bold;
+            padding: 10px 25px;
+            border-radius: 40px;
+            box-shadow: inset 0 -4px 0 #0f2b4f;
+        }
+        .progress-stats {
+            font-size: 1.9rem;
+            background: white;
+            padding: 8px 30px;
+            border-radius: 40px;
+            color: #1b5e3f;
+            font-weight: bold;
+            border: 3px solid #0f7b3a;
+        }
+        .question-card {
+            background: #fef9e6;
+            border: 6px solid #ff9f4b;
+            border-radius: 90px;
+            padding: 35px 20px 30px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 0 #b05f25;
+        }
+        .big-question {
+            font-size: 5.5rem;
+            text-align: center;
+            font-weight: 800;
+            color: #212529;
+            line-height: 1.3;
+            word-break: break-word;
+            background: #fff3cc;
+            padding: 0.2rem 0.5rem;
+            border-radius: 60px;
+            display: inline-block;
+            margin: 0 auto 15px auto;
+            width: auto;
+            min-width: 280px;
+            box-shadow: 0 5px 0 #cc8f4a;
+        }
+        .inverse-hint-area {
+            background: #d5eaff;
+            border: 4px dashed #3b85c7;
+            border-radius: 60px;
+            padding: 22px 18px;
+            font-size: 2.2rem;
+            text-align: center;
+            color: #113355;
+            margin: 5px 0 20px 0;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        .feedback-msg {
+            font-size: 2.2rem;
+            text-align: center;
+            min-height: 75px;
+            padding: 15px;
+            border-radius: 50px;
+            margin: 20px 0 10px;
+            font-weight: bold;
+            background: #f0f0e0;
+            transition: 0.2s;
+        }
+        .input-panel {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0 20px;
+        }
+        .answer-input {
+            font-size: 3rem;
+            width: 200px;
+            text-align: center;
+            border: 6px solid #7caeff;
+            border-radius: 70px;
+            background: white;
+            padding: 15px 10px;
+            font-weight: 700;
+            outline: none;
+            color: #1f3a5f;
+        }
+        .answer-input:focus {
+            border-color: #fcaa5c;
+            background-color: #fff8e0;
+        }
+        .big-button {
+            font-size: 2.8rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 80px;
+            padding: 15px 35px;
+            margin: 6px;
+            cursor: pointer;
+            background-color: #fecb69;
+            border-bottom: 8px solid #c47d2a;
+            color: #2f2f2f;
+            transition: 0.05s linear;
+            box-shadow: 0 7px 0 #a56118;
+        }
+        .big-button:active {
+            transform: translateY(6px);
+            border-bottom-width: 2px;
+            box-shadow: 0 2px 0 #a56118;
+        }
+        .big-button:disabled {
+            opacity: 0.5;
+            transform: none;
+            border-bottom: 8px solid #aaa;
+            box-shadow: 0 7px 0 #6f6f6f;
+            background: #bcbcbc;
+            pointer-events: none;
+        }
+        .next-hint-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .green {
+            background-color: #8cd97c;
+            border-bottom-color: #2b7a1e;
+            box-shadow: 0 7px 0 #1c5e12;
+        }
+        .blue {
+            background-color: #7fb9f0;
+            border-bottom-color: #2a5f9e;
+            box-shadow: 0 7px 0 #133b6b;
+        }
+        .footer-note {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #77450e;
+            margin-top: 30px;
+            background: #fedd9e;
+            padding: 12px 5px;
+            border-radius: 40px;
+            border: 2px solid #b16100;
+        }
+        /* emoji / colourful touch */
+        .emoji-big {
+            font-size: 2.4rem;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container" id="appContainer">
+    <h1>✨ 12 times table ✨ <span style="font-size: 2rem;"> inverse magic</span></h1>
+    <div class="subhead">➗✖️ one question at a time</div>
+
+    <!-- progress tracking -->
+    <div class="progress-row">
+        <span class="progress-badge">📊 facts mastered</span>
+        <span class="progress-stats" id="progressDisplay">0 / 12</span>
+    </div>
+
+    <!-- main question area -->
+    <div class="question-card">
+        <div style="text-align: center;" id="questionText" class="big-question">12 × 5 = ?</div>
+        <div id="hintBox" class="inverse-hint-area">💡 hint will appear here</div>
+
+        <!-- answer input & check -->
+        <div class="input-panel">
+            <input type="number" id="answerInput" class="answer-input" placeholder="?" value="" inputmode="numeric">
+            <button class="big-button green" id="checkBtn">✅ check</button>
+        </div>
+
+        <!-- feedback message -->
+        <div id="feedbackMessage" class="feedback-msg">⭐ enter your answer</div>
+    </div>
+
+    <!-- next + inverse reveal (after correct) -->
+    <div class="next-hint-row">
+        <button class="big-button blue" id="inverseBtn" disabled>🔓 inverse fact</button>
+        <button class="big-button" id="nextBtn" disabled>➡️ next question</button>
+    </div>
+    <div class="footer-note">✔️ only correct answer unlocks next</div>
+</div>
+
+<script>
+    (function() {
+        // --- state management ---
+        const timesTableFacts = [1,2,3,4,5,6,7,8,9,10,11,12]; // multipliers 1-12
+        let mastered = new Array(12).fill(false); // index 0 -> fact 1, etc.
+        let currentFactIndex = 0;               // 0..11  (fact = index+1)
+        let currentOperation = 'MUL';            // 'MUL' or 'DIV'
+        let currentCorrectAnswer = 12;           // placeholder, computed each question
+
+        // UI elements
+        const questionEl = document.getElementById('questionText');
+        const hintBox = document.getElementById('hintBox');
+        const answerInput = document.getElementById('answerInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const feedbackEl = document.getElementById('feedbackMessage');
+        const inverseBtn = document.getElementById('inverseBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressDisplay = document.getElementById('progressDisplay');
+
+        // helper to update progress bar
+        function updateProgress() {
+            const count = mastered.filter(v => v === true).length;
+            progressDisplay.innerText = `${count} / 12`;
+        }
+
+        // generate a random fact index (0-11) that is NOT yet mastered? no — we allow any, but keep track.
+        // but requirement: progress through facts 1-12, but we just randomly pick from all; however mastered stays mastered.
+        // we also want to alternate between mul/div randomly, but ensure they get both representations.
+        function pickRandomFactIndex() {
+            // any fact (mastered or not) – we still can practice mastered ones but they stay mastered.
+            return Math.floor(Math.random() * 12);
+        }
+
+        // generate new question (random fact, random operation, but alternation: we'll decide randomly 50/50)
+        function generateNewQuestion() {
+            // pick random fact (1..12)
+            const factIdx = pickRandomFactIndex();
+            currentFactIndex = factIdx;
+            const fact = factIdx + 1;
+
+            // decide operation: simple random 0 or 1
+            const isMul = Math.random() < 0.5;   // roughly half multiplication, half division
+            // but we want "alternating" not strictly alternating but random enough.
+            currentOperation = isMul ? 'MUL' : 'DIV';
+
+            let questionString = '';
+            let correctAns = 0;
+
+            if (currentOperation === 'MUL') {
+                // multiplication: 12 × fact = ?
+                correctAns = 12 * fact;
+                questionString = `12 × ${fact} = ?`;
+            } else {
+                // division: (12*fact) ÷ 12 = ?   we need product first.
+                const product = 12 * fact;
+                correctAns = fact;   // because product ÷ 12 = fact
+                questionString = `${product} ÷ 12 = ?`;
+            }
+
+            currentCorrectAnswer = correctAns;
+            questionEl.innerText = questionString;
+
+            // Reset hint to generic (only shows after correct we update; else we show a neutral hint)
+            hintBox.innerText = '💡 click "inverse fact" after a correct answer!';
+
+            // clear previous feedback and input
+            feedbackEl.innerText = '🤔 type your answer';
+            answerInput.value = '';
+            answerInput.disabled = false;
+            checkBtn.disabled = false;
+            // disable inverse & next until correct
+            inverseBtn.disabled = true;
+            nextBtn.disabled = true;
+            // remove any extra colour
+            feedbackEl.style.backgroundColor = '#f0f0e0';
+        }
+
+        // check answer
+        function handleCheck() {
+            const inputVal = answerInput.value.trim();
+            if (inputVal === '') {
+                feedbackEl.innerText = '🔢 enter a number!';
+                feedbackEl.style.backgroundColor = '#ffd0b0';
+                return;
+            }
+            const userAnswer = Number(inputVal);
+            if (isNaN(userAnswer)) {
+                feedbackEl.innerText = '❌ numbers only please';
+                feedbackEl.style.backgroundColor = '#ffb0b0';
+                return;
+            }
+
+            const isCorrect = (userAnswer === currentCorrectAnswer);
+
+            if (isCorrect) {
+                // mark fact as mastered (index = currentFactIndex)
+                mastered[currentFactIndex] = true;
+                updateProgress();
+
+                feedbackEl.innerText = '✅✅ PERFECT! correct! ✅✅';
+                feedbackEl.style.backgroundColor = '#b8f0a8';
+
+                // disable input & check button so they can't change answer after correct
+                answerInput.disabled = true;
+                checkBtn.disabled = true;
+
+                // enable inverse fact button and next button
+                inverseBtn.disabled = false;
+                nextBtn.disabled = false;
+            } else {
+                feedbackEl.innerText = '❌ try again … ❌';
+                feedbackEl.style.backgroundColor = '#ffb5b5';
+                // hint: maybe show a tiny nudge? but we keep hint as is
+                // leave input enabled, keep buttons disabled
+            }
+        }
+
+        // show inverse relationship (without revealing answer, but we already have correct)
+        // For multiplication: 12 × 3 = ? → ? ÷ 12 = 3 
+        // For division: 48 ÷ 12 = ? → 12 × ? = 48  (actually inverse of division is multiplication)
+        // BUT requirement: "show the inverse relationship WITHOUT revealing the answer"
+        // The inverse relationship is like a transformation.
+        // We have current fact index, operation, and we know correct answer, but we must not display the missing number.
+        // Instead display a pattern: e.g., 12 × 5 = ?  →  ? ÷ 12 = 5   (for mul)
+        // For division: 60 ÷ 12 = ?  →  12 × ? = 60 
+        function updateInverseHint() {
+            const fact = currentFactIndex + 1;
+            const product = 12 * fact;   // always the total
+
+            let inverseText = '';
+            if (currentOperation === 'MUL') {
+                // was: 12 × fact = ?  → inverse: ? ÷ 12 = fact   (keep fact visible, but result hidden)
+                inverseText = `✨ inverse:  ?  ÷ 12 = ${fact}`;
+            } else {
+                // was: product ÷ 12 = ?  → inverse: 12 × ? = product
+                inverseText = `✨ inverse:  12 × ? = ${product}`;
+            }
+            hintBox.innerText = inverseText;
+        }
+
+        // reveal complete inverse AFTER a correct answer (fulfills: Only reveal the complete inverse relationship AFTER a correct answer)
+        // that means inverse button reveals full inverse with numbers? but careful: "Only reveal the complete inverse relationship AFTER a correct answer"
+        // It means before correct we show only hint pattern (without revealing answer). After correct, we can show the complete fact using inverse.
+        // However the inverse fact button currently disabled until correct. When clicked, we replace hint with complete inverse.
+        // But also after correct, next button works.
+        function revealCompleteInverse() {
+            // after correct answer, we know all numbers. So we can display the full inverse sentence.
+            const fact = currentFactIndex + 1;
+            const product = 12 * fact;
+
+            let fullInverse = '';
+            if (currentOperation === 'MUL') {
+                // originally 12 × fact = product. Inverse: product ÷ 12 = fact
+                fullInverse = `🔁 COMPLETE INVERSE:  ${product} ÷ 12 = ${fact}`;
+            } else {
+                // originally product ÷ 12 = fact. Inverse: 12 × fact = product
+                fullInverse = `🔁 COMPLETE INVERSE:  12 × ${fact} = ${product}`;
+            }
+            hintBox.innerText = fullInverse;
+            // also optionally disable inverse after reveal? but we let them click again (doesn't break anything, just updates same)
+            // but we keep it active – they can click repeatedly.
+        }
+
+        // move to next question (only enabled after correct)
+        function nextQuestion() {
+            generateNewQuestion();
+            // reset inverse button state (disabled now) and next disabled
+            // already done inside generate
+        }
+
+        // -- event listeners --
+        checkBtn.addEventListener('click', function() {
+            handleCheck();
+        });
+
+        // allow pressing Enter in input field
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleCheck();
+            }
+        });
+
+        inverseBtn.addEventListener('click', function() {
+            // only works if not disabled (only after correct answer)
+            if (!inverseBtn.disabled) {
+                revealCompleteInverse();
+            }
+        });
+
+        nextBtn.addEventListener('click', function() {
+            if (!nextBtn.disabled) {
+                nextQuestion();
+            }
+        });
+
+        // initialise first question
+        function init() {
+            mastered = new Array(12).fill(false);
+            updateProgress();
+            generateNewQuestion();
+        }
+
+        init();
+
+        // also we need to show a hint that shows inverse relationship without revealing answer, before correct.
+        // But in generateNewQuestion we set generic hint. To give a hint *that shows inverse relation without answer* we must fill hint immediately with pattern.
+        // The requirement: "Include a hint that shows the inverse relationship WITHOUT revealing the answer (e.g., for 12 × 3, show '12 × 3 = ? → ? ÷ 12 = 3 ')"
+        // That should appear when question appears. So we modify generate to set hint pattern, not just static.
+        // Override the generic line.
+        function setInitialHint() {
+            const fact = currentFactIndex + 1;
+            const product = 12 * fact;
+            if (currentOperation === 'MUL') {
+                // 12 × fact = ?  → ? ÷ 12 = fact
+                hintBox.innerText = `💡 hint:  12 × ${fact} = ?   →   ? ÷ 12 = ${fact}`;
+            } else {
+                // division: product ÷ 12 = ?  →  12 × ? = product
+                hintBox.innerText = `💡 hint:  ${product} ÷ 12 = ?   →   12 × ? = ${product}`;
+            }
+        }
+
+        // Replace generateNewQuestion to call setInitialHint after setting.
+        // We'll override the function to keep DRY but we already wrote generate; better to just extend.
+        // But I'll keep the old generate but add a call.
+        // I'll redefine generateNewQuestion with proper hint.
+
+        // --- override generate to set hint pattern correctly ---
+        const originalGenerate = generateNewQuestion;
+        generateNewQuestion = function() {
+            // pick random fact (1..12)
+            const factIdx = pickRandomFactIndex();
+            currentFactIndex = factIdx;
+            const fact = factIdx + 1;
+
+            const isMul = Math.random() < 0.5;
+            currentOperation = isMul ? 'MUL' : 'DIV';
+
+            let questionString = '';
+            let correctAns = 0;
+
+            if (currentOperation === 'MUL') {
+                correctAns = 12 * fact;
+                questionString = `12 × ${fact} = ?`;
+            } else {
+                const product = 12 * fact;
+                correctAns = fact;
+                questionString = `${product} ÷ 12 = ?`;
+            }
+
+            currentCorrectAnswer = correctAns;
+            questionEl.innerText = questionString;
+
+            // set hint pattern (inverse without full answer)
+            if (currentOperation === 'MUL') {
+                hintBox.innerText = `💡 hint:  12 × ${fact} = ?   →   ? ÷ 12 = ${fact}`;
+            } else {
+                const product = 12 * fact;
+                hintBox.innerText = `💡 hint:  ${product} ÷ 12 = ?   →   12 × ? = ${product}`;
+            }
+
+            feedbackEl.innerText = '🤔 type your answer';
+            feedbackEl.style.backgroundColor = '#f0f0e0';
+            answerInput.value = '';
+            answerInput.disabled = false;
+            checkBtn.disabled = false;
+            inverseBtn.disabled = true;
+            nextBtn.disabled = true;
+        };
+
+        // re-init with new generate
+        init = function() {
+            mastered = new Array(12).fill(false);
+            updateProgress();
+            generateNewQuestion();
+        };
+        init();
+
+        // also update inverse reveal function to match exactly.
+        // already fine.
+
+        // minor: after correct, if they click inverse, we set complete inverse; but also they could click next.
+        // ensure inverse shows complete inverse
+        // all set.
+
+        // BUT we also need to reset after next, correct.
+        // also disable inverse/next unless correct. Already done.
+
+        // extra: what if user clicks inverse multiple times? fine.
+
+        // input number styling and clears
+    })();
+</script>
+</body>
+</html>
